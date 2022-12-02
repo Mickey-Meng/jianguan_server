@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.ContractInfoMapper">
+
+    <resultMap type="com.ruoyi.system.domain.ContractInfo" id="ContractInfoResult">
+        <result property="BDBH" column="BDBH"/>
+        <result property="KGRQ" column="KGRQ"/>
+        <result property="JGRQ" column="JGRQ"/>
+        <result property="XMMC" column="XMMC"/>
+        <result property="HTBH" column="HTBH"/>
+        <result property="HTZJE" column="HTZJE"/>
+        <result property="HTD" column="HTD"/>
+        <result property="GCLQDJE" column="GCLQDJE"/>
+        <result property="KGYFKJE" column="KGYFKJE"/>
+        <result property="ZLJJE" column="ZLJJE"/>
+        <result property="HTGQ" column="HTGQ"/>
+        <result property="KGYFKQKBL" column="KGYFKQKBL"/>
+        <result property="KGYFKJZBL" column="KGYFKJZBL"/>
+        <result property="ZBJKKBL" column="ZBJKKBL"/>
+        <result property="NMGGZBZJKKBL" column="NMGGZBZJKKBL"/>
+        <result property="ZBJZE" column="ZBJZE"/>
+        <result property="JRGJE" column="JRGJE"/>
+        <result property="BDCD" column="BDCD"/>
+        <result property="QQZH" column="QQZH"/>
+        <result property="KGYJKZFQK" column="KGYJKZFQK"/>
+        <result property="KGYFKKHGD" column="KGYFKKHGD"/>
+        <result property="CLYKFZFQK" column="CLYKFZFQK"/>
+        <result property="CLYFKKHGD" column="CLYFKKHGD"/>
+        <result property="status" column="status"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+
+</mapper>
