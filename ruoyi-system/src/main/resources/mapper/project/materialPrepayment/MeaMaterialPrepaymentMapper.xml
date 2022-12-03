@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.materialprepayment.mapper.MeaMaterialPrepaymentMapper">
+
+    <resultMap type="com.ruoyi.project.materialprepayment.domain.MeaMaterialPrepayment" id="MeaMaterialPrepaymentResult">
+        <result property="id" column="id"/>
+        <result property="bdbh" column="bdbh"/>
+        <result property="jlqsbh" column="jlqsbh"/>
+        <result property="clbh" column="clbh"/>
+        <result property="clmc" column="clmc"/>
+        <result property="dw" column="dw"/>
+        <result property="dj" column="dj"/>
+        <result property="sl" column="sl"/>
+        <result property="je" column="je"/>
+        <result property="yfbl" column="yfbl"/>
+        <result property="yfje" column="yfje"/>
+        <result property="clly" column="clly"/>
+        <result property="djbh" column="djbh"/>
+        <result property="zbsbh" column="zbsbh"/>
+        <result property="cjbgbh" column="cjbgbh"/>
+        <result property="status" column="status"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+
+</mapper>

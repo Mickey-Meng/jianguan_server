@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.bill.mapper.MeaContractBillMapper">
+
+    <resultMap type="com.ruoyi.project.bill.domain.MeaContractBill" id="MeaContractBillResult">
+        <result property="id" column="id"/>
+        <result property="bdbh" column="bdbh"/>
+        <result property="zmh" column="zmh"/>
+        <result property="zmmc" column="zmmc"/>
+        <result property="zmhParent" column="zmh_parent"/>
+        <result property="zmhAncestors" column="zmh_ancestors"/>
+        <result property="dw" column="dw"/>
+        <result property="htdj" column="htdj"/>
+        <result property="xzdj" column="xzdj"/>
+        <result property="htsl" column="htsl"/>
+        <result property="htje" column="htje"/>
+        <result property="shsl" column="shsl"/>
+        <result property="shje" column="shje"/>
+        <result property="xzsl" column="xzsl"/>
+        <result property="xzje" column="xzje"/>
+        <result property="zsl" column="zsl"/>
+        <result property="zje" column="zje"/>
+        <result property="status" column="status"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+        <result property="parentId" column="parent_id"/>
+    </resultMap>
+
+
+</mapper>
