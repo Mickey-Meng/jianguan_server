@@ -22,6 +22,14 @@ public class MeaContractBillVo {
 
     private static final long serialVersionUID = 1L;
 
+
+    /**
+     * 主键id
+     */
+    @ExcelProperty(value = "主键id")
+    private Long id;
+
+
     /**
      * 标段编号
      */

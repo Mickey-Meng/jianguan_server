@@ -24,6 +24,11 @@ public class MeaLedgerApprovalNoVo {
     private static final long serialVersionUID = 1L;
 
     /**
+     * 主键id
+     */
+    @ExcelProperty(value = "主键id")
+    private Long id;
+    /**
      * 标段编号
      */
     @ExcelProperty(value = "标段编号")
