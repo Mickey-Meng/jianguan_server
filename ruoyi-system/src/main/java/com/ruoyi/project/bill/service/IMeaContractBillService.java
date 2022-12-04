@@ -1,6 +1,8 @@
 package com.ruoyi.project.bill.service;
 
 
+import com.ruoyi.common.core.domain.PageQuery;
+import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.project.bill.domain.bo.MeaContractBillBo;
 import com.ruoyi.project.bill.domain.vo.MeaContractBillVo;
 
@@ -40,4 +42,7 @@ public interface IMeaContractBillService {
      * 校验并批量删除工程量清单信息
      */
     Boolean deleteWithValidByIds(Collection<String> ids, Boolean isValid);
+
+    TableDataInfo<MeaContractBillVo> queryPageList(MeaContractBillBo bo, PageQuery pageQuery);
+
 }

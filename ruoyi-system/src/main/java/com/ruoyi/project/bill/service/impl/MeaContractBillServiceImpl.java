@@ -4,11 +4,16 @@ package com.ruoyi.project.bill.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.ruoyi.common.core.domain.PageQuery;
+import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.project.bill.domain.MeaContractBill;
 import com.ruoyi.project.bill.domain.bo.MeaContractBillBo;
 import com.ruoyi.project.bill.domain.vo.MeaContractBillVo;
 import com.ruoyi.project.bill.mapper.MeaContractBillMapper;
 import com.ruoyi.project.bill.service.IMeaContractBillService;
+import com.ruoyi.system.domain.ContractInfo;
+import com.ruoyi.system.domain.vo.ContractInfoVo;
 import io.micrometer.core.instrument.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -110,5 +115,14 @@ public class MeaContractBillServiceImpl implements IMeaContractBillService {
             //TODO 做一些业务上的校验,判断是否需要校验
         }
         return baseMapper.deleteBatchIds(ids) > 0;
+    }
+
+    @Override
+    public TableDataInfo<MeaContractBillVo> queryPageList(MeaContractBillBo bo, PageQuery pageQuery) {
+
+        LambdaQueryWrapper<MeaContractBill> lqw = buildQueryWrapper(bo);
+        Page<MeaContractBillVo> result = baseMapper.selectVoPage(pageQuery.build(), lqw);
+        return TableDataInfo.build(result);
+
     }
 }

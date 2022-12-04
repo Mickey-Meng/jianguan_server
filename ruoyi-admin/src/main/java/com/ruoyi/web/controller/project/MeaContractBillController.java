@@ -5,7 +5,9 @@ import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.annotation.RepeatSubmit;
 import com.ruoyi.common.core.controller.BaseController;
+import com.ruoyi.common.core.domain.PageQuery;
 import com.ruoyi.common.core.domain.R;
+import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.core.validate.AddGroup;
 import com.ruoyi.common.core.validate.EditGroup;
 import com.ruoyi.common.enums.BusinessType;
@@ -13,6 +15,8 @@ import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.project.bill.domain.bo.MeaContractBillBo;
 import com.ruoyi.project.bill.domain.vo.MeaContractBillVo;
 import com.ruoyi.project.bill.service.IMeaContractBillService;
+import com.ruoyi.system.domain.bo.ContractInfoBo;
+import com.ruoyi.system.domain.vo.ContractInfoVo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -46,6 +50,16 @@ public class MeaContractBillController extends BaseController {
         List<MeaContractBillVo> list = iMeaContractBillService.queryList(bo);
         return R.ok(list);
     }
+
+    /**
+     * 查询合同条款列表
+     */
+    @SaCheckPermission("bill:contractBill:page")
+    @GetMapping("/page")
+    public TableDataInfo<MeaContractBillVo> list(MeaContractBillBo bo, PageQuery pageQuery) {
+        return iMeaContractBillService.queryPageList(bo, pageQuery);
+    }
+
 
     /**
      * 导出工程量清单列表
