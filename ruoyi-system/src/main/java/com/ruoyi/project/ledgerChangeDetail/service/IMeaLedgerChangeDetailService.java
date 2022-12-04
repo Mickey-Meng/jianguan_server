@@ -13,7 +13,7 @@ import java.util.List;
  * 台账变更/工程变更 明细Service接口
  *
  * @author ruoyi
- * @date 2022-12-03
+ * @date 2022-12-04
  */
 public interface IMeaLedgerChangeDetailService {
 

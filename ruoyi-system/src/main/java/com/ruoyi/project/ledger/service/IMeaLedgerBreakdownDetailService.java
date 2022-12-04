@@ -13,14 +13,14 @@ import java.util.List;
  * 台账分解明细Service接口
  *
  * @author ruoyi
- * @date 2022-12-03
+ * @date 2022-12-04
  */
 public interface IMeaLedgerBreakdownDetailService {
 
     /**
      * 查询台账分解明细
      */
-    MeaLedgerBreakdownDetailVo queryById(String tzfjbh);
+    MeaLedgerBreakdownDetailVo queryById(String id);
 
     /**
      * 查询台账分解明细列表
@@ -46,4 +46,5 @@ public interface IMeaLedgerBreakdownDetailService {
      * 校验并批量删除台账分解明细信息
      */
     Boolean deleteWithValidByIds(Collection<String> ids, Boolean isValid);
+
 }

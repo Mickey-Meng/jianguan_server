@@ -14,7 +14,7 @@ import java.util.Date;
  * 台账变更/工程变更 明细视图对象 mea_ledger_change_detail
  *
  * @author ruoyi
- * @date 2022-12-03
+ * @date 2022-12-04
  */
 @Data
 @ExcelIgnoreUnannotated

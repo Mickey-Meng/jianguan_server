@@ -10,9 +10,10 @@ ruoyi:
   demoEnabled: true
   # 获取ip地址开关
   addressEnabled: true
+  # 文件路径 示例（ Windows配置D:/adds/uploadPath，Linux配置 /home/adds/uploadPath）
+  profile: D:/adds/uploadPaths
   # 缓存懒加载
   cacheLazy: false
-
 captcha:
   # 页面 <参数设置> 可开启关闭 验证码校验
   # 验证码类型 math 数组计算 char 字符验证
@@ -70,7 +71,7 @@ spring:
     # 国际化资源文件路径
     basename: i18n/messages
   profiles:
-    active: @profiles.active@
+    active: prod
   # 文件上传
   servlet:
     multipart:
@@ -131,6 +132,13 @@ security:
     - /favicon.ico
     - /*/api-docs
     - /*/api-docs/**
+    - /swagger/**
+    - /swagger-ui.html
+    - /webjars/**
+    - /v2/**
+    - /v3/**
+    - /doc.html
+    - /swagger-resources/**
     # druid 监控配置
     - /druid/**
     # actuator 监控配置
@@ -206,12 +214,15 @@ swagger:
         name: ${sa-token.token-name}
 
 springdoc:
+  swagger-ui:
+    path: /doc.html
+    persist-authorization: true
   #这里定义了两个分组，可定义多个，也可以不定义
   group-configs:
     - group: 1.演示模块
       packages-to-scan: com.ruoyi.demo
     - group: 2.系统模块
-      packages-to-scan: com.ruoyi.web
+      packages-to-scan: com.ruoyi.web.controller
     - group: 3.代码生成模块
       packages-to-scan: com.ruoyi.generator
 

@@ -2,6 +2,7 @@ package com.ruoyi.monitor.admin.config;
 
 import de.codecentric.boot.admin.server.config.AdminServerProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
@@ -29,12 +30,27 @@ public class SecurityConfig {
 
         return httpSecurity
                 .headers().frameOptions().disable()
-                .and().authorizeRequests()
+                .and()
+                .authorizeRequests()
                 .antMatchers(adminContextPath + "/assets/**"
                     , adminContextPath + "/login"
                     , "/actuator"
                     , "/actuator/**"
+                ).anonymous()
+                .antMatchers(
+                    HttpMethod.GET,
+                    "/*.html",
+                    "/**/*.html",
+                    "/**/*.css",
+                    "/**/*.js"
                 ).permitAll()
+                .antMatchers(adminContextPath +"/profile/**").anonymous()
+                .antMatchers(adminContextPath +"/common/download**").anonymous()
+                .antMatchers(adminContextPath +"/swagger-ui.html").anonymous()
+                .antMatchers(adminContextPath +"/swagger-resources/**").anonymous()
+                .antMatchers(adminContextPath +"/webjars/**").anonymous()
+                .antMatchers(adminContextPath +"/*/api-docs").anonymous()
+                .antMatchers(adminContextPath +"/druid/**").anonymous()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin().loginPage(adminContextPath + "/login")

@@ -24,7 +24,7 @@ import java.util.Map;
  * 台账分解明细Service业务层处理
  *
  * @author ruoyi
- * @date 2022-12-03
+ * @date 2022-12-04s
  */
 @RequiredArgsConstructor
 @Service
@@ -36,8 +36,8 @@ public class MeaLedgerBreakdownDetailServiceImpl implements IMeaLedgerBreakdownD
      * 查询台账分解明细
      */
     @Override
-    public MeaLedgerBreakdownDetailVo queryById(String tzfjbh){
-        return baseMapper.selectVoById(tzfjbh);
+    public MeaLedgerBreakdownDetailVo queryById(String id){
+        return baseMapper.selectVoById(id);
     }
 
     /**
@@ -63,7 +63,8 @@ public class MeaLedgerBreakdownDetailServiceImpl implements IMeaLedgerBreakdownD
         Map<String, Object> params = bo.getParams();
         LambdaQueryWrapper<MeaLedgerBreakdownDetail> lqw = Wrappers.lambdaQuery();
         lqw.eq(StringUtils.isNotBlank(bo.getBdbh()), MeaLedgerBreakdownDetail::getBdbh, bo.getBdbh());
-        lqw.eq(StringUtils.isNotBlank(bo.getTzfjbh()), MeaLedgerBreakdownDetail::getTzfjbh, bo.getTzfjbh());
+        lqw.likeLeft(StringUtils.isNotBlank(bo.getTzfjbh()), MeaLedgerBreakdownDetail::getTzfjbh, bo.getTzfjbh());
+        lqw.likeLeft(StringUtils.isNotBlank(bo.getFjmulu()), MeaLedgerBreakdownDetail::getFjmulu, bo.getFjmulu());
         lqw.eq(StringUtils.isNotBlank(bo.getZmh()), MeaLedgerBreakdownDetail::getZmh, bo.getZmh());
         lqw.eq(StringUtils.isNotBlank(bo.getZmmc()), MeaLedgerBreakdownDetail::getZmmc, bo.getZmmc());
         lqw.eq(StringUtils.isNotBlank(bo.getDw()), MeaLedgerBreakdownDetail::getDw, bo.getDw());
@@ -88,7 +89,7 @@ public class MeaLedgerBreakdownDetailServiceImpl implements IMeaLedgerBreakdownD
         validEntityBeforeSave(add);
         boolean flag = baseMapper.insert(add) > 0;
         if (flag) {
-            bo.setTzfjbh(add.getTzfjbh());
+            bo.setId(add.getId());
         }
         return flag;
     }

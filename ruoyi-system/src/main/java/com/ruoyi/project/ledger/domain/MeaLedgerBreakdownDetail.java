@@ -14,7 +14,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * 台账分解明细对象 mea_ledger_breakdown_detail
  *
  * @author ruoyi
- * @date 2022-12-03
+ * @date 2022-12-04
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -26,6 +26,7 @@ public class MeaLedgerBreakdownDetail extends BaseEntity {
     /**
      * ID
      */
+    @TableId(value = "id")
     private String id;
     /**
      * 标段编号
@@ -34,8 +35,11 @@ public class MeaLedgerBreakdownDetail extends BaseEntity {
     /**
      * 台账分解编号
      */
-    @TableId(value = "tzfjbh")
     private String tzfjbh;
+    /**
+     * 父级目录
+     */
+    private String fjmulu;
     /**
      * 子目号
      */

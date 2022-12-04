@@ -2,12 +2,18 @@ package com.ruoyi.project.contract.domain.vo;
 
 import java.math.BigDecimal;
 import java.util.Date;
+
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.ruoyi.common.annotation.ExcelDictFormat;
 import com.ruoyi.common.convert.ExcelDictConvert;
+import com.ruoyi.common.core.validate.AddGroup;
+import com.ruoyi.common.core.validate.EditGroup;
 import lombok.Data;
+
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 
@@ -23,6 +29,34 @@ import java.util.Date;
 public class MeaContractInfoVo {
 
     private static final long serialVersionUID = 1L;
+
+
+    @ExcelProperty(value = "id")
+    private String id;
+
+
+    @ExcelProperty(value = "项目名称")
+    private String xmmc;
+
+
+    /**
+     * 开工日期
+     */
+    @ExcelProperty(value = "开工日期")
+    private Date kgrq;
+
+    /**
+     *
+     */
+    @ExcelProperty(value = "竣工日期")
+    private Date jgrq;
+
+    /**
+     * 标段编号
+     */
+    @ExcelProperty(value = "标段编号")
+    private String bdbh;
+
 
     /**
      * 合同编号

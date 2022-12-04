@@ -16,7 +16,6 @@
     </description>
 
     <dependencies>
-
         <!-- spring-boot-devtools -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -83,6 +82,11 @@
             <groupId>com.ruoyi</groupId>
             <artifactId>ruoyi-flowable</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-spring-webflux</artifactId>
+            <version>3.0.0</version>
+        </dependency>
 
     </dependencies>
 
@@ -115,5 +119,6 @@
             </plugin>
         </plugins>
     </build>
+
 
 </project>

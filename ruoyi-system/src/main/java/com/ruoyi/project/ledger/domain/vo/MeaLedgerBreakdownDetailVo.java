@@ -14,13 +14,19 @@ import java.util.Date;
  * 台账分解明细视图对象 mea_ledger_breakdown_detail
  *
  * @author ruoyi
- * @date 2022-12-03
+ * @date 2022-12-04
  */
 @Data
 @ExcelIgnoreUnannotated
 public class MeaLedgerBreakdownDetailVo {
 
     private static final long serialVersionUID = 1L;
+
+    /**
+     * ID
+     */
+    @ExcelProperty(value = "ID")
+    private String id;
 
     /**
      * 标段编号
@@ -33,6 +39,12 @@ public class MeaLedgerBreakdownDetailVo {
      */
     @ExcelProperty(value = "台账分解编号")
     private String tzfjbh;
+
+    /**
+     * 父级目录
+     */
+    @ExcelProperty(value = "父级目录")
+    private String fjmulu;
 
     /**
      * 子目号

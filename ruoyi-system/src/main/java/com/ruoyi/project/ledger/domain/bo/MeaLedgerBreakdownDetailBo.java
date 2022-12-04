@@ -15,7 +15,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * 台账分解明细业务对象 mea_ledger_breakdown_detail
  *
  * @author ruoyi
- * @date 2022-12-03
+ * @date 2022-12-04
  */
 
 @Data
@@ -25,6 +25,7 @@ public class MeaLedgerBreakdownDetailBo extends BaseEntity {
     /**
      * ID
      */
+    @NotBlank(message = "ID不能为空", groups = { EditGroup.class })
     private String id;
 
     /**
@@ -38,6 +39,11 @@ public class MeaLedgerBreakdownDetailBo extends BaseEntity {
      */
     @NotBlank(message = "台账分解编号不能为空", groups = { AddGroup.class, EditGroup.class })
     private String tzfjbh;
+
+    /**
+     * 父级目录
+     */
+    private String fjmulu;
 
     /**
      * 子目号
