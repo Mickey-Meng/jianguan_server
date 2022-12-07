@@ -1,6 +1,8 @@
 package com.ruoyi.project.approval.domain;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.ruoyi.project.ledger.domain.MeaLedgerBreakdown;
+import com.ruoyi.project.ledger.domain.MeaLedgerBreakdownDetail;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import java.io.Serializable;
@@ -34,11 +36,14 @@ public class MeaLedgerApproval extends BaseEntity {
     /**
      * 申请期次
      */
-    private String sqqc;
+//    private String sqqc;
+    MeaLedgerApprovalNo meaLedgerApprovalNo;//add by yangaogao 20221207
+
     /**
-     * 台账分解编号
+     * 台账分解编号,需要关联台账分解对象，用于台账分解明细展示
      */
-    private String tzfjbh;
+//    private String tzfjbh;
+    MeaLedgerBreakdownDetail meaLedgerBreakdownDetail;//add by yangaogao 20221207
     /**
      * 工程部位
      */
