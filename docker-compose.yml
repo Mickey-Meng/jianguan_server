@@ -1,0 +1,23 @@
+version: '3.1'
+services:
+  #后端服务
+  server:
+
+    build: #打包一个镜像  如果是images 就是拉去一个镜像
+      context: ruoyi-admin/   # 全局路径
+      dockerfile: Dockerfile   # 方式为dockerfile ,
+    restart: always #重启策略容器退出时, 总是重启容器
+
+
+    working_dir: /ruoyi/server # 设置工作路径,为/opt/app
+    volumes:
+      - /logs/:/ruoyi/server/logs
+    ports:
+      - 8080:8080
+networks:
+  default:
+    driver: bridge
+
+
+
+

@@ -5,6 +5,7 @@ MAINTAINER Lion Li
 RUN mkdir -p /ruoyi/server
 RUN mkdir -p /ruoyi/server/logs
 RUN mkdir -p /ruoyi/server/temp
+RUN chmod 777 /ruoyi/server/logs
 
 WORKDIR /ruoyi/server
 

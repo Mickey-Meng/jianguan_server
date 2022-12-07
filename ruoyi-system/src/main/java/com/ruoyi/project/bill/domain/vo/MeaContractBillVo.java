@@ -27,7 +27,7 @@ public class MeaContractBillVo {
      * 主键id
      */
     @ExcelProperty(value = "主键id")
-    private Long id;
+    private String id;
 
 
     /**
