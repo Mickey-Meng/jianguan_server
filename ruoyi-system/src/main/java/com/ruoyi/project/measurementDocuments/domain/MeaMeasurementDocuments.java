@@ -1,6 +1,7 @@
 package com.ruoyi.project.measurementDocuments.domain;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.ruoyi.project.measurementDocumentsDetail.domain.MeaMeasurementDocumentsDetail;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import java.io.Serializable;
@@ -8,6 +9,8 @@ import java.util.Date;
 import java.math.BigDecimal;
 
 import java.util.Date;
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ruoyi.common.core.domain.BaseEntity;
 
@@ -81,5 +84,8 @@ public class MeaMeasurementDocuments extends BaseEntity {
      * 备注
      */
     private String remark;
+
+    // add by yangaogao 20221207  添加计量明细
+    List<MeaMeasurementDocumentsDetail> meaMeasurementDocumentsDetailList;
 
 }

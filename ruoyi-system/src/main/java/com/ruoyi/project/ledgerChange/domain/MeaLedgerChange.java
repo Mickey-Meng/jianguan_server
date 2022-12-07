@@ -1,6 +1,7 @@
 package com.ruoyi.project.ledgerChange.domain;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.ruoyi.project.ledgerChangeDetail.domain.MeaLedgerChangeDetail;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import java.io.Serializable;
@@ -9,6 +10,8 @@ import java.math.BigDecimal;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ruoyi.common.core.domain.BaseEntity;
 
@@ -90,5 +93,9 @@ public class MeaLedgerChange extends BaseEntity {
      * 备注
      */
     private String remark;
+
+    //add by yangaogao 20221207 添加变更明细
+    private List<MeaLedgerChangeDetail> meaLedgerChangeDetailList;
+
 
 }
