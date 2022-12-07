@@ -79,4 +79,8 @@ public class MeaMeasurementNoVo {
     private String status;
 
 
+
+    private String name;
+
+
 }

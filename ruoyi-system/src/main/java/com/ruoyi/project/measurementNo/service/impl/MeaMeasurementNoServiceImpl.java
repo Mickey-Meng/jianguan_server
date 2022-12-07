@@ -2,10 +2,12 @@ package com.ruoyi.project.measurementNo.service.impl;
 
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ruoyi.common.core.domain.PageQuery;
+import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.project.measurementNo.domain.MeaMeasurementNo;
 import com.ruoyi.project.measurementNo.domain.bo.MeaMeasurementNoBo;
@@ -16,9 +18,11 @@ import io.micrometer.core.instrument.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.SimpleFormatter;
 
 /**
  * 中间计量期数管理Service业务层处理
@@ -113,5 +117,20 @@ public class MeaMeasurementNoServiceImpl implements IMeaMeasurementNoService {
             //TODO 做一些业务上的校验,判断是否需要校验
         }
         return baseMapper.deleteBatchIds(ids) > 0;
+    }
+
+    @Override
+    public R sortList() {
+        LambdaQueryWrapper<MeaMeasurementNo> lqw = new LambdaQueryWrapper<>();
+        List<MeaMeasurementNoVo> meaMeasurementNoVos = baseMapper.selectVoList(lqw, MeaMeasurementNoVo.class);
+        if(CollUtil.isNotEmpty(meaMeasurementNoVos)){
+            SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd");
+            meaMeasurementNoVos.forEach(meaMeasurementNoVo -> {
+                String start = simpleDateFormat.format(meaMeasurementNoVo.getKsrq());
+                final String end = simpleDateFormat.format(meaMeasurementNoVo.getKsrq());
+                meaMeasurementNoVo.setName(meaMeasurementNoVo.getJlqs()+"("+start+"-"+end+")");
+            });
+        }
+        return R.ok(meaMeasurementNoVos);
     }
 }

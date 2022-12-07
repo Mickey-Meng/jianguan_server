@@ -49,6 +49,16 @@ public class MeaMeasurementNoController extends BaseController {
     }
 
     /**
+     * 查询中间计量期数管理列表
+     */
+    @SaCheckPermission("measurementNo:measurementNo:list")
+    @GetMapping("/sortList")
+    public R sortList() {
+        return iMeaMeasurementNoService.sortList();
+    }
+
+
+    /**
      * 导出中间计量期数管理列表
      */
     @SaCheckPermission("measurementNo:measurementNo:export")
