@@ -27,7 +27,7 @@ import java.util.List;
  * 台账分解
  *
  * @author ruoyi
- * @date 2022-12-03
+ * @date 2022-12-07
  */
 @Validated
 @RequiredArgsConstructor
@@ -61,13 +61,13 @@ public class MeaLedgerBreakdownController extends BaseController {
     /**
      * 获取台账分解详细信息
      *
-     * @param tzfjbh 主键
+     * @param id 主键
      */
     @SaCheckPermission("ledger:ledgerBreakdown:query")
-    @GetMapping("/{tzfjbh}")
+    @GetMapping("/{id}")
     public R<MeaLedgerBreakdownVo> getInfo(@NotNull(message = "主键不能为空")
-                                     @PathVariable String tzfjbh) {
-        return R.ok(iMeaLedgerBreakdownService.queryById(tzfjbh));
+                                     @PathVariable Long id) {
+        return R.ok(iMeaLedgerBreakdownService.queryById(id));
     }
 
     /**
@@ -78,7 +78,8 @@ public class MeaLedgerBreakdownController extends BaseController {
     @RepeatSubmit()
     @PostMapping()
     public R<Void> add(@Validated(AddGroup.class) @RequestBody MeaLedgerBreakdownBo bo) {
-        return toAjax(iMeaLedgerBreakdownService.insertByBo(bo) ? 1 : 0);
+        R aBoolean = iMeaLedgerBreakdownService.insertByBo(bo);
+        return aBoolean;
     }
 
     /**
@@ -95,13 +96,13 @@ public class MeaLedgerBreakdownController extends BaseController {
     /**
      * 删除台账分解
      *
-     * @param tzfjbhs 主键串
+     * @param ids 主键串
      */
     @SaCheckPermission("ledger:ledgerBreakdown:remove")
     @Log(title = "台账分解", businessType = BusinessType.DELETE)
-    @DeleteMapping("/{tzfjbhs}")
+    @DeleteMapping("/{ids}")
     public R<Void> remove(@NotEmpty(message = "主键不能为空")
-                          @PathVariable String[] tzfjbhs) {
-        return toAjax(iMeaLedgerBreakdownService.deleteWithValidByIds(Arrays.asList(tzfjbhs), true) ? 1 : 0);
+                          @PathVariable Long[] ids) {
+        return toAjax(iMeaLedgerBreakdownService.deleteWithValidByIds(Arrays.asList(ids), true) ? 1 : 0);
     }
 }

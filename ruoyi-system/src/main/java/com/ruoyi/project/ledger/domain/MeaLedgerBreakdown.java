@@ -13,7 +13,7 @@ import com.ruoyi.common.core.domain.TreeEntity;
  * 台账分解对象 mea_ledger_breakdown
  *
  * @author ruoyi
- * @date 2022-12-03
+ * @date 2022-12-07
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -25,7 +25,8 @@ public class MeaLedgerBreakdown extends TreeEntity<MeaLedgerBreakdown> {
     /**
      * ID
      */
-    private String id;
+    @TableId(value = "id")
+    private Long id;
     /**
      * 标段编号
      */
@@ -33,7 +34,6 @@ public class MeaLedgerBreakdown extends TreeEntity<MeaLedgerBreakdown> {
     /**
      * 台账分解编号
      */
-    @TableId(value = "tzfjbh")
     private String tzfjbh;
     /**
      * 台账分解编号父节点
@@ -48,7 +48,7 @@ public class MeaLedgerBreakdown extends TreeEntity<MeaLedgerBreakdown> {
      */
     private String tzfjmc;
     /**
-     * 状态（0正常 1变更）
+     * 分解类型（0正常 1变更）
      */
     private String fjlx;
     /**

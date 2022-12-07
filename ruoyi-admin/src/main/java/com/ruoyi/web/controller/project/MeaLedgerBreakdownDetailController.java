@@ -15,6 +15,7 @@ import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.project.ledger.domain.bo.MeaLedgerBreakdownDetailBo;
 import com.ruoyi.project.ledger.domain.vo.MeaLedgerBreakdownDetailVo;
 import com.ruoyi.project.ledger.service.IMeaLedgerBreakdownDetailService;
+import com.ruoyi.workflow.service.IWfProcessService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +24,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 台账分解明细
@@ -36,6 +39,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/ledgerDetail/ledgerBreakdownDetail")
 public class MeaLedgerBreakdownDetailController extends BaseController {
+    private final IWfProcessService processService;
 
     private final IMeaLedgerBreakdownDetailService iMeaLedgerBreakdownDetailService;
 
@@ -80,7 +84,24 @@ public class MeaLedgerBreakdownDetailController extends BaseController {
     @RepeatSubmit()
     @PostMapping()
     public R<Void> add(@Validated(AddGroup.class) @RequestBody MeaLedgerBreakdownDetailBo bo) {
-        return toAjax(iMeaLedgerBreakdownDetailService.insertByBo(bo) ? 1 : 0);
+        Boolean aBoolean = iMeaLedgerBreakdownDetailService.insertByBo(bo);
+        if(aBoolean){
+            Map<String, Object> variables=new HashMap<>();
+            variables.put("bdbh",bo.getBdbh());
+            variables.put("tzfjbh",bo.getTzfjbh());
+            variables.put("zmh",bo.getZmh());
+            variables.put("zmmc",bo.getZmmc());
+            variables.put("dw",bo.getDw());
+            variables.put("htdj",bo.getHtdj());
+            variables.put("sjsl",bo.getSjsl());
+            variables.put("fjsl",bo.getFjsl());
+            variables.put("bgsl",bo.getBgsl());
+            variables.put("fhsl",bo.getFhsl());
+            variables.put("yjlsl",bo.getYjlsl());
+            variables.put("fhje",bo.getFhje());
+            processService.startProcess("Process_1670392865296:1:0a26b6fe-75f5-11ed-9d0b-30c9aba7d4f3", variables);
+        }
+        return toAjax(aBoolean ? 1 : 0);
     }
 
     /**

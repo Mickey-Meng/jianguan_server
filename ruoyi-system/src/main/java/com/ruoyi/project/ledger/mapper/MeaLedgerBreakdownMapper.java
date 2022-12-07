@@ -9,7 +9,7 @@ import com.ruoyi.project.ledger.domain.vo.MeaLedgerBreakdownVo;
  * 台账分解Mapper接口
  *
  * @author ruoyi
- * @date 2022-12-03
+ * @date 2022-12-07
  */
 public interface MeaLedgerBreakdownMapper extends BaseMapperPlus<MeaLedgerBreakdownMapper, MeaLedgerBreakdown, MeaLedgerBreakdownVo> {
 

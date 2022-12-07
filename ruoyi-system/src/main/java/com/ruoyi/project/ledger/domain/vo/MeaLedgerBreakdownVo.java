@@ -13,7 +13,7 @@ import java.util.Date;
  * 台账分解视图对象 mea_ledger_breakdown
  *
  * @author ruoyi
- * @date 2022-12-03
+ * @date 2022-12-07
  */
 @Data
 @ExcelIgnoreUnannotated
@@ -25,7 +25,7 @@ public class MeaLedgerBreakdownVo {
      * ID
      */
     @ExcelProperty(value = "ID")
-    private String id;
+    private Long id;
 
     /**
      * 标段编号
@@ -58,9 +58,9 @@ public class MeaLedgerBreakdownVo {
     private String tzfjmc;
 
     /**
-     * 状态（0正常 1变更）
+     * 分解类型（0正常 1变更）
      */
-    @ExcelProperty(value = "状态", converter = ExcelDictConvert.class)
+    @ExcelProperty(value = "分解类型", converter = ExcelDictConvert.class)
     @ExcelDictFormat(dictType = "change_status")
     private String fjlx;
 
@@ -81,7 +81,7 @@ public class MeaLedgerBreakdownVo {
      * 树id
      */
     @ExcelProperty(value = "树id")
-    private String parentId;
+    private Long parentId;
 
 
 }

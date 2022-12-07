@@ -1,27 +1,28 @@
 package com.ruoyi.project.ledger.service.impl;
 
-
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.ruoyi.common.core.domain.R;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.project.ledger.domain.MeaLedgerBreakdown;
 import com.ruoyi.project.ledger.domain.bo.MeaLedgerBreakdownBo;
 import com.ruoyi.project.ledger.domain.vo.MeaLedgerBreakdownVo;
 import com.ruoyi.project.ledger.mapper.MeaLedgerBreakdownMapper;
 import com.ruoyi.project.ledger.service.IMeaLedgerBreakdownService;
-import io.micrometer.core.instrument.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Collection;
 
 /**
  * 台账分解Service业务层处理
  *
  * @author ruoyi
- * @date 2022-12-03
+ * @date 2022-12-07
  */
 @RequiredArgsConstructor
 @Service
@@ -33,8 +34,8 @@ public class MeaLedgerBreakdownServiceImpl implements IMeaLedgerBreakdownService
      * 查询台账分解
      */
     @Override
-    public MeaLedgerBreakdownVo queryById(String tzfjbh){
-        return baseMapper.selectVoById(tzfjbh);
+    public MeaLedgerBreakdownVo queryById(Long id){
+        return baseMapper.selectVoById(id);
     }
 
 
@@ -57,6 +58,7 @@ public class MeaLedgerBreakdownServiceImpl implements IMeaLedgerBreakdownService
         lqw.eq(StringUtils.isNotBlank(bo.getTzfjmc()), MeaLedgerBreakdown::getTzfjmc, bo.getTzfjmc());
         lqw.eq(StringUtils.isNotBlank(bo.getFjlx()), MeaLedgerBreakdown::getFjlx, bo.getFjlx());
         lqw.eq(StringUtils.isNotBlank(bo.getStatus()), MeaLedgerBreakdown::getStatus, bo.getStatus());
+        lqw.eq(bo.getParentId() != null, MeaLedgerBreakdown::getParentId, bo.getParentId());
         return lqw;
     }
 
@@ -64,14 +66,26 @@ public class MeaLedgerBreakdownServiceImpl implements IMeaLedgerBreakdownService
      * 新增台账分解
      */
     @Override
-    public Boolean insertByBo(MeaLedgerBreakdownBo bo) {
+    public R insertByBo(MeaLedgerBreakdownBo bo) {
+        QueryWrapper<MeaLedgerBreakdown> queryWrapper=new QueryWrapper<>();
+        queryWrapper.eq("tzfjbh",bo.getTzfjbh());
+        MeaLedgerBreakdown meaLedgerBreakdown = baseMapper.selectOne(queryWrapper);
+        if(meaLedgerBreakdown!=null){
+            return R.fail("台账编号已存在");
+        }
         MeaLedgerBreakdown add = BeanUtil.toBean(bo, MeaLedgerBreakdown.class);
+        QueryWrapper<MeaLedgerBreakdown> query=new QueryWrapper<>();
+        query.eq("tzfjbh",bo.getTzfjbhParent());
+        MeaLedgerBreakdown meaLedger= baseMapper.selectOne(query);
+        if(meaLedger!=null){
+            add.setParentId(meaLedger.getId());
+        }
         validEntityBeforeSave(add);
         boolean flag = baseMapper.insert(add) > 0;
         if (flag) {
-            bo.setTzfjbh(add.getTzfjbh());
+            bo.setId(add.getId());
         }
-        return flag;
+        return R.ok(flag);
     }
 
     /**
@@ -95,7 +109,7 @@ public class MeaLedgerBreakdownServiceImpl implements IMeaLedgerBreakdownService
      * 批量删除台账分解
      */
     @Override
-    public Boolean deleteWithValidByIds(Collection<String> ids, Boolean isValid) {
+    public Boolean deleteWithValidByIds(Collection<Long> ids, Boolean isValid) {
         if(isValid){
             //TODO 做一些业务上的校验,判断是否需要校验
         }

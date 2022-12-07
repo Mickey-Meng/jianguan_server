@@ -14,7 +14,7 @@ import com.ruoyi.common.core.domain.TreeEntity;
  * 台账分解业务对象 mea_ledger_breakdown
  *
  * @author ruoyi
- * @date 2022-12-03
+ * @date 2022-12-07
  */
 
 @Data
@@ -24,19 +24,19 @@ public class MeaLedgerBreakdownBo extends TreeEntity<MeaLedgerBreakdownBo> {
     /**
      * ID
      */
-    @NotBlank(message = "ID不能为空", groups = { AddGroup.class, EditGroup.class })
-    private String id;
+    @NotNull(message = "ID不能为空", groups = { EditGroup.class })
+    private Long id;
 
     /**
      * 标段编号
      */
-    @NotBlank(message = "标段编号不能为空", groups = { AddGroup.class, EditGroup.class })
+//    @NotBlank(message = "标段编号不能为空", groups = { AddGroup.class, EditGroup.class })
     private String bdbh;
 
     /**
      * 台账分解编号
      */
-    @NotBlank(message = "台账分解编号不能为空", groups = { EditGroup.class })
+    @NotBlank(message = "台账分解编号不能为空", groups = { AddGroup.class, EditGroup.class })
     private String tzfjbh;
 
     /**
@@ -48,7 +48,6 @@ public class MeaLedgerBreakdownBo extends TreeEntity<MeaLedgerBreakdownBo> {
     /**
      * 台账分解编号祖级列表
      */
-    @NotBlank(message = "台账分解编号祖级列表不能为空", groups = { AddGroup.class, EditGroup.class })
     private String tzfjbhAncestors;
 
     /**
@@ -58,9 +57,9 @@ public class MeaLedgerBreakdownBo extends TreeEntity<MeaLedgerBreakdownBo> {
     private String tzfjmc;
 
     /**
-     * 状态（0正常 1变更）
+     * 分解类型（0正常 1变更）
      */
-    @NotBlank(message = "状态（0正常 1变更）不能为空", groups = { AddGroup.class, EditGroup.class })
+//    @NotBlank(message = "分解类型（0正常 1变更）不能为空", groups = { AddGroup.class, EditGroup.class })
     private String fjlx;
 
     /**
@@ -72,7 +71,6 @@ public class MeaLedgerBreakdownBo extends TreeEntity<MeaLedgerBreakdownBo> {
     /**
      * 备注
      */
-    @NotBlank(message = "备注不能为空", groups = { AddGroup.class, EditGroup.class })
     private String remark;
 
 
