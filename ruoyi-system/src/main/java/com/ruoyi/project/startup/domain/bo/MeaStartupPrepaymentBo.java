@@ -81,7 +81,7 @@ public class MeaStartupPrepaymentBo extends BaseEntity {
     /**
      * 附件地址
      */
-    @NotBlank(message = "附件地址不能为空", groups = { AddGroup.class, EditGroup.class })
+//    @NotBlank(message = "附件地址不能为空", groups = { AddGroup.class, EditGroup.class })
     private String fj;
 
     /**

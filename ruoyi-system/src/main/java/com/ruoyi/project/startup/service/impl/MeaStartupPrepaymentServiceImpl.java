@@ -64,7 +64,7 @@ public class MeaStartupPrepaymentServiceImpl implements IMeaStartupPrepaymentSer
         LambdaQueryWrapper<MeaStartupPrepayment> lqw = Wrappers.lambdaQuery();
         lqw.eq(StringUtils.isNotBlank(bo.getBdbh()), MeaStartupPrepayment::getBdbh, bo.getBdbh());
         lqw.eq(StringUtils.isNotBlank(bo.getJlqsbh()), MeaStartupPrepayment::getJlqsbh, bo.getJlqsbh());
-        lqw.eq(StringUtils.isNotBlank(bo.getSqbh()), MeaStartupPrepayment::getSqbh, bo.getSqbh());
+        lqw.like(StringUtils.isNotBlank(bo.getSqbh()), MeaStartupPrepayment::getSqbh, bo.getSqbh());
         lqw.eq(bo.getSqsj() != null, MeaStartupPrepayment::getSqsj, bo.getSqsj());
         lqw.eq(StringUtils.isNotBlank(bo.getSqlx()), MeaStartupPrepayment::getSqlx, bo.getSqlx());
         lqw.eq(bo.getSqcs() != null, MeaStartupPrepayment::getSqcs, bo.getSqcs());

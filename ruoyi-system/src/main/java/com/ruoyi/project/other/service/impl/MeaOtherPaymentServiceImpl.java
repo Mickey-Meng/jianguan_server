@@ -62,9 +62,9 @@ public class MeaOtherPaymentServiceImpl implements IMeaOtherPaymentService {
     private LambdaQueryWrapper<MeaOtherPayment> buildQueryWrapper(MeaOtherPaymentBo bo) {
         Map<String, Object> params = bo.getParams();
         LambdaQueryWrapper<MeaOtherPayment> lqw = Wrappers.lambdaQuery();
-        lqw.eq(StringUtils.isNotBlank(bo.getBdbh()), MeaOtherPayment::getBdbh, bo.getBdbh());
+        lqw.like(StringUtils.isNotBlank(bo.getBdbh()), MeaOtherPayment::getBdbh, bo.getBdbh());
         lqw.eq(StringUtils.isNotBlank(bo.getJlqsbh()), MeaOtherPayment::getJlqsbh, bo.getJlqsbh());
-        lqw.eq(StringUtils.isNotBlank(bo.getSqbh()), MeaOtherPayment::getSqbh, bo.getSqbh());
+        lqw.like(StringUtils.isNotBlank(bo.getSqbh()), MeaOtherPayment::getSqbh, bo.getSqbh());
         lqw.eq(bo.getSqsj() != null, MeaOtherPayment::getSqsj, bo.getSqsj());
         lqw.eq(StringUtils.isNotBlank(bo.getSsdw()), MeaOtherPayment::getSsdw, bo.getSsdw());
         lqw.eq(StringUtils.isNotBlank(bo.getKxlx()), MeaOtherPayment::getKxlx, bo.getKxlx());
