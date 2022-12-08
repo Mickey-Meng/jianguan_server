@@ -55,8 +55,8 @@ public class MeaContractBillServiceImpl implements IMeaContractBillService {
     private LambdaQueryWrapper<MeaContractBill> buildQueryWrapper(MeaContractBillBo bo) {
         Map<String, Object> params = bo.getParams();
         LambdaQueryWrapper<MeaContractBill> lqw = Wrappers.lambdaQuery();
-        lqw.eq(StringUtils.isNotBlank(bo.getBdbh()), MeaContractBill::getBdbh, bo.getBdbh());
-        lqw.eq(StringUtils.isNotBlank(bo.getZmh()), MeaContractBill::getZmh, bo.getZmh());
+        lqw.like(StringUtils.isNotBlank(bo.getBdbh()), MeaContractBill::getBdbh, bo.getBdbh());
+        lqw.like(StringUtils.isNotBlank(bo.getZmh()), MeaContractBill::getZmh, bo.getZmh());
         lqw.like(StringUtils.isNotBlank(bo.getZmmc()), MeaContractBill::getZmmc, bo.getZmmc());
         lqw.eq(StringUtils.isNotBlank(bo.getZmhParent()), MeaContractBill::getZmhParent, bo.getZmhParent());
         lqw.eq(StringUtils.isNotBlank(bo.getZmhAncestors()), MeaContractBill::getZmhAncestors, bo.getZmhAncestors());

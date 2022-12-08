@@ -8,9 +8,9 @@ services:
     container_name: minio
     ports:
       # api 端口
-      - "9000:9000"
+      - "8664:8664"
       # 控制台端口
-      - "9001:9001"
+      - "8665:8665"
     environment:
       # 时区上海
       TZ: Asia/Shanghai
@@ -32,7 +32,7 @@ services:
       - /docker/minio/data:/data
       # 映射配置目录
       - /docker/minio/config:/root/.minio/
-    command: server --address ':9000' --console-address ':9001' /data  # 指定容器中的目录 /data
+    command: server --address ':8664' --console-address ':8665' /data  # 指定容器中的目录 /data
     privileged: false
     network_mode: "host"
 
