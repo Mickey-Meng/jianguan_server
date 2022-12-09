@@ -3,6 +3,7 @@ package com.ruoyi.project.measurementDocuments.service;
 
 import com.ruoyi.common.core.domain.PageQuery;
 import com.ruoyi.common.core.page.TableDataInfo;
+import com.ruoyi.project.measurementDocuments.domain.bo.MeaMeasurementDocumentsAndDeBo;
 import com.ruoyi.project.measurementDocuments.domain.bo.MeaMeasurementDocumentsBo;
 import com.ruoyi.project.measurementDocuments.domain.vo.MeaMeasurementDocumentsVo;
 
@@ -46,4 +47,6 @@ public interface IMeaMeasurementDocumentsService {
      * 校验并批量删除计量凭证，设计计量、变更计量共用一张凭证，明细分开。信息
      */
     Boolean deleteWithValidByIds(Collection<String> ids, Boolean isValid);
+
+    boolean saveMeaMeasurementDocumentsAndDeBo(MeaMeasurementDocumentsAndDeBo bo);
 }

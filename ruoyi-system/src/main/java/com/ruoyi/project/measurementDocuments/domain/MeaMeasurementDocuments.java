@@ -86,6 +86,6 @@ public class MeaMeasurementDocuments extends BaseEntity {
     private String remark;
 
     // add by yangaogao 20221207  添加计量明细
-    List<MeaMeasurementDocumentsDetail> meaMeasurementDocumentsDetailList;
+//    List<MeaMeasurementDocumentsDetail> meaMeasurementDocumentsDetailList;
 
 }

@@ -12,6 +12,7 @@ import com.ruoyi.common.core.validate.AddGroup;
 import com.ruoyi.common.core.validate.EditGroup;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.poi.ExcelUtil;
+import com.ruoyi.project.measurementDocuments.domain.bo.MeaMeasurementDocumentsAndDeBo;
 import com.ruoyi.project.measurementDocuments.domain.bo.MeaMeasurementDocumentsBo;
 import com.ruoyi.project.measurementDocuments.domain.vo.MeaMeasurementDocumentsVo;
 import com.ruoyi.project.measurementDocuments.service.IMeaMeasurementDocumentsService;
@@ -38,6 +39,22 @@ import java.util.List;
 public class MeaMeasurementDocumentsController extends BaseController {
 
     private final IMeaMeasurementDocumentsService iMeaMeasurementDocumentsService;
+
+
+    /**
+     * 新增计量凭证，设计计量、变更计量共用一张凭证，明细分开。
+     */
+    @SaCheckPermission("measurementDocuments:measurementDocuments:add")
+    @Log(title = "保存中间计量和详情", businessType = BusinessType.INSERT)
+    @RepeatSubmit()
+    @PostMapping("/saveMeaMeasurementDocumentsAndDeBo")
+    public R<Void> saveMeaMeasurementDocumentsAndDeBo(@Validated(AddGroup.class) @RequestBody MeaMeasurementDocumentsAndDeBo bo) {
+        return toAjax(iMeaMeasurementDocumentsService.saveMeaMeasurementDocumentsAndDeBo(bo) ? 1 : 0);
+    }
+
+
+
+
 
     /**
      * 查询计量凭证，设计计量、变更计量共用一张凭证，明细分开。列表
