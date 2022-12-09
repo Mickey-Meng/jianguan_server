@@ -14,6 +14,7 @@ import com.ruoyi.project.ledger.service.IMeaLedgerBreakdownService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Collection;
@@ -34,7 +35,7 @@ public class MeaLedgerBreakdownServiceImpl implements IMeaLedgerBreakdownService
      * 查询台账分解
      */
     @Override
-    public MeaLedgerBreakdownVo queryById(Long id){
+    public MeaLedgerBreakdownVo queryById(Long id) {
         return baseMapper.selectVoById(id);
     }
 
@@ -62,24 +63,64 @@ public class MeaLedgerBreakdownServiceImpl implements IMeaLedgerBreakdownService
         return lqw;
     }
 
+
+    /**
+     * 生成台账分解编号
+     *
+     * @return
+     */
+    public String generateTzfjbh() {
+
+
+        return "";
+    }
+
+
+    /**
+     * 生成台账分解编号
+     *
+     * @return
+     */
+    public String resolvePrentTzfjbh(String prentTzfjbh) {
+        StringBuffer stringBuffer = new StringBuffer();
+        for (int i = 1; i < prentTzfjbh.length(); i++) {
+
+            if (i % 3 == 0) {
+                stringBuffer.append(prentTzfjbh.substring(0, i) + ",");
+            }
+
+        }
+
+        stringBuffer.append(prentTzfjbh);
+        return stringBuffer.toString();
+    }
+
+
     /**
      * 新增台账分解
      */
     @Override
     public R insertByBo(MeaLedgerBreakdownBo bo) {
-        QueryWrapper<MeaLedgerBreakdown> queryWrapper=new QueryWrapper<>();
-        queryWrapper.eq("tzfjbh",bo.getTzfjbh());
-        MeaLedgerBreakdown meaLedgerBreakdown = baseMapper.selectOne(queryWrapper);
-        if(meaLedgerBreakdown!=null){
-            return R.fail("台账编号已存在");
+
+
+        if (bo.getTzfjbhParent().equals("0")) {
+            bo.setTzfjbhParent("101");
+
         }
+
+        String nextCode = baseMapper.getNextCode(bo.getTzfjbhParent());
+
+        if (nextCode == null) {
+            nextCode = bo.getTzfjbhParent() + "101";
+        } else {
+            nextCode = new BigDecimal(nextCode).add(new BigDecimal("1")).toString();
+        }
+        bo.setTzfjbh(nextCode);
+        System.out.println(resolvePrentTzfjbh(bo.getTzfjbhParent()));
+        bo.setTzfjbhAncestors(resolvePrentTzfjbh(bo.getTzfjbhParent()));
+
         MeaLedgerBreakdown add = BeanUtil.toBean(bo, MeaLedgerBreakdown.class);
-        QueryWrapper<MeaLedgerBreakdown> query=new QueryWrapper<>();
-        query.eq("tzfjbh",bo.getTzfjbhParent());
-        MeaLedgerBreakdown meaLedger= baseMapper.selectOne(query);
-        if(meaLedger!=null){
-            add.setParentId(meaLedger.getId());
-        }
+
         validEntityBeforeSave(add);
         boolean flag = baseMapper.insert(add) > 0;
         if (flag) {
@@ -101,7 +142,7 @@ public class MeaLedgerBreakdownServiceImpl implements IMeaLedgerBreakdownService
     /**
      * 保存前的数据校验
      */
-    private void validEntityBeforeSave(MeaLedgerBreakdown entity){
+    private void validEntityBeforeSave(MeaLedgerBreakdown entity) {
         //TODO 做一些数据校验,如唯一约束
     }
 
@@ -110,7 +151,7 @@ public class MeaLedgerBreakdownServiceImpl implements IMeaLedgerBreakdownService
      */
     @Override
     public Boolean deleteWithValidByIds(Collection<Long> ids, Boolean isValid) {
-        if(isValid){
+        if (isValid) {
             //TODO 做一些业务上的校验,判断是否需要校验
         }
         return baseMapper.deleteBatchIds(ids) > 0;

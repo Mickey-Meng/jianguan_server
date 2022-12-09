@@ -20,6 +20,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="remark" column="remark"/>
         <result property="parentId" column="parent_id"/>
     </resultMap>
+    <select id="getNextCode" resultType="java.lang.String">
+
+
+        select tzfjbh as nextCode from mea_ledger_breakdown
+        where tzfjbh_parent=#{tzfjbhParent}
+        order by tzfjbh desc
+        LIMIT 0,1
+
+
+    </select>
 
 
 </mapper>
