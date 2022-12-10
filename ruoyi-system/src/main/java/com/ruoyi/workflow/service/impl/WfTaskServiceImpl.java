@@ -672,7 +672,7 @@ public class WfTaskServiceImpl extends FlowServiceFactory implements IWfTaskServ
      * @param variables 流程参数
      */
     @Override
-    public void startFirstTask(ProcessInstance processInstance, Map<String, Object> variables) {
+    public String startFirstTask(ProcessInstance processInstance, Map<String, Object> variables) {
         // 若第一个用户任务为发起人，则自动完成任务
         Task task = taskService.createTaskQuery().processInstanceId(processInstance.getProcessInstanceId()).singleResult();
         if (ObjectUtil.isNotEmpty(task)) {
@@ -683,5 +683,6 @@ public class WfTaskServiceImpl extends FlowServiceFactory implements IWfTaskServ
                 taskService.complete(task.getId(), variables);
             }
         }
+        return task.getId();
     }
 }

@@ -25,6 +25,13 @@ captcha:
   # 字符验证码长度
   charLength: 4
 
+#工作流表单key
+mea:
+  flowable:
+    #台账分解流程表单
+    ledgerBreakdown: ledgerBreakdown
+    #中间计量流程表单
+    measurementDocuments: measurementDocuments
 # 开发环境配置
 server:
   # 服务器的HTTP端口，默认为8080

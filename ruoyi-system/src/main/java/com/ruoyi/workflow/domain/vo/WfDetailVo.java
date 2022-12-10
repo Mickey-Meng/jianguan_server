@@ -37,6 +37,9 @@ public class WfDetailVo {
 
     private WfViewerVo flowViewer;
 
+
+    private List<MeaFlow> processInfoFormList;
+
     /**
      * 是否存在任务表单信息
      * @return true:存在；false:不存在

@@ -7,6 +7,7 @@ import cn.hutool.core.io.IORuntimeException;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ruoyi.common.core.domain.PageQuery;
 import com.ruoyi.common.core.domain.entity.SysDept;
@@ -25,6 +26,8 @@ import com.ruoyi.flowable.flow.FlowableUtils;
 import com.ruoyi.flowable.utils.ModelUtils;
 import com.ruoyi.flowable.utils.ProcessFormUtils;
 import com.ruoyi.flowable.utils.TaskUtils;
+import com.ruoyi.project.flowidatenfo.domain.MeaFlowDataInfo;
+import com.ruoyi.project.flowidatenfo.mapper.MeaFlowDataInfoMapper;
 import com.ruoyi.system.service.ISysDeptService;
 import com.ruoyi.system.service.ISysRoleService;
 import com.ruoyi.system.service.ISysUserService;
@@ -34,6 +37,7 @@ import com.ruoyi.workflow.domain.vo.*;
 import com.ruoyi.workflow.mapper.WfDeployFormMapper;
 import com.ruoyi.workflow.service.IWfProcessService;
 import com.ruoyi.workflow.service.IWfTaskService;
+import liquibase.pro.packaged.Q;
 import lombok.RequiredArgsConstructor;
 import org.flowable.bpmn.constants.BpmnXMLConstants;
 import org.flowable.bpmn.model.BpmnModel;
@@ -75,6 +79,7 @@ public class WfProcessServiceImpl extends FlowServiceFactory implements IWfProce
     private final ISysRoleService roleService;
     private final ISysDeptService deptService;
     private final WfDeployFormMapper deployFormMapper;
+    private final MeaFlowDataInfoMapper meaFlowDataInfoMapper;
 
     /**
      * 流程定义列表
@@ -120,6 +125,23 @@ public class WfProcessServiceImpl extends FlowServiceFactory implements IWfProce
     }
 
     @Override
+    public String getProcessByKey(String processKey) {
+        // 流程定义列表数据查询
+        ProcessDefinitionQuery processDefinitionQuery = repositoryService.createProcessDefinitionQuery()
+            .processDefinitionKey(processKey)
+            .latestVersion()
+            .active()
+            .orderByProcessDefinitionKey()
+            .asc();
+        List<ProcessDefinition> list = processDefinitionQuery.list();
+        if(CollUtil.isNotEmpty(list)){
+            String id = list.get(0).getId();
+            return id;
+        }
+        return null;
+    }
+
+    @Override
     public String selectFormContent(String definitionId, String deployId) {
         InputStream inputStream = repositoryService.getProcessModel(definitionId);
         String bpmnString;
@@ -146,7 +168,7 @@ public class WfProcessServiceImpl extends FlowServiceFactory implements IWfProce
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void startProcess(String procDefId, Map<String, Object> variables) {
+    public String startProcess(String procDefId, Map<String, Object> variables) {
         try {
             ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
                 .processDefinitionId(procDefId).singleResult();
@@ -155,13 +177,27 @@ public class WfProcessServiceImpl extends FlowServiceFactory implements IWfProce
             }
             // 设置流程发起人Id到流程中
             this.buildProcessVariables(variables);
-            ProcessInstance processInstance = runtimeService.startProcessInstanceById(procDefId, variables);
+            ProcessInstance processInstance = runtimeService.startProcessInstanceById(procDefId,variables);
             // 第一个用户任务为发起人，则自动完成任务
-            wfTaskService.startFirstTask(processInstance, variables);
+            String task = wfTaskService.startFirstTask(processInstance, variables);
+            return task;
         } catch (Exception e) {
             e.printStackTrace();
             throw new ServiceException("流程启动错误");
         }
+    }
+
+    @Override
+    public void startMeaProcess(String procDefId, String buinessKey,Object formData) {
+        Map<String, Object> variables=new HashMap<>();
+        String proId = startProcess(procDefId, variables);
+        MeaFlowDataInfo meaFlowDataInfo=new MeaFlowDataInfo();
+        meaFlowDataInfo.setTaskId(proId);
+        meaFlowDataInfo.setStatus("0");
+        meaFlowDataInfo.setBussinessData(JsonUtils.toJsonString(formData));
+        meaFlowDataInfo.setBussinessKey(buinessKey);
+        meaFlowDataInfoMapper.insert(meaFlowDataInfo);
+
     }
 
     /**
@@ -229,6 +265,19 @@ public class WfProcessServiceImpl extends FlowServiceFactory implements IWfProce
         detailVo.setHistoryProcNodeList(historyProcNodeList(procInsId));
         detailVo.setProcessFormList(processFormList(procInsId, deployId, taskIns));
         detailVo.setFlowViewer(getFlowViewer(procInsId));
+        QueryWrapper<MeaFlowDataInfo> queryWrapper=new QueryWrapper();
+        queryWrapper.eq("task_id",taskId);
+        List<MeaFlowDataInfo> meaFlowDataInfos = meaFlowDataInfoMapper.selectList(queryWrapper);
+        if(CollUtil.isNotEmpty(meaFlowDataInfos)){
+            List<MeaFlow> meaFlows=new ArrayList<>();
+            for(MeaFlowDataInfo me:meaFlowDataInfos){
+                MeaFlow meaFlow=new MeaFlow();
+                meaFlow.setData(JsonUtils.parseMap(me.getBussinessData()));
+                meaFlow.setFormKey(me.getBussinessKey());
+                meaFlows.add(meaFlow);
+            }
+            detailVo.setProcessInfoFormList(meaFlows);
+        }
         return detailVo;
     }
 

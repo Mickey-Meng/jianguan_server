@@ -129,5 +129,5 @@ public interface IWfTaskService {
      * @param processInstance 流程实例
      * @param variables 流程参数
      */
-    void startFirstTask(ProcessInstance processInstance, Map<String, Object> variables);
+    String startFirstTask(ProcessInstance processInstance, Map<String, Object> variables);
 }

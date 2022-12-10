@@ -66,7 +66,6 @@ public class WfDeployServiceImpl implements IWfDeployService {
         }
         int offset = pageQuery.getPageSize() * (pageQuery.getPageNum() - 1);
         List<ProcessDefinition> definitionList = processDefinitionQuery.listPage(offset, pageQuery.getPageSize());
-
         List<WfDeployVo> deployVoList = new ArrayList<>(definitionList.size());
         for (ProcessDefinition processDefinition : definitionList) {
             String deploymentId = processDefinition.getDeploymentId();

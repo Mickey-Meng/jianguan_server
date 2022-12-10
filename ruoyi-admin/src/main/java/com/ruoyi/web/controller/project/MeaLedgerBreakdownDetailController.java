@@ -2,6 +2,7 @@ package com.ruoyi.web.controller.project;
 
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.hutool.core.util.StrUtil;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.annotation.RepeatSubmit;
 import com.ruoyi.common.core.controller.BaseController;
@@ -17,6 +18,7 @@ import com.ruoyi.project.ledger.domain.vo.MeaLedgerBreakdownDetailVo;
 import com.ruoyi.project.ledger.service.IMeaLedgerBreakdownDetailService;
 import com.ruoyi.workflow.service.IWfProcessService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,6 +44,9 @@ public class MeaLedgerBreakdownDetailController extends BaseController {
     private final IWfProcessService processService;
 
     private final IMeaLedgerBreakdownDetailService iMeaLedgerBreakdownDetailService;
+
+    @Value("${mea.flowable.ledgerBreakdown}")
+    private String formKey;
 
     /**
      * 查询台账分解明细列表
@@ -84,22 +89,13 @@ public class MeaLedgerBreakdownDetailController extends BaseController {
     @RepeatSubmit()
     @PostMapping()
     public R<Void> add(@Validated(AddGroup.class) @RequestBody MeaLedgerBreakdownDetailBo bo) {
+        String process_1669973630070 = processService.getProcessByKey("Process_1670392865296");
+        if(StrUtil.isBlank(process_1669973630070)){
+            return R.fail("流程图未定义");
+        }
         Boolean aBoolean = iMeaLedgerBreakdownDetailService.insertByBo(bo);
         if(aBoolean){
-            Map<String, Object> variables=new HashMap<>();
-            variables.put("bdbh",bo.getBdbh());
-            variables.put("tzfjbh",bo.getTzfjbh());
-            variables.put("zmh",bo.getZmh());
-            variables.put("zmmc",bo.getZmmc());
-            variables.put("dw",bo.getDw());
-            variables.put("htdj",bo.getHtdj());
-            variables.put("sjsl",bo.getSjsl());
-            variables.put("fjsl",bo.getFjsl());
-            variables.put("bgsl",bo.getBgsl());
-            variables.put("fhsl",bo.getFhsl());
-            variables.put("yjlsl",bo.getYjlsl());
-            variables.put("fhje",bo.getFhje());
-            processService.startProcess("Process_1670392865296:4:69557511-75fc-11ed-b8e9-30c9aba7d4f3", variables);
+            processService.startMeaProcess(process_1669973630070,formKey, bo);
         }
         return toAjax(aBoolean ? 1 : 0);
     }

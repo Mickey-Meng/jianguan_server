@@ -22,6 +22,9 @@ public interface IWfProcessService {
      */
     TableDataInfo<WfDefinitionVo> processList(PageQuery pageQuery);
 
+
+    String getProcessByKey(String processKey);
+
     /**
      * 查询流程部署关联表单信息
      * @param definitionId 流程定义ID
@@ -34,7 +37,16 @@ public interface IWfProcessService {
      * @param procDefId 流程定义ID
      * @param variables 扩展参数
      */
-    void startProcess(String procDefId, Map<String, Object> variables);
+    String startProcess(String procDefId, Map<String, Object> variables);
+
+
+    /**
+     * 新业务启动流程实例
+     * @param procDefId 流程定义ID
+     * @param formData 扩展参数
+     */
+    void startMeaProcess(String procDefId,String buinessKey, Object formData);
+
 
     /**
      * 通过DefinitionKey启动流程
