@@ -43,10 +43,10 @@ import java.util.Map;
 public class MeaLedgerBreakdownDetailController extends BaseController {
     private final IWfProcessService processService;
 
-    private final IMeaLedgerBreakdownDetailService iMeaLedgerBreakdownDetailService;
-
     @Value("${mea.flowable.ledgerBreakdown}")
     private String formKey;
+
+    private final IMeaLedgerBreakdownDetailService iMeaLedgerBreakdownDetailService;
 
     /**
      * 查询台账分解明细列表

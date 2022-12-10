@@ -197,7 +197,6 @@ public class WfProcessServiceImpl extends FlowServiceFactory implements IWfProce
         meaFlowDataInfo.setBussinessData(JsonUtils.toJsonString(formData));
         meaFlowDataInfo.setBussinessKey(buinessKey);
         meaFlowDataInfoMapper.insert(meaFlowDataInfo);
-
     }
 
     /**

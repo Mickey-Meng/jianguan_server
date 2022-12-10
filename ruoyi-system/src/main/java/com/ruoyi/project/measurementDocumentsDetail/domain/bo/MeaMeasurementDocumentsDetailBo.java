@@ -37,7 +37,7 @@ public class MeaMeasurementDocumentsDetailBo extends BaseEntity {
     /**
      * 凭证编号
      */
-    @NotBlank(message = "凭证编号不能为空", groups = { AddGroup.class, EditGroup.class })
+//    @NotBlank(message = "凭证编号不能为空", groups = { AddGroup.class, EditGroup.class })
     private String pzbh;
 
     /**
@@ -45,6 +45,9 @@ public class MeaMeasurementDocumentsDetailBo extends BaseEntity {
      */
     @NotBlank(message = "子目号不能为空", groups = { AddGroup.class, EditGroup.class })
     private String zmh;
+
+
+    private String zmmc;
 
     /**
      * 本期计量数量
@@ -55,13 +58,13 @@ public class MeaMeasurementDocumentsDetailBo extends BaseEntity {
     /**
      * 计量类型
      */
-    @NotBlank(message = "计量类型不能为空", groups = { AddGroup.class, EditGroup.class })
+//    @NotBlank(message = "计量类型不能为空", groups = { AddGroup.class, EditGroup.class })
     private String jllx;
 
     /**
      * 状态（0正常 1停用）
      */
-    @NotBlank(message = "状态（0正常 1停用）不能为空", groups = { AddGroup.class, EditGroup.class })
+//    @NotBlank(message = "状态（0正常 1停用）不能为空", groups = { AddGroup.class, EditGroup.class })
     private String status;
 
 

@@ -2,6 +2,7 @@ package com.ruoyi.web.controller.project;
 
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.hutool.core.util.StrUtil;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.annotation.RepeatSubmit;
 import com.ruoyi.common.core.controller.BaseController;
@@ -16,7 +17,9 @@ import com.ruoyi.project.measurementDocuments.domain.bo.MeaMeasurementDocumentsA
 import com.ruoyi.project.measurementDocuments.domain.bo.MeaMeasurementDocumentsBo;
 import com.ruoyi.project.measurementDocuments.domain.vo.MeaMeasurementDocumentsVo;
 import com.ruoyi.project.measurementDocuments.service.IMeaMeasurementDocumentsService;
+import com.ruoyi.workflow.service.IWfProcessService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,7 +42,10 @@ import java.util.List;
 public class MeaMeasurementDocumentsController extends BaseController {
 
     private final IMeaMeasurementDocumentsService iMeaMeasurementDocumentsService;
+    private final IWfProcessService processService;
 
+    @Value("${mea.flowable.measurementDocuments}")
+    private String formKey;
 
     /**
      * 新增计量凭证，设计计量、变更计量共用一张凭证，明细分开。
@@ -49,11 +55,16 @@ public class MeaMeasurementDocumentsController extends BaseController {
     @RepeatSubmit()
     @PostMapping("/saveMeaMeasurementDocumentsAndDeBo")
     public R<Void> saveMeaMeasurementDocumentsAndDeBo(@Validated(AddGroup.class) @RequestBody MeaMeasurementDocumentsAndDeBo bo) {
-        return toAjax(iMeaMeasurementDocumentsService.saveMeaMeasurementDocumentsAndDeBo(bo) ? 1 : 0);
+        String process_1669973630070 = processService.getProcessByKey("Process_1670667873943");
+        if(StrUtil.isBlank(process_1669973630070)){
+            return R.fail("流程图未定义");
+        }
+        boolean aBoolean = iMeaMeasurementDocumentsService.saveMeaMeasurementDocumentsAndDeBo(bo);
+        if(aBoolean){
+            processService.startMeaProcess(process_1669973630070,formKey, bo);
+        }
+        return toAjax( aBoolean ? 1 : 0);
     }
-
-
-
 
 
     /**

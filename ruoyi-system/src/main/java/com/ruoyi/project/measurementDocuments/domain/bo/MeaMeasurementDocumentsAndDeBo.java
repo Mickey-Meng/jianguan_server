@@ -32,7 +32,7 @@ public class MeaMeasurementDocumentsAndDeBo extends BaseEntity {
     /**
      * 标段编号
      */
-    @NotBlank(message = "标段编号不能为空", groups = { AddGroup.class, EditGroup.class })
+//    @NotBlank(message = "标段编号不能为空", groups = { AddGroup.class, EditGroup.class })
     private String bdbh;
 
     /**
@@ -56,13 +56,13 @@ public class MeaMeasurementDocumentsAndDeBo extends BaseEntity {
     /**
      * 计量类型
      */
-    @NotBlank(message = "计量类型不能为空", groups = { AddGroup.class, EditGroup.class })
+//    @NotBlank(message = "计量类型不能为空", groups = { AddGroup.class, EditGroup.class })
     private String jllx;
 
     /**
      * 计量日期
      */
-    @NotNull(message = "计量日期不能为空", groups = { AddGroup.class, EditGroup.class })
+//    @NotNull(message = "计量日期不能为空", groups = { AddGroup.class, EditGroup.class })
     private Date jlrq;
 
     /**
@@ -80,19 +80,19 @@ public class MeaMeasurementDocumentsAndDeBo extends BaseEntity {
     /**
      * 计算式
      */
-    @NotBlank(message = "计算式不能为空", groups = { AddGroup.class, EditGroup.class })
+//    @NotBlank(message = "计算式不能为空", groups = { AddGroup.class, EditGroup.class })
     private String jss;
 
     /**
      * 计量比例
      */
-    @NotBlank(message = "计量比例不能为空", groups = { AddGroup.class, EditGroup.class })
+//    @NotBlank(message = "计量比例不能为空", groups = { AddGroup.class, EditGroup.class })
     private String jlbl;
 
     /**
      * 附件地址
      */
-    @NotBlank(message = "附件地址不能为空", groups = { AddGroup.class, EditGroup.class })
+//    @NotBlank(message = "附件地址不能为空", groups = { AddGroup.class, EditGroup.class })
     private String fj;
 
     /**
