@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import javax.validation.constraints.*;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import java.math.BigDecimal;
@@ -22,7 +23,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class MeaLedgerChangeBo extends BaseEntity {
+public class MeaLedgerChangeBo extends BaseEntity implements Serializable {
 
     /**
      * ID
@@ -57,13 +58,13 @@ public class MeaLedgerChangeBo extends BaseEntity {
     /**
      * 桩号
      */
-    @NotBlank(message = "桩号不能为空", groups = { AddGroup.class, EditGroup.class })
+    //@NotBlank(message = "桩号不能为空", groups = { AddGroup.class, EditGroup.class })
     private String zh;
 
     /**
      * 子目号
      */
-    @NotBlank(message = "子目号不能为空", groups = { AddGroup.class, EditGroup.class })
+   // @NotBlank(message = "子目号不能为空", groups = { AddGroup.class, EditGroup.class })
     private String zmh;
 
     /**
@@ -105,13 +106,13 @@ public class MeaLedgerChangeBo extends BaseEntity {
     /**
      * 数据状态
      */
-    @NotBlank(message = "数据状态不能为空", groups = { AddGroup.class, EditGroup.class })
+   // @NotBlank(message = "数据状态不能为空", groups = { AddGroup.class, EditGroup.class })
     private String dataStatus;
 
     /**
      * 状态（0正常 1停用）
      */
-    @NotBlank(message = "状态（0正常 1停用）不能为空", groups = { AddGroup.class, EditGroup.class })
+//    @NotBlank(message = "状态（0正常 1停用）不能为空", groups = { AddGroup.class, EditGroup.class })
     private String status;
 
 

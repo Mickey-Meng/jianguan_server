@@ -94,8 +94,7 @@ public class MeaLedgerChange extends BaseEntity {
      */
     private String remark;
 
-    //add by yangaogao 20221207 添加变更明细
-    private List<MeaLedgerChangeDetail> meaLedgerChangeDetailList;
+
 
 
 }

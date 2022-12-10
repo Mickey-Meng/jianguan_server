@@ -15,6 +15,7 @@ import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.project.ledgerChange.domain.bo.MeaLedgerChangeBo;
 import com.ruoyi.project.ledgerChange.domain.vo.MeaLedgerChangeVo;
 import com.ruoyi.project.ledgerChange.service.IMeaLedgerChangeService;
+import com.ruoyi.project.ledgerChangeDetail.domain.bo.MeaLedgerChangeDetailBo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -67,7 +68,7 @@ public class MeaLedgerChangeController extends BaseController {
     @SaCheckPermission("ledgerChange:ledgerChange:query")
     @GetMapping("/{id}")
     public R<MeaLedgerChangeVo> getInfo(@NotNull(message = "主键不能为空")
-                                     @PathVariable String id) {
+                                        @PathVariable String id) {
         return R.ok(iMeaLedgerChangeService.queryById(id));
     }
 
@@ -82,6 +83,20 @@ public class MeaLedgerChangeController extends BaseController {
         return toAjax(iMeaLedgerChangeService.insertByBo(bo) ? 1 : 0);
     }
 
+
+    /**
+     * 新增台账变更/工程变更
+     */
+    @SaCheckPermission("ledgerChange:ledgerChange:add")
+    @Log(title = "台账变更/工程变更", businessType = BusinessType.INSERT)
+    @RepeatSubmit()
+    @PostMapping("insertList")
+    public R<Void> add(@RequestBody List<MeaLedgerChangeDetailBo> bo) {
+        return toAjax(iMeaLedgerChangeService.insertList(bo) ? 1 : 0);
+    }
+
+
+
     /**
      * 修改台账变更/工程变更
      */
@@ -92,6 +107,7 @@ public class MeaLedgerChangeController extends BaseController {
     public R<Void> edit(@Validated(EditGroup.class) @RequestBody MeaLedgerChangeBo bo) {
         return toAjax(iMeaLedgerChangeService.updateByBo(bo) ? 1 : 0);
     }
+
 
     /**
      * 删除台账变更/工程变更
@@ -105,4 +121,6 @@ public class MeaLedgerChangeController extends BaseController {
                           @PathVariable String[] ids) {
         return toAjax(iMeaLedgerChangeService.deleteWithValidByIds(Arrays.asList(ids), true) ? 1 : 0);
     }
+
+
 }

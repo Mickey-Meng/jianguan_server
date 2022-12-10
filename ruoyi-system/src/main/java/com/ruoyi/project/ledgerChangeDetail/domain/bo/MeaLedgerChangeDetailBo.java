@@ -43,13 +43,13 @@ public class MeaLedgerChangeDetailBo extends BaseEntity {
     /**
      * 子目号
      */
-    @NotBlank(message = "子目号不能为空", groups = { EditGroup.class })
+//    @NotBlank(message = "子目号不能为空", groups = { EditGroup.class })
     private String zmh;
 
     /**
      * 子目名称
      */
-    @NotBlank(message = "子目名称不能为空", groups = { AddGroup.class, EditGroup.class })
+//    @NotBlank(message = "子目名称不能为空", groups = { AddGroup.class, EditGroup.class })
     private String zmmc;
 
     /**
@@ -85,7 +85,7 @@ public class MeaLedgerChangeDetailBo extends BaseEntity {
     /**
      * 合同金额
      */
-    @NotNull(message = "合同金额不能为空", groups = { AddGroup.class, EditGroup.class })
+//    @NotNull(message = "合同金额不能为空", groups = { AddGroup.class, EditGroup.class })
     private BigDecimal htje;
 
     /**

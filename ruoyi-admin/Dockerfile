@@ -15,4 +15,4 @@ EXPOSE ${SERVER_PORT}
 
 ADD ./target/ruoyi-admin.jar ./app.jar
 
-ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-Dserver.port=${SERVER_PORT}","-jar", "app.jar"]
+ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-Dspring.profiles.active=prod", "-Dserver.port=${SERVER_PORT}","-jar", "app.jar"]

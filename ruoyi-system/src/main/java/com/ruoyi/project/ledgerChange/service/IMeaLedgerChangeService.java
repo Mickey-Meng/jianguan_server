@@ -5,6 +5,7 @@ import com.ruoyi.common.core.domain.PageQuery;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.project.ledgerChange.domain.bo.MeaLedgerChangeBo;
 import com.ruoyi.project.ledgerChange.domain.vo.MeaLedgerChangeVo;
+import com.ruoyi.project.ledgerChangeDetail.domain.bo.MeaLedgerChangeDetailBo;
 
 import java.util.Collection;
 import java.util.List;
@@ -46,4 +47,6 @@ public interface IMeaLedgerChangeService {
      * 校验并批量删除台账变更/工程变更信息
      */
     Boolean deleteWithValidByIds(Collection<String> ids, Boolean isValid);
+
+    boolean insertList(List<MeaLedgerChangeDetailBo> bo);
 }

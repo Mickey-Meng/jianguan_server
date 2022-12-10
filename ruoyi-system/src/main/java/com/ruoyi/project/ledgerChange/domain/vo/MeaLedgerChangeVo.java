@@ -7,9 +7,10 @@ import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.ruoyi.common.annotation.ExcelDictFormat;
 import com.ruoyi.common.convert.ExcelDictConvert;
+import com.ruoyi.project.ledgerChangeDetail.domain.MeaLedgerChangeDetail;
 import lombok.Data;
 import java.util.Date;
-
+import java.util.List;
 
 
 /**
@@ -108,6 +109,9 @@ public class MeaLedgerChangeVo {
     @ExcelProperty(value = "状态", converter = ExcelDictConvert.class)
     @ExcelDictFormat(dictType = "data_status")
     private String status;
+    //add by yangaogao 20221207 添加变更明细
+
+
 
 
 }

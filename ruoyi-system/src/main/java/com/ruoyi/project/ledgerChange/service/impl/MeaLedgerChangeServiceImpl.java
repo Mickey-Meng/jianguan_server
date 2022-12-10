@@ -12,10 +12,14 @@ import com.ruoyi.project.ledgerChange.domain.bo.MeaLedgerChangeBo;
 import com.ruoyi.project.ledgerChange.domain.vo.MeaLedgerChangeVo;
 import com.ruoyi.project.ledgerChange.mapper.MeaLedgerChangeMapper;
 import com.ruoyi.project.ledgerChange.service.IMeaLedgerChangeService;
+import com.ruoyi.project.ledgerChangeDetail.domain.MeaLedgerChangeDetail;
+import com.ruoyi.project.ledgerChangeDetail.domain.bo.MeaLedgerChangeDetailBo;
+import com.ruoyi.project.ledgerChangeDetail.mapper.MeaLedgerChangeDetailMapper;
 import io.micrometer.core.instrument.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -31,12 +35,13 @@ import java.util.Map;
 public class MeaLedgerChangeServiceImpl implements IMeaLedgerChangeService {
 
     private final MeaLedgerChangeMapper baseMapper;
+    private final MeaLedgerChangeDetailMapper meaLedgerChangeDetailMapper;
 
     /**
      * 查询台账变更/工程变更
      */
     @Override
-    public MeaLedgerChangeVo queryById(String id){
+    public MeaLedgerChangeVo queryById(String id) {
         return baseMapper.selectVoById(id);
     }
 
@@ -46,7 +51,13 @@ public class MeaLedgerChangeServiceImpl implements IMeaLedgerChangeService {
     @Override
     public TableDataInfo<MeaLedgerChangeVo> queryPageList(MeaLedgerChangeBo bo, PageQuery pageQuery) {
         LambdaQueryWrapper<MeaLedgerChange> lqw = buildQueryWrapper(bo);
+
+
         Page<MeaLedgerChangeVo> result = baseMapper.selectVoPage(pageQuery.build(), lqw);
+
+        List<MeaLedgerChangeVo> records = result.getRecords();
+
+
         return TableDataInfo.build(result);
     }
 
@@ -106,8 +117,21 @@ public class MeaLedgerChangeServiceImpl implements IMeaLedgerChangeService {
     /**
      * 保存前的数据校验
      */
-    private void validEntityBeforeSave(MeaLedgerChange entity){
+    private void validEntityBeforeSave(MeaLedgerChange entity) {
         //TODO 做一些数据校验,如唯一约束
+    }
+
+    @Override
+    public boolean insertList(List<MeaLedgerChangeDetailBo> bo) {
+        List<MeaLedgerChangeDetail> add = new ArrayList<>();
+        for (MeaLedgerChangeDetailBo meaLedgerChangeDetailBo : bo) {
+            add.add(BeanUtil.toBean(meaLedgerChangeDetailBo, MeaLedgerChangeDetail.class));
+        }
+
+
+        boolean flag = meaLedgerChangeDetailMapper.insertBatch(add);
+
+        return flag;
     }
 
     /**
@@ -115,7 +139,7 @@ public class MeaLedgerChangeServiceImpl implements IMeaLedgerChangeService {
      */
     @Override
     public Boolean deleteWithValidByIds(Collection<String> ids, Boolean isValid) {
-        if(isValid){
+        if (isValid) {
             //TODO 做一些业务上的校验,判断是否需要校验
         }
         return baseMapper.deleteBatchIds(ids) > 0;

@@ -55,73 +55,73 @@ public class MeaContractBillBo extends TreeEntity<MeaContractBillBo> {
     /**
      * 子目号祖级列表
      */
-    @NotBlank(message = "子目号祖级列表不能为空", groups = { AddGroup.class, EditGroup.class })
+//    @NotBlank(message = "子目号祖级列表不能为空", groups = { AddGroup.class, EditGroup.class })
     private String zmhAncestors;
 
     /**
      * 单位
      */
-    @NotBlank(message = "单位不能为空", groups = { AddGroup.class, EditGroup.class })
+//    @NotBlank(message = "单位不能为空", groups = { AddGroup.class, EditGroup.class })
     private String dw;
 
     /**
      * 合同单价
      */
-    @NotNull(message = "合同单价不能为空", groups = { AddGroup.class, EditGroup.class })
+//    @NotNull(message = "合同单价不能为空", groups = { AddGroup.class, EditGroup.class })
     private BigDecimal htdj;
 
     /**
      * 新增单价
      */
-    @NotNull(message = "新增单价不能为空", groups = { AddGroup.class, EditGroup.class })
+//    @NotNull(message = "新增单价不能为空", groups = { AddGroup.class, EditGroup.class })
     private BigDecimal xzdj;
 
     /**
      * 合同数量
      */
-    @NotNull(message = "合同数量不能为空", groups = { AddGroup.class, EditGroup.class })
+//    @NotNull(message = "合同数量不能为空", groups = { AddGroup.class, EditGroup.class })
     private BigDecimal htsl;
 
     /**
      * 合同金额
      */
-    @NotNull(message = "合同金额不能为空", groups = { AddGroup.class, EditGroup.class })
+//    @NotNull(message = "合同金额不能为空", groups = { AddGroup.class, EditGroup.class })
     private BigDecimal htje;
 
     /**
      * 审核数量
      */
-    @NotNull(message = "审核数量不能为空", groups = { AddGroup.class, EditGroup.class })
+//    @NotNull(message = "审核数量不能为空", groups = { AddGroup.class, EditGroup.class })
     private BigDecimal shsl;
 
     /**
      * 审核金额
      */
-    @NotNull(message = "审核金额不能为空", groups = { AddGroup.class, EditGroup.class })
+//    @NotNull(message = "审核金额不能为空", groups = { AddGroup.class, EditGroup.class })
     private BigDecimal shje;
 
     /**
      * 修正数量
      */
-    @NotNull(message = "修正数量不能为空", groups = { AddGroup.class, EditGroup.class })
+//    @NotNull(message = "修正数量不能为空", groups = { AddGroup.class, EditGroup.class })
     private BigDecimal xzsl;
 
     /**
      * 修正金额
      */
-    @NotNull(message = "修正金额不能为空", groups = { AddGroup.class, EditGroup.class })
+//    @NotNull(message = "修正金额不能为空", groups = { AddGroup.class, EditGroup.class })
     private BigDecimal xzje;
 
     /**
      * 总数量
      */
-    @NotNull(message = "总数量不能为空", groups = { AddGroup.class, EditGroup.class })
+//    @NotNull(message = "总数量不能为空", groups = { AddGroup.class, EditGroup.class })
     private BigDecimal zsl;
 
     /**
      * 总金额
      */
-    @NotNull(message = "总金额不能为空", groups = { AddGroup.class, EditGroup.class })
+//    @NotNull(message = "总金额不能为空", groups = { AddGroup.class, EditGroup.class })
     private BigDecimal zje;
 
     /**
@@ -133,7 +133,7 @@ public class MeaContractBillBo extends TreeEntity<MeaContractBillBo> {
     /**
      * 备注
      */
-    @NotBlank(message = "备注不能为空", groups = { AddGroup.class, EditGroup.class })
+//    @NotBlank(message = "备注不能为空", groups = { AddGroup.class, EditGroup.class })
     private String remark;
 
 
