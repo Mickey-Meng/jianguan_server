@@ -15,6 +15,7 @@ import com.ruoyi.project.bill.service.IMeaContractBillService;
 import com.ruoyi.system.domain.ContractInfo;
 import com.ruoyi.system.domain.vo.ContractInfoVo;
 import io.micrometer.core.instrument.util.StringUtils;
+import liquibase.pro.packaged.L;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -124,5 +125,12 @@ public class MeaContractBillServiceImpl implements IMeaContractBillService {
         Page<MeaContractBillVo> result = baseMapper.selectVoPage(pageQuery.build(), lqw);
         return TableDataInfo.build(result);
 
+    }
+
+    @Override
+    public List<MeaContractBillVo> treeList(MeaContractBillBo bo) {
+        LambdaQueryWrapper<MeaContractBill> lqw = new LambdaQueryWrapper<>();
+        lqw.isNull(true,MeaContractBill::getHtdj);
+        return baseMapper.selectVoList(lqw);
     }
 }

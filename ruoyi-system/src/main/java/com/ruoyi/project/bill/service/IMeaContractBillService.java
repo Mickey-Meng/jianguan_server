@@ -45,4 +45,5 @@ public interface IMeaContractBillService {
 
     TableDataInfo<MeaContractBillVo> queryPageList(MeaContractBillBo bo, PageQuery pageQuery);
 
+    List<MeaContractBillVo> treeList(MeaContractBillBo bo);
 }

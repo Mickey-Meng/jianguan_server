@@ -1,18 +1,18 @@
 package com.ruoyi.project.ledgerChange.domain.bo;
 
+import com.ruoyi.common.core.domain.BaseEntity;
 import com.ruoyi.common.core.validate.AddGroup;
 import com.ruoyi.common.core.validate.EditGroup;
+import com.ruoyi.project.ledgerChangeDetail.domain.bo.MeaLedgerChangeDetailBo;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import javax.validation.constraints.*;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.Date;
-
 import java.math.BigDecimal;
 import java.util.Date;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.ruoyi.common.core.domain.BaseEntity;
+import java.util.List;
 
 /**
  * 台账变更/工程变更业务对象 mea_ledger_change
@@ -23,7 +23,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class MeaLedgerChangeBo extends BaseEntity implements Serializable {
+public class MeaLedgerChangeAndDetailBo extends BaseEntity implements Serializable {
 
     /**
      * ID
@@ -116,6 +116,9 @@ public class MeaLedgerChangeBo extends BaseEntity implements Serializable {
     private String status;
 
     private String remark;
+
+
+    private List<MeaLedgerChangeDetailBo> detailBos;
 
 
 }

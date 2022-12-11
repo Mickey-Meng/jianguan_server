@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.ql.basisCustomer.mapper.QlBasisCustomerMapper">
+
+    <resultMap type="com.ruoyi.ql.basisCustomer.domain.QlBasisCustomer" id="QlBasisCustomerResult">
+        <result property="id" column="id"/>
+        <result property="customerCode" column="customer_code"/>
+        <result property="customerName" column="customer_name"/>
+        <result property="businessLicense" column="business_license"/>
+        <result property="contactPerson" column="contact_person"/>
+        <result property="telephone" column="telephone"/>
+        <result property="mobilePhone" column="mobile_phone"/>
+        <result property="email" column="email"/>
+        <result property="area" column="area"/>
+        <result property="address" column="address"/>
+        <result property="contactPersonOne" column="contact_person_one"/>
+        <result property="telephoneOne" column="telephone_one"/>
+        <result property="invoiceLookedUp" column="invoice_looked_up"/>
+        <result property="invoiceTax" column="invoice_tax"/>
+        <result property="invoiceType" column="invoice_type"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+        <result property="deptId" column="dept_id"/>
+    </resultMap>
+
+
+</mapper>

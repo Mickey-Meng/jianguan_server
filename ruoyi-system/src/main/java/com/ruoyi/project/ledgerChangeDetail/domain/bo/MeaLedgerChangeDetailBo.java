@@ -73,13 +73,13 @@ public class MeaLedgerChangeDetailBo extends BaseEntity {
     /**
      * 新增单价
      */
-    @NotNull(message = "新增单价不能为空", groups = { AddGroup.class, EditGroup.class })
+//    @NotNull(message = "新增单价不能为空", groups = { AddGroup.class, EditGroup.class })
     private BigDecimal xzdj;
 
     /**
      * 合同数量
      */
-    @NotNull(message = "合同数量不能为空", groups = { AddGroup.class, EditGroup.class })
+//    @NotNull(message = "合同数量不能为空", groups = { AddGroup.class, EditGroup.class })
     private BigDecimal htsl;
 
     /**
@@ -97,25 +97,25 @@ public class MeaLedgerChangeDetailBo extends BaseEntity {
     /**
      * 审核金额
      */
-    @NotNull(message = "审核金额不能为空", groups = { AddGroup.class, EditGroup.class })
+//    @NotNull(message = "审核金额不能为空", groups = { AddGroup.class, EditGroup.class })
     private BigDecimal shje;
 
     /**
      * 修正数量
      */
-    @NotNull(message = "修正数量不能为空", groups = { AddGroup.class, EditGroup.class })
+//    @NotNull(message = "修正数量不能为空", groups = { AddGroup.class, EditGroup.class })
     private BigDecimal xzsl;
 
     /**
      * 修正金额
      */
-    @NotNull(message = "修正金额不能为空", groups = { AddGroup.class, EditGroup.class })
+//    @NotNull(message = "修正金额不能为空", groups = { AddGroup.class, EditGroup.class })
     private BigDecimal xzje;
 
     /**
      * 已计量数量
      */
-    @NotNull(message = "已计量数量不能为空", groups = { AddGroup.class, EditGroup.class })
+//    @NotNull(message = "已计量数量不能为空", groups = { AddGroup.class, EditGroup.class })
     private BigDecimal yjlsl;
 
     /**

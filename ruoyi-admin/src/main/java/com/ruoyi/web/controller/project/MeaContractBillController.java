@@ -52,6 +52,18 @@ public class MeaContractBillController extends BaseController {
     }
 
     /**
+     * 查询工程量清单树干节点
+     */
+    @SaCheckPermission("bill:contractBill:list")
+    @GetMapping("/treeList")
+    public R<List<MeaContractBillVo>> treeList(MeaContractBillBo bo) {
+        List<MeaContractBillVo> list = iMeaContractBillService.treeList(bo);
+        return R.ok(list);
+    }
+
+
+
+    /**
      * 查询合同条款列表
      */
     @SaCheckPermission("bill:contractBill:page")

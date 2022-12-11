@@ -32,6 +32,8 @@ mea:
     ledgerBreakdown: ledgerBreakdown
     #中间计量流程表单
     measurementDocuments: measurementDocuments
+    #
+    ledgerChange: ledgerChange
 # 开发环境配置
 server:
   # 服务器的HTTP端口，默认为8080

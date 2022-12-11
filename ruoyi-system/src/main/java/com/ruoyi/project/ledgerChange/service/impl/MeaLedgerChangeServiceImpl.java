@@ -2,12 +2,14 @@ package com.ruoyi.project.ledgerChange.service.impl;
 
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ruoyi.common.core.domain.PageQuery;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.project.ledgerChange.domain.MeaLedgerChange;
+import com.ruoyi.project.ledgerChange.domain.bo.MeaLedgerChangeAndDetailBo;
 import com.ruoyi.project.ledgerChange.domain.bo.MeaLedgerChangeBo;
 import com.ruoyi.project.ledgerChange.domain.vo.MeaLedgerChangeVo;
 import com.ruoyi.project.ledgerChange.mapper.MeaLedgerChangeMapper;
@@ -18,6 +20,7 @@ import com.ruoyi.project.ledgerChangeDetail.mapper.MeaLedgerChangeDetailMapper;
 import io.micrometer.core.instrument.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -131,6 +134,25 @@ public class MeaLedgerChangeServiceImpl implements IMeaLedgerChangeService {
 
         boolean flag = meaLedgerChangeDetailMapper.insertBatch(add);
 
+        return flag;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean save(MeaLedgerChangeAndDetailBo bo) {
+        MeaLedgerChange add = BeanUtil.toBean(bo, MeaLedgerChange.class);
+        validEntityBeforeSave(add);
+        boolean flag = baseMapper.insert(add) > 0;
+        if (flag) {
+            bo.setId(add.getId());
+        }
+        if(CollUtil.isNotEmpty(bo.getDetailBos())){
+            List<MeaLedgerChangeDetailBo> detailBos = bo.getDetailBos();
+            for(MeaLedgerChangeDetailBo me:detailBos){
+                MeaLedgerChangeDetail addDetail = BeanUtil.toBean(me, MeaLedgerChangeDetail.class);
+                meaLedgerChangeDetailMapper.insert(addDetail);
+            }
+        }
         return flag;
     }
 

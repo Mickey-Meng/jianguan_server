@@ -12,6 +12,7 @@ import com.ruoyi.common.core.validate.AddGroup;
 import com.ruoyi.common.core.validate.EditGroup;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.poi.ExcelUtil;
+import com.ruoyi.project.ledgerChange.domain.bo.MeaLedgerChangeAndDetailBo;
 import com.ruoyi.project.ledgerChange.domain.bo.MeaLedgerChangeBo;
 import com.ruoyi.project.ledgerChange.domain.vo.MeaLedgerChangeVo;
 import com.ruoyi.project.ledgerChange.service.IMeaLedgerChangeService;
@@ -81,6 +82,20 @@ public class MeaLedgerChangeController extends BaseController {
     @PostMapping()
     public R<Void> add(@Validated(AddGroup.class) @RequestBody MeaLedgerChangeBo bo) {
         return toAjax(iMeaLedgerChangeService.insertByBo(bo) ? 1 : 0);
+    }
+
+
+
+    /**
+     * 新增台账变更/工程变更
+     */
+    @SaCheckPermission("ledgerChange:ledgerChange:add")
+    @Log(title = "台账变更/工程变更(一对多表单)", businessType = BusinessType.INSERT)
+    @RepeatSubmit()
+    @PostMapping("/save")
+    public R<Void> save(@Validated(AddGroup.class) @RequestBody MeaLedgerChangeAndDetailBo bo) {
+        Boolean saveData=iMeaLedgerChangeService.save(bo);
+        return toAjax(saveData ? 1 : 0);
     }
 
 

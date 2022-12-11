@@ -3,6 +3,7 @@ package com.ruoyi.project.ledgerChange.service;
 
 import com.ruoyi.common.core.domain.PageQuery;
 import com.ruoyi.common.core.page.TableDataInfo;
+import com.ruoyi.project.ledgerChange.domain.bo.MeaLedgerChangeAndDetailBo;
 import com.ruoyi.project.ledgerChange.domain.bo.MeaLedgerChangeBo;
 import com.ruoyi.project.ledgerChange.domain.vo.MeaLedgerChangeVo;
 import com.ruoyi.project.ledgerChangeDetail.domain.bo.MeaLedgerChangeDetailBo;
@@ -49,4 +50,6 @@ public interface IMeaLedgerChangeService {
     Boolean deleteWithValidByIds(Collection<String> ids, Boolean isValid);
 
     boolean insertList(List<MeaLedgerChangeDetailBo> bo);
+
+    Boolean save(MeaLedgerChangeAndDetailBo bo);
 }
