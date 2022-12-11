@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.ql.mapper.QlFinWagesMapper">
+
+    <resultMap type="com.ruoyi.ql.domain.QlFinWages" id="QlFinWagesResult">
+        <result property="id" column="id"/>
+        <result property="payDate" column="pay_date"/>
+        <result property="basePay" column="base_pay"/>
+        <result property="baseDays" column="base_days"/>
+        <result property="attendanceDays" column="attendance_days"/>
+        <result property="legalHolidayDays" column="legal_holiday_days"/>
+        <result property="workOvertimeDays" column="work_overtime_days"/>
+        <result property="evectionDays" column="evection_days"/>
+        <result property="evectionMoney" column="evection_money"/>
+        <result property="fullAttendanceBonus" column="full_attendance_bonus"/>
+        <result property="mealAllowance" column="meal_allowance"/>
+        <result property="payInAdvance" column="pay_in_advance"/>
+        <result property="socialSecurity" column="social_security"/>
+        <result property="tax" column="tax"/>
+        <result property="preTaxPay" column="pre_tax_pay"/>
+        <result property="afterTaxPay" column="after_tax_pay"/>
+        <result property="netPay" column="net_pay"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+        <result property="empName" column="emp_name"/>
+        <result property="empId" column="emp_id"/>
+    </resultMap>
+
+
+</mapper>

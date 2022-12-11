@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.ql.mapper.QlFinEmpMapper">
+
+    <resultMap type="com.ruoyi.ql.domain.QlFinEmp" id="QlFinEmpResult">
+        <result property="id" column="id"/>
+        <result property="empName" column="emp_name"/>
+        <result property="empAge" column="emp_age"/>
+        <result property="empGender" column="emp_gender"/>
+        <result property="empRzDate" column="emp_rz_date"/>
+        <result property="empBasepay" column="emp_basepay"/>
+        <result property="empId" column="emp_id"/>
+        <result property="empAddr" column="emp_addr"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+
+</mapper>
