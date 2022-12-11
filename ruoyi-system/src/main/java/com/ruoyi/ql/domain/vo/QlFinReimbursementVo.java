@@ -9,7 +9,7 @@ import com.ruoyi.common.annotation.ExcelDictFormat;
 import com.ruoyi.common.convert.ExcelDictConvert;
 import lombok.Data;
 import java.util.Date;
-
+import java.util.List;
 
 
 /**
@@ -54,5 +54,5 @@ public class QlFinReimbursementVo {
     @ExcelProperty(value = "员工姓名")
     private String empName;
 
-
+    private List<QlFinReimbursementItemVo> qlFinReimbursementItemVoList;
 }

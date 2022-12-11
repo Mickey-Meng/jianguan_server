@@ -7,7 +7,7 @@ import com.ruoyi.common.annotation.ExcelDictFormat;
 import com.ruoyi.common.convert.ExcelDictConvert;
 import lombok.Data;
 import java.util.Date;
-
+import java.util.List;
 
 
 /**
@@ -46,5 +46,6 @@ public class QlBasisCustomerVo {
     @ExcelProperty(value = "手机")
     private String mobilePhone;
 
+    private List<QlBasisCustomerAccinfoVo> qlBasisCustomerAccinfoVoList;
 
 }
