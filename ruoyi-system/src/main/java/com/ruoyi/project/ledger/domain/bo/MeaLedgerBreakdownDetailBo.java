@@ -118,4 +118,7 @@ public class MeaLedgerBreakdownDetailBo extends BaseEntity {
     private String status;
 
 
+    private String reviewCode;
+
+
 }

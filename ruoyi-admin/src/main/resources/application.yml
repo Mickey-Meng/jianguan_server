@@ -32,7 +32,7 @@ mea:
     ledgerBreakdown: ledgerBreakdown
     #中间计量流程表单
     measurementDocuments: measurementDocuments
-    #
+    #工程变更表单
     ledgerChange: ledgerChange
 # 开发环境配置
 server:

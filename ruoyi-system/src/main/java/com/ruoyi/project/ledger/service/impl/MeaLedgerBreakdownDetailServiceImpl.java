@@ -68,6 +68,7 @@ public class MeaLedgerBreakdownDetailServiceImpl implements IMeaLedgerBreakdownD
         lqw.eq(StringUtils.isNotBlank(bo.getZmh()), MeaLedgerBreakdownDetail::getZmh, bo.getZmh());
         lqw.eq(StringUtils.isNotBlank(bo.getZmmc()), MeaLedgerBreakdownDetail::getZmmc, bo.getZmmc());
         lqw.eq(StringUtils.isNotBlank(bo.getDw()), MeaLedgerBreakdownDetail::getDw, bo.getDw());
+        lqw.eq(StringUtils.isNotBlank(bo.getReviewCode()), MeaLedgerBreakdownDetail::getReviewCode, bo.getReviewCode());
         lqw.eq(bo.getHtdj() != null, MeaLedgerBreakdownDetail::getHtdj, bo.getHtdj());
         lqw.eq(bo.getSjsl() != null, MeaLedgerBreakdownDetail::getSjsl, bo.getSjsl());
         lqw.eq(bo.getFjsl() != null, MeaLedgerBreakdownDetail::getFjsl, bo.getFjsl());
