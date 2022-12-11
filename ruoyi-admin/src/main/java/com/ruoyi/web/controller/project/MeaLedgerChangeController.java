@@ -2,6 +2,7 @@ package com.ruoyi.web.controller.project;
 
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.hutool.core.util.StrUtil;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.annotation.RepeatSubmit;
 import com.ruoyi.common.core.controller.BaseController;
@@ -17,7 +18,9 @@ import com.ruoyi.project.ledgerChange.domain.bo.MeaLedgerChangeBo;
 import com.ruoyi.project.ledgerChange.domain.vo.MeaLedgerChangeVo;
 import com.ruoyi.project.ledgerChange.service.IMeaLedgerChangeService;
 import com.ruoyi.project.ledgerChangeDetail.domain.bo.MeaLedgerChangeDetailBo;
+import com.ruoyi.workflow.service.IWfProcessService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,6 +43,11 @@ import java.util.List;
 public class MeaLedgerChangeController extends BaseController {
 
     private final IMeaLedgerChangeService iMeaLedgerChangeService;
+
+    private final IWfProcessService processService;
+
+    @Value("${mea.flowable.ledgerChange}")
+    private String formKey;
 
     /**
      * 查询台账变更/工程变更列表
@@ -94,8 +102,16 @@ public class MeaLedgerChangeController extends BaseController {
     @RepeatSubmit()
     @PostMapping("/save")
     public R<Void> save(@Validated(AddGroup.class) @RequestBody MeaLedgerChangeAndDetailBo bo) {
-        Boolean saveData=iMeaLedgerChangeService.save(bo);
-        return toAjax(saveData ? 1 : 0);
+        String process_1669973630070 = processService.getProcessByKey("Process_1670752946540");
+        if(StrUtil.isBlank(process_1669973630070)){
+            return R.fail("流程图未定义");
+        }
+        Boolean aBoolean=iMeaLedgerChangeService.save(bo);
+        if(aBoolean){
+            processService.startMeaProcess(process_1669973630070,formKey,bo.getId(), bo);
+        }
+        return toAjax(aBoolean ? 1 : 0);
+
     }
 
 

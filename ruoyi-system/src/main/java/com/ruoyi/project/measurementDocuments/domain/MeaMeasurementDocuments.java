@@ -80,6 +80,9 @@ public class MeaMeasurementDocuments extends BaseEntity {
      * 状态（0正常 1停用）
      */
     private String status;
+
+
+    private String reviewCode;
     /**
      * 备注
      */

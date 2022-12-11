@@ -64,6 +64,8 @@ public class DocumentDetailEndEvent implements ServletContextListener,TaskListen
                         meaLedgerBreakdownDetailMapper.updateById(meaLedgerBreakdownDetail);
                     }
                 }
+                meaMeasurementDocuments.setReviewCode("2");
+                meaMeasurementDocumentsMapper.updateById(meaMeasurementDocuments);
             }
         }
     }
