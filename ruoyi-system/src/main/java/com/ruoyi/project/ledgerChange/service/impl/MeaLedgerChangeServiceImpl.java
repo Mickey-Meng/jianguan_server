@@ -22,10 +22,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 台账变更/工程变更Service业务层处理
@@ -141,17 +138,23 @@ public class MeaLedgerChangeServiceImpl implements IMeaLedgerChangeService {
     @Transactional(rollbackFor = Exception.class)
     public Boolean save(MeaLedgerChangeAndDetailBo bo) {
         MeaLedgerChange add = BeanUtil.toBean(bo, MeaLedgerChange.class);
+
+        String UUId = UUID.randomUUID().toString().replace("-", "");
         validEntityBeforeSave(add);
+        add.setBgbh(UUId);
+
         boolean flag = baseMapper.insert(add) > 0;
         if (flag) {
             bo.setId(add.getId());
         }
         if(CollUtil.isNotEmpty(bo.getDetailBos())){
-            List<MeaLedgerChangeDetailBo> detailBos = bo.getDetailBos();
-            for(MeaLedgerChangeDetailBo me:detailBos){
-                MeaLedgerChangeDetail addDetail = BeanUtil.toBean(me, MeaLedgerChangeDetail.class);
-                meaLedgerChangeDetailMapper.insert(addDetail);
+            List<MeaLedgerChangeDetail> detailBos = new ArrayList<>();
+            for(MeaLedgerChangeDetailBo me:bo.getDetailBos()){
+                MeaLedgerChangeDetail meaLedgerChangeDetail = BeanUtil.toBean(me, MeaLedgerChangeDetail.class);
+                meaLedgerChangeDetail.setBgbh(UUId);
+                detailBos.add(meaLedgerChangeDetail);
             }
+            meaLedgerChangeDetailMapper.insertBatch(detailBos);
         }
         return flag;
     }

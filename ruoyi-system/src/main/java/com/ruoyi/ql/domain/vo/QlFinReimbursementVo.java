@@ -7,7 +7,11 @@ import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.ruoyi.common.annotation.ExcelDictFormat;
 import com.ruoyi.common.convert.ExcelDictConvert;
+import com.ruoyi.common.core.validate.AddGroup;
+import com.ruoyi.common.core.validate.EditGroup;
 import lombok.Data;
+
+import javax.validation.constraints.NotBlank;
 import java.util.Date;
 import java.util.List;
 
@@ -53,6 +57,6 @@ public class QlFinReimbursementVo {
      */
     @ExcelProperty(value = "员工姓名")
     private String empName;
-
+    @NotBlank(message = "员工姓名不可为空", groups = { AddGroup.class, EditGroup.class })
     private List<QlFinReimbursementItemVo> qlFinReimbursementItemVoList;
 }

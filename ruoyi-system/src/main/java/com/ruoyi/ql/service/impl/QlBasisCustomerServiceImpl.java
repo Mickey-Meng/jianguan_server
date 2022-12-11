@@ -7,6 +7,9 @@ import com.ruoyi.common.core.domain.PageQuery;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.ruoyi.ql.domain.QlBasisCustomerAccinfo;
+import com.ruoyi.ql.domain.vo.QlBasisCustomerAccinfoVo;
+import com.ruoyi.ql.mapper.QlBasisCustomerAccinfoMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import com.ruoyi.ql.domain.bo.QlBasisCustomerBo;
@@ -15,6 +18,7 @@ import com.ruoyi.ql.domain.QlBasisCustomer;
 import com.ruoyi.ql.mapper.QlBasisCustomerMapper;
 import com.ruoyi.ql.service.IQlBasisCustomerService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Collection;
@@ -30,13 +34,20 @@ import java.util.Collection;
 public class QlBasisCustomerServiceImpl implements IQlBasisCustomerService {
 
     private final QlBasisCustomerMapper baseMapper;
+    private final QlBasisCustomerAccinfoMapper basisCustomerAccinfoMapper;
 
     /**
      * 查询客户资料
      */
     @Override
-    public QlBasisCustomerVo queryById(Long id){
-        return baseMapper.selectVoById(id);
+    public QlBasisCustomerVo queryById(Long id) {
+        QlBasisCustomerVo qlBasisCustomerVo = baseMapper.selectVoById(id);
+        LambdaQueryWrapper<QlBasisCustomerAccinfo> accinfoLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        accinfoLambdaQueryWrapper.eq(QlBasisCustomerAccinfo::getCustomerId, id);
+        List<QlBasisCustomerAccinfoVo> qlBasisCustomerAccinfoVos = basisCustomerAccinfoMapper.selectVoList(accinfoLambdaQueryWrapper);
+        qlBasisCustomerVo.setQlBasisCustomerAccinfoVoList(qlBasisCustomerAccinfoVos);
+
+        return qlBasisCustomerVo;
     }
 
     /**
@@ -84,11 +95,19 @@ public class QlBasisCustomerServiceImpl implements IQlBasisCustomerService {
      */
     @Override
     public Boolean insertByBo(QlBasisCustomerBo bo) {
+
         QlBasisCustomer add = BeanUtil.toBean(bo, QlBasisCustomer.class);
         validEntityBeforeSave(add);
         boolean flag = baseMapper.insert(add) > 0;
         if (flag) {
             bo.setId(add.getId());
+            List<QlBasisCustomerAccinfo> list = new ArrayList<>();
+            for (QlBasisCustomerAccinfoVo qlBasisCustomerAccinfoVo : bo.getQlBasisCustomerAccinfoVoList()) {
+                QlBasisCustomerAccinfo qlBasisCustomerAccinfo = BeanUtil.toBean(qlBasisCustomerAccinfoVo, QlBasisCustomerAccinfo.class);
+                qlBasisCustomerAccinfo.setCustomerId(add.getId() + "");
+                list.add(qlBasisCustomerAccinfo);
+            }
+            basisCustomerAccinfoMapper.insertBatch(list);
         }
         return flag;
     }
@@ -106,7 +125,7 @@ public class QlBasisCustomerServiceImpl implements IQlBasisCustomerService {
     /**
      * 保存前的数据校验
      */
-    private void validEntityBeforeSave(QlBasisCustomer entity){
+    private void validEntityBeforeSave(QlBasisCustomer entity) {
         //TODO 做一些数据校验,如唯一约束
     }
 
@@ -115,7 +134,7 @@ public class QlBasisCustomerServiceImpl implements IQlBasisCustomerService {
      */
     @Override
     public Boolean deleteWithValidByIds(Collection<Long> ids, Boolean isValid) {
-        if(isValid){
+        if (isValid) {
             //TODO 做一些业务上的校验,判断是否需要校验
         }
         return baseMapper.deleteBatchIds(ids) > 0;

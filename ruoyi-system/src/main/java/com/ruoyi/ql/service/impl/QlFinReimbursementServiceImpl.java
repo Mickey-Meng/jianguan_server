@@ -7,6 +7,11 @@ import com.ruoyi.common.core.domain.PageQuery;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.ruoyi.ql.domain.QlBasisCustomerAccinfo;
+import com.ruoyi.ql.domain.QlFinReimbursementItem;
+import com.ruoyi.ql.domain.vo.QlBasisCustomerAccinfoVo;
+import com.ruoyi.ql.domain.vo.QlFinReimbursementItemVo;
+import com.ruoyi.ql.mapper.QlFinReimbursementItemMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import com.ruoyi.ql.domain.bo.QlFinReimbursementBo;
@@ -30,13 +35,22 @@ import java.util.Collection;
 public class QlFinReimbursementServiceImpl implements IQlFinReimbursementService {
 
     private final QlFinReimbursementMapper baseMapper;
+    private final QlFinReimbursementItemMapper qlFinReimbursementItemMapper;
 
     /**
      * 查询费用报销
      */
     @Override
     public QlFinReimbursementVo queryById(Long id){
-        return baseMapper.selectVoById(id);
+        QlFinReimbursementVo qlFinReimbursementVo = baseMapper.selectVoById(id);
+
+
+        LambdaQueryWrapper<QlFinReimbursementItem> qlFinReimbursementItemLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        qlFinReimbursementItemLambdaQueryWrapper.eq(QlFinReimbursementItem::getReimbursementOrderId, id);
+        List<QlFinReimbursementItemVo> qlFinReimbursementItemVoList = qlFinReimbursementItemMapper.selectVoList(qlFinReimbursementItemLambdaQueryWrapper);
+
+        qlFinReimbursementVo.setQlFinReimbursementItemVoList(qlFinReimbursementItemVoList);
+        return qlFinReimbursementVo;
     }
 
     /**

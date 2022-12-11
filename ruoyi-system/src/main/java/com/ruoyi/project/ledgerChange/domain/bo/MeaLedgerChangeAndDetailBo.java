@@ -34,13 +34,13 @@ public class MeaLedgerChangeAndDetailBo extends BaseEntity implements Serializab
     /**
      * 变更编号
      */
-    @NotBlank(message = "变更编号不能为空", groups = { AddGroup.class, EditGroup.class })
+//    @NotBlank(message = "变更编号不能为空", groups = { AddGroup.class, EditGroup.class })
     private String bgbh;
 
     /**
      * 变更事项
      */
-    @NotBlank(message = "变更事项不能为空", groups = { AddGroup.class, EditGroup.class })
+//    @NotBlank(message = "变更事项不能为空", groups = { AddGroup.class, EditGroup.class })
     private String bgsx;
 
     /**
@@ -70,19 +70,19 @@ public class MeaLedgerChangeAndDetailBo extends BaseEntity implements Serializab
     /**
      * 工程部位
      */
-    @NotBlank(message = "工程部位不能为空", groups = { AddGroup.class, EditGroup.class })
+//    @NotBlank(message = "工程部位不能为空", groups = { AddGroup.class, EditGroup.class })
     private String gcbw;
 
     /**
      * 图号
      */
-    @NotBlank(message = "图号不能为空", groups = { AddGroup.class, EditGroup.class })
+//    @NotBlank(message = "图号不能为空", groups = { AddGroup.class, EditGroup.class })
     private String th;
 
     /**
      * 申请日期
      */
-    @NotNull(message = "申请日期不能为空", groups = { AddGroup.class, EditGroup.class })
+//    @NotNull(message = "申请日期不能为空", groups = { AddGroup.class, EditGroup.class })
     private Date sqrq;
 
     /**
@@ -94,13 +94,13 @@ public class MeaLedgerChangeAndDetailBo extends BaseEntity implements Serializab
     /**
      * 变更原因
      */
-    @NotBlank(message = "变更原因不能为空", groups = { AddGroup.class, EditGroup.class })
+//    @NotBlank(message = "变更原因不能为空", groups = { AddGroup.class, EditGroup.class })
     private String bgyy;
 
     /**
      * 计算式
      */
-    @NotBlank(message = "计算式不能为空", groups = { AddGroup.class, EditGroup.class })
+//    @NotBlank(message = "计算式不能为空", groups = { AddGroup.class, EditGroup.class })
     private String jss;
 
     /**

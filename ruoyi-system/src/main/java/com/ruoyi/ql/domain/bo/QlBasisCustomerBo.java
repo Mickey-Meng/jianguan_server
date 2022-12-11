@@ -2,6 +2,7 @@ package com.ruoyi.ql.domain.bo;
 
 import com.ruoyi.common.core.validate.AddGroup;
 import com.ruoyi.common.core.validate.EditGroup;
+import com.ruoyi.ql.domain.vo.QlBasisCustomerAccinfoVo;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import javax.validation.constraints.*;
@@ -9,6 +10,8 @@ import javax.validation.constraints.*;
 import java.util.Date;
 
 import java.math.BigDecimal;
+import java.util.List;
+
 import com.ruoyi.common.core.domain.BaseEntity;
 
 /**
@@ -112,5 +115,6 @@ public class QlBasisCustomerBo extends BaseEntity {
      */
     private Long deptId;
 
-
+    @NotBlank(message = "客户账户不可为空", groups = { AddGroup.class, EditGroup.class })
+    private List<QlBasisCustomerAccinfoVo> qlBasisCustomerAccinfoVoList;
 }
