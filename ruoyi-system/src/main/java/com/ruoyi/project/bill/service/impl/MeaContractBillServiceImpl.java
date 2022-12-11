@@ -133,4 +133,12 @@ public class MeaContractBillServiceImpl implements IMeaContractBillService {
         lqw.isNull(true,MeaContractBill::getHtdj);
         return baseMapper.selectVoList(lqw);
     }
+
+    @Override
+    public List<MeaContractBillVo> leaves(MeaContractBillBo bo) {
+        LambdaQueryWrapper<MeaContractBill> lqw = new LambdaQueryWrapper();
+        lqw.eq(StringUtils.isNotBlank(bo.getZmhParent()), MeaContractBill::getZmhParent, bo.getZmhParent());
+        lqw.isNotNull(true,MeaContractBill::getHtdj);
+        return baseMapper.selectVoList(lqw);
+    }
 }

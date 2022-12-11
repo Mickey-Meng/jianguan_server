@@ -87,6 +87,7 @@ public class MeaLedgerBreakdownDetailServiceImpl implements IMeaLedgerBreakdownD
     public Boolean insertByBo(MeaLedgerBreakdownDetailBo bo) {
         MeaLedgerBreakdownDetail add = BeanUtil.toBean(bo, MeaLedgerBreakdownDetail.class);
         validEntityBeforeSave(add);
+        add.setReviewCode("1");
         boolean flag = baseMapper.insert(add) > 0;
         if (flag) {
             bo.setId(add.getId());

@@ -35,6 +35,11 @@ public class MeaFlowDataInfo extends BaseEntity {
      * 业务类型
      */
     private String bussinessKey;
+
+    /**
+     * 业务id
+     */
+    private String bussinessId;
     /**
      * 业务数据  
      */

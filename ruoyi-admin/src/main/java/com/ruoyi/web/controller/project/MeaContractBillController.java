@@ -61,6 +61,16 @@ public class MeaContractBillController extends BaseController {
         return R.ok(list);
     }
 
+    /**
+     * 查询工程量清单列表
+     */
+    @SaCheckPermission("bill:contractBill:list")
+    @GetMapping("/leaves")
+    public R<List<MeaContractBillVo>> leaves(MeaContractBillBo bo) {
+        List<MeaContractBillVo> list = iMeaContractBillService.leaves(bo);
+        return R.ok(list);
+    }
+
 
 
     /**

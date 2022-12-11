@@ -7,6 +7,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <resultMap type="com.ruoyi.project.flowidatenfo.domain.MeaFlowDataInfo" id="MeaFlowDataInfoResult">
         <result property="id" column="id"/>
         <result property="taskId" column="task_id"/>
+        <result property="bussinessId" column="bussiness_id"/>
         <result property="bussinessKey" column="bussiness_key"/>
         <result property="bussinessData" column="bussiness_data"/>
         <result property="status" column="status"/>

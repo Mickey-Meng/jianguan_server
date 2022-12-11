@@ -148,6 +148,7 @@ public class MeaMeasurementDocumentsServiceImpl implements IMeaMeasurementDocume
             List<MeaMeasurementDocumentsDetailBo> detailBos = bo.getDetailBos();
             for(MeaMeasurementDocumentsDetailBo meaMeasurementDocumentsDetailBo:detailBos){
                 MeaMeasurementDocumentsDetail bean = BeanUtil.toBean(meaMeasurementDocumentsDetailBo, MeaMeasurementDocumentsDetail.class);
+                bean.setPzbh(add.getId());
                 baseDetailMapper.insert(bean);
             }
         }

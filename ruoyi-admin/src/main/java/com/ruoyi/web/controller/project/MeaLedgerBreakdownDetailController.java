@@ -95,7 +95,7 @@ public class MeaLedgerBreakdownDetailController extends BaseController {
         }
         Boolean aBoolean = iMeaLedgerBreakdownDetailService.insertByBo(bo);
         if(aBoolean){
-            processService.startMeaProcess(process_1669973630070,formKey, bo);
+            processService.startMeaProcess(process_1669973630070,formKey,bo.getId(), bo);
         }
         return toAjax(aBoolean ? 1 : 0);
     }

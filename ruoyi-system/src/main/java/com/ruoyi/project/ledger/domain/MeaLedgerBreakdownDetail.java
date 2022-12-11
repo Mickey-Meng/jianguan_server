@@ -88,6 +88,11 @@ public class MeaLedgerBreakdownDetail extends BaseEntity {
      * 状态（0正常 1停用）
      */
     private String status;
+
+    /**
+     * 审批状态（0:未审批 1:审批中 2：已审批）
+     */
+    private String reviewCode;
     /**
      * 备注
      */

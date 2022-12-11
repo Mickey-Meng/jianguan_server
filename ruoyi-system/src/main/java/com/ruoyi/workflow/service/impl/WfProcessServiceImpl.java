@@ -188,14 +188,25 @@ public class WfProcessServiceImpl extends FlowServiceFactory implements IWfProce
     }
 
     @Override
-    public void startMeaProcess(String procDefId, String buinessKey,Object formData) {
+    public void startMeaProcess(String procDefId, String formKey,String bussinessKey,Object formData) {
         Map<String, Object> variables=new HashMap<>();
-        String proId = startProcess(procDefId, variables);
+        variables.put("id",bussinessKey);
+        ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
+            .processDefinitionId(procDefId).singleResult();
+        if (Objects.nonNull(processDefinition) && processDefinition.isSuspended()) {
+            throw new ServiceException("流程已被挂起，请先激活流程");
+        }
+        // 设置流程发起人Id到流程中
+        this.buildProcessVariables(variables);
+        ProcessInstance processInstance = runtimeService.startProcessInstanceById(procDefId,bussinessKey,variables);
+        // 第一个用户任务为发起人，则自动完成任务
+        String proId = wfTaskService.startFirstTask(processInstance, variables);
         MeaFlowDataInfo meaFlowDataInfo=new MeaFlowDataInfo();
         meaFlowDataInfo.setTaskId(proId);
         meaFlowDataInfo.setStatus("0");
         meaFlowDataInfo.setBussinessData(JsonUtils.toJsonString(formData));
-        meaFlowDataInfo.setBussinessKey(buinessKey);
+        meaFlowDataInfo.setBussinessKey(formKey);
+        meaFlowDataInfo.setBussinessId(bussinessKey);
         meaFlowDataInfoMapper.insert(meaFlowDataInfo);
     }
 
