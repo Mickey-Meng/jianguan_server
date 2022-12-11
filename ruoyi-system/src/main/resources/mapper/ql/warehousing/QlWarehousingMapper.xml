@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.ql.mapper.QlWarehousingMapper">
+
+    <resultMap type="com.ruoyi.ql.domain.QlWarehousing" id="QlWarehousingResult">
+        <result property="id" column="id"/>
+        <result property="warehousingCode" column="warehousing_code"/>
+        <result property="warehousingUsername" column="warehousing_username"/>
+        <result property="purchaseOrderId" column="purchase_order_id"/>
+        <result property="proudctId" column="proudct_id"/>
+        <result property="warehousingNumber" column="warehousing_number"/>
+        <result property="warehousingDate" column="warehousing_date"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+        <result property="deptId" column="dept_id"/>
+        <result property="proudctName" column="proudct_name"/>
+    </resultMap>
+
+
+</mapper>

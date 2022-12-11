@@ -2,18 +2,15 @@
 <!DOCTYPE mapper
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ruoyi.ql.mapper.QlProjectInfoMapper">
+<mapper namespace="com.ruoyi.ql.mapper.QlBasisCustomerAccinfoMapper">
 
-    <resultMap type="com.ruoyi.ql.domain.QlProjectInfo" id="QlProjectInfoResult">
+    <resultMap type="com.ruoyi.ql.domain.QlBasisCustomerAccinfo" id="QlBasisCustomerAccinfoResult">
         <result property="id" column="id"/>
         <result property="customerId" column="customer_id"/>
         <result property="customerName" column="customer_name"/>
-        <result property="projectName" column="project_name"/>
-        <result property="projectAmount" column="project_amount"/>
-        <result property="projectResume" column="project_resume"/>
-        <result property="projectDistribute" column="project_distribute"/>
-        <result property="photo" column="photo"/>
-        <result property="fj" column="fj"/>
+        <result property="bankNo" column="bank_no"/>
+        <result property="bankName" column="bank_name"/>
+        <result property="accType" column="acc_type"/>
         <result property="delFlag" column="del_flag"/>
         <result property="createBy" column="create_by"/>
         <result property="createTime" column="create_time"/>
@@ -21,7 +18,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updateTime" column="update_time"/>
         <result property="remark" column="remark"/>
         <result property="deptId" column="dept_id"/>
-        <result property="area" column="area"/>
     </resultMap>
 
 

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.ql.mapper.QlContractInfoSaleMapper">
+
+    <resultMap type="com.ruoyi.ql.domain.QlContractInfoSale" id="QlContractInfoSaleResult">
+        <result property="id" column="id"/>
+        <result property="contractCode" column="contract_code"/>
+        <result property="contractName" column="contract_name"/>
+        <result property="customerName" column="customer_name"/>
+        <result property="customerId" column="customer_id"/>
+        <result property="amount" column="amount"/>
+        <result property="retentionAmount" column="retention_amount"/>
+        <result property="contactDate" column="contact_date"/>
+        <result property="retentionDate" column="retention_date"/>
+        <result property="rate" column="rate"/>
+        <result property="area" column="area"/>
+        <result property="contractStatus" column="contract_status"/>
+        <result property="fj" column="fj"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+        <result property="deptId" column="dept_id"/>
+    </resultMap>
+
+
+</mapper>

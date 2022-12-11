@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.ql.mapper.QlWhStorageMapper">
+
+    <resultMap type="com.ruoyi.ql.domain.QlWhStorage" id="QlWhStorageResult">
+        <result property="id" column="id"/>
+        <result property="storageCode" column="storage_code"/>
+        <result property="storageName" column="storage_name"/>
+        <result property="storageBarcode" column="storage_barcode"/>
+        <result property="reservoirId" column="reservoir_id"/>
+        <result property="isEmpty" column="is_empty"/>
+        <result property="isDisable" column="is_disable"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+        <result property="deptId" column="dept_id"/>
+    </resultMap>
+
+
+</mapper>
