@@ -1,15 +1,16 @@
 package com.ruoyi.web.controller.listener;
 
-/**
- * @author jing-zhang
- * @version 1.0.0
- * @date 2022/12/11 17:31
- */
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Configuration;
+
+/**
+ * @author jing-zhang
+ * @version 1.0.0
+ * @date 2022/12/11 17:31
+ */
 @Slf4j
 @Configuration
 public class SpringContextHolder implements ApplicationContextAware, DisposableBean {
@@ -50,11 +51,12 @@ public class SpringContextHolder implements ApplicationContextAware, DisposableB
      */
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) {
-//        logger.debug("注入ApplicationContext到SpringContextHolder:{}", applicationContext);
+        log.debug("注入ApplicationContext到SpringContextHolder:{}", applicationContext);
         if (SpringContextHolder.applicationContext != null) {
             log.warn("SpringContextHolder中的ApplicationContext被覆盖, 原有ApplicationContext为:" + SpringContextHolder.applicationContext);
         }
-        SpringContextHolder.applicationContext = applicationContext; // NOSONAR
+        // NOSONAR
+        SpringContextHolder.applicationContext = applicationContext;
     }
     /**
      * 实现DisposableBean接口, 在Context关闭时清理静态变量.
