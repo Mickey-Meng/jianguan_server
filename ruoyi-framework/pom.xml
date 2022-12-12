@@ -72,11 +72,6 @@
             <groupId>com.yomahub</groupId>
             <artifactId>tlog-web-spring-boot-starter</artifactId>
         </dependency>
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger2</artifactId>
-            <version>3.0.0</version>
-        </dependency>
 
     </dependencies>
 

@@ -2,6 +2,7 @@ package com.ruoyi.ql.domain.bo;
 
 import com.ruoyi.common.core.validate.AddGroup;
 import com.ruoyi.common.core.validate.EditGroup;
+import com.ruoyi.ql.domain.vo.QlFinReimbursementItemVo;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import javax.validation.constraints.*;
@@ -10,6 +11,8 @@ import java.util.Date;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ruoyi.common.core.domain.BaseEntity;
 
@@ -63,6 +66,8 @@ public class QlFinReimbursementBo extends BaseEntity {
      * 员工id
      */
     private String empId;
+
+    private List<QlFinReimbursementItemVo> qlFinReimbursementItemVoList;
 
 
 }

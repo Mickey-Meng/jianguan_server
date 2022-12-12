@@ -77,6 +77,7 @@ public class CaptchaController {
      * 生成验证码
      */
     @GetMapping("/captchaImage")
+    @Anonymous
     public R<Map<String, Object>> getCode() {
         Map<String, Object> ajax = new HashMap<>();
         boolean captchaEnabled = configService.selectCaptchaEnabled();

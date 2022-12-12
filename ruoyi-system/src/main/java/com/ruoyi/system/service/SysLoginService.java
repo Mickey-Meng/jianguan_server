@@ -129,6 +129,8 @@ public class SysLoginService {
             StpUtil.logout();
             asyncService.recordLogininfor(username, Constants.LOGOUT, MessageUtils.message("user.logout.success"), ServletUtils.getRequest());
         } catch (NotLoginException e) {
+            e.printStackTrace();
+
         }
     }
 

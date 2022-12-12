@@ -20,6 +20,7 @@ import com.ruoyi.ql.domain.QlFinReimbursement;
 import com.ruoyi.ql.mapper.QlFinReimbursementMapper;
 import com.ruoyi.ql.service.IQlFinReimbursementService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Collection;
@@ -87,11 +88,26 @@ public class QlFinReimbursementServiceImpl implements IQlFinReimbursementService
      */
     @Override
     public Boolean insertByBo(QlFinReimbursementBo bo) {
+
+
+
+
+
         QlFinReimbursement add = BeanUtil.toBean(bo, QlFinReimbursement.class);
         validEntityBeforeSave(add);
         boolean flag = baseMapper.insert(add) > 0;
         if (flag) {
             bo.setId(add.getId());
+            List<QlFinReimbursementItem> items = new ArrayList<>();
+            for (QlFinReimbursementItemVo qlFinReimbursementItemVo : bo.getQlFinReimbursementItemVoList()) {
+                QlFinReimbursementItem item = BeanUtil.toBean(qlFinReimbursementItemVo, QlFinReimbursementItem.class);
+
+
+                item.setReimbursementOrderId(add.getId()+"");
+
+                items.add(item);
+            }
+            qlFinReimbursementItemMapper.insertBatch(items);
         }
         return flag;
     }

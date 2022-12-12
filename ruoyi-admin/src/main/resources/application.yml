@@ -144,8 +144,10 @@ security:
     - /swagger/**
     - /swagger-ui.html
     - /webjars/**
+    - /webjars/bycdao-ui/
     - /v2/**
     - /v3/**
+    - /swagger-resources
     - /doc.html
     - /swagger-resources/**
     # druid 监控配置
@@ -280,3 +282,4 @@ flowable:
   database-schema-update: false
   idm:
     enabled: false
+
