@@ -47,7 +47,7 @@ public class SwaggerConfig {
         return new Docket(DocumentationType.SWAGGER_2)
             .apiInfo(apiInfo())
             .select()
-            .apis(RequestHandlerSelectors.basePackage("com.ruoyi.web.controller.ql"))
+            .apis(RequestHandlerSelectors.basePackage("com.ruoyi.web.controller.project"))
             .paths(PathSelectors.any())
             .build()
             .globalOperationParameters(this.getParameterList());// 全局配置

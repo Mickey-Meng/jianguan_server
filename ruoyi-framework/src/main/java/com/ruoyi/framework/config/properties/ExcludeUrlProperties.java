@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.servlet.mvc.condition.PatternsRequestCondition;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 import org.springframework.web.util.pattern.PathPattern;
@@ -42,21 +43,45 @@ public class ExcludeUrlProperties implements InitializingBean {
             // 获取方法上边的注解 替代path variable 为 *
             Anonymous method = AnnotationUtils.findAnnotation(handlerMethod.getMethod(), Anonymous.class);
             Optional.ofNullable(method).ifPresent(anonymous -> {
-                Set<PathPattern> patterns = info.getPathPatternsCondition().getPatterns();
-                patterns.forEach(url -> {
-                    excludes.add(ReUtil.replaceAll(url.getPatternString(), PATTERN, asterisk));
-                });
+                if (info.getPathPatternsCondition() != null) {
+                    Set<PathPattern> patterns = info.getPathPatternsCondition().getPatterns();
+                    patterns.forEach(url -> {
+                        excludes.add(ReUtil.replaceAll(url.getPatternString(), PATTERN, asterisk));
+                    });
+                }
+                if (info.getPathPatternsCondition()==null){
+                    PatternsRequestCondition patternsCondition = info.getPatternsCondition();
+                    Set<String> patterns = patternsCondition.getPatterns();
+                    patterns.forEach(url -> {
+                        excludes.add(ReUtil.replaceAll(url, PATTERN, asterisk));
+                    });
+                    System.out.println("q");
+                }
+
             });
 
             // 获取类上边的注解, 替代path variable 为 *
             Anonymous controller = AnnotationUtils.findAnnotation(handlerMethod.getBeanType(), Anonymous.class);
             Optional.ofNullable(controller).ifPresent(anonymous -> {
-                Set<PathPattern> patterns = info.getPathPatternsCondition().getPatterns();
-                patterns.forEach(url -> {
-                    excludes.add(ReUtil.replaceAll(url.getPatternString(), PATTERN, asterisk));
-                });
+                if (info.getPathPatternsCondition() != null) {
+                    Set<PathPattern> patterns = info.getPathPatternsCondition().getPatterns();
+                    patterns.forEach(url -> {
+                        excludes.add(ReUtil.replaceAll(url.getPatternString(), PATTERN, asterisk));
+                    });
+                }
+                if (info.getPathPatternsCondition()==null){
+                    PatternsRequestCondition patternsCondition = info.getPatternsCondition();
+                    Set<String> patterns = patternsCondition.getPatterns();
+                    patterns.forEach(url -> {
+                        excludes.add(ReUtil.replaceAll(url, PATTERN, asterisk));
+                    });
+
+                }
+
             });
         });
+        System.out.println(excludes);
+
     }
 
 }
