@@ -25,7 +25,6 @@ public class QlBasisSupplierBo extends BaseEntity {
     /**
      * 供应商管理id
      */
-    @NotNull(message = "供应商管理id不能为空", groups = { EditGroup.class })
     private Long id;
 
     /**
@@ -90,7 +89,6 @@ public class QlBasisSupplierBo extends BaseEntity {
     /**
      * 发票种类【数据字典】
      */
-    @NotBlank(message = "发票种类【数据字典】不能为空", groups = { AddGroup.class, EditGroup.class })
     private String invoiceType;
 
     /**

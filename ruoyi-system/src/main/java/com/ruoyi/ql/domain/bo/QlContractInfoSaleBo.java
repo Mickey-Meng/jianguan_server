@@ -99,19 +99,16 @@ public class QlContractInfoSaleBo extends BaseEntity {
     /**
      * 附件
      */
-    @NotBlank(message = "附件不能为空", groups = { AddGroup.class, EditGroup.class })
     private String fj;
 
     /**
      *
      */
-    @NotBlank(message = "不能为空", groups = { AddGroup.class, EditGroup.class })
     private String remark;
 
     /**
      * 部门ID
      */
-    @NotNull(message = "部门ID不能为空", groups = { AddGroup.class, EditGroup.class })
     private Long deptId;
 
 

@@ -1,4 +1,4 @@
-package com.ruoyi.ql.controller;
+package com.ruoyi.web.controller.ql;
 
 import java.util.List;
 import java.util.Arrays;
