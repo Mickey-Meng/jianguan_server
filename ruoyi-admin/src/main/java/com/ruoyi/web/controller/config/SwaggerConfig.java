@@ -43,13 +43,23 @@ public class SwaggerConfig {
      * swagger文档配置
      */
     @Bean
-    public Docket customDocket() {
+    public Docket projectDocket() {
         return new Docket(DocumentationType.SWAGGER_2)
             .apiInfo(apiInfo())
             .select()
             .apis(RequestHandlerSelectors.basePackage("com.ruoyi.web.controller.project"))
             .paths(PathSelectors.any())
-            .build()
+            .build().groupName("project")
+            .globalOperationParameters(this.getParameterList());// 全局配置
+    }
+    @Bean
+    public Docket qlDocket() {
+        return new Docket(DocumentationType.SWAGGER_2)
+            .apiInfo(apiInfo())
+            .select()
+            .apis(RequestHandlerSelectors.basePackage("com.ruoyi.web.controller.ql"))
+            .paths(PathSelectors.any())
+            .build().groupName("ql")
             .globalOperationParameters(this.getParameterList());// 全局配置
     }
 
