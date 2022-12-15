@@ -361,6 +361,15 @@ public class GenTableServiceImpl implements IGenTableService {
         for (int i = 0; i < 6; i++) {
             menuIds.add(snowflake.nextId());
         }
+
+        for (GenTableColumn column : table.getColumns()) {
+
+            String columnComment = column.getColumnComment().substring(0, column.getColumnComment().indexOf("("));
+
+
+            column.setColumnComment(columnComment);
+
+        }
         table.setMenuIds(menuIds);
         // 设置主子表信息
         setSubTable(table);

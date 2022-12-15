@@ -180,11 +180,13 @@
     />
 
     <!-- 添加或修改${functionName}对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+    <el-dialog :title="title" :visible.sync="open" width="1100px" append-to-body>
+      <el-form ref="form" :model="form" :rules="rules" label-width="150px">
+          <el-row :gutter="20">
 #foreach($column in $columns)
 #set($field=$column.javaField)
 #if($column.insert && !$column.pk)
+<el-col :span="12">
 #set($parentheseIndex=$column.columnComment.indexOf("（"))
 #if($parentheseIndex != -1)
 #set($comment=$column.columnComment.substring(0, $parentheseIndex))
@@ -274,7 +276,7 @@
           <el-input v-model="form.${field}" type="textarea" placeholder="请输入内容" />
         </el-form-item>
 #end
-#end
+</el-col>#end
 #end
 #if($table.sub)
         <el-divider content-position="center">${subTable.functionName}信息</el-divider>
@@ -335,7 +337,9 @@
 #end
         </el-table>
 #end
+          </el-row>
       </el-form>
+
       <div slot="footer" class="dialog-footer">
         <el-button :loading="buttonLoading" type="primary" @click="submitForm">确 定</el-button>
         <el-button @click="cancel">取 消</el-button>
