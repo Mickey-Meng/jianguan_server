@@ -57,6 +57,11 @@ public class QlFinReimbursementVo {
      */
     @ExcelProperty(value = "员工姓名")
     private String empName;
+    /**
+     * 员工姓名
+     */
+    @ExcelProperty(value = "员工ID")
+    private String empId;
     @NotBlank(message = "员工姓名不可为空", groups = { AddGroup.class, EditGroup.class })
     private List<QlFinReimbursementItemVo> qlFinReimbursementItemVoList;
 }
