@@ -9,6 +9,9 @@ import com.ruoyi.common.annotation.ExcelDictFormat;
 import com.ruoyi.common.convert.ExcelDictConvert;
 import lombok.Data;
 import java.util.Date;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 
 
 
@@ -20,6 +23,7 @@ import java.util.Date;
  */
 @Data
 @ExcelIgnoreUnannotated
+@ApiModel(value = "${functionName}", description = "${functionName}VO")
 public class ${ClassName}Vo {
 
     private static final long serialVersionUID = 1L;
@@ -44,6 +48,7 @@ public class ${ClassName}Vo {
 #else
     @ExcelProperty(value = "${comment}")
 #end
+    @ApiModelProperty(value = "${comment}", required = true)
     private $column.javaType $column.javaField;
 
 #end

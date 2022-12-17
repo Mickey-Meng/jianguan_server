@@ -12,6 +12,8 @@ import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.project.bill.domain.MeaContractBill;
 import com.ruoyi.project.bill.domain.bo.MeaContractBillBo;
+import com.ruoyi.project.bill.domain.pojo.ChapterCollectDto;
+import com.ruoyi.project.bill.domain.vo.ChapterCollectVo;
 import com.ruoyi.project.bill.domain.vo.MeaContractBillVo;
 import com.ruoyi.project.bill.mapper.MeaContractBillMapper;
 import com.ruoyi.project.bill.service.IMeaContractBillService;
@@ -38,12 +40,13 @@ public class MeaContractBillServiceImpl implements IMeaContractBillService {
 
     private final MeaContractBillMapper baseMapper;
 
-    private static String ROOT_ZMH="0";
+    private static String ROOT_ZMH = "0";
+
     /**
      * 查询工程量清单
      */
     @Override
-    public MeaContractBillVo queryById(String id){
+    public MeaContractBillVo queryById(String id) {
         return baseMapper.selectVoById(id);
     }
 
@@ -108,17 +111,17 @@ public class MeaContractBillServiceImpl implements IMeaContractBillService {
     /**
      * 保存前的数据校验
      */
-    private void validEntityBeforeSave(MeaContractBill entity){
+    private void validEntityBeforeSave(MeaContractBill entity) {
         //TODO 做一些数据校验,如唯一约束
-        if(null != entity ){
-                LambdaQueryWrapper<MeaContractBill> lqw = new LambdaQueryWrapper();
-                if(ROOT_ZMH.equals(entity.getZmhParent())){
-                    entity.setZmhAncestors(ROOT_ZMH);
-                }else{
-                    lqw.eq(StringUtils.isNotBlank(entity.getZmhParent()), MeaContractBill::getZmh, entity.getZmhParent());
-                    MeaContractBill s = baseMapper.selectOne(lqw);
-                    entity.setZmhAncestors(s.getZmhAncestors() + "," + s.getZmhParent());
-                }
+        if (null != entity) {
+            LambdaQueryWrapper<MeaContractBill> lqw = new LambdaQueryWrapper();
+            if (ROOT_ZMH.equals(entity.getZmhParent())) {
+                entity.setZmhAncestors(ROOT_ZMH);
+            } else {
+                lqw.eq(StringUtils.isNotBlank(entity.getZmhParent()), MeaContractBill::getZmh, entity.getZmhParent());
+                MeaContractBill s = baseMapper.selectOne(lqw);
+                entity.setZmhAncestors(s.getZmhAncestors() + "," + s.getZmhParent());
+            }
         }
     }
 
@@ -127,7 +130,7 @@ public class MeaContractBillServiceImpl implements IMeaContractBillService {
      */
     @Override
     public Boolean deleteWithValidByIds(Collection<String> ids, Boolean isValid) {
-        if(isValid){
+        if (isValid) {
             //TODO 做一些业务上的校验,判断是否需要校验
         }
         return baseMapper.deleteBatchIds(ids) > 0;
@@ -145,7 +148,7 @@ public class MeaContractBillServiceImpl implements IMeaContractBillService {
     @Override
     public List<MeaContractBillVo> treeList(MeaContractBillBo bo) {
         LambdaQueryWrapper<MeaContractBill> lqw = new LambdaQueryWrapper<>();
-        lqw.isNull(true,MeaContractBill::getHtdj);
+        lqw.isNull(true, MeaContractBill::getHtdj);
         return baseMapper.selectVoList(lqw);
     }
 
@@ -153,7 +156,17 @@ public class MeaContractBillServiceImpl implements IMeaContractBillService {
     public List<MeaContractBillVo> leaves(MeaContractBillBo bo) {
         LambdaQueryWrapper<MeaContractBill> lqw = new LambdaQueryWrapper();
         lqw.eq(StringUtils.isNotBlank(bo.getZmhParent()), MeaContractBill::getZmhParent, bo.getZmhParent());
-        lqw.isNotNull(true,MeaContractBill::getHtdj);
+        lqw.isNotNull(true, MeaContractBill::getHtdj);
         return baseMapper.selectVoList(lqw);
+    }
+
+    @Override
+    public List<ChapterCollectVo> chapter_collect() {
+
+        List<ChapterCollectDto> result = baseMapper.chapter_collect();
+
+        List<ChapterCollectVo> chapterCollectVos = BeanUtil.copyToList(result, ChapterCollectVo.class);
+
+        return chapterCollectVos;
     }
 }

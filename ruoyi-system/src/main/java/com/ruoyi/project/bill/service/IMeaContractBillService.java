@@ -4,6 +4,7 @@ package com.ruoyi.project.bill.service;
 import com.ruoyi.common.core.domain.PageQuery;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.project.bill.domain.bo.MeaContractBillBo;
+import com.ruoyi.project.bill.domain.vo.ChapterCollectVo;
 import com.ruoyi.project.bill.domain.vo.MeaContractBillVo;
 
 import java.util.Collection;
@@ -48,4 +49,6 @@ public interface IMeaContractBillService {
     List<MeaContractBillVo> treeList(MeaContractBillBo bo);
 
     List<MeaContractBillVo> leaves(MeaContractBillBo bo);
+
+    List<ChapterCollectVo> chapter_collect();
 }

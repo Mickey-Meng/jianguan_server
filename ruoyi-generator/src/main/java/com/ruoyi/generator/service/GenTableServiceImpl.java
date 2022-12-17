@@ -363,11 +363,16 @@ public class GenTableServiceImpl implements IGenTableService {
         }
 
         for (GenTableColumn column : table.getColumns()) {
+            int i = column.getColumnComment().indexOf("(");
 
-            String columnComment = column.getColumnComment().substring(0, column.getColumnComment().indexOf("("));
+            if (i>1) {
+                String columnComment = column.getColumnComment().substring(0, column.getColumnComment().indexOf("("));
+                column.setColumnComment(columnComment);
+            }
 
 
-            column.setColumnComment(columnComment);
+
+
 
         }
         table.setMenuIds(menuIds);

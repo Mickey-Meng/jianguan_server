@@ -13,6 +13,7 @@ import com.ruoyi.common.core.validate.EditGroup;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.project.bill.domain.bo.MeaContractBillBo;
+import com.ruoyi.project.bill.domain.vo.ChapterCollectVo;
 import com.ruoyi.project.bill.domain.vo.MeaContractBillVo;
 import com.ruoyi.project.bill.service.IMeaContractBillService;
 import com.ruoyi.system.domain.bo.ContractInfoBo;
@@ -37,6 +38,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/bill/contractBill")
+
 public class MeaContractBillController extends BaseController {
 
     private final IMeaContractBillService iMeaContractBillService;
@@ -71,6 +73,16 @@ public class MeaContractBillController extends BaseController {
         return R.ok(list);
     }
 
+    /**
+     * 查询工程量清单列表
+     */
+    @SaCheckPermission("bill:collect_info:list")
+    @GetMapping("/chapter_collect")
+    public R<List<ChapterCollectVo>> chapter_collect() {
+        List<ChapterCollectVo> list = iMeaContractBillService.chapter_collect();
+        return R.ok(list);
+    }
+
 
 
     /**
@@ -93,6 +105,9 @@ public class MeaContractBillController extends BaseController {
         List<MeaContractBillVo> list = iMeaContractBillService.queryList(bo);
         ExcelUtil.exportExcel(list, "工程量清单", MeaContractBillVo.class, response);
     }
+
+
+
 
     /**
      * 获取工程量清单详细信息

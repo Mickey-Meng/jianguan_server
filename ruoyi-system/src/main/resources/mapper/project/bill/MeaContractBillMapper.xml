@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.project.bill.mapper.MeaContractBillMapper">
 
     <resultMap type="com.ruoyi.project.bill.domain.MeaContractBill" id="MeaContractBillResult">
@@ -30,6 +30,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="remark" column="remark"/>
         <result property="parentId" column="parent_id"/>
     </resultMap>
+    <select id="chapter_collect" resultType="com.ruoyi.project.bill.domain.pojo.ChapterCollectDto">
+
+    SELECT sum(b.htdj) as htdj,sum(b.xzje) as xzje,sum(b.shje) as shje,b.zmmc ,b.zmh,b.zje,b.zsl
+    FROM mea_contract_bill  b
+    where b.zmh_parent=0 and status=0 GROUP BY b.zmh
+
+
+    </select>
 
 
 </mapper>
