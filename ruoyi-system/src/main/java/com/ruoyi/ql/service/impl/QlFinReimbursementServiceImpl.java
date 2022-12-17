@@ -12,6 +12,7 @@ import com.ruoyi.ql.domain.QlFinReimbursementItem;
 import com.ruoyi.ql.domain.vo.QlBasisCustomerAccinfoVo;
 import com.ruoyi.ql.domain.vo.QlFinReimbursementItemVo;
 import com.ruoyi.ql.mapper.QlFinReimbursementItemMapper;
+import com.ruoyi.ql.service.IQlFinReimbursementItemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import com.ruoyi.ql.domain.bo.QlFinReimbursementBo;
@@ -44,7 +45,7 @@ public class QlFinReimbursementServiceImpl implements IQlFinReimbursementService
 
 
         LambdaQueryWrapper<QlFinReimbursementItem> qlFinReimbursementItemLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        qlFinReimbursementItemLambdaQueryWrapper.eq(QlFinReimbursementItem::getReimbursementOrderId, id);
+        qlFinReimbursementItemLambdaQueryWrapper.eq(QlFinReimbursementItem::getReimbursementOrderId, qlFinReimbursementVo.getReimbursementOrderId());
         List<QlFinReimbursementItemVo> qlFinReimbursementItemVoList = qlFinReimbursementItemMapper.selectVoList(qlFinReimbursementItemLambdaQueryWrapper);
 
         qlFinReimbursementVo.setQlFinReimbursementItemVoList(qlFinReimbursementItemVoList);
@@ -128,6 +129,8 @@ public class QlFinReimbursementServiceImpl implements IQlFinReimbursementService
         if(isValid){
             //TODO 做一些业务上的校验,判断是否需要校验
         }
+        //TODO  需要删除报销明细数据
+        LambdaQueryWrapper<QlFinReimbursement> lqw = Wrappers.lambdaQuery();
         return baseMapper.deleteBatchIds(ids) > 0;
     }
 }
