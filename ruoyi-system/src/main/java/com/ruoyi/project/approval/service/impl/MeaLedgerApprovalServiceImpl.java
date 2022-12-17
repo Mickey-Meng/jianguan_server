@@ -47,6 +47,7 @@ public class MeaLedgerApprovalServiceImpl implements IMeaLedgerApprovalService {
     public TableDataInfo<MeaLedgerApprovalVo> queryPageList(MeaLedgerApprovalBo bo, PageQuery pageQuery) {
         LambdaQueryWrapper<MeaLedgerApproval> lqw = buildQueryWrapper(bo);
         Page<MeaLedgerApprovalVo> result = baseMapper.selectVoPage(pageQuery.build(), lqw);
+
         return TableDataInfo.build(result);
     }
 
