@@ -111,6 +111,13 @@ public class QlFinReimbursementServiceImpl implements IQlFinReimbursementService
     public Boolean updateByBo(QlFinReimbursementBo bo) {
         QlFinReimbursement update = BeanUtil.toBean(bo, QlFinReimbursement.class);
         validEntityBeforeSave(update);
+        List<QlFinReimbursementItem> qlFinReimbursementItemsL = new ArrayList<QlFinReimbursementItem>();
+        for (QlFinReimbursementItemVo qlFinReimbursementItemVo : bo.getQlFinReimbursementItemVoList()) {
+            QlFinReimbursementItem item = BeanUtil.toBean(qlFinReimbursementItemVo, QlFinReimbursementItem.class);
+            item.setReimbursementOrderId(bo.getReimbursementOrderId());
+            qlFinReimbursementItemsL.add(item);
+        }
+        qlFinReimbursementItemMapper.insertOrUpdateBatch(qlFinReimbursementItemsL);
         return baseMapper.updateById(update) > 0;
     }
 
