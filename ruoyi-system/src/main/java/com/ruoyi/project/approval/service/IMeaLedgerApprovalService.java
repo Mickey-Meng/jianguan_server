@@ -46,4 +46,6 @@ public interface IMeaLedgerApprovalService {
      * 校验并批量删除台账报审信息
      */
     Boolean deleteWithValidByIds(Collection<Long> ids, Boolean isValid);
+
+    boolean insertByListBo(List<MeaLedgerApprovalBo> bo);
 }

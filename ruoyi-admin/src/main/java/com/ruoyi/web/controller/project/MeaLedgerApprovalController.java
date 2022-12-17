@@ -67,7 +67,7 @@ public class MeaLedgerApprovalController extends BaseController {
     @SaCheckPermission("ledgerapproval:ledgerApproval:query")
     @GetMapping("/{id}")
     public R<MeaLedgerApprovalVo> getInfo(@NotNull(message = "主键不能为空")
-                                     @PathVariable Long id) {
+                                          @PathVariable Long id) {
         return R.ok(iMeaLedgerApprovalService.queryById(id));
     }
 
@@ -78,8 +78,13 @@ public class MeaLedgerApprovalController extends BaseController {
     @Log(title = "台账报审", businessType = BusinessType.INSERT)
     @RepeatSubmit()
     @PostMapping()
-    public R<Void> add(@Validated(AddGroup.class) @RequestBody MeaLedgerApprovalBo bo) {
-        return toAjax(iMeaLedgerApprovalService.insertByBo(bo) ? 1 : 0);
+    public R<Void> add(@Validated(AddGroup.class) @RequestBody List<MeaLedgerApprovalBo> bo) {
+
+        boolean b = iMeaLedgerApprovalService.insertByListBo(bo);
+        if (b) {
+
+        }
+        return toAjax(b ? 1 : 0);
     }
 
     /**

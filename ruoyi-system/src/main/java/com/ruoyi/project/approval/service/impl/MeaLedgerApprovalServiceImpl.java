@@ -36,7 +36,7 @@ public class MeaLedgerApprovalServiceImpl implements IMeaLedgerApprovalService {
      * 查询台账报审
      */
     @Override
-    public MeaLedgerApprovalVo queryById(Long id){
+    public MeaLedgerApprovalVo queryById(Long id) {
         return baseMapper.selectVoById(id);
     }
 
@@ -100,7 +100,7 @@ public class MeaLedgerApprovalServiceImpl implements IMeaLedgerApprovalService {
     /**
      * 保存前的数据校验
      */
-    private void validEntityBeforeSave(MeaLedgerApproval entity){
+    private void validEntityBeforeSave(MeaLedgerApproval entity) {
         //TODO 做一些数据校验,如唯一约束
     }
 
@@ -109,9 +109,23 @@ public class MeaLedgerApprovalServiceImpl implements IMeaLedgerApprovalService {
      */
     @Override
     public Boolean deleteWithValidByIds(Collection<Long> ids, Boolean isValid) {
-        if(isValid){
+        if (isValid) {
             //TODO 做一些业务上的校验,判断是否需要校验
         }
         return baseMapper.deleteBatchIds(ids) > 0;
+    }
+
+    @Override
+    public boolean insertByListBo(List<MeaLedgerApprovalBo> bo) {
+
+
+
+        List<MeaLedgerApproval> meaLedgerApprovals = BeanUtil.copyToList(bo, MeaLedgerApproval.class);
+//        validEntityBeforeSave(meaLedgerApprovals);
+
+        boolean b = baseMapper.insertBatch(meaLedgerApprovals);
+
+        return b;
+
     }
 }
