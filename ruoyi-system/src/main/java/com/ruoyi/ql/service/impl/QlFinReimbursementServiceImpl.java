@@ -20,10 +20,7 @@ import com.ruoyi.ql.domain.QlFinReimbursement;
 import com.ruoyi.ql.mapper.QlFinReimbursementMapper;
 import com.ruoyi.ql.service.IQlFinReimbursementService;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Collection;
+import java.util.*;
 
 /**
  * 费用报销Service业务层处理
@@ -89,11 +86,8 @@ public class QlFinReimbursementServiceImpl implements IQlFinReimbursementService
     @Override
     public Boolean insertByBo(QlFinReimbursementBo bo) {
 
-
-
-
-
         QlFinReimbursement add = BeanUtil.toBean(bo, QlFinReimbursement.class);
+        add.setReimbursementOrderId(UUID.randomUUID().toString());
         validEntityBeforeSave(add);
         boolean flag = baseMapper.insert(add) > 0;
         if (flag) {
@@ -101,10 +95,7 @@ public class QlFinReimbursementServiceImpl implements IQlFinReimbursementService
             List<QlFinReimbursementItem> items = new ArrayList<>();
             for (QlFinReimbursementItemVo qlFinReimbursementItemVo : bo.getQlFinReimbursementItemVoList()) {
                 QlFinReimbursementItem item = BeanUtil.toBean(qlFinReimbursementItemVo, QlFinReimbursementItem.class);
-
-
-                item.setReimbursementOrderId(add.getId()+"");
-
+                item.setReimbursementOrderId(add.getReimbursementOrderId());
                 items.add(item);
             }
             qlFinReimbursementItemMapper.insertBatch(items);

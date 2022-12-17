@@ -5,8 +5,11 @@ import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.ruoyi.common.constant.UserConstants;
 import com.ruoyi.common.core.domain.PageQuery;
+import com.ruoyi.common.core.domain.entity.SysDept;
 import com.ruoyi.common.core.page.TableDataInfo;
+import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.project.bill.domain.MeaContractBill;
 import com.ruoyi.project.bill.domain.bo.MeaContractBillBo;
 import com.ruoyi.project.bill.domain.vo.MeaContractBillVo;
@@ -35,6 +38,7 @@ public class MeaContractBillServiceImpl implements IMeaContractBillService {
 
     private final MeaContractBillMapper baseMapper;
 
+    private static String ROOT_ZMH="0";
     /**
      * 查询工程量清单
      */
@@ -83,6 +87,7 @@ public class MeaContractBillServiceImpl implements IMeaContractBillService {
     public Boolean insertByBo(MeaContractBillBo bo) {
         MeaContractBill add = BeanUtil.toBean(bo, MeaContractBill.class);
         validEntityBeforeSave(add);
+
         boolean flag = baseMapper.insert(add) > 0;
         if (flag) {
             bo.setId(add.getId());
@@ -105,6 +110,16 @@ public class MeaContractBillServiceImpl implements IMeaContractBillService {
      */
     private void validEntityBeforeSave(MeaContractBill entity){
         //TODO 做一些数据校验,如唯一约束
+        if(null != entity ){
+                LambdaQueryWrapper<MeaContractBill> lqw = new LambdaQueryWrapper();
+                if(ROOT_ZMH.equals(entity.getZmhParent())){
+                    entity.setZmhAncestors(ROOT_ZMH);
+                }else{
+                    lqw.eq(StringUtils.isNotBlank(entity.getZmhParent()), MeaContractBill::getZmh, entity.getZmhParent());
+                    MeaContractBill s = baseMapper.selectOne(lqw);
+                    entity.setZmhAncestors(s.getZmhAncestors() + "," + s.getZmhParent());
+                }
+        }
     }
 
     /**

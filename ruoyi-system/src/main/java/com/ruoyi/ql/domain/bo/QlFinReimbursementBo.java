@@ -36,7 +36,6 @@ public class QlFinReimbursementBo extends BaseEntity {
     /**
      * 报销订单ID，唯一标识某一次具体报销事件
      */
-    @NotBlank(message = "报销订单ID，唯一标识某一次具体报销事件不能为空", groups = { AddGroup.class, EditGroup.class })
     private String reimbursementOrderId;
 
     /**
