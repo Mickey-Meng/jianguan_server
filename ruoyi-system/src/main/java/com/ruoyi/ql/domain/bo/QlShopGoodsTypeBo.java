@@ -24,19 +24,17 @@ public class QlShopGoodsTypeBo extends TreeEntity<QlShopGoodsTypeBo> {
     /**
      * id
      */
-    @NotNull(message = "id不能为空", groups = { EditGroup.class })
     private Long id;
 
     /**
      * 祖级列表
      */
-    @NotBlank(message = "祖级列表不能为空", groups = { AddGroup.class, EditGroup.class })
     private String ancestors;
 
     /**
      * 商品类别编码
      */
-    @NotBlank(message = "商品类别编码不能为空", groups = { AddGroup.class, EditGroup.class })
+//    @NotBlank(message = "商品类别编码不能为空", groups = { AddGroup.class, EditGroup.class })
     private String goodsTypeCode;
 
     /**
@@ -59,7 +57,6 @@ public class QlShopGoodsTypeBo extends TreeEntity<QlShopGoodsTypeBo> {
     /**
      * 部门ID
      */
-    @NotNull(message = "部门ID不能为空", groups = { AddGroup.class, EditGroup.class })
     private Long deptId;
 
 

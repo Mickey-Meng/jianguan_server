@@ -55,15 +55,22 @@ public class QlWarehousingBo extends BaseEntity {
     /**
      * 入库数量
      */
-    @NotNull(message = "入库数量不能为空", groups = { AddGroup.class, EditGroup.class })
     private Long warehousingNumber;
 
     /**
      * 入库时间
      */
-    @NotNull(message = "入库时间不能为空", groups = { AddGroup.class, EditGroup.class })
     private Date warehousingDate;
-
+    /**
+     * 入库状态（1：已入库 0 未入库）
+     */
+    @NotBlank(message = "入库状态（1：已入库 0 未入库）不能为空", groups = { AddGroup.class, EditGroup.class })
+    private String warehousingStatus;
+    /**
+     * 采购数量
+     */
+    @NotNull(message = "采购数量不能为空", groups = { AddGroup.class, EditGroup.class })
+    private Long orderNumber;
     /**
      *
      */

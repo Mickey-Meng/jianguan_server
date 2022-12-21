@@ -6,7 +6,12 @@ import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.ruoyi.common.annotation.ExcelDictFormat;
 import com.ruoyi.common.convert.ExcelDictConvert;
+import com.ruoyi.common.core.validate.AddGroup;
+import com.ruoyi.common.core.validate.EditGroup;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+
+import javax.validation.constraints.NotBlank;
 import java.util.Date;
 
 
@@ -53,5 +58,35 @@ public class QlWarehousingVo {
     @ExcelProperty(value = "产品名称")
     private String proudctName;
 
+    /**
+     * 入库状态（1：已入库 0 未入库）
+     */
+    @ExcelProperty(value = "入库状态", converter = ExcelDictConvert.class)
+    @ExcelDictFormat(readConverterExp = "1=：已入库,0=,未=入库")
+    @ApiModelProperty(value = "入库状态", required = true)
+    private String warehousingStatus;
+    /**
+     * 采购数量
+     */
+    @ExcelProperty(value = "采购数量")
+    @ApiModelProperty(value = "采购数量", required = true)
+    private Long orderNumber;
 
+    /**
+     * 采购合同id
+     */
+    @ExcelProperty(value = "采购合同id")
+    @ApiModelProperty(value = "采购合同id", required = true)
+    private String purchaseOrderId;
+    /**
+     * 入库数量
+     */
+    @ApiModelProperty(value = "入库数量")
+    private Long warehousingNumber;
+
+    /**
+     * 产品id
+     */
+    @ApiModelProperty(value = "产品id " )
+    private String proudctId;
 }

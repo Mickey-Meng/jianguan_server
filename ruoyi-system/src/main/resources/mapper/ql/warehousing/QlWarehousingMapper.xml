@@ -11,6 +11,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="purchaseOrderId" column="purchase_order_id"/>
         <result property="proudctId" column="proudct_id"/>
         <result property="warehousingNumber" column="warehousing_number"/>
+        <result property="orderNumber" column="order_number"/>
         <result property="warehousingDate" column="warehousing_date"/>
         <result property="delFlag" column="del_flag"/>
         <result property="createBy" column="create_by"/>

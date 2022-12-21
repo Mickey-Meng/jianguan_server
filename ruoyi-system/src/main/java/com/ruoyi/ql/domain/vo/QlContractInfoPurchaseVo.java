@@ -9,7 +9,7 @@ import com.ruoyi.common.annotation.ExcelDictFormat;
 import com.ruoyi.common.convert.ExcelDictConvert;
 import lombok.Data;
 import java.util.Date;
-
+import java.util.List;
 
 
 /**
@@ -60,5 +60,5 @@ public class QlContractInfoPurchaseVo {
     @ExcelProperty(value = "合同签订时间")
     private Date contactDate;
 
-
+    private List<QlWarehousingVo> qlWarehousingVos;
 }

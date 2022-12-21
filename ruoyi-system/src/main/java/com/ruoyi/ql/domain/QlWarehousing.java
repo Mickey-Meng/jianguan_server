@@ -53,6 +53,15 @@ public class QlWarehousing extends BaseEntity {
      * 入库时间
      */
     private Date warehousingDate;
+
+    /**
+     * 入库状态（1：已入库 0 未入库）
+     */
+    private String warehousingStatus;
+    /**
+     * 采购数量
+     */
+    private Long orderNumber;
     /**
      * 删除标志（0代表存在 2代表删除）
      */

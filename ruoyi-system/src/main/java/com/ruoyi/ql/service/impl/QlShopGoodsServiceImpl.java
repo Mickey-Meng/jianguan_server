@@ -1,6 +1,7 @@
 package com.ruoyi.ql.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.crypto.digest.MD5;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.core.domain.PageQuery;
@@ -76,6 +77,8 @@ public class QlShopGoodsServiceImpl implements IQlShopGoodsService {
     @Override
     public Boolean insertByBo(QlShopGoodsBo bo) {
         QlShopGoods add = BeanUtil.toBean(bo, QlShopGoods.class);
+        String goodCode = MD5.create().digestHex(add.getSupplierId()+add.getGoodsName()+add.getGoodsSearchstandard());
+        add.setGoodsCode(goodCode);
         validEntityBeforeSave(add);
         boolean flag = baseMapper.insert(add) > 0;
         if (flag) {

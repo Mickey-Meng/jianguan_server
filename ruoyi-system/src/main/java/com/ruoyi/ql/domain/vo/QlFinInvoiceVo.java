@@ -31,6 +31,24 @@ public class QlFinInvoiceVo {
     private Long id;
 
     /**
+     * 合同id
+     */
+    @ExcelProperty(value = "合同id")
+    private String contractId;
+
+    /**
+     * 合同名称
+     */
+    @ExcelProperty(value = "合同名称")
+    private String contractName;
+
+    /**
+     * 供应商id
+     */
+    @ExcelProperty(value = "供应商id")
+    private String supplierId;
+
+    /**
      * 本次开票金额
      */
     @ExcelProperty(value = "本次开票金额")

@@ -7,6 +7,13 @@ import com.ruoyi.common.core.domain.PageQuery;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.ruoyi.ql.domain.QlFinReimbursement;
+import com.ruoyi.ql.domain.QlFinReimbursementItem;
+import com.ruoyi.ql.domain.QlWarehousing;
+import com.ruoyi.ql.domain.vo.QlFinReimbursementItemVo;
+import com.ruoyi.ql.domain.vo.QlFinReimbursementVo;
+import com.ruoyi.ql.domain.vo.QlWarehousingVo;
+import com.ruoyi.ql.mapper.QlWarehousingMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import com.ruoyi.ql.domain.bo.QlContractInfoPurchaseBo;
@@ -15,6 +22,7 @@ import com.ruoyi.ql.domain.QlContractInfoPurchase;
 import com.ruoyi.ql.mapper.QlContractInfoPurchaseMapper;
 import com.ruoyi.ql.service.IQlContractInfoPurchaseService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Collection;
@@ -31,12 +39,19 @@ public class QlContractInfoPurchaseServiceImpl implements IQlContractInfoPurchas
 
     private final QlContractInfoPurchaseMapper baseMapper;
 
+    private final QlWarehousingMapper qlWarehousingMapper;
+
     /**
      * 查询采购合同
      */
     @Override
     public QlContractInfoPurchaseVo queryById(Long id){
-        return baseMapper.selectVoById(id);
+        QlContractInfoPurchaseVo vo = baseMapper.selectVoById(id);
+        LambdaQueryWrapper<QlWarehousing> qlWarehousingLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        qlWarehousingLambdaQueryWrapper.eq(QlWarehousing::getPurchaseOrderId, vo.getContractCode());
+        List<QlWarehousingVo> qlFinReimbursementItemVoList = qlWarehousingMapper.selectVoList(qlWarehousingLambdaQueryWrapper);
+        vo.setQlWarehousingVos(qlFinReimbursementItemVoList);
+        return vo;
     }
 
     /**
@@ -78,7 +93,13 @@ public class QlContractInfoPurchaseServiceImpl implements IQlContractInfoPurchas
         validEntityBeforeSave(add);
         boolean flag = baseMapper.insert(add) > 0;
         if (flag) {
-            bo.setId(add.getId());
+            List<QlWarehousing> items = new ArrayList<>();
+            for (QlWarehousingVo vo : bo.getQlWarehousingVos()) {
+                QlWarehousing item = BeanUtil.toBean(vo, QlWarehousing.class);
+                item.setPurchaseOrderId(add.getContractCode());
+                items.add(item);
+            }
+            qlWarehousingMapper.insertBatch(items);
         }
         return flag;
     }
@@ -90,6 +111,13 @@ public class QlContractInfoPurchaseServiceImpl implements IQlContractInfoPurchas
     public Boolean updateByBo(QlContractInfoPurchaseBo bo) {
         QlContractInfoPurchase update = BeanUtil.toBean(bo, QlContractInfoPurchase.class);
         validEntityBeforeSave(update);
+        List<QlWarehousing> items = new ArrayList<>();
+        for (QlWarehousingVo vo : bo.getQlWarehousingVos()) {
+            QlWarehousing item = BeanUtil.toBean(vo, QlWarehousing.class);
+            item.setPurchaseOrderId(update.getContractCode());
+            items.add(item);
+        }
+        qlWarehousingMapper.insertOrUpdateBatch(items);
         return baseMapper.updateById(update) > 0;
     }
 

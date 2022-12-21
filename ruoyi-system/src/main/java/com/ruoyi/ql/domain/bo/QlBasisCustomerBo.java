@@ -115,6 +115,5 @@ public class QlBasisCustomerBo extends BaseEntity {
      */
     private Long deptId;
 
-    @NotBlank(message = "客户账户不可为空", groups = { AddGroup.class, EditGroup.class })
     private List<QlBasisCustomerAccinfoVo> qlBasisCustomerAccinfoVoList;
 }

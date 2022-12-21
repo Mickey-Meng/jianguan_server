@@ -63,8 +63,13 @@ public class QlWarehousingServiceImpl implements IQlWarehousingService {
         LambdaQueryWrapper<QlWarehousing> lqw = Wrappers.lambdaQuery();
         lqw.eq(StringUtils.isNotBlank(bo.getWarehousingCode()), QlWarehousing::getWarehousingCode, bo.getWarehousingCode());
         lqw.like(StringUtils.isNotBlank(bo.getWarehousingUsername()), QlWarehousing::getWarehousingUsername, bo.getWarehousingUsername());
+        lqw.eq(StringUtils.isNotBlank(bo.getProudctId()), QlWarehousing::getProudctId, bo.getProudctId());
+        lqw.eq(bo.getWarehousingNumber() != null, QlWarehousing::getWarehousingNumber, bo.getWarehousingNumber());
         lqw.eq(bo.getWarehousingDate() != null, QlWarehousing::getWarehousingDate, bo.getWarehousingDate());
+        lqw.eq(StringUtils.isNotBlank(bo.getWarehousingStatus()), QlWarehousing::getWarehousingStatus, bo.getWarehousingStatus());
+        lqw.eq(bo.getDeptId() != null, QlWarehousing::getDeptId, bo.getDeptId());
         lqw.like(StringUtils.isNotBlank(bo.getProudctName()), QlWarehousing::getProudctName, bo.getProudctName());
+        lqw.eq(StringUtils.isNotBlank(bo.getPurchaseOrderId()), QlWarehousing::getPurchaseOrderId, bo.getPurchaseOrderId());
         return lqw;
     }
 

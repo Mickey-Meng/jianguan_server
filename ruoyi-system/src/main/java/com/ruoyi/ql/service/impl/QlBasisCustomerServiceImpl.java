@@ -8,7 +8,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.ruoyi.ql.domain.QlBasisCustomerAccinfo;
+import com.ruoyi.ql.domain.QlFinReimbursementItem;
 import com.ruoyi.ql.domain.vo.QlBasisCustomerAccinfoVo;
+import com.ruoyi.ql.domain.vo.QlFinReimbursementItemVo;
 import com.ruoyi.ql.mapper.QlBasisCustomerAccinfoMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,10 +20,7 @@ import com.ruoyi.ql.domain.QlBasisCustomer;
 import com.ruoyi.ql.mapper.QlBasisCustomerMapper;
 import com.ruoyi.ql.service.IQlBasisCustomerService;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Collection;
+import java.util.*;
 
 /**
  * 客户资料Service业务层处理
@@ -97,14 +96,15 @@ public class QlBasisCustomerServiceImpl implements IQlBasisCustomerService {
     public Boolean insertByBo(QlBasisCustomerBo bo) {
 
         QlBasisCustomer add = BeanUtil.toBean(bo, QlBasisCustomer.class);
+        add.setCustomerCode(UUID.randomUUID().toString());
+
         validEntityBeforeSave(add);
         boolean flag = baseMapper.insert(add) > 0;
         if (flag) {
-            bo.setId(add.getId());
             List<QlBasisCustomerAccinfo> list = new ArrayList<>();
             for (QlBasisCustomerAccinfoVo qlBasisCustomerAccinfoVo : bo.getQlBasisCustomerAccinfoVoList()) {
                 QlBasisCustomerAccinfo qlBasisCustomerAccinfo = BeanUtil.toBean(qlBasisCustomerAccinfoVo, QlBasisCustomerAccinfo.class);
-                qlBasisCustomerAccinfo.setCustomerId(add.getId() + "");
+                qlBasisCustomerAccinfo.setCustomerId(add.getCustomerCode() + "");
                 list.add(qlBasisCustomerAccinfo);
             }
             basisCustomerAccinfoMapper.insertBatch(list);
@@ -119,6 +119,13 @@ public class QlBasisCustomerServiceImpl implements IQlBasisCustomerService {
     public Boolean updateByBo(QlBasisCustomerBo bo) {
         QlBasisCustomer update = BeanUtil.toBean(bo, QlBasisCustomer.class);
         validEntityBeforeSave(update);
+        List<QlBasisCustomerAccinfo> qlBasisCustomerAccinfos = new ArrayList<QlBasisCustomerAccinfo>();
+        for (QlBasisCustomerAccinfoVo qlFinReimbursementItemVo : bo.getQlBasisCustomerAccinfoVoList()) {
+            QlBasisCustomerAccinfo item = BeanUtil.toBean(qlFinReimbursementItemVo, QlBasisCustomerAccinfo.class);
+            item.setCustomerId(bo.getCustomerCode());
+            qlBasisCustomerAccinfos.add(item);
+        }
+        basisCustomerAccinfoMapper.insertOrUpdateBatch(qlBasisCustomerAccinfos);
         return baseMapper.updateById(update) > 0;
     }
 
