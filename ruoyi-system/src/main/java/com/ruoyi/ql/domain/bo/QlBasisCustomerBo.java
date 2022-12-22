@@ -115,5 +115,29 @@ public class QlBasisCustomerBo extends BaseEntity {
      */
     private Long deptId;
 
-    private List<QlBasisCustomerAccinfoVo> qlBasisCustomerAccinfoVoList;
+    //yangaogao 20221222 先暂时不做一对多，将公户信息和私户信息摊平放在客户信息表即可。
+//    private List<QlBasisCustomerAccinfoVo> qlBasisCustomerAccinfoVoList;
+
+
+    /**
+     * 公共户开户行
+     */
+    @NotBlank(message = "公共户开户行不能为空", groups = { AddGroup.class, EditGroup.class })
+    private String publicBankName;
+
+    /**
+     * 私户开户行
+     */
+    private String privateBankName;
+
+    /**
+     * 公户账号
+     */
+    @NotBlank(message = "公户账号不能为空", groups = { AddGroup.class, EditGroup.class })
+    private String publicBankNo;
+
+    /**
+     * 私户账号
+     */
+    private String privateBankNo;
 }

@@ -41,10 +41,10 @@ public class QlBasisCustomerServiceImpl implements IQlBasisCustomerService {
     @Override
     public QlBasisCustomerVo queryById(Long id) {
         QlBasisCustomerVo qlBasisCustomerVo = baseMapper.selectVoById(id);
-        LambdaQueryWrapper<QlBasisCustomerAccinfo> accinfoLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        accinfoLambdaQueryWrapper.eq(QlBasisCustomerAccinfo::getCustomerId, id);
-        List<QlBasisCustomerAccinfoVo> qlBasisCustomerAccinfoVos = basisCustomerAccinfoMapper.selectVoList(accinfoLambdaQueryWrapper);
-        qlBasisCustomerVo.setQlBasisCustomerAccinfoVoList(qlBasisCustomerAccinfoVos);
+//        LambdaQueryWrapper<QlBasisCustomerAccinfo> accinfoLambdaQueryWrapper = new LambdaQueryWrapper<>();
+//        accinfoLambdaQueryWrapper.eq(QlBasisCustomerAccinfo::getCustomerId, id);
+//        List<QlBasisCustomerAccinfoVo> qlBasisCustomerAccinfoVos = basisCustomerAccinfoMapper.selectVoList(accinfoLambdaQueryWrapper);
+//        qlBasisCustomerVo.setQlBasisCustomerAccinfoVoList(qlBasisCustomerAccinfoVos);
 
         return qlBasisCustomerVo;
     }
@@ -86,6 +86,10 @@ public class QlBasisCustomerServiceImpl implements IQlBasisCustomerService {
         lqw.eq(bo.getInvoiceTax() != null, QlBasisCustomer::getInvoiceTax, bo.getInvoiceTax());
         lqw.eq(StringUtils.isNotBlank(bo.getInvoiceType()), QlBasisCustomer::getInvoiceType, bo.getInvoiceType());
         lqw.eq(bo.getDeptId() != null, QlBasisCustomer::getDeptId, bo.getDeptId());
+        lqw.like(StringUtils.isNotBlank(bo.getPublicBankName()), QlBasisCustomer::getPublicBankName, bo.getPublicBankName());
+        lqw.like(StringUtils.isNotBlank(bo.getPrivateBankName()), QlBasisCustomer::getPrivateBankName, bo.getPrivateBankName());
+        lqw.eq(StringUtils.isNotBlank(bo.getPublicBankNo()), QlBasisCustomer::getPublicBankNo, bo.getPublicBankNo());
+        lqw.eq(StringUtils.isNotBlank(bo.getPrivateBankNo()), QlBasisCustomer::getPrivateBankNo, bo.getPrivateBankNo());
         return lqw;
     }
 
@@ -100,7 +104,7 @@ public class QlBasisCustomerServiceImpl implements IQlBasisCustomerService {
 
         validEntityBeforeSave(add);
         boolean flag = baseMapper.insert(add) > 0;
-        if (flag) {
+        /*if (flag) {
             List<QlBasisCustomerAccinfo> list = new ArrayList<>();
             for (QlBasisCustomerAccinfoVo qlBasisCustomerAccinfoVo : bo.getQlBasisCustomerAccinfoVoList()) {
                 QlBasisCustomerAccinfo qlBasisCustomerAccinfo = BeanUtil.toBean(qlBasisCustomerAccinfoVo, QlBasisCustomerAccinfo.class);
@@ -108,7 +112,7 @@ public class QlBasisCustomerServiceImpl implements IQlBasisCustomerService {
                 list.add(qlBasisCustomerAccinfo);
             }
             basisCustomerAccinfoMapper.insertBatch(list);
-        }
+        }*/
         return flag;
     }
 
@@ -119,13 +123,13 @@ public class QlBasisCustomerServiceImpl implements IQlBasisCustomerService {
     public Boolean updateByBo(QlBasisCustomerBo bo) {
         QlBasisCustomer update = BeanUtil.toBean(bo, QlBasisCustomer.class);
         validEntityBeforeSave(update);
-        List<QlBasisCustomerAccinfo> qlBasisCustomerAccinfos = new ArrayList<QlBasisCustomerAccinfo>();
+        /*List<QlBasisCustomerAccinfo> qlBasisCustomerAccinfos = new ArrayList<QlBasisCustomerAccinfo>();
         for (QlBasisCustomerAccinfoVo qlFinReimbursementItemVo : bo.getQlBasisCustomerAccinfoVoList()) {
             QlBasisCustomerAccinfo item = BeanUtil.toBean(qlFinReimbursementItemVo, QlBasisCustomerAccinfo.class);
             item.setCustomerId(bo.getCustomerCode());
             qlBasisCustomerAccinfos.add(item);
         }
-        basisCustomerAccinfoMapper.insertOrUpdateBatch(qlBasisCustomerAccinfos);
+        basisCustomerAccinfoMapper.insertOrUpdateBatch(qlBasisCustomerAccinfos);*/
         return baseMapper.updateById(update) > 0;
     }
 

@@ -27,6 +27,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updateTime" column="update_time"/>
         <result property="remark" column="remark"/>
         <result property="deptId" column="dept_id"/>
+        <result property="publicBankName" column="public_bank_name"/>
+        <result property="privateBankName" column="private_bank_name"/>
+        <result property="publicBankNo" column="public_bank_no"/>
+        <result property="privateBankNo" column="private_bank_no"/>
     </resultMap>
 
 

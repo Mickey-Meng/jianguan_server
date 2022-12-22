@@ -5,6 +5,7 @@ import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.ruoyi.common.annotation.ExcelDictFormat;
 import com.ruoyi.common.convert.ExcelDictConvert;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import java.util.Date;
 import java.util.List;
@@ -45,7 +46,34 @@ public class QlBasisCustomerVo {
      */
     @ExcelProperty(value = "手机")
     private String mobilePhone;
+    /**
+     * 公共户开户行
+     */
+    @ExcelProperty(value = "公共户开户行")
+    @ApiModelProperty(value = "公共户开户行", required = true)
+    private String publicBankName;
 
-    private List<QlBasisCustomerAccinfoVo> qlBasisCustomerAccinfoVoList;
+    /**
+     * 私户开户行
+     */
+    @ExcelProperty(value = "私户开户行")
+    @ApiModelProperty(value = "私户开户行", required = true)
+    private String privateBankName;
+
+    /**
+     * 公户账号
+     */
+    @ExcelProperty(value = "公户账号")
+    @ApiModelProperty(value = "公户账号", required = true)
+    private String publicBankNo;
+
+    /**
+     * 私户账号
+     */
+    @ExcelProperty(value = "私户账号")
+    @ApiModelProperty(value = "私户账号", required = true)
+    private String privateBankNo;
+
+//    private List<QlBasisCustomerAccinfoVo> qlBasisCustomerAccinfoVoList;
 
 }

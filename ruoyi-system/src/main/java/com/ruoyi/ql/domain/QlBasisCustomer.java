@@ -97,5 +97,20 @@ public class QlBasisCustomer extends BaseEntity {
      * 部门ID
      */
     private Long deptId;
-
+    /**
+     * 公共户开户行
+     */
+    private String publicBankName;
+    /**
+     * 私户开户行
+     */
+    private String privateBankName;
+    /**
+     * 公户账号
+     */
+    private String publicBankNo;
+    /**
+     * 私户账号
+     */
+    private String privateBankNo;
 }
