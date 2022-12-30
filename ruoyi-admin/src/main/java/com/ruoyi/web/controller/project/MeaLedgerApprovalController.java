@@ -2,6 +2,8 @@ package com.ruoyi.web.controller.project;
 
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.StrUtil;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.annotation.RepeatSubmit;
 import com.ruoyi.common.core.controller.BaseController;
@@ -15,7 +17,9 @@ import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.project.approval.domain.bo.MeaLedgerApprovalBo;
 import com.ruoyi.project.approval.domain.vo.MeaLedgerApprovalVo;
 import com.ruoyi.project.approval.service.IMeaLedgerApprovalService;
+import com.ruoyi.workflow.service.IWfProcessService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,6 +43,11 @@ public class MeaLedgerApprovalController extends BaseController {
 
     private final IMeaLedgerApprovalService iMeaLedgerApprovalService;
 
+    private final IWfProcessService processService;
+
+    @Value("${mea.flowable.ledgerApproval}")
+    private String formKey;
+
     /**
      * 查询台账报审列表
      */
@@ -47,6 +56,8 @@ public class MeaLedgerApprovalController extends BaseController {
     public TableDataInfo<MeaLedgerApprovalVo> list(MeaLedgerApprovalBo bo, PageQuery pageQuery) {
         return iMeaLedgerApprovalService.queryPageList(bo, pageQuery);
     }
+
+
 
     /**
      * 导出台账报审列表
@@ -78,13 +89,21 @@ public class MeaLedgerApprovalController extends BaseController {
     @Log(title = "台账报审", businessType = BusinessType.INSERT)
     @RepeatSubmit()
     @PostMapping()
-    public R<Void> add(@Validated(AddGroup.class) @RequestBody List<MeaLedgerApprovalBo> bo) {
-
-        boolean b = iMeaLedgerApprovalService.insertByListBo(bo);
-        if (b) {
-
+    public R<Void> add(@Validated(AddGroup.class) @RequestBody List<MeaLedgerApprovalBo> bos) {
+        if(CollUtil.isEmpty(bos)){
+            return R.fail("数据不能为空");
         }
-        return toAjax(b ? 1 : 0);
+        String process_1669973630070 = processService.getProcessByKey("Process_1671867751905");
+        if(StrUtil.isBlank(process_1669973630070)){
+            return R.fail("流程图未定义");
+        }
+        for(MeaLedgerApprovalBo bo:bos){
+            Boolean aBoolean = iMeaLedgerApprovalService.insertByBo(bo);
+            if(aBoolean){
+                processService.startMeaProcess(process_1669973630070,formKey,bo.getId().toString(), bo);
+            }
+        }
+        return R.ok();
     }
 
     /**

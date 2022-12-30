@@ -33,6 +33,9 @@ public class MeaLedgerApproval extends BaseEntity {
      * 标段编号
      */
     private String bdbh;
+
+
+    private String reviewCode;
     /**
      * 申请期次
      */

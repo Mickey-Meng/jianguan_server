@@ -34,6 +34,8 @@ mea:
     measurementDocuments: measurementDocuments
     #工程变更表单
     ledgerChange: ledgerChange
+    #台账审批
+    ledgerApproval: ledgerApproval
 # 开发环境配置
 server:
   # 服务器的HTTP端口，默认为8080
