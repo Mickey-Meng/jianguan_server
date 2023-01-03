@@ -7,6 +7,8 @@ import com.ruoyi.common.core.domain.PageQuery;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.ruoyi.ql.domain.vo.QlWhWarehouseVo;
+import com.ruoyi.ql.mapper.QlWhWarehouseMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import com.ruoyi.ql.domain.bo.QlWhReservoirBo;
@@ -30,13 +32,18 @@ import java.util.Collection;
 public class QlWhReservoirServiceImpl implements IQlWhReservoirService {
 
     private final QlWhReservoirMapper baseMapper;
+    /** 仓库  **/
+    private final QlWhWarehouseMapper qlWhWarehouseMapper;
 
     /**
      * 查询库区设置
      */
     @Override
     public QlWhReservoirVo queryById(Long id){
-        return baseMapper.selectVoById(id);
+        QlWhReservoirVo qlWhReservoirVo = baseMapper.selectVoById(id);
+        QlWhWarehouseVo qlWhWarehouseVo = qlWhWarehouseMapper.selectVoById(qlWhReservoirVo.getWarehouseId());
+        qlWhReservoirVo.setWarehouseName(qlWhWarehouseVo.getWarehouseName());
+        return qlWhReservoirVo;
     }
 
     /**

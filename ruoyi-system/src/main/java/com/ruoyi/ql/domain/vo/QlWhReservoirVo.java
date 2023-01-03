@@ -45,5 +45,9 @@ public class QlWhReservoirVo {
     @ExcelProperty(value = "所属仓库")
     private Long warehouseId;
 
-
+    /**
+     * 所属仓库名称
+     */
+    @ExcelProperty(value = "所属仓库名称")
+    private String warehouseName;
 }

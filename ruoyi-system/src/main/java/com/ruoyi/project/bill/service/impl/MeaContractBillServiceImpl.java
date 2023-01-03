@@ -25,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -57,6 +58,15 @@ public class MeaContractBillServiceImpl implements IMeaContractBillService {
     @Override
     public List<MeaContractBillVo> queryList(MeaContractBillBo bo) {
         LambdaQueryWrapper<MeaContractBill> lqw = buildQueryWrapper(bo);
+        return baseMapper.selectVoList(lqw);
+    }
+
+    @Override
+    public List<MeaContractBillVo> getLeafList( ) {
+        Map<String, Object> params = new HashMap<>();
+        LambdaQueryWrapper<MeaContractBill> lqw = Wrappers.lambdaQuery();
+        lqw.gt(MeaContractBill::getHtje, 0);
+        lqw.eq( MeaContractBill::getStatus, 0);
         return baseMapper.selectVoList(lqw);
     }
 

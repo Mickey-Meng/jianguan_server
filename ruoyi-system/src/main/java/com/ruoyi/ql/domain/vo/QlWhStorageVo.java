@@ -50,7 +50,11 @@ public class QlWhStorageVo {
      */
     @ExcelProperty(value = "所属库区")
     private Long reservoirId;
-
+    /**
+     * 所属库区
+     */
+    @ExcelProperty(value = "所属库区名称")
+    private String reservoirName;
     /**
      * 空库位标识(Y是 N否)
      */
