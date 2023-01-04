@@ -31,7 +31,10 @@ public interface IMeaLedgerBreakdownDetailService {
      * 查询台账分解明细列表
      */
     List<MeaLedgerBreakdownDetailVo> queryList(MeaLedgerBreakdownDetailBo bo);
-
+    /**
+     * 查询台账分解明细叶子节点列表
+     */
+    List<MeaLedgerBreakdownDetailVo> getLeafList();
     /**
      * 新增台账分解明细
      */

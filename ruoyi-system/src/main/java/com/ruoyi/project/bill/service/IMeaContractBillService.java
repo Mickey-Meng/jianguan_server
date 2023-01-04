@@ -28,7 +28,10 @@ public interface IMeaContractBillService {
      * 查询工程量清单列表
      */
     List<MeaContractBillVo> queryList(MeaContractBillBo bo);
-
+    /**
+     * 查询工程量清单列表
+     */
+    List<MeaContractBillVo> getLeafList();
     /**
      * 新增工程量清单
      */

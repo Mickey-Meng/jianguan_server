@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -56,6 +57,14 @@ public class MeaLedgerBreakdownDetailServiceImpl implements IMeaLedgerBreakdownD
     @Override
     public List<MeaLedgerBreakdownDetailVo> queryList(MeaLedgerBreakdownDetailBo bo) {
         LambdaQueryWrapper<MeaLedgerBreakdownDetail> lqw = buildQueryWrapper(bo);
+        return baseMapper.selectVoList(lqw);
+    }
+
+    @Override
+    public List<MeaLedgerBreakdownDetailVo> getLeafList() {
+        Map<String, Object> params = new HashMap<>();
+        LambdaQueryWrapper<MeaLedgerBreakdownDetail> lqw = Wrappers.lambdaQuery();
+        lqw.gt(MeaLedgerBreakdownDetail::getFjsl, 0);
         return baseMapper.selectVoList(lqw);
     }
 

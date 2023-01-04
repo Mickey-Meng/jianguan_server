@@ -13,6 +13,8 @@ import com.ruoyi.common.core.validate.AddGroup;
 import com.ruoyi.common.core.validate.EditGroup;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.poi.ExcelUtil;
+import com.ruoyi.project.bill.domain.bo.MeaContractBillBo;
+import com.ruoyi.project.bill.domain.vo.MeaContractBillVo;
 import com.ruoyi.project.ledger.domain.bo.MeaLedgerBreakdownDetailBo;
 import com.ruoyi.project.ledger.domain.vo.MeaLedgerBreakdownDetailVo;
 import com.ruoyi.project.ledger.service.IMeaLedgerBreakdownDetailService;
@@ -57,7 +59,15 @@ public class MeaLedgerBreakdownDetailController extends BaseController {
         return iMeaLedgerBreakdownDetailService.queryPageList(bo, pageQuery);
     }
 
-
+    /**
+     * 查询台账分解叶子节点数据，分解数量>0
+     * @return
+     */
+    @GetMapping("/getLeaflist")
+    public R<List<MeaLedgerBreakdownDetailVo>> getLeaflist() {
+        List<MeaLedgerBreakdownDetailVo> list = iMeaLedgerBreakdownDetailService.getLeafList();
+        return R.ok(list);
+    }
     /**
      * 导出台账分解明细列表
      */

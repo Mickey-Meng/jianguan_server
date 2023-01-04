@@ -53,6 +53,15 @@ public class MeaContractBillController extends BaseController {
         return R.ok(list);
     }
 
+
+    /**
+     * 查询工程量清单叶子节点，合同数量>0的数据列表
+     */
+    @GetMapping("/getLeaflist")
+    public R<List<MeaContractBillVo>> getLeaflist() {
+        List<MeaContractBillVo> list = iMeaContractBillService.getLeafList();
+        return R.ok(list);
+    }
     /**
      * 查询工程量清单树干节点
      */
