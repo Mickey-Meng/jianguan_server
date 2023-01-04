@@ -18,6 +18,7 @@ import com.ruoyi.project.approval.domain.bo.MeaLedgerApprovalBo;
 import com.ruoyi.project.approval.domain.vo.MeaLedgerApprovalVo;
 import com.ruoyi.project.approval.service.IMeaLedgerApprovalService;
 import com.ruoyi.workflow.service.IWfProcessService;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
@@ -86,10 +87,30 @@ public class MeaLedgerApprovalController extends BaseController {
      * 新增台账报审
      */
     @SaCheckPermission("ledgerapproval:ledgerApproval:add")
-    @Log(title = "台账报审", businessType = BusinessType.INSERT)
+    @Log(title = "台账报审保存", businessType = BusinessType.INSERT)
     @RepeatSubmit()
+    @ApiOperation("台账报审保存")
     @PostMapping()
     public R<Void> add(@Validated(AddGroup.class) @RequestBody List<MeaLedgerApprovalBo> bos) {
+        if(CollUtil.isEmpty(bos)){
+            return R.fail("数据不能为空");
+        }
+        boolean b = iMeaLedgerApprovalService.insertByListBo(bos);
+        if(b){
+            return R.ok();
+        }
+        return R.fail();
+    }
+
+    /**
+     * 新增台账报审
+     */
+    @SaCheckPermission("ledgerapproval:ledgerApproval:add")
+    @Log(title = "台账报审上报", businessType = BusinessType.INSERT)
+    @RepeatSubmit()
+    @ApiOperation("台账报审上报")
+    @PostMapping("/up")
+    public R<Void> up(@Validated(AddGroup.class) @RequestBody List<MeaLedgerApprovalBo> bos) {
         if(CollUtil.isEmpty(bos)){
             return R.fail("数据不能为空");
         }
@@ -98,10 +119,7 @@ public class MeaLedgerApprovalController extends BaseController {
             return R.fail("流程图未定义");
         }
         for(MeaLedgerApprovalBo bo:bos){
-            Boolean aBoolean = iMeaLedgerApprovalService.insertByBo(bo);
-            if(aBoolean){
-                processService.startMeaProcess(process_1669973630070,formKey,bo.getId().toString(), bo);
-            }
+            processService.startMeaProcess(process_1669973630070,formKey,bo.getId().toString(), bo);
         }
         return R.ok();
     }
