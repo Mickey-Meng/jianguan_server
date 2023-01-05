@@ -47,7 +47,7 @@
                     sum( b.shje ) AS shje,
                     b.zmmc,
                     b.zmh,
-                    b.zje,
+                    sum(b.htje) as zje,
                     b.zsl,
                     LEFT (
                     zmh_ancestors,
@@ -61,6 +61,8 @@
                 GROUP BY
                     zhangmuhao
             ) AS temp
+
+
     </select>
 
 
