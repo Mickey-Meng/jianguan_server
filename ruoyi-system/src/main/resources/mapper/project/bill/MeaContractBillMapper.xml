@@ -31,12 +31,36 @@
         <result property="parentId" column="parent_id"/>
     </resultMap>
     <select id="chapter_collect" resultType="com.ruoyi.project.bill.domain.pojo.ChapterCollectDto">
-
-    SELECT sum(b.htdj) as htdj,sum(b.xzje) as xzje,sum(b.shje) as shje,b.zmmc ,b.zmh,b.zje,b.zsl
-    FROM mea_contract_bill  b
-    where b.zmh_parent=0 and status=0 GROUP BY b.zmh
-
-
+        SELECT
+            htdj,
+            xzje,
+            shje,
+            zmmc,
+            zhangmuhao AS zmh,
+            zje,
+            zsl
+        FROM
+            (
+                SELECT
+                    sum( b.htdj ) AS htdj,
+                    sum( b.xzje ) AS xzje,
+                    sum( b.shje ) AS shje,
+                    b.zmmc,
+                    b.zmh,
+                    b.zje,
+                    b.zsl,
+                    LEFT (
+                    zmh_ancestors,
+                    IF
+                    (
+                    LOCATE( ',', zmh_ancestors )> 0,
+                    LOCATE( ',', zmh_ancestors )- 1,
+                    LENGTH( zmh_ancestors ))) AS zhangmuhao
+                FROM
+                    mea_contract_bill AS b
+                GROUP BY
+                    zhangmuhao
+            ) AS temp
     </select>
 
 

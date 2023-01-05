@@ -1,17 +1,17 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="ruoyi-server" type="docker-deploy" factoryName="dockerfile" server-name="82.157.206.92">
+  <configuration default="false" name="ruoyi-server" type="docker-deploy" factoryName="dockerfile" server-name="101.43.131.124">
     <deployment type="dockerfile">
       <settings>
         <option name="imageTag" value="" />
         <option name="buildCliOptions" value="" />
-        <option name="command" value="ruoyi-admin" />
+        <option name="command" value="" />
         <option name="containerName" value="server" />
         <option name="entrypoint" value="" />
         <option name="portBindings">
           <list>
             <DockerPortBindingImpl>
               <option name="containerPort" value="8080" />
-              <option name="hostPort" value="8080" />
+              <option name="hostPort" value="8182" />
             </DockerPortBindingImpl>
           </list>
         </option>
