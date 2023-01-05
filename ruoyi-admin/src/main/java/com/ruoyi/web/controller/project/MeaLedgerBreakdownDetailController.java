@@ -16,9 +16,11 @@ import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.project.bill.domain.bo.MeaContractBillBo;
 import com.ruoyi.project.bill.domain.vo.MeaContractBillVo;
 import com.ruoyi.project.ledger.domain.bo.MeaLedgerBreakdownDetailBo;
+import com.ruoyi.project.ledger.domain.vo.MeaLedgerBreakdownDetailInfoVo;
 import com.ruoyi.project.ledger.domain.vo.MeaLedgerBreakdownDetailVo;
 import com.ruoyi.project.ledger.service.IMeaLedgerBreakdownDetailService;
 import com.ruoyi.workflow.service.IWfProcessService;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
@@ -57,6 +59,16 @@ public class MeaLedgerBreakdownDetailController extends BaseController {
     @GetMapping("/list")
     public TableDataInfo<MeaLedgerBreakdownDetailVo> list(MeaLedgerBreakdownDetailBo bo, PageQuery pageQuery) {
         return iMeaLedgerBreakdownDetailService.queryPageList(bo, pageQuery);
+    }
+
+    /**
+     * 查询台账分解明细列表
+     */
+    @SaCheckPermission("ledgerDetail:ledgerBreakdownDetail:list")
+    @ApiOperation("台账分解明细列表树节点")
+    @GetMapping("/list-info")
+    public TableDataInfo<MeaLedgerBreakdownDetailInfoVo> listInfo(MeaLedgerBreakdownDetailBo bo, PageQuery pageQuery) {
+        return iMeaLedgerBreakdownDetailService.listInfo(bo, pageQuery);
     }
 
     /**

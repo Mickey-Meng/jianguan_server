@@ -4,6 +4,7 @@ package com.ruoyi.project.ledger.service;
 import com.ruoyi.common.core.domain.PageQuery;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.project.ledger.domain.bo.MeaLedgerBreakdownDetailBo;
+import com.ruoyi.project.ledger.domain.vo.MeaLedgerBreakdownDetailInfoVo;
 import com.ruoyi.project.ledger.domain.vo.MeaLedgerBreakdownDetailVo;
 
 import java.util.Collection;
@@ -50,4 +51,5 @@ public interface IMeaLedgerBreakdownDetailService {
      */
     Boolean deleteWithValidByIds(Collection<String> ids, Boolean isValid);
 
+    TableDataInfo<MeaLedgerBreakdownDetailInfoVo> listInfo(MeaLedgerBreakdownDetailBo bo, PageQuery pageQuery);
 }

@@ -2,24 +2,35 @@ package com.ruoyi.project.ledger.service.impl;
 
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ruoyi.common.core.domain.PageQuery;
 import com.ruoyi.common.core.page.TableDataInfo;
+import com.ruoyi.project.approval.domain.MeaLedgerApproval;
+import com.ruoyi.project.approval.mapper.MeaLedgerApprovalMapper;
+import com.ruoyi.project.bill.domain.MeaContractBill;
+import com.ruoyi.project.bill.mapper.MeaContractBillMapper;
+import com.ruoyi.project.ledger.domain.MeaLedgerBreakdown;
 import com.ruoyi.project.ledger.domain.MeaLedgerBreakdownDetail;
 import com.ruoyi.project.ledger.domain.bo.MeaLedgerBreakdownDetailBo;
+import com.ruoyi.project.ledger.domain.vo.MeaLedgerBreakdownDetailInfoVo;
 import com.ruoyi.project.ledger.domain.vo.MeaLedgerBreakdownDetailVo;
 import com.ruoyi.project.ledger.mapper.MeaLedgerBreakdownDetailMapper;
+import com.ruoyi.project.ledger.mapper.MeaLedgerBreakdownMapper;
 import com.ruoyi.project.ledger.service.IMeaLedgerBreakdownDetailService;
 import io.micrometer.core.instrument.util.StringUtils;
+import liquibase.pro.packaged.Q;
+import liquibase.pro.packaged.W;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 台账分解明细Service业务层处理
@@ -32,6 +43,12 @@ import java.util.Map;
 public class MeaLedgerBreakdownDetailServiceImpl implements IMeaLedgerBreakdownDetailService {
 
     private final MeaLedgerBreakdownDetailMapper baseMapper;
+
+    private final MeaLedgerBreakdownMapper meaLedgerBreakdownMapper;
+
+    private final MeaLedgerApprovalMapper meaLedgerApprovalMapper;
+
+    private final MeaContractBillMapper meaContractBillMapper;
 
     /**
      * 查询台账分解明细
@@ -46,6 +63,16 @@ public class MeaLedgerBreakdownDetailServiceImpl implements IMeaLedgerBreakdownD
      */
     @Override
     public TableDataInfo<MeaLedgerBreakdownDetailVo> queryPageList(MeaLedgerBreakdownDetailBo bo, PageQuery pageQuery) {
+        if(StrUtil.isNotBlank(bo.getReviewCode())){
+            if(bo.getReviewCode().equals("2")){
+                QueryWrapper<MeaLedgerApproval> queryWrapper=new QueryWrapper<>();
+                queryWrapper.eq("review_code","2");
+                List<MeaLedgerApproval> meaLedgerApprovals = meaLedgerApprovalMapper.selectList(queryWrapper);
+                if(CollUtil.isEmpty(meaLedgerApprovals)){
+                    return TableDataInfo.build(new ArrayList<>());
+                }
+            }
+        }
         LambdaQueryWrapper<MeaLedgerBreakdownDetail> lqw = buildQueryWrapper(bo);
         Page<MeaLedgerBreakdownDetailVo> result = baseMapper.selectVoPage(pageQuery.build(), lqw);
         return TableDataInfo.build(result);
@@ -77,7 +104,7 @@ public class MeaLedgerBreakdownDetailServiceImpl implements IMeaLedgerBreakdownD
         lqw.eq(StringUtils.isNotBlank(bo.getZmh()), MeaLedgerBreakdownDetail::getZmh, bo.getZmh());
         lqw.eq(StringUtils.isNotBlank(bo.getZmmc()), MeaLedgerBreakdownDetail::getZmmc, bo.getZmmc());
         lqw.eq(StringUtils.isNotBlank(bo.getDw()), MeaLedgerBreakdownDetail::getDw, bo.getDw());
-        lqw.eq(StringUtils.isNotBlank(bo.getReviewCode()), MeaLedgerBreakdownDetail::getReviewCode, bo.getReviewCode());
+//        lqw.eq(StringUtils.isNotBlank(bo.getReviewCode()), MeaLedgerBreakdownDetail::getReviewCode, bo.getReviewCode());
         lqw.eq(bo.getHtdj() != null, MeaLedgerBreakdownDetail::getHtdj, bo.getHtdj());
         lqw.eq(bo.getSjsl() != null, MeaLedgerBreakdownDetail::getSjsl, bo.getSjsl());
         lqw.eq(bo.getFjsl() != null, MeaLedgerBreakdownDetail::getFjsl, bo.getFjsl());
@@ -87,7 +114,18 @@ public class MeaLedgerBreakdownDetailServiceImpl implements IMeaLedgerBreakdownD
         lqw.eq(bo.getFhje() != null, MeaLedgerBreakdownDetail::getFhje, bo.getFhje());
         lqw.eq(StringUtils.isNotBlank(bo.getFjlx()), MeaLedgerBreakdownDetail::getFjlx, bo.getFjlx());
         lqw.eq(StringUtils.isNotBlank(bo.getStatus()), MeaLedgerBreakdownDetail::getStatus, bo.getStatus());
-        lqw.eq(StringUtils.isNotBlank(bo.getReviewCode()), MeaLedgerBreakdownDetail::getReviewCode, bo.getReviewCode());
+        if(StrUtil.isNotBlank(bo.getReviewCode())){
+            if(bo.getReviewCode().equals("2")){
+                QueryWrapper<MeaLedgerApproval> queryWrapper=new QueryWrapper<>();
+                queryWrapper.eq("review_code","2");
+                List<MeaLedgerApproval> meaLedgerApprovals = meaLedgerApprovalMapper.selectList(queryWrapper);
+                if(CollUtil.isNotEmpty(meaLedgerApprovals)){
+                    List<String> collect = meaLedgerApprovals.stream().map(MeaLedgerApproval::getTzfjbh).collect(Collectors.toList());
+                    lqw.in(MeaLedgerBreakdownDetail::getTzfjbh,collect);
+                }
+            }
+
+        }
         return lqw;
     }
 
@@ -133,5 +171,82 @@ public class MeaLedgerBreakdownDetailServiceImpl implements IMeaLedgerBreakdownD
             //TODO 做一些业务上的校验,判断是否需要校验
         }
         return baseMapper.deleteBatchIds(ids) > 0;
+    }
+
+    @Override
+    public TableDataInfo<MeaLedgerBreakdownDetailInfoVo> listInfo(MeaLedgerBreakdownDetailBo bo, PageQuery pageQuery) {
+        if(StrUtil.isNotBlank(bo.getReviewCode())){
+            if(bo.getReviewCode().equals("2")){
+                QueryWrapper<MeaLedgerApproval> queryWrapper=new QueryWrapper<>();
+                queryWrapper.eq("review_code","2");
+                List<MeaLedgerApproval> meaLedgerApprovals = meaLedgerApprovalMapper.selectList(queryWrapper);
+                if(CollUtil.isEmpty(meaLedgerApprovals)){
+                    return TableDataInfo.build(new ArrayList<>());
+                }
+            }
+        }
+        List<MeaLedgerBreakdownDetailInfoVo> meaLedgerBreakdownDetailInfoVos=new ArrayList<>();
+        LambdaQueryWrapper<MeaLedgerBreakdownDetail> lqw = buildQueryWrapper(bo);
+        Page<MeaLedgerBreakdownDetailVo> result = baseMapper.selectVoPage(pageQuery.build(), lqw);
+        Map<String, List<MeaLedgerBreakdownDetailVo>> stringListMap=new LinkedHashMap<>();
+        if(CollUtil.isNotEmpty(result.getRecords())){
+            List<MeaLedgerBreakdownDetailVo> records = result.getRecords();
+            QueryWrapper<MeaContractBill> queryWrapper=new QueryWrapper<>();
+            queryWrapper.eq("status","0");
+            List<MeaContractBill> meaLedgerBreakdowns = meaContractBillMapper.selectList(queryWrapper);
+            for(MeaLedgerBreakdownDetailVo meaLedgerBreakdownDetailVo:records){
+                QueryWrapper<MeaContractBill> queryWrapper1=new QueryWrapper<>();
+                queryWrapper1.eq("zmh",meaLedgerBreakdownDetailVo.getZmh());
+                queryWrapper1.eq("status","0");
+                MeaContractBill meaLedgerBreakdown = meaContractBillMapper.selectOne(queryWrapper1);
+                if(meaLedgerBreakdown==null){
+                    continue;
+                }
+                MeaContractBill maximumParent2 = getMaximumParent2(meaLedgerBreakdowns, meaLedgerBreakdown);
+                if(maximumParent2!=null){
+                    String key=maximumParent2.getZmh()+"-"+maximumParent2.getZmmc();
+                    if(stringListMap.containsKey(key)){
+                        List<MeaLedgerBreakdownDetailVo> meaLedgerBreakdownDetailVos = stringListMap.get(key);
+                        meaLedgerBreakdownDetailVos.add(meaLedgerBreakdownDetailVo);
+                    }else {
+                        List<MeaLedgerBreakdownDetailVo> meaLedgerBreakdownDetailVos =new ArrayList<>();
+                        meaLedgerBreakdownDetailVos.add(meaLedgerBreakdownDetailVo);
+                        stringListMap.put(key,meaLedgerBreakdownDetailVos);
+                    }
+                }
+            }
+            if(stringListMap.keySet().size()>0){
+                for(String key:stringListMap.keySet()){
+                    MeaLedgerBreakdownDetailInfoVo meaLedgerBreakdownDetailInfoVo=new MeaLedgerBreakdownDetailInfoVo();
+                    String[] split = key.split("-");
+                    meaLedgerBreakdownDetailInfoVo.setTzfjbh("第"+split[0]+"章"+split[1]);
+                    meaLedgerBreakdownDetailInfoVo.setZmmc("第"+split[0]+"章"+split[1]);
+                    List<MeaLedgerBreakdownDetailVo> meaLedgerBreakdownDetailVos = stringListMap.get(key);
+                    meaLedgerBreakdownDetailInfoVo.setChildren(meaLedgerBreakdownDetailVos);
+                    meaLedgerBreakdownDetailInfoVos.add(meaLedgerBreakdownDetailInfoVo);
+                }
+
+            }
+        }
+        Page<MeaLedgerBreakdownDetailInfoVo> page=new Page<>();
+        page.setTotal(result.getTotal());
+        page.setRecords(meaLedgerBreakdownDetailInfoVos);
+        page.setPages(result.getPages());
+        return TableDataInfo.build(page);
+    }
+    public MeaContractBill getMaximumParent2(List<MeaContractBill> deptAll, MeaContractBill deptChild) {
+        if (ObjectUtil.isNotEmpty(deptChild)) {
+            String parentId = deptChild.getZmhParent();
+            List<MeaContractBill> parentDepts = deptAll.stream().filter(item -> item.getZmh().equals(parentId)).collect(Collectors.toList());
+            if (CollUtil.isNotEmpty(parentDepts)) {
+                MeaContractBill parentDept = parentDepts.get(0);
+                MeaContractBill maximumParent2 = getMaximumParent2(deptAll, parentDept);
+                if (maximumParent2 == null) {
+                    return parentDept;
+                }
+                return maximumParent2;
+            }
+        }
+        return null;
     }
 }
