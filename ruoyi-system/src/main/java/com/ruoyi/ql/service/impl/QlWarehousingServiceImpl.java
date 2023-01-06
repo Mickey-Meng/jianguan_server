@@ -7,6 +7,8 @@ import com.ruoyi.common.core.domain.PageQuery;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.ruoyi.ql.domain.QlShopGoods;
+import com.ruoyi.ql.mapper.QlShopGoodsMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import com.ruoyi.ql.domain.bo.QlWarehousingBo;
@@ -14,6 +16,7 @@ import com.ruoyi.ql.domain.vo.QlWarehousingVo;
 import com.ruoyi.ql.domain.QlWarehousing;
 import com.ruoyi.ql.mapper.QlWarehousingMapper;
 import com.ruoyi.ql.service.IQlWarehousingService;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -30,6 +33,7 @@ import java.util.Collection;
 public class QlWarehousingServiceImpl implements IQlWarehousingService {
 
     private final QlWarehousingMapper baseMapper;
+    private final QlShopGoodsMapper qlShopGoodsMapper;
 
     /**
      * 查询入库管理
@@ -77,9 +81,19 @@ public class QlWarehousingServiceImpl implements IQlWarehousingService {
      * 新增入库管理
      */
     @Override
+    @Transactional
     public Boolean insertByBo(QlWarehousingBo bo) {
         QlWarehousing add = BeanUtil.toBean(bo, QlWarehousing.class);
         validEntityBeforeSave(add);
+        String productId = add.getProudctId();
+        Long i = add.getWarehousingNumber();
+
+        QlShopGoods qlShopGoods  = qlShopGoodsMapper.selectById(productId);
+        Long seedNumber = qlShopGoods.getStockNumber();
+
+        qlShopGoods.setStockNumber(seedNumber + i);
+        qlShopGoodsMapper.updateById(qlShopGoods);
+
         boolean flag = baseMapper.insert(add) > 0;
         if (flag) {
             bo.setId(add.getId());

@@ -22,6 +22,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="sellingPrice" column="selling_price"/>
         <result property="wholesalePrice" column="wholesale_price"/>
         <result property="isCost" column="is_cost"/>
+        <result property="safetyStock" column="safety_stock"/>
+        <result property="stockNumber" column="stock_number"/>
         <result property="delFlag" column="del_flag"/>
         <result property="createBy" column="create_by"/>
         <result property="createTime" column="create_time"/>

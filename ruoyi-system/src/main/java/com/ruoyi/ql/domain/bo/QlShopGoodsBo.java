@@ -125,5 +125,14 @@ public class QlShopGoodsBo extends BaseEntity {
      */
     private Long deptId;
 
+    /**
+     * 安全库存
+     */
+    @NotNull(message = "安全库存不能为空", groups = { AddGroup.class, EditGroup.class })
+    private Long safetyStock;
 
+    /**
+     * 实时库存
+     */
+    private Long stockNumber;
 }

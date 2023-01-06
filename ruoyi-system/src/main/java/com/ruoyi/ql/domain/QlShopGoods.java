@@ -93,6 +93,14 @@ public class QlShopGoods extends BaseEntity {
      */
     private String isCost;
     /**
+     * 安全库存
+     */
+    private Long safetyStock;
+    /**
+     * 实时库存
+     */
+    private Long stockNumber;
+    /**
      * 删除标志（0代表存在 2代表删除）
      */
     @TableLogic

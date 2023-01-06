@@ -5,6 +5,7 @@ import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.ruoyi.common.annotation.ExcelDictFormat;
 import com.ruoyi.common.convert.ExcelDictConvert;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import java.util.Date;
 
@@ -58,5 +59,17 @@ public class QlShopGoodsVo {
     @ExcelProperty(value = "商品单位【关联字典管理】")
     private String goodsUnit;
 
+    /**
+     * 安全库存
+     */
+    @ExcelProperty(value = "安全库存")
+    @ApiModelProperty(value = "安全库存", required = true)
+    private Long safetyStock;
 
+    /**
+     * 实时库存
+     */
+    @ExcelProperty(value = "实时库存")
+    @ApiModelProperty(value = "实时库存", required = true)
+    private Long stockNumber;
 }

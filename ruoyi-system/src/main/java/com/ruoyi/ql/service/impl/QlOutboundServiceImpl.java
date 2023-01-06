@@ -7,8 +7,8 @@ import com.ruoyi.common.core.domain.PageQuery;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.ruoyi.ql.domain.QlShopGoodsSeed;
-import com.ruoyi.ql.mapper.QlShopGoodsSeedMapper;
+import com.ruoyi.ql.domain.QlShopGoods;
+import com.ruoyi.ql.mapper.QlShopGoodsMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import com.ruoyi.ql.domain.bo.QlOutboundBo;
@@ -33,7 +33,7 @@ import java.util.Collection;
 public class QlOutboundServiceImpl implements IQlOutboundService {
 
     private final QlOutboundMapper baseMapper;
-    private final QlShopGoodsSeedMapper qlShopGoodsSeedMapper;
+    private final QlShopGoodsMapper qlShopGoodsMapper;
 
     /**
      * 查询出库管理
@@ -82,13 +82,13 @@ public class QlOutboundServiceImpl implements IQlOutboundService {
         String productId = add.getProudctId();
         Long i = add.getOutboundNumber();
 
-        QlShopGoodsSeed qlShopGoodsSeed = qlShopGoodsSeedMapper.selectById(productId);
-        Long seedNumber = qlShopGoodsSeed.getStockNumber();
+        QlShopGoods qlShopGoods  = qlShopGoodsMapper.selectById(productId);
+        Long seedNumber = qlShopGoods.getStockNumber();
         if (i>seedNumber){
             return false;
         }else {
-            qlShopGoodsSeed.setStockNumber(seedNumber - i);
-            qlShopGoodsSeedMapper.updateById(qlShopGoodsSeed);
+            qlShopGoods.setStockNumber(seedNumber - i);
+            qlShopGoodsMapper.updateById(qlShopGoods);
         }
         boolean flag = baseMapper.insert(add) > 0;
         if (flag) {
