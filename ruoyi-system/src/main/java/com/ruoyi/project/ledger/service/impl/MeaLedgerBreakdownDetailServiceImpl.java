@@ -3,6 +3,7 @@ package com.ruoyi.project.ledger.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -226,6 +227,7 @@ public class MeaLedgerBreakdownDetailServiceImpl implements IMeaLedgerBreakdownD
                 for(String key:stringListMap.keySet()){
                     MeaLedgerBreakdownDetailInfoVo meaLedgerBreakdownDetailInfoVo=new MeaLedgerBreakdownDetailInfoVo();
                     String[] split = key.split("-");
+                    meaLedgerBreakdownDetailInfoVo.setId(IdUtil.fastUUID());
                     meaLedgerBreakdownDetailInfoVo.setTzfjbh("第"+split[0]+"章"+split[1]);
                     meaLedgerBreakdownDetailInfoVo.setZmmc("第"+split[0]+"章"+split[1]);
                     List<MeaLedgerBreakdownDetailVo> meaLedgerBreakdownDetailVos = stringListMap.get(key);
