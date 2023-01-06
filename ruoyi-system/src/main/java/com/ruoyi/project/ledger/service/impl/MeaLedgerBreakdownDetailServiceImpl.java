@@ -145,6 +145,13 @@ public class MeaLedgerBreakdownDetailServiceImpl implements IMeaLedgerBreakdownD
         return flag;
     }
 
+    @Override
+    public Boolean insertByListBo(List<MeaLedgerBreakdownDetailBo> bo) {
+        List<MeaLedgerBreakdownDetail> meaLedgerBreakdownDetailList = BeanUtil.copyToList(bo, MeaLedgerBreakdownDetail.class);
+        boolean b = baseMapper.insertBatch(meaLedgerBreakdownDetailList);
+        return  b;
+    }
+
     /**
      * 修改台账分解明细
      */

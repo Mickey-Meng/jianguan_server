@@ -2,6 +2,7 @@ package com.ruoyi.web.controller.project;
 
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.annotation.RepeatSubmit;
@@ -13,6 +14,7 @@ import com.ruoyi.common.core.validate.AddGroup;
 import com.ruoyi.common.core.validate.EditGroup;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.poi.ExcelUtil;
+import com.ruoyi.project.approval.domain.bo.MeaLedgerApprovalBo;
 import com.ruoyi.project.bill.domain.bo.MeaContractBillBo;
 import com.ruoyi.project.bill.domain.vo.MeaContractBillVo;
 import com.ruoyi.project.ledger.domain.bo.MeaLedgerBreakdownDetailBo;
@@ -111,16 +113,50 @@ public class MeaLedgerBreakdownDetailController extends BaseController {
     @RepeatSubmit()
     @PostMapping()
     public R<Void> add(@Validated(AddGroup.class) @RequestBody MeaLedgerBreakdownDetailBo bo) {
-        String process_1669973630070 = processService.getProcessByKey("Process_1670392865296");
+        /*String process_1669973630070 = processService.getProcessByKey("Process_1670392865296");
         if(StrUtil.isBlank(process_1669973630070)){
             return R.fail("流程图未定义");
-        }
+        }*/
         Boolean aBoolean = iMeaLedgerBreakdownDetailService.insertByBo(bo);
-        if(aBoolean){
+       /* if(aBoolean){
             processService.startMeaProcess(process_1669973630070,formKey,bo.getId(), bo);
-        }
+        }*/
         return toAjax(aBoolean ? 1 : 0);
     }
+    /**
+     * 台账分解明细批量保存
+     */
+    @Log(title = "台账分解明细批量保存", businessType = BusinessType.INSERT)
+    @RepeatSubmit()
+    @ApiOperation("台账分解明细批量保存")
+    @PostMapping("/addBatch")
+    public R<Void> addBatch(@Validated(AddGroup.class) @RequestBody List<MeaLedgerBreakdownDetailBo> bo) {
+        Boolean aBoolean = iMeaLedgerBreakdownDetailService.insertByListBo(bo);
+        return toAjax(aBoolean ? 1 : 0);
+    }
+
+
+    /**
+     * 新增台账报审
+     */
+    @Log(title = "台账分解明细审批", businessType = BusinessType.INSERT)
+    @RepeatSubmit()
+    @ApiOperation("台账分解明细审批")
+    @PostMapping("/upBreakdownDetail")
+    public R<Void> upBreakdownDetail(@Validated(AddGroup.class) @RequestBody List<MeaLedgerBreakdownDetailBo> bos) {
+        if(CollUtil.isEmpty(bos)){
+            return R.fail("数据不能为空");
+        }
+        String process_1670392865296 = processService.getProcessByKey("Process_1670392865296");
+        if(StrUtil.isBlank(process_1670392865296)){
+            return R.fail("流程图未定义");
+        }
+        for(MeaLedgerBreakdownDetailBo bo:bos){
+            processService.startMeaProcess(process_1670392865296,formKey,bo.getId().toString(), bo);
+        }
+        return R.ok();
+    }
+
 
     /**
      * 修改台账分解明细

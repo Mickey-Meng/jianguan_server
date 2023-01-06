@@ -40,6 +40,7 @@ public interface IMeaLedgerBreakdownDetailService {
      * 新增台账分解明细
      */
     Boolean insertByBo(MeaLedgerBreakdownDetailBo bo);
+    Boolean insertByListBo(List<MeaLedgerBreakdownDetailBo> bo);
 
     /**
      * 修改台账分解明细
