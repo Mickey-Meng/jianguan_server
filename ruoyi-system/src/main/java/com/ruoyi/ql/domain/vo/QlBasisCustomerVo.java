@@ -5,8 +5,12 @@ import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.ruoyi.common.annotation.ExcelDictFormat;
 import com.ruoyi.common.convert.ExcelDictConvert;
+import com.ruoyi.common.core.validate.AddGroup;
+import com.ruoyi.common.core.validate.EditGroup;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+
+import javax.validation.constraints.NotBlank;
 import java.util.Date;
 import java.util.List;
 
@@ -73,6 +77,13 @@ public class QlBasisCustomerVo {
     @ExcelProperty(value = "私户账号")
     @ApiModelProperty(value = "私户账号", required = true)
     private String privateBankNo;
+
+    /**
+     * 客户所属地区
+     */
+    @ExcelProperty(value = "地区")
+    @ApiModelProperty(value = "地区", required = true)
+    private String area;
 
 //    private List<QlBasisCustomerAccinfoVo> qlBasisCustomerAccinfoVoList;
 

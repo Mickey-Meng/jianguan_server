@@ -47,5 +47,35 @@ public class QlProjectInfoVo {
     @ExcelDictFormat(dictType = "sys_user_sex")
     private String area;
 
+    /**
+     * 项目金额
+     */
+    private BigDecimal projectAmount;
+
+    /**
+     * 项目简述
+     */
+    private String projectResume;
+
+    /**
+     * 项目描述
+     */
+    private String projectDistribute;
+
+    /**
+     * 宣传图
+     */
+    private String photo;
+
+    /**
+     * 附件
+     */
+    private String fj;
+
+    /**
+     *
+     */
+    private String remark;
+
 
 }

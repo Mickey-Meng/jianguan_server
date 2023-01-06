@@ -28,10 +28,7 @@ public class QlProjectInfoBo extends BaseEntity {
     @NotNull(message = "id不能为空", groups = { EditGroup.class })
     private Long id;
 
-    /**
-     * 客户id
-     */
-    @NotBlank(message = "客户id不能为空", groups = { AddGroup.class, EditGroup.class })
+
     private String customerId;
 
     /**
