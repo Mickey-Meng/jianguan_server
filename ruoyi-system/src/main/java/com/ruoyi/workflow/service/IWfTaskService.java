@@ -130,4 +130,12 @@ public interface IWfTaskService {
      * @param variables 流程参数
      */
     String startFirstTask(ProcessInstance processInstance, Map<String, Object> variables);
+
+    /**
+     * 批量启动任务
+     * @param processInstance
+     * @param variables
+     * @return
+     */
+    String startFirstBatchTask(ProcessInstance processInstance, Map<String, Object> variables);
 }

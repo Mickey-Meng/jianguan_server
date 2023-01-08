@@ -86,21 +86,27 @@ public class MeaLedgerApprovalController extends BaseController {
     /**
      * 新增台账报审
      */
-    @SaCheckPermission("ledgerapproval:ledgerApproval:add")
-    @Log(title = "台账报审保存", businessType = BusinessType.INSERT)
-    @RepeatSubmit()
-    @ApiOperation("台账报审保存")
-    @PostMapping()
-    public R<Void> add(@Validated(AddGroup.class) @RequestBody List<MeaLedgerApprovalBo> bos) {
-        if(CollUtil.isEmpty(bos)){
-            return R.fail("数据不能为空");
-        }
-        boolean b = iMeaLedgerApprovalService.insertByListBo(bos);
-        if(b){
-            return R.ok();
-        }
-        return R.fail();
-    }
+//    @SaCheckPermission("ledgerapproval:ledgerApproval:add")
+//    @Log(title = "台账报审保存", businessType = BusinessType.INSERT)
+//    @RepeatSubmit()
+//    @ApiOperation("台账报审保存")
+//    @PostMapping()
+//    public R<Void> add(@Validated(AddGroup.class) @RequestBody List<MeaLedgerApprovalBo> bos) {
+//        if(CollUtil.isEmpty(bos)){
+//            return R.fail("数据不能为空");
+//        }
+//        String process_1669973630070 = processService.getProcessByKey("Process_1671867751905");
+//        if(StrUtil.isBlank(process_1669973630070)){
+//            return R.fail("流程图未定义");
+//        }
+//        for(MeaLedgerApprovalBo bo:bos){
+//            Boolean aBoolean = iMeaLedgerApprovalService.insertByBo(bo);
+//            if(aBoolean){
+//                processService.startMeaProcess(process_1669973630070,formKey,bo.getId().toString(), bo);
+//            }
+//        }
+//        return R.ok();
+//    }
 
     /**
      * 新增台账报审
@@ -119,7 +125,10 @@ public class MeaLedgerApprovalController extends BaseController {
             return R.fail("流程图未定义");
         }
         for(MeaLedgerApprovalBo bo:bos){
-            processService.startMeaProcess(process_1669973630070,formKey,bo.getId().toString(), bo);
+            Boolean aBoolean = iMeaLedgerApprovalService.insertByBo(bo);
+            if(aBoolean){
+                processService.startMeaProcess(process_1669973630070,formKey,bo.getId().toString(), bo);
+            }
         }
         return R.ok();
     }
