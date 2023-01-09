@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
+import com.ruoyi.ql.domain.vo.TreeVo;
 import lombok.RequiredArgsConstructor;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.*;
@@ -46,6 +47,15 @@ public class QlShopGoodsController extends BaseController {
     @GetMapping("/list")
     public TableDataInfo<QlShopGoodsVo> list(QlShopGoodsBo bo, PageQuery pageQuery) {
         return iQlShopGoodsService.queryPageList(bo, pageQuery);
+    }
+
+    /**
+     * 商品类别树
+     */
+    @SaCheckPermission("shopGoods:shopGoods:list")
+    @GetMapping("/goodsTree")
+    public List<TreeVo> goodsTree() {
+        return iQlShopGoodsService.goodsTree();
     }
 
     /**

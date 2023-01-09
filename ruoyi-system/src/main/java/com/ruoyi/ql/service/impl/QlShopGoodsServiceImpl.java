@@ -8,6 +8,13 @@ import com.ruoyi.common.core.domain.PageQuery;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.ruoyi.ql.domain.QlShopGoodsType;
+import com.ruoyi.ql.domain.vo.QlShopGoodsTypeVo;
+
+
+import com.ruoyi.ql.domain.vo.TreeVo;
+import com.ruoyi.ql.mapper.QlShopGoodsTypeMapper;
+import liquibase.pro.packaged.T;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import com.ruoyi.ql.domain.bo.QlShopGoodsBo;
@@ -16,6 +23,7 @@ import com.ruoyi.ql.domain.QlShopGoods;
 import com.ruoyi.ql.mapper.QlShopGoodsMapper;
 import com.ruoyi.ql.service.IQlShopGoodsService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Collection;
@@ -32,11 +40,14 @@ public class QlShopGoodsServiceImpl implements IQlShopGoodsService {
 
     private final QlShopGoodsMapper baseMapper;
 
+    private final QlShopGoodsTypeMapper qlShopGoodsTypeMapper;
+
+
     /**
      * 查询商品信息
      */
     @Override
-    public QlShopGoodsVo queryById(Long id){
+    public QlShopGoodsVo queryById(Long id) {
         return baseMapper.selectVoById(id);
     }
 
@@ -77,7 +88,7 @@ public class QlShopGoodsServiceImpl implements IQlShopGoodsService {
     @Override
     public Boolean insertByBo(QlShopGoodsBo bo) {
         QlShopGoods add = BeanUtil.toBean(bo, QlShopGoods.class);
-        String goodCode = MD5.create().digestHex(add.getSupplierId()+add.getGoodsName()+add.getGoodsSearchstandard());
+        String goodCode = MD5.create().digestHex(add.getSupplierId() + add.getGoodsName() + add.getGoodsSearchstandard());
         add.setGoodsCode(goodCode);
         validEntityBeforeSave(add);
         boolean flag = baseMapper.insert(add) > 0;
@@ -100,7 +111,7 @@ public class QlShopGoodsServiceImpl implements IQlShopGoodsService {
     /**
      * 保存前的数据校验
      */
-    private void validEntityBeforeSave(QlShopGoods entity){
+    private void validEntityBeforeSave(QlShopGoods entity) {
         //TODO 做一些数据校验,如唯一约束
     }
 
@@ -109,9 +120,60 @@ public class QlShopGoodsServiceImpl implements IQlShopGoodsService {
      */
     @Override
     public Boolean deleteWithValidByIds(Collection<Long> ids, Boolean isValid) {
-        if(isValid){
+        if (isValid) {
             //TODO 做一些业务上的校验,判断是否需要校验
         }
         return baseMapper.deleteBatchIds(ids) > 0;
+    }
+
+    @Override
+    public List<TreeVo> goodsTree() {
+        LambdaQueryWrapper<QlShopGoodsType> lqw = new LambdaQueryWrapper<>();
+        lqw.eq(QlShopGoodsType::getDelFlag, 0);
+        List<QlShopGoodsTypeVo> qlShopGoodsTypeVos = qlShopGoodsTypeMapper.selectVoList(lqw);
+
+        List<TreeVo> list = new ArrayList<>();
+
+        for (QlShopGoodsTypeVo qlShopGoodsTypeVo : qlShopGoodsTypeVos) {
+
+            Long parentId = qlShopGoodsTypeVo.getParentId();
+
+
+            if (parentId == 0) {
+                TreeVo treeVo = new TreeVo();
+                treeVo.setLabel(qlShopGoodsTypeVo.getGoodsTypeName());
+                treeVo.setValue(qlShopGoodsTypeVo.getId() + "");
+                List<TreeVo> child = findChild(qlShopGoodsTypeVo.getId(), qlShopGoodsTypeVos);
+                if (child.size()>0) {
+                    treeVo.setChildren(child);
+                }else {
+                    treeVo.setChildren(null);
+                }
+                list.add(treeVo);
+            }
+        }
+
+        return list;
+    }
+
+    List<TreeVo> findChild(Long id, List<QlShopGoodsTypeVo> qlShopGoodsTypeVos) {
+        List<TreeVo> list = new ArrayList<>();
+
+        for (QlShopGoodsTypeVo qlShopGoodsTypeVo : qlShopGoodsTypeVos) {
+            if (qlShopGoodsTypeVo.getParentId().equals(id)) {
+                TreeVo treeVo = new TreeVo();
+                treeVo.setLabel(qlShopGoodsTypeVo.getGoodsTypeName());
+                treeVo.setValue(qlShopGoodsTypeVo.getId() + "");
+                List<TreeVo> child = findChild(qlShopGoodsTypeVo.getId(), qlShopGoodsTypeVos);
+                if (child.size()>0) {
+                    treeVo.setChildren(child);
+                }else {
+                    treeVo.setChildren(null);
+                }
+
+                list.add(treeVo);
+            }
+        }
+        return list;
     }
 }

@@ -41,6 +41,7 @@ public class QlContractInfoPurchaseVo {
      */
     @ExcelProperty(value = "合同名称")
     private String contractName;
+    private String fj;
 
     /**
      * 供应商名称

@@ -6,6 +6,9 @@ import com.ruoyi.ql.domain.bo.QlShopGoodsBo;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.core.domain.PageQuery;
 
+import com.ruoyi.ql.domain.vo.TreeVo;
+
+
 import java.util.Collection;
 import java.util.List;
 
@@ -46,4 +49,6 @@ public interface IQlShopGoodsService {
      * 校验并批量删除商品信息信息
      */
     Boolean deleteWithValidByIds(Collection<Long> ids, Boolean isValid);
+
+    List<TreeVo> goodsTree();
 }

@@ -7,6 +7,7 @@ import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.ruoyi.common.annotation.ExcelDictFormat;
 import com.ruoyi.common.convert.ExcelDictConvert;
+import liquibase.pro.packaged.S;
 import lombok.Data;
 import java.util.Date;
 
@@ -53,6 +54,7 @@ public class QlContractInfoSaleVo {
      */
     @ExcelProperty(value = "总金额")
     private BigDecimal amount;
+    private String fj;
 
     /**
      * 合同签订时间
