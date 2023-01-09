@@ -9,6 +9,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="contractId" column="contract_id"/>
         <result property="contractName" column="contract_name"/>
         <result property="supplierId" column="supplier_id"/>
+        <result property="supplierName" column="supplier_name"/>
         <result property="payAmount" column="pay_amount"/>
         <result property="payType" column="pay_type"/>
         <result property="unpaid" column="unpaid"/>

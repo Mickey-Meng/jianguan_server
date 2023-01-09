@@ -1,6 +1,8 @@
 package com.ruoyi.ql.domain;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.ruoyi.common.core.validate.AddGroup;
+import com.ruoyi.common.core.validate.EditGroup;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import java.io.Serializable;
@@ -11,6 +13,8 @@ import java.math.BigDecimal;
 import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ruoyi.common.core.domain.BaseEntity;
+
+import javax.validation.constraints.NotBlank;
 
 /**
  * 供应商付款对象 ql_fin_payment
@@ -42,6 +46,9 @@ public class QlFinPayment extends BaseEntity {
      * 供应商id
      */
     private String supplierId;
+    //供应商名称
+    private String supplierName;
+
     /**
      * 本次付款金额
      */

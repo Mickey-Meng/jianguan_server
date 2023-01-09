@@ -47,7 +47,11 @@ public class QlFinPaymentVo {
      */
     @ExcelProperty(value = "供应商id")
     private String supplierId;
-
+    /**
+     * 供应商名称
+     */
+    @ExcelProperty(value = "供应商名称")
+    private String supplierName;
     /**
      * 本次付款金额
      */

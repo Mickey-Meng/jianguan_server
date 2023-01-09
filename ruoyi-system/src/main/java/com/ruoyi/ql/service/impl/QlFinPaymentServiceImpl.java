@@ -64,6 +64,7 @@ public class QlFinPaymentServiceImpl implements IQlFinPaymentService {
         lqw.eq(StringUtils.isNotBlank(bo.getContractId()), QlFinPayment::getContractId, bo.getContractId());
         lqw.like(StringUtils.isNotBlank(bo.getContractName()), QlFinPayment::getContractName, bo.getContractName());
         lqw.eq(StringUtils.isNotBlank(bo.getSupplierId()), QlFinPayment::getSupplierId, bo.getSupplierId());
+        lqw.like(StringUtils.isNotBlank(bo.getSupplierName()), QlFinPayment::getSupplierName, bo.getSupplierName());
         lqw.eq(bo.getPayAmount() != null, QlFinPayment::getPayAmount, bo.getPayAmount());
         lqw.eq(StringUtils.isNotBlank(bo.getPayType()), QlFinPayment::getPayType, bo.getPayType());
         lqw.eq(bo.getUnpaid() != null, QlFinPayment::getUnpaid, bo.getUnpaid());

@@ -61,4 +61,11 @@ public class QlFinWagesVo {
     private String empName;
 
 
+    @ExcelProperty(value = "税前工资")
+    private String preTaxPay;
+
+    @ExcelProperty(value = "到手工资")
+    private String afterTaxPay;
+
+
 }
