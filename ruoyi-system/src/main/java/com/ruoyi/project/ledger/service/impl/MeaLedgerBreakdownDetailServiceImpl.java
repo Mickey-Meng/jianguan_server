@@ -149,6 +149,8 @@ public class MeaLedgerBreakdownDetailServiceImpl implements IMeaLedgerBreakdownD
     @Override
     public Boolean insertByListBo(List<MeaLedgerBreakdownDetailBo> bo) {
         List<MeaLedgerBreakdownDetail> meaLedgerBreakdownDetailList = BeanUtil.copyToList(bo, MeaLedgerBreakdownDetail.class);
+//        meaLedgerBreakdownDetailList.forEach(meaLedgerBreakdownDetail ->  );
+        validEntityBeforeSave(meaLedgerBreakdownDetailList.get(0));
         boolean b = baseMapper.insertBatch(meaLedgerBreakdownDetailList);
         return  b;
     }
@@ -167,9 +169,37 @@ public class MeaLedgerBreakdownDetailServiceImpl implements IMeaLedgerBreakdownD
      * 保存前的数据校验
      */
     private void validEntityBeforeSave(MeaLedgerBreakdownDetail entity){
-        //TODO 做一些数据校验,如唯一约束
+        QueryWrapper<MeaLedgerBreakdown> queryWrapper=new QueryWrapper<>();
+        queryWrapper.eq("tzfjbh",entity.getTzfjbh()).eq("status",'0');
+        MeaLedgerBreakdown meaLedgerBreakdown = meaLedgerBreakdownMapper.selectOne(queryWrapper);
+        QueryWrapper<MeaLedgerBreakdown> queryWrapper1=new QueryWrapper<>();
+        queryWrapper1.eq("status",'0');
+        List<MeaLedgerBreakdown> meaLedgerBreakdowns = meaLedgerBreakdownMapper.selectList(queryWrapper1);
+        ArrayList<String> list = new ArrayList<>();
+        List<String> childrenCode = getChildrenCode(meaLedgerBreakdown.getTzfjbhParent(), meaLedgerBreakdowns, list);
+        String level="";
+        if(CollUtil.isNotEmpty(childrenCode)){
+            for(String key:childrenCode){
+                if(StrUtil.isEmpty(level)){
+                    level=key;
+                }else {
+                    level=key+"/"+level;
+                }
+            }
+        }
+        entity.setFjmulu(level);
+
     }
 
+    public List<String> getChildrenCode(String orgCode, List<MeaLedgerBreakdown> all, List<String> list) {
+        for (MeaLedgerBreakdown d : all) {
+            if (orgCode.equals(d.getTzfjbh())) {
+                list.add(d.getTzfjmc());
+                getChildrenCode(d.getTzfjbhParent(), all, list);
+            }
+        }
+        return list;
+    }
     /**
      * 批量删除台账分解明细
      */
