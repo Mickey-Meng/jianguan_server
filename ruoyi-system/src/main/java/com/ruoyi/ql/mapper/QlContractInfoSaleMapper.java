@@ -4,6 +4,8 @@ import com.ruoyi.ql.domain.QlContractInfoSale;
 import com.ruoyi.ql.domain.vo.QlContractInfoSaleVo;
 import com.ruoyi.common.core.mapper.BaseMapperPlus;
 
+import java.util.List;
+
 /**
  * 合同管理Mapper接口
  *
@@ -11,5 +13,8 @@ import com.ruoyi.common.core.mapper.BaseMapperPlus;
  * @date 2022-12-11
  */
 public interface QlContractInfoSaleMapper extends BaseMapperPlus<QlContractInfoSaleMapper, QlContractInfoSale, QlContractInfoSaleVo> {
+
+    List<QlContractInfoSale> ContractExpireScheduled();
+
 
 }

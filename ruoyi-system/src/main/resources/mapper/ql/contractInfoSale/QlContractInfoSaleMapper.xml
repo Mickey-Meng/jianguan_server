@@ -26,6 +26,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="remark" column="remark"/>
         <result property="deptId" column="dept_id"/>
     </resultMap>
+    <select id="ContractExpireScheduled" resultMap="QlContractInfoSaleResult">
+
+
+        select * from (
+        select * ,datediff(CURRENT_DATE(),retention_date)  as qqq  from ql_contract_info_sale )as temp
+        where temp.qqq&lt;=15
+
+
+    </select>
 
 
 </mapper>
