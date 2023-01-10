@@ -15,6 +15,7 @@ import com.ruoyi.common.core.validate.EditGroup;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.project.approval.domain.bo.MeaLedgerApprovalBo;
+import com.ruoyi.project.approval.domain.vo.MeaLedgerApprovalBreakDownVo;
 import com.ruoyi.project.approval.domain.vo.MeaLedgerApprovalVo;
 import com.ruoyi.project.approval.service.IMeaLedgerApprovalService;
 import com.ruoyi.workflow.service.IWfProcessService;
@@ -59,6 +60,15 @@ public class MeaLedgerApprovalController extends BaseController {
     }
 
 
+    /**
+     * 查询台账报审列表
+     */
+    @GetMapping("/listMeaLedgerApprovalVo")
+    public TableDataInfo<MeaLedgerApprovalBreakDownVo> queryMeaLedgerApprovalBreakDownList(MeaLedgerApprovalBo bo) {
+        TableDataInfo t = new TableDataInfo();
+        t.setRows(iMeaLedgerApprovalService.queryMeaLedgerApprovalBreakDownList(bo));
+        return t;
+    }
 
     /**
      * 导出台账报审列表

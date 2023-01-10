@@ -68,5 +68,8 @@ public class MeaLedgerApproval extends BaseEntity {
 报审的时候，是选择台账分解明细表里的数据，启动流程。
      */
     private String remark;
-
+    /**
+     * 关联台账分解ID
+     */
+    private String breakdownId;
 }

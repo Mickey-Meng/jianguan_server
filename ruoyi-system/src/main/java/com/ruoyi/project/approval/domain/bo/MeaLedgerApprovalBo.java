@@ -69,5 +69,9 @@ public class MeaLedgerApprovalBo extends BaseEntity {
     @NotBlank(message = "状态（0正常 1停用）不能为空", groups = { AddGroup.class, EditGroup.class })
     private String status;
 
-
+    /**
+     * 关联台账分解ID
+     */
+    @NotBlank(message = "关联台账分解ID不能为空", groups = { AddGroup.class, EditGroup.class })
+    private String breakdownId;
 }

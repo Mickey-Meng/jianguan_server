@@ -11,6 +11,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="sqqc" column="sqqc"/>
         <result property="tzfjbh" column="tzfjbh"/>
         <result property="gcbw" column="gcbw"/>
+        <result property="breakdownId" column="breakdown_id"/>
         <result property="dataStatus" column="data_status"/>
         <result property="spzt" column="spzt"/>
         <result property="status" column="status"/>
@@ -20,6 +21,5 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updateTime" column="update_time"/>
         <result property="remark" column="remark"/>
     </resultMap>
-
 
 </mapper>

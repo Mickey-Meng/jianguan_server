@@ -7,8 +7,6 @@ import com.ruoyi.common.convert.ExcelDictConvert;
 import com.ruoyi.project.ledger.domain.vo.MeaLedgerBreakdownDetailVo;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import java.util.Date;
-
 
 
 /**
@@ -19,15 +17,10 @@ import java.util.Date;
  */
 @Data
 @ExcelIgnoreUnannotated
-public class MeaLedgerApprovalVo {
+public class MeaLedgerApprovalBreakDownVo {
 
     private static final long serialVersionUID = 1L;
 
-    /**
-     * 主键id
-     */
-    @ExcelProperty(value = "主键id")
-    private Long id;
 
     /**
      * 标段编号
@@ -82,10 +75,7 @@ public class MeaLedgerApprovalVo {
      * 关联台账分解ID
      */
     @ExcelProperty(value = "关联台账分解ID")
-    @ApiModelProperty(value = "关联台账分解ID", required = true)
-    private String breakdownId;
-
-
+    @ApiModelProperty(value = "关联台账分解", required = true)
     private MeaLedgerBreakdownDetailVo meaLedgerBreakdownDetailVo;
 
 }

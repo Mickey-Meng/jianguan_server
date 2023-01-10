@@ -4,6 +4,7 @@ package com.ruoyi.project.approval.service;
 import com.ruoyi.common.core.domain.PageQuery;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.project.approval.domain.bo.MeaLedgerApprovalBo;
+import com.ruoyi.project.approval.domain.vo.MeaLedgerApprovalBreakDownVo;
 import com.ruoyi.project.approval.domain.vo.MeaLedgerApprovalVo;
 
 import java.util.Collection;
@@ -31,7 +32,10 @@ public interface IMeaLedgerApprovalService {
      * 查询台账报审列表
      */
     List<MeaLedgerApprovalVo> queryList(MeaLedgerApprovalBo bo);
-
+    /**
+     * 查询台账报审列表
+     */
+    List<MeaLedgerApprovalBreakDownVo> queryMeaLedgerApprovalBreakDownList(MeaLedgerApprovalBo bo);
     /**
      * 新增台账报审
      */

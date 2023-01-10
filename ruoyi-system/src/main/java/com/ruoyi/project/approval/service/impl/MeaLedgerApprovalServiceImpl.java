@@ -9,13 +9,19 @@ import com.ruoyi.common.core.domain.PageQuery;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.project.approval.domain.MeaLedgerApproval;
 import com.ruoyi.project.approval.domain.bo.MeaLedgerApprovalBo;
+import com.ruoyi.project.approval.domain.vo.MeaLedgerApprovalBreakDownVo;
 import com.ruoyi.project.approval.domain.vo.MeaLedgerApprovalVo;
 import com.ruoyi.project.approval.mapper.MeaLedgerApprovalMapper;
 import com.ruoyi.project.approval.service.IMeaLedgerApprovalService;
+import com.ruoyi.project.ledger.domain.vo.MeaLedgerBreakdownDetailVo;
+import com.ruoyi.project.ledger.mapper.MeaLedgerBreakdownDetailMapper;
+import com.ruoyi.project.ledger.mapper.MeaLedgerBreakdownMapper;
+import com.ruoyi.ql.domain.vo.QlFinReimbursementItemVo;
 import io.micrometer.core.instrument.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +37,8 @@ import java.util.Map;
 public class MeaLedgerApprovalServiceImpl implements IMeaLedgerApprovalService {
 
     private final MeaLedgerApprovalMapper baseMapper;
+
+    private final MeaLedgerBreakdownDetailMapper meaLedgerBreakdownDetailMapper;
 
     /**
      * 查询台账报审
@@ -58,6 +66,22 @@ public class MeaLedgerApprovalServiceImpl implements IMeaLedgerApprovalService {
     public List<MeaLedgerApprovalVo> queryList(MeaLedgerApprovalBo bo) {
         LambdaQueryWrapper<MeaLedgerApproval> lqw = buildQueryWrapper(bo);
         return baseMapper.selectVoList(lqw);
+    }
+
+    @Override
+    public List<MeaLedgerApprovalBreakDownVo> queryMeaLedgerApprovalBreakDownList(MeaLedgerApprovalBo bo) {
+
+        List<MeaLedgerApprovalBreakDownVo> meaLedgerApprovalBreakDownVoList = new ArrayList<>();
+        LambdaQueryWrapper<MeaLedgerApproval> lqw = buildQueryWrapper(bo);
+        List<MeaLedgerApprovalVo> meaLedgerApprovalVos =  baseMapper.selectVoList(lqw);
+        for (MeaLedgerApprovalVo meaLedgerApprovalVo : meaLedgerApprovalVos) {
+            MeaLedgerBreakdownDetailVo meaLedgerBreakdownDetailVo =  meaLedgerBreakdownDetailMapper.selectVoById(meaLedgerApprovalVo.getBreakdownId());
+            MeaLedgerApprovalBreakDownVo meaLedgerApprovalBreakDownVo = new MeaLedgerApprovalBreakDownVo();
+            BeanUtil.copyProperties(meaLedgerApprovalVo,meaLedgerApprovalBreakDownVo);
+            meaLedgerApprovalBreakDownVo.setMeaLedgerBreakdownDetailVo(meaLedgerBreakdownDetailVo);
+            meaLedgerApprovalBreakDownVoList.add(meaLedgerApprovalBreakDownVo);
+        }
+        return  meaLedgerApprovalBreakDownVoList;
     }
 
     private LambdaQueryWrapper<MeaLedgerApproval> buildQueryWrapper(MeaLedgerApprovalBo bo) {
