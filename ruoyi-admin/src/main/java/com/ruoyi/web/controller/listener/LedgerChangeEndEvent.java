@@ -2,6 +2,8 @@ package com.ruoyi.web.controller.listener;
 
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.ruoyi.project.bill.domain.MeaContractBill;
+import com.ruoyi.project.bill.mapper.MeaContractBillMapper;
 import com.ruoyi.project.flowidatenfo.domain.MeaFlowDataInfo;
 import com.ruoyi.project.flowidatenfo.mapper.MeaFlowDataInfoMapper;
 import com.ruoyi.project.ledger.domain.MeaLedgerBreakdownDetail;
@@ -29,6 +31,7 @@ public class LedgerChangeEndEvent implements TaskListener {
     @Override
     public void notify(DelegateTask delegateTask) {
         MeaFlowDataInfoMapper meaFlowDataInfoMapper = SpringContextHolder.getBean(MeaFlowDataInfoMapper.class);
+        MeaContractBillMapper contractBillMapper = SpringContextHolder.getBean(MeaContractBillMapper.class);
         MeaLedgerChangeMapper meaLedgerChangeMapper = SpringContextHolder.getBean(MeaLedgerChangeMapper.class);
         MeaLedgerChangeDetailMapper meaLedgerChangeDetailMapper = SpringContextHolder.getBean(MeaLedgerChangeDetailMapper.class);
         MeaLedgerBreakdownDetailMapper meaLedgerBreakdownDetailMapper = SpringContextHolder.getBean(MeaLedgerBreakdownDetailMapper.class);
@@ -50,6 +53,16 @@ public class LedgerChangeEndEvent implements TaskListener {
                     if(meaLedgerBreakdownDetail!=null){
                         meaLedgerBreakdownDetail.setBgsl(meaLedgerChangeDetail.getXzsl());
                         meaLedgerBreakdownDetailMapper.updateById(meaLedgerBreakdownDetail);
+                        QueryWrapper<MeaContractBill> contractBillQueryWrapper=new QueryWrapper<>();
+                        contractBillQueryWrapper.eq("zmh",meaLedgerChangeDetail.getZmh());
+                        MeaContractBill meaContractBill = contractBillMapper.selectOne(contractBillQueryWrapper);
+                        if(meaContractBill!=null){
+                            meaContractBill.setXzje(meaContractBill.getXzje().add(meaLedgerChangeDetail.getXzje()));
+                            meaContractBill.setXzsl(meaContractBill.getXzsl().add(meaLedgerChangeDetail.getXzsl()));
+                            meaContractBill.setZsl(meaContractBill.getZsl().add(meaLedgerChangeDetail.getShsl()));
+                            meaContractBill.setZje(meaContractBill.getZje().add(meaLedgerChangeDetail.getShje()));
+                            contractBillMapper.updateById(meaContractBill);
+                        }
                     }
                 }
                 meaLedgerChange.setReviewCode("2");

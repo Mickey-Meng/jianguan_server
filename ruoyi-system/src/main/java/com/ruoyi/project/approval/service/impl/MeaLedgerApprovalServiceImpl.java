@@ -104,6 +104,7 @@ public class MeaLedgerApprovalServiceImpl implements IMeaLedgerApprovalService {
     public Boolean insertByBo(MeaLedgerApprovalBo bo) {
         MeaLedgerApproval add = BeanUtil.toBean(bo, MeaLedgerApproval.class);
         validEntityBeforeSave(add);
+        add.setReviewCode("0");
         boolean flag = baseMapper.insert(add) > 0;
         if (flag) {
             bo.setId(add.getId());

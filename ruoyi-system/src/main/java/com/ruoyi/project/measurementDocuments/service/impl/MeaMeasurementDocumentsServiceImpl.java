@@ -140,6 +140,7 @@ public class MeaMeasurementDocumentsServiceImpl implements IMeaMeasurementDocume
     public boolean saveMeaMeasurementDocumentsAndDeBo(MeaMeasurementDocumentsAndDeBo bo) {
         MeaMeasurementDocuments add = BeanUtil.toBean(bo, MeaMeasurementDocuments.class);
         validEntityBeforeSave(add);
+        add.setReviewCode("0");
         boolean flag = baseMapper.insert(add) > 0;
         if (flag) {
             bo.setId(add.getId());
