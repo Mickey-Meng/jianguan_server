@@ -57,10 +57,26 @@ public class LedgerChangeEndEvent implements TaskListener {
                         contractBillQueryWrapper.eq("zmh",meaLedgerChangeDetail.getZmh());
                         MeaContractBill meaContractBill = contractBillMapper.selectOne(contractBillQueryWrapper);
                         if(meaContractBill!=null){
-                            meaContractBill.setXzje(meaContractBill.getXzje().add(meaLedgerChangeDetail.getXzje()));
-                            meaContractBill.setXzsl(meaContractBill.getXzsl().add(meaLedgerChangeDetail.getXzsl()));
-                            meaContractBill.setZsl(meaContractBill.getZsl().add(meaLedgerChangeDetail.getShsl()));
-                            meaContractBill.setZje(meaContractBill.getZje().add(meaLedgerChangeDetail.getShje()));
+                            if(meaContractBill.getXzje()==null){
+                                meaContractBill.setXzje(meaLedgerChangeDetail.getXzje());
+                            }else {
+                                meaContractBill.setXzje(meaContractBill.getXzje().add(meaLedgerChangeDetail.getXzje()));
+                            }
+                            if(meaContractBill.getXzsl()==null){
+                                meaContractBill.setXzsl(meaLedgerChangeDetail.getXzsl());
+                            }else {
+                                meaContractBill.setXzsl(meaContractBill.getXzsl().add(meaLedgerChangeDetail.getXzsl()));
+                            }
+                            if(meaContractBill.getZsl()==null){
+                                meaContractBill.setZsl(meaLedgerChangeDetail.getShsl());
+                            }else {
+                                meaContractBill.setZsl(meaContractBill.getZsl().add(meaLedgerChangeDetail.getShsl()));
+                            }
+                            if(meaContractBill.getZje()==null){
+                                meaContractBill.setZje(meaLedgerChangeDetail.getShje());
+                            }else {
+                                meaContractBill.setZje(meaContractBill.getZje().add(meaLedgerChangeDetail.getShje()));
+                            }
                             contractBillMapper.updateById(meaContractBill);
                         }
                     }
@@ -69,7 +85,6 @@ public class LedgerChangeEndEvent implements TaskListener {
                 meaLedgerChangeMapper.updateById(meaLedgerChange);
             }
         }
-        System.out.println("delegateTask"+delegateTask);
     }
 
 }
