@@ -2,19 +2,24 @@ package com.ruoyi.project.measurementDocumentsDetail.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ruoyi.common.core.domain.PageQuery;
 import com.ruoyi.common.core.page.TableDataInfo;
+import com.ruoyi.project.bill.domain.MeaContractBill;
+import com.ruoyi.project.bill.mapper.MeaContractBillMapper;
 import com.ruoyi.project.measurementDocumentsDetail.domain.MeaMeasurementDocumentsDetail;
 import com.ruoyi.project.measurementDocumentsDetail.domain.bo.MeaMeasurementDocumentsDetailBo;
 import com.ruoyi.project.measurementDocumentsDetail.domain.vo.MeaMeasurementDocumentsDetailVo;
 import com.ruoyi.project.measurementDocumentsDetail.mapper.MeaMeasurementDocumentsDetailMapper;
 import com.ruoyi.project.measurementDocumentsDetail.service.IMeaMeasurementDocumentsDetailService;
 import io.micrometer.core.instrument.util.StringUtils;
+import liquibase.pro.packaged.Q;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +35,7 @@ import java.util.Map;
 public class MeaMeasurementDocumentsDetailServiceImpl implements IMeaMeasurementDocumentsDetailService {
 
     private final MeaMeasurementDocumentsDetailMapper baseMapper;
+    private final MeaContractBillMapper meaContractBillMapper;
 
     /**
      * 查询台账变更/工程变更 明细
@@ -46,6 +52,35 @@ public class MeaMeasurementDocumentsDetailServiceImpl implements IMeaMeasurement
     public TableDataInfo<MeaMeasurementDocumentsDetailVo> queryPageList(MeaMeasurementDocumentsDetailBo bo, PageQuery pageQuery) {
         LambdaQueryWrapper<MeaMeasurementDocumentsDetail> lqw = buildQueryWrapper(bo);
         Page<MeaMeasurementDocumentsDetailVo> result = baseMapper.selectVoPage(pageQuery.build(), lqw);
+        if(result.getTotal()>0){
+            for(MeaMeasurementDocumentsDetailVo meaMeasurementDocumentsDetailVo:result.getRecords()){
+                QueryWrapper<MeaContractBill> queryWrapper=new QueryWrapper<>();
+                queryWrapper.eq("zmh",meaMeasurementDocumentsDetailVo.getZmh());
+                MeaContractBill meaContractBill = meaContractBillMapper.selectOne(queryWrapper);
+                if(meaContractBill!=null){
+                    if(meaContractBill.getHtsl()==null || meaContractBill.getShsl()==null){
+                        meaMeasurementDocumentsDetailVo.setKsjsl(BigDecimal.ZERO);
+                        meaMeasurementDocumentsDetailVo.setLjjlbl("0");
+                    }else{
+                        BigDecimal sub=meaContractBill.getHtsl().subtract(meaContractBill.getShsl());
+                        if(sub.intValue()>0){
+                            meaMeasurementDocumentsDetailVo.setKsjsl(sub);
+                        }else {
+                            meaMeasurementDocumentsDetailVo.setKsjsl(BigDecimal.ZERO);
+                        }
+                        if(meaContractBill.getHtsl().compareTo(BigDecimal.ZERO)==0 || meaContractBill.getShsl().compareTo(BigDecimal.ZERO)==0){
+                            meaMeasurementDocumentsDetailVo.setKsjsl(BigDecimal.ZERO);
+                            meaMeasurementDocumentsDetailVo.setLjjlbl("0");
+                        }else {
+                            BigDecimal div=meaContractBill.getShsl().divide(meaContractBill.getHtsl());
+                            meaMeasurementDocumentsDetailVo.setLjjlbl(String.valueOf((div.longValue()*100)));
+                        }
+                    }
+                    meaMeasurementDocumentsDetailVo.setMeaContractBill(meaContractBill);
+                }
+            }
+
+        }
         return TableDataInfo.build(result);
     }
 

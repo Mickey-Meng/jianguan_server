@@ -5,6 +5,7 @@ import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.ruoyi.common.annotation.ExcelDictFormat;
 import com.ruoyi.common.convert.ExcelDictConvert;
+import com.ruoyi.project.bill.domain.MeaContractBill;
 import lombok.Data;
 import java.util.Date;
 
@@ -64,6 +65,22 @@ public class MeaMeasurementDocumentsDetailVo {
     @ExcelProperty(value = "状态", converter = ExcelDictConvert.class)
     @ExcelDictFormat(dictType = "data_status")
     private String status;
+
+
+
+    private MeaContractBill meaContractBill;
+
+
+    /**
+     * 可设计数量
+     */
+    private BigDecimal ksjsl;
+
+    /**
+     * 累计计量比例
+     */
+    private String ljjlbl;
+
 
 
 }
