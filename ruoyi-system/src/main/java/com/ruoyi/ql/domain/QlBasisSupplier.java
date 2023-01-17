@@ -89,5 +89,20 @@ public class QlBasisSupplier extends BaseEntity {
      * 部门ID
      */
     private Long deptId;
-
+    /**
+     * 总付款金额
+     */
+    private BigDecimal payed;
+    /**
+     * 总欠款金额
+     */
+    private BigDecimal unpaid;
+    /**
+     * 已开发票金额
+     */
+    private BigDecimal invoiceAmount;
+    /**
+     * 欠发票金额
+     */
+    private BigDecimal uninvoiceAmount;
 }

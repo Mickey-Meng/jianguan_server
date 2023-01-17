@@ -38,6 +38,16 @@ public interface IQlFinPaymentService {
     Boolean insertByBo(QlFinPaymentBo bo);
 
     /**
+     * 新增付款，
+     * 签订采购合同，增加一笔负向付款
+     * 完成一笔付款，添加一笔正向付款
+     * 更新供应商主表中，对应的已付款金额和欠款金额
+     * @param bo
+     * @return
+     */
+    Boolean insertPaymentByBo(QlFinPaymentBo bo);
+
+    /**
      * 修改供应商付款
      */
     Boolean updateByBo(QlFinPaymentBo bo);

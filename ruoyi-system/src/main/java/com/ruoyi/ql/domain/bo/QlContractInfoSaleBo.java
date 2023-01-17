@@ -75,13 +75,11 @@ public class QlContractInfoSaleBo extends BaseEntity {
     /**
      * 质保金到期时间
      */
-    @NotNull(message = "质保金到期时间不能为空", groups = { AddGroup.class, EditGroup.class })
     private Date retentionDate;
 
     /**
      * 税率
      */
-    @NotNull(message = "税率不能为空", groups = { AddGroup.class, EditGroup.class })
     private BigDecimal rate;
 
     /**

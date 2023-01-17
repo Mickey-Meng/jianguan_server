@@ -7,8 +7,12 @@ import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.ruoyi.common.annotation.ExcelDictFormat;
 import com.ruoyi.common.convert.ExcelDictConvert;
+import com.ruoyi.common.core.validate.AddGroup;
+import com.ruoyi.common.core.validate.EditGroup;
 import liquibase.pro.packaged.S;
 import lombok.Data;
+
+import javax.validation.constraints.NotBlank;
 import java.util.Date;
 
 
@@ -49,6 +53,7 @@ public class QlContractInfoSaleVo {
     @ExcelProperty(value = "客户名称")
     private String customerName;
 
+    private String customerId;
     /**
      * 总金额
      */
@@ -56,6 +61,18 @@ public class QlContractInfoSaleVo {
     private BigDecimal amount;
     private String fj;
 
+    @ExcelProperty(value = "质保金")
+    private BigDecimal retentionAmount;
+
+
+    @ExcelProperty(value = "质保金到期时间")
+    private Date retentionDate;
+
+    @ExcelProperty(value = "税率")
+    private BigDecimal rate;
+
+    @ExcelProperty(value = "发货地不能为空")
+    private String area;
     /**
      * 合同签订时间
      */
@@ -73,12 +90,5 @@ public class QlContractInfoSaleVo {
      */
     @ExcelProperty(value = "")
     private String remark;
-
-    /**
-     * 部门ID
-     */
-    @ExcelProperty(value = "部门ID")
-    private Long deptId;
-
 
 }

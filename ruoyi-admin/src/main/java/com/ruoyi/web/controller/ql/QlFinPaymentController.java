@@ -79,7 +79,7 @@ public class QlFinPaymentController extends BaseController {
     @RepeatSubmit()
     @PostMapping()
     public R<Void> add(@Validated(AddGroup.class) @RequestBody QlFinPaymentBo bo) {
-        return toAjax(iQlFinPaymentService.insertByBo(bo) ? 1 : 0);
+        return toAjax(iQlFinPaymentService.insertPaymentByBo(bo) ? 1 : 0);
     }
 
     /**

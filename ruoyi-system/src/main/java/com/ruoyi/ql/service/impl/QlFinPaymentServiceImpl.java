@@ -7,6 +7,9 @@ import com.ruoyi.common.core.domain.PageQuery;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.ruoyi.ql.domain.QlBasisSupplier;
+import com.ruoyi.ql.domain.vo.QlBasisSupplierVo;
+import com.ruoyi.ql.mapper.QlBasisSupplierMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import com.ruoyi.ql.domain.bo.QlFinPaymentBo;
@@ -14,6 +17,7 @@ import com.ruoyi.ql.domain.vo.QlFinPaymentVo;
 import com.ruoyi.ql.domain.QlFinPayment;
 import com.ruoyi.ql.mapper.QlFinPaymentMapper;
 import com.ruoyi.ql.service.IQlFinPaymentService;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -30,6 +34,9 @@ import java.util.Collection;
 public class QlFinPaymentServiceImpl implements IQlFinPaymentService {
 
     private final QlFinPaymentMapper baseMapper;
+
+    private final QlBasisSupplierMapper qlBasisSupplierMapper;
+
 
     /**
      * 查询供应商付款
@@ -86,6 +93,24 @@ public class QlFinPaymentServiceImpl implements IQlFinPaymentService {
         }
         return flag;
     }
+
+    /**
+     * 付款：对象中金额为正数
+     * @param bo
+     * @return
+     */
+    @Override
+    @Transactional
+    public Boolean insertPaymentByBo(QlFinPaymentBo bo) {
+        insertByBo(bo);
+        QlBasisSupplierVo qlBasisSupplierVo = qlBasisSupplierMapper.selectVoById(bo.getSupplierId());
+        qlBasisSupplierVo.setPayed(qlBasisSupplierVo.getPayed().add( bo.getPayAmount()));
+        qlBasisSupplierVo.setUnpaid(qlBasisSupplierVo.getUnpaid().subtract( bo.getPayAmount()));
+        QlBasisSupplier qlBasisSupplier = BeanUtil.toBean(qlBasisSupplierVo, QlBasisSupplier.class);
+        qlBasisSupplierMapper.updateById(qlBasisSupplier);
+        return true;
+    }
+
 
     /**
      * 修改供应商付款

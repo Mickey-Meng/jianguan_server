@@ -65,6 +65,10 @@ public class QlBasisSupplierServiceImpl implements IQlBasisSupplierService {
         lqw.like(StringUtils.isNotBlank(bo.getSupplierName()), QlBasisSupplier::getSupplierName, bo.getSupplierName());
         lqw.eq(StringUtils.isNotBlank(bo.getContactPerson()), QlBasisSupplier::getContactPerson, bo.getContactPerson());
         lqw.like(StringUtils.isNotBlank(bo.getMobilePhone()), QlBasisSupplier::getMobilePhone, bo.getMobilePhone());
+        lqw.eq(bo.getPayed() != null, QlBasisSupplier::getPayed, bo.getPayed());
+        lqw.eq(bo.getUnpaid() != null, QlBasisSupplier::getUnpaid, bo.getUnpaid());
+        lqw.eq(bo.getInvoiceAmount() != null, QlBasisSupplier::getInvoiceAmount, bo.getInvoiceAmount());
+        lqw.eq(bo.getUninvoiceAmount() != null, QlBasisSupplier::getUninvoiceAmount, bo.getUninvoiceAmount());
         return lqw;
     }
 

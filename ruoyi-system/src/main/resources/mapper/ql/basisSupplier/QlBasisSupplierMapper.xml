@@ -25,6 +25,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updateTime" column="update_time"/>
         <result property="remark" column="remark"/>
         <result property="deptId" column="dept_id"/>
+        <result property="payed" column="payed"/>
+        <result property="unpaid" column="unpaid"/>
+        <result property="invoiceAmount" column="invoice_amount"/>
+        <result property="uninvoiceAmount" column="uninvoice_amount"/>
     </resultMap>
 
 

@@ -48,7 +48,7 @@ public class QlContractInfoPurchaseVo {
      */
     @ExcelProperty(value = "供应商名称")
     private String supplierName;
-
+    private String supplierId;
     /**
      * 总金额
      */
@@ -60,6 +60,11 @@ public class QlContractInfoPurchaseVo {
      */
     @ExcelProperty(value = "合同签订时间")
     private Date contactDate;
+    @ExcelProperty(value = "税率")
+    private BigDecimal rate;
+
+    @ExcelProperty(value = "合同状态")
+    private String contractStatus;
 
     private List<QlWarehousingVo> qlWarehousingVos;
 }

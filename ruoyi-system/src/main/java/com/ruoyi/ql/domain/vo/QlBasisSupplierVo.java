@@ -5,6 +5,7 @@ import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.ruoyi.common.annotation.ExcelDictFormat;
 import com.ruoyi.common.convert.ExcelDictConvert;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import java.util.Date;
 
@@ -45,12 +46,54 @@ public class QlBasisSupplierVo {
      */
     @ExcelProperty(value = "联系人")
     private String contactPerson;
-
+    @ExcelProperty(value = "电话")
+    private String telephone;
+    @ExcelProperty(value = "邮箱")
+    private String email;
+    @ExcelProperty(value = "地址")
+    private String address;
     /**
      * 手机
      */
     @ExcelProperty(value = "手机")
     private String mobilePhone;
+    @ExcelProperty(value = "供应商名称")
+    private String supplierLevel;
 
 
+    @ExcelProperty(value = "发票抬头")
+    private String invoiceLookedUp;
+
+    @ExcelProperty(value = "发票税率")
+    private BigDecimal invoiceTax;
+
+    @ExcelProperty(value = "发票种类")
+    private String invoiceType;
+    /**
+     * 总付款金额
+     */
+    @ExcelProperty(value = "总付款金额")
+    @ApiModelProperty(value = "总付款金额", required = true)
+    private BigDecimal payed;
+
+    /**
+     * 总欠款金额
+     */
+    @ExcelProperty(value = "总欠款金额")
+    @ApiModelProperty(value = "总欠款金额", required = true)
+    private BigDecimal unpaid;
+
+    /**
+     * 已开发票金额
+     */
+    @ExcelProperty(value = "已开发票金额")
+    @ApiModelProperty(value = "已开发票金额", required = true)
+    private BigDecimal invoiceAmount;
+
+    /**
+     * 欠发票金额
+     */
+    @ExcelProperty(value = "欠发票金额")
+    @ApiModelProperty(value = "欠发票金额", required = true)
+    private BigDecimal uninvoiceAmount;
 }

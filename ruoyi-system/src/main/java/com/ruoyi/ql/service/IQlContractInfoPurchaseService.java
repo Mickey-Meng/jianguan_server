@@ -36,6 +36,7 @@ public interface IQlContractInfoPurchaseService {
      * 新增采购合同
      */
     Boolean insertByBo(QlContractInfoPurchaseBo bo);
+    Boolean insertContractInfoPurchase(QlContractInfoPurchaseBo bo);
 
     /**
      * 修改采购合同
