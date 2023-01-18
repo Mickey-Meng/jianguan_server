@@ -8,6 +8,7 @@ import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.core.domain.model.LoginBody;
 import com.ruoyi.common.core.domain.model.SmsLoginBody;
 import com.ruoyi.common.helper.LoginHelper;
+import com.ruoyi.common.utils.RsaEncrypt;
 import com.ruoyi.system.domain.vo.RouterVo;
 import com.ruoyi.system.service.ISysMenuService;
 import com.ruoyi.system.service.ISysUserService;
@@ -40,6 +41,13 @@ public class SysLoginController {
     private final ISysMenuService menuService;
     private final ISysUserService userService;
     private final SysPermissionService permissionService;
+    private static String defaultKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAl3xudmrPJr5r/aM6RlKO0UifXuJCzdzn\n" +
+        "ZZ6AW3kR8iAZQ4pBSgyNQSX9OUainzEhlPHSovnAcFxLF+2gJubrwajjWo3v82GNVKIFUM15M6zs\n" +
+        "N/j2s8l3EVPMJ/i2zRrypztzKtHoGRoKH1rG0SsHCBY94wqK2HPM4tKj7pJKi0QgR6l/ahBNP2c1\n" +
+        "hJNjE2clyJzRjuXqzgDNaA+IeuLFmX7DmVHZjWxxD7KlQhympl7JQgt5L58SAhR7S6g2ConWwLFu\n" +
+        "2oPTTUGak+zG5VqJmPRYbbgK8xwQ7mCZejqkC2tllmK/RRm4YQIUuBWW6Q26fHc6tFdNMx4LWP/v\n" +
+        "LlMlkwIDAQAB";
+
 
     /**
      * 登录方法
@@ -55,6 +63,9 @@ public class SysLoginController {
         String token = loginService.login(loginBody.getUsername(), loginBody.getPassword(), loginBody.getCode(),
             loginBody.getUuid());
         ajax.put(Constants.TOKEN, token);
+
+        String ssoToken = RsaEncrypt.encrypt("Alice", defaultKey);
+        ajax.put("ssoToken",ssoToken);
         return R.ok(ajax);
     }
 
