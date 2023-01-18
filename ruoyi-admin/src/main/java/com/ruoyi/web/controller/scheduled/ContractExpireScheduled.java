@@ -42,8 +42,12 @@ public class ContractExpireScheduled {
         List<SysNotice> sysNotices = new ArrayList<>();
         for (QlContractInfoSale qlContractInfoSaleVo : qlContractInfoSaleVos) {
 
+            Date retentionDate = qlContractInfoSaleVo.getRetentionDate();
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            String format = simpleDateFormat.format(retentionDate);
+
             SysNotice sysNotice = new SysNotice();
-            sysNotice.setNoticeContent("客户:["+qlContractInfoSaleVo.getCustomerName()+"]签署的合同["+qlContractInfoSaleVo.getContractName()+"]质保金于["+qlContractInfoSaleVo.getRetentionDate()+"]到期，请尽快处理。");
+            sysNotice.setNoticeContent("客户:["+qlContractInfoSaleVo.getCustomerName()+"]签署的合同["+qlContractInfoSaleVo.getContractName()+"]质保金于["+format+"]到期，请尽快处理。");
             sysNotice.setNoticeTitle("质保金到期提醒");
             sysNotice.setNoticeType("2");
             sysNotices.add(sysNotice);
