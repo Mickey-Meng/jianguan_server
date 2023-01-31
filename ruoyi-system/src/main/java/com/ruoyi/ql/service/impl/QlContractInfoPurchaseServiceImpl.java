@@ -91,10 +91,12 @@ public class QlContractInfoPurchaseServiceImpl implements IQlContractInfoPurchas
     @Override
     @Transactional
     public Boolean insertByBo(QlContractInfoPurchaseBo bo) {
+        //1.更新采购合同表
         QlContractInfoPurchase add = BeanUtil.toBean(bo, QlContractInfoPurchase.class);
         validEntityBeforeSave(add);
         boolean flag = baseMapper.insert(add) > 0;
-        /*if (flag) {
+        //2. 插入订单表（入库表）
+        if (flag) {
             List<QlWarehousing> items = new ArrayList<>();
             for (QlWarehousingVo vo : bo.getQlWarehousingVos()) {
                 QlWarehousing item = BeanUtil.toBean(vo, QlWarehousing.class);
@@ -102,7 +104,8 @@ public class QlContractInfoPurchaseServiceImpl implements IQlContractInfoPurchas
                 items.add(item);
             }
             flag = qlWarehousingMapper.insertBatch(items);
-        }*/
+        }
+        // 1.更新该供应商的欠款金额
         if(flag){
             QlBasisSupplierVo qlBasisSupplierVo = qlBasisSupplierMapper.selectVoById(bo.getSupplierId());
             qlBasisSupplierVo.setUnpaid(qlBasisSupplierVo.getUnpaid().add( bo.getAmount()));
