@@ -13,6 +13,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="empBasepay" column="emp_basepay"/>
         <result property="empId" column="emp_id"/>
         <result property="empAddr" column="emp_addr"/>
+        <result property="mobilePhone" column="mobile_phone"/>
+        <result property="emergencyContact" column="emergency_contact"/>
+        <result property="emergencyPhone" column="emergency_phone"/>
+        <result property="deptId" column="dept_id"/>
         <result property="delFlag" column="del_flag"/>
         <result property="createBy" column="create_by"/>
         <result property="createTime" column="create_time"/>

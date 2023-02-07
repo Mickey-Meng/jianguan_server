@@ -58,6 +58,22 @@ public class QlFinEmp extends BaseEntity {
      */
     private String empAddr;
     /**
+     * 手机号
+     */
+    private String mobilePhone;
+    /**
+     * 紧急联系人
+     */
+    private String emergencyContact;
+    /**
+     * 紧急联系人电话
+     */
+    private String emergencyPhone;
+    /**
+     * 部门
+     */
+    private Long deptId;
+    /**
      * 删除标志（0代表存在 2代表删除）
      */
     @TableLogic

@@ -67,7 +67,26 @@ public class QlFinEmpBo extends BaseEntity {
      * 家庭住址
      */
     private String empAddr;
+    /**
+     * 手机号
+     */
+    @NotBlank(message = "手机号不能为空", groups = { AddGroup.class, EditGroup.class })
+    private String mobilePhone;
 
+    /**
+     * 紧急联系人
+     */
+    private String emergencyContact;
+
+    /**
+     * 紧急联系人电话
+     */
+    private String emergencyPhone;
+
+    /**
+     * 部门
+     */
+    private Long deptId;
     /**
      * 备注
      */

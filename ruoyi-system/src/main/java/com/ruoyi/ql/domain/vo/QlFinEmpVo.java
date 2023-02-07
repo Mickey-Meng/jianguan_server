@@ -6,6 +6,7 @@ import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.ruoyi.common.annotation.ExcelDictFormat;
 import com.ruoyi.common.convert.ExcelDictConvert;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import java.util.Date;
 
@@ -60,5 +61,31 @@ public class QlFinEmpVo {
     @ExcelProperty(value = "身份证号码")
     private String empId;
 
+    /**
+     * 手机号
+     */
+    @ExcelProperty(value = "手机号")
+    @ApiModelProperty(value = "手机号", required = true)
+    private String mobilePhone;
 
+    /**
+     * 紧急联系人
+     */
+    @ExcelProperty(value = "紧急联系人")
+    @ApiModelProperty(value = "紧急联系人", required = true)
+    private String emergencyContact;
+
+    /**
+     * 紧急联系人电话
+     */
+    @ExcelProperty(value = "紧急联系人电话")
+    @ApiModelProperty(value = "紧急联系人电话", required = true)
+    private String emergencyPhone;
+
+    /**
+     * 部门
+     */
+    @ExcelProperty(value = "部门")
+    @ApiModelProperty(value = "部门", required = true)
+    private Long deptId;
 }

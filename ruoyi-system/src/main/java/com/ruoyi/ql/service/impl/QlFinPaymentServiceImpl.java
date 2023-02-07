@@ -117,6 +117,16 @@ public class QlFinPaymentServiceImpl implements IQlFinPaymentService {
      */
     @Override
     public Boolean updateByBo(QlFinPaymentBo bo) {
+        QlFinPaymentVo qlFinPaymentVo = baseMapper.selectVoById(bo.getId());
+
+        // 1. 更新供应商已付款金额= 付款金额 - 上一次付款金额 + 修改后付款金额，同理未付款金额重新更新
+        QlBasisSupplierVo qlBasisSupplierVo = qlBasisSupplierMapper.selectVoById(bo.getSupplierId());
+        qlBasisSupplierVo.setPayed(qlBasisSupplierVo.getPayed().add( bo.getPayAmount()).subtract(qlFinPaymentVo.getPayAmount()));
+        qlBasisSupplierVo.setUnpaid(qlBasisSupplierVo.getUnpaid().subtract( bo.getPayAmount()).add(qlFinPaymentVo.getPayAmount()));
+        QlBasisSupplier qlBasisSupplier = BeanUtil.toBean(qlBasisSupplierVo, QlBasisSupplier.class);
+        qlBasisSupplierMapper.updateById(qlBasisSupplier);
+
+        //2 . 更新此次付款为修改后的信息
         QlFinPayment update = BeanUtil.toBean(bo, QlFinPayment.class);
         validEntityBeforeSave(update);
         return baseMapper.updateById(update) > 0;

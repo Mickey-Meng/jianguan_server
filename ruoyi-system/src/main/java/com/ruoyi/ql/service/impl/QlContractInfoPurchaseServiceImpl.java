@@ -105,7 +105,7 @@ public class QlContractInfoPurchaseServiceImpl implements IQlContractInfoPurchas
             }
             flag = qlWarehousingMapper.insertBatch(items);
         }
-        // 1.更新该供应商的欠款金额
+        // 3.更新该供应商的欠款金额
         if(flag){
             QlBasisSupplierVo qlBasisSupplierVo = qlBasisSupplierMapper.selectVoById(bo.getSupplierId());
             qlBasisSupplierVo.setUnpaid(qlBasisSupplierVo.getUnpaid().add( bo.getAmount()));
