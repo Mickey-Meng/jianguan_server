@@ -1,5 +1,6 @@
 package com.ruoyi.ql.domain.vo;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
@@ -66,12 +67,25 @@ public class QlWarehousingVo {
     @ApiModelProperty(value = "入库状态", required = true)
     private String warehousingStatus;
     /**
+     * 单价
+     */
+    @ExcelProperty(value = "单价")
+    @ApiModelProperty(value = "单价", required = true)
+    private BigDecimal price;
+
+    /**
      * 采购数量
      */
     @ExcelProperty(value = "采购数量")
     @ApiModelProperty(value = "采购数量", required = true)
-    private Long orderNumber;
+    private Integer orderNumber;
 
+    /**
+     * 采购金额
+     */
+    @ExcelProperty(value = "采购金额")
+    @ApiModelProperty(value = "采购金额", required = true)
+    private BigDecimal amount;
     /**
      * 采购合同id
      */

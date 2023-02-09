@@ -59,9 +59,17 @@ public class QlWarehousing extends BaseEntity {
      */
     private String warehousingStatus;
     /**
+     * 单价
+     */
+    private BigDecimal price;
+    /**
      * 采购数量
      */
-    private Long orderNumber;
+    private Integer orderNumber;
+    /**
+     * 采购金额
+     */
+    private BigDecimal amount;
     /**
      * 删除标志（0代表存在 2代表删除）
      */

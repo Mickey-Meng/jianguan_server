@@ -92,6 +92,6 @@ public class QlContractInfoPurchaseBo extends BaseEntity {
      * 部门ID
      */
     private Long deptId;
-    private List<QlWarehousingVo> qlWarehousingVos;
+    private List<QlWarehousingBo> qlWarehousingBos;
 
 }

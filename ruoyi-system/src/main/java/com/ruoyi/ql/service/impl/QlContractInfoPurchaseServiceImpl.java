@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.ruoyi.ql.domain.*;
+import com.ruoyi.ql.domain.bo.QlWarehousingBo;
 import com.ruoyi.ql.domain.vo.*;
 import com.ruoyi.ql.mapper.QlBasisSupplierMapper;
 import com.ruoyi.ql.mapper.QlFinPaymentMapper;
@@ -98,8 +99,8 @@ public class QlContractInfoPurchaseServiceImpl implements IQlContractInfoPurchas
         //2. 插入订单表（入库表）
         if (flag) {
             List<QlWarehousing> items = new ArrayList<>();
-            for (QlWarehousingVo vo : bo.getQlWarehousingVos()) {
-                QlWarehousing item = BeanUtil.toBean(vo, QlWarehousing.class);
+            for (QlWarehousingBo qlWarehousingBo : bo.getQlWarehousingBos()) {
+                QlWarehousing item = BeanUtil.toBean(qlWarehousingBo, QlWarehousing.class);
                 item.setPurchaseOrderId(add.getContractCode());
                 items.add(item);
             }
@@ -128,8 +129,8 @@ public class QlContractInfoPurchaseServiceImpl implements IQlContractInfoPurchas
         QlContractInfoPurchase update = BeanUtil.toBean(bo, QlContractInfoPurchase.class);
         validEntityBeforeSave(update);
         List<QlWarehousing> items = new ArrayList<>();
-        for (QlWarehousingVo vo : bo.getQlWarehousingVos()) {
-            QlWarehousing item = BeanUtil.toBean(vo, QlWarehousing.class);
+        for (QlWarehousingBo qlWarehousingBo : bo.getQlWarehousingBos()) {
+            QlWarehousing item = BeanUtil.toBean(qlWarehousingBo, QlWarehousing.class);
             item.setPurchaseOrderId(update.getContractCode());
             items.add(item);
         }

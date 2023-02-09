@@ -72,4 +72,10 @@ public class QlShopGoodsVo {
     @ExcelProperty(value = "实时库存")
     @ApiModelProperty(value = "实时库存", required = true)
     private Long stockNumber;
+
+    /**
+     * 成本价,用作商品进价
+     */
+    @ApiModelProperty(value = "成本价,用作商品进价", required = true)
+    private BigDecimal costPrice;
 }

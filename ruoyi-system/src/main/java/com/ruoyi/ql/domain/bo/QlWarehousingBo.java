@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import javax.validation.constraints.*;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import java.util.Date;
@@ -67,10 +68,22 @@ public class QlWarehousingBo extends BaseEntity {
     @NotBlank(message = "入库状态（1：已入库 0 未入库）不能为空", groups = { AddGroup.class, EditGroup.class })
     private String warehousingStatus;
     /**
+     * 单价
+     */
+    @NotNull(message = "单价不能为空", groups = { AddGroup.class, EditGroup.class })
+    private BigDecimal price;
+
+    /**
      * 采购数量
      */
     @NotNull(message = "采购数量不能为空", groups = { AddGroup.class, EditGroup.class })
-    private Long orderNumber;
+    private Integer orderNumber;
+
+    /**
+     * 采购金额
+     */
+    @NotNull(message = "采购金额不能为空", groups = { AddGroup.class, EditGroup.class })
+    private BigDecimal amount;
     /**
      *
      */

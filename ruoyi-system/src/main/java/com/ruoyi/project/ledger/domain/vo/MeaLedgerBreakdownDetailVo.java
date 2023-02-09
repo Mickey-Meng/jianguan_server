@@ -120,5 +120,6 @@ public class MeaLedgerBreakdownDetailVo {
     @ExcelDictFormat(dictType = "data_status")
     private String status;
 
-
+    @ExcelProperty(value = "流程状态")
+    private String reviewCode;
 }
