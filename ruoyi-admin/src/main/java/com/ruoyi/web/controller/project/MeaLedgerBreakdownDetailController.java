@@ -78,8 +78,8 @@ public class MeaLedgerBreakdownDetailController extends BaseController {
      * @return
      */
     @GetMapping("/getLeaflist")
-    public R<List<MeaLedgerBreakdownDetailVo>> getLeaflist() {
-        List<MeaLedgerBreakdownDetailVo> list = iMeaLedgerBreakdownDetailService.getLeafList();
+    public R<List<MeaLedgerBreakdownDetailVo>> getLeaflist(String reviewCode) {
+        List<MeaLedgerBreakdownDetailVo> list = iMeaLedgerBreakdownDetailService.getLeafList(reviewCode);
         return R.ok(list);
     }
     /**

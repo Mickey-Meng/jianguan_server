@@ -35,7 +35,7 @@ public interface IMeaLedgerBreakdownDetailService {
     /**
      * 查询台账分解明细叶子节点列表
      */
-    List<MeaLedgerBreakdownDetailVo> getLeafList();
+    List<MeaLedgerBreakdownDetailVo> getLeafList(String reviewCode);
     /**
      * 新增台账分解明细
      */

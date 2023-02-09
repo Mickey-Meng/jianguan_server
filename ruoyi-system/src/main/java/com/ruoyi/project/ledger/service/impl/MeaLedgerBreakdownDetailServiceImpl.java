@@ -89,10 +89,11 @@ public class MeaLedgerBreakdownDetailServiceImpl implements IMeaLedgerBreakdownD
     }
 
     @Override
-    public List<MeaLedgerBreakdownDetailVo> getLeafList() {
+    public List<MeaLedgerBreakdownDetailVo> getLeafList(String reviewCode) {
         Map<String, Object> params = new HashMap<>();
         LambdaQueryWrapper<MeaLedgerBreakdownDetail> lqw = Wrappers.lambdaQuery();
         lqw.gt(MeaLedgerBreakdownDetail::getFjsl, 0);
+        lqw.eq(MeaLedgerBreakdownDetail::getReviewCode, reviewCode);
         return baseMapper.selectVoList(lqw);
     }
 
