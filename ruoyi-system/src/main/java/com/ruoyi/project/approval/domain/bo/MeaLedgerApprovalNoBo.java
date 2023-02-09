@@ -50,7 +50,6 @@ public class MeaLedgerApprovalNoBo extends BaseEntity {
     /**
      * 申报状态
      */
-    @NotBlank(message = "申报状态不能为空", groups = { AddGroup.class, EditGroup.class })
     private String spzt;
 
     /**

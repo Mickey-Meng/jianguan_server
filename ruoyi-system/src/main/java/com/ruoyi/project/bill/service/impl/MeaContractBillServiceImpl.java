@@ -90,6 +90,7 @@ public class MeaContractBillServiceImpl implements IMeaContractBillService {
         lqw.eq(bo.getZsl() != null, MeaContractBill::getZsl, bo.getZsl());
         lqw.eq(bo.getZje() != null, MeaContractBill::getZje, bo.getZje());
         lqw.eq(StringUtils.isNotBlank(bo.getStatus()), MeaContractBill::getStatus, bo.getStatus());
+        lqw.orderByAsc(MeaContractBill::getZmh);
         return lqw;
     }
 
