@@ -62,16 +62,29 @@ public class MeaContractBillServiceImpl implements IMeaContractBillService {
     }
 
     @Override
-    public List<MeaContractBillVo> getLeafList( ) {
-        Map<String, Object> params = new HashMap<>();
+    public List<MeaContractBillVo> getLeafList( MeaContractBillBo bo) {
         LambdaQueryWrapper<MeaContractBill> lqw = Wrappers.lambdaQuery();
         lqw.gt(MeaContractBill::getHtje, 0);
         lqw.eq( MeaContractBill::getStatus, 0);
+        lqw.like(StringUtils.isNotBlank(bo.getBdbh()), MeaContractBill::getBdbh, bo.getBdbh());
+        lqw.like(StringUtils.isNotBlank(bo.getZmh()), MeaContractBill::getZmh, bo.getZmh());
+        lqw.like(StringUtils.isNotBlank(bo.getZmmc()), MeaContractBill::getZmmc, bo.getZmmc());
+        lqw.eq(StringUtils.isNotBlank(bo.getZmhParent()), MeaContractBill::getZmhParent, bo.getZmhParent());
+        lqw.eq(StringUtils.isNotBlank(bo.getZmhAncestors()), MeaContractBill::getZmhAncestors, bo.getZmhAncestors());
+        lqw.eq(StringUtils.isNotBlank(bo.getDw()), MeaContractBill::getDw, bo.getDw());
+        lqw.eq(bo.getHtdj() != null, MeaContractBill::getHtdj, bo.getHtdj());
+        lqw.eq(bo.getXzdj() != null, MeaContractBill::getXzdj, bo.getXzdj());
+        lqw.eq(bo.getHtsl() != null, MeaContractBill::getHtsl, bo.getHtsl());
+        lqw.eq(bo.getXzsl() != null, MeaContractBill::getXzsl, bo.getXzsl());
+        lqw.eq(bo.getXzje() != null, MeaContractBill::getXzje, bo.getXzje());
+        lqw.eq(bo.getZsl() != null, MeaContractBill::getZsl, bo.getZsl());
+        lqw.eq(bo.getZje() != null, MeaContractBill::getZje, bo.getZje());
+        lqw.orderByAsc(MeaContractBill::getZmh);
+        List s = baseMapper.selectVoList(lqw);
         return baseMapper.selectVoList(lqw);
     }
 
     private LambdaQueryWrapper<MeaContractBill> buildQueryWrapper(MeaContractBillBo bo) {
-        Map<String, Object> params = bo.getParams();
         LambdaQueryWrapper<MeaContractBill> lqw = Wrappers.lambdaQuery();
         lqw.like(StringUtils.isNotBlank(bo.getBdbh()), MeaContractBill::getBdbh, bo.getBdbh());
         lqw.like(StringUtils.isNotBlank(bo.getZmh()), MeaContractBill::getZmh, bo.getZmh());

@@ -7,6 +7,7 @@ import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.ruoyi.common.annotation.ExcelDictFormat;
 import com.ruoyi.common.convert.ExcelDictConvert;
+import com.ruoyi.ql.domain.bo.QlWarehousingBo;
 import lombok.Data;
 import java.util.Date;
 import java.util.List;
@@ -66,5 +67,5 @@ public class QlContractInfoPurchaseVo {
     @ExcelProperty(value = "合同状态")
     private String contractStatus;
 
-    private List<QlWarehousingVo> qlWarehousingVos;
+    private List<QlWarehousingBo> qlWarehousingBos;
 }

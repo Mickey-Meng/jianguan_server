@@ -31,7 +31,7 @@ public interface IMeaContractBillService {
     /**
      * 查询工程量清单列表
      */
-    List<MeaContractBillVo> getLeafList();
+    List<MeaContractBillVo> getLeafList(MeaContractBillBo bo);
     /**
      * 新增工程量清单
      */

@@ -11,7 +11,9 @@ import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.core.validate.AddGroup;
 import com.ruoyi.common.core.validate.EditGroup;
 import com.ruoyi.common.enums.BusinessType;
+import com.ruoyi.common.utils.BeanCopyUtils;
 import com.ruoyi.common.utils.poi.ExcelUtil;
+import com.ruoyi.project.bill.domain.MeaContractBill;
 import com.ruoyi.project.bill.domain.bo.MeaContractBillBo;
 import com.ruoyi.project.bill.domain.vo.ChapterCollectVo;
 import com.ruoyi.project.bill.domain.vo.MeaContractBillVo;
@@ -58,8 +60,8 @@ public class MeaContractBillController extends BaseController {
      * 查询工程量清单叶子节点，合同数量>0的数据列表
      */
     @GetMapping("/getLeaflist")
-    public R<List<MeaContractBillVo>> getLeaflist() {
-        List<MeaContractBillVo> list = iMeaContractBillService.getLeafList();
+    public R<List<MeaContractBillVo>> getLeaflist(MeaContractBillBo bo) {
+        List<MeaContractBillVo> list = iMeaContractBillService.getLeafList(bo);
         return R.ok(list);
     }
     /**

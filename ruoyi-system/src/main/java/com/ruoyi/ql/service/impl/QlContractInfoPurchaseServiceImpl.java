@@ -1,6 +1,7 @@
 package com.ruoyi.ql.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.ruoyi.common.utils.BeanCopyUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.core.domain.PageQuery;
@@ -20,6 +21,7 @@ import com.ruoyi.ql.mapper.QlContractInfoPurchaseMapper;
 import com.ruoyi.ql.service.IQlContractInfoPurchaseService;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -52,7 +54,9 @@ public class QlContractInfoPurchaseServiceImpl implements IQlContractInfoPurchas
         LambdaQueryWrapper<QlWarehousing> qlWarehousingLambdaQueryWrapper = new LambdaQueryWrapper<>();
         qlWarehousingLambdaQueryWrapper.eq(QlWarehousing::getPurchaseOrderId, vo.getContractCode());
         List<QlWarehousingVo> qlFinReimbursementItemVoList = qlWarehousingMapper.selectVoList(qlWarehousingLambdaQueryWrapper);
-        vo.setQlWarehousingVos(qlFinReimbursementItemVoList);
+        List<QlWarehousingBo> qlWarehousingBos = new ArrayList<QlWarehousingBo>();
+        qlWarehousingBos = BeanCopyUtils.copyList(qlFinReimbursementItemVoList, QlWarehousingBo.class);
+        vo.setQlWarehousingBos(qlWarehousingBos);
         return vo;
     }
 
@@ -125,16 +129,45 @@ public class QlContractInfoPurchaseServiceImpl implements IQlContractInfoPurchas
      * 修改采购合同
      */
     @Override
+    @Transactional
     public Boolean updateByBo(QlContractInfoPurchaseBo bo) {
         QlContractInfoPurchase update = BeanUtil.toBean(bo, QlContractInfoPurchase.class);
         validEntityBeforeSave(update);
         List<QlWarehousing> items = new ArrayList<>();
+        QlContractInfoPurchaseVo qlContractInfoPurchaseVo =  baseMapper.selectVoById(bo.getId());
+
+        //1 ，合同中，产品明细先删除后新增
+        LambdaQueryWrapper<QlWarehousing> qlWarehousingLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        qlWarehousingLambdaQueryWrapper.eq(QlWarehousing::getPurchaseOrderId, bo.getContractCode());
+        List<QlWarehousing> qlWarehousingBos  = qlWarehousingMapper.selectList(qlWarehousingLambdaQueryWrapper);
+        qlWarehousingMapper.deleteBatchIds(qlWarehousingBos);
+
+
+
+        //2 ，新传入的list对象，把id置为null，方便insert
         for (QlWarehousingBo qlWarehousingBo : bo.getQlWarehousingBos()) {
             QlWarehousing item = BeanUtil.toBean(qlWarehousingBo, QlWarehousing.class);
-            item.setPurchaseOrderId(update.getContractCode());
+            item.setPurchaseOrderId(update.getContractCode());//因为修改的做法是delete 后insert，id会变化，因此需要用业务主键进行关联，
             items.add(item);
         }
-        qlWarehousingMapper.insertOrUpdateBatch(items);
+        items.forEach((e) -> {
+            e.setId(null);
+        });
+        qlWarehousingMapper.insertBatch(items);
+
+
+        // 3.获取当前合同信息，需要获取合同总额，从而在供应商表中，回退 对应的未付款金额
+
+        BigDecimal currentContractAmount = qlContractInfoPurchaseVo.getAmount();
+
+
+        // 4.更新该供应商的欠款金额
+        QlBasisSupplierVo qlBasisSupplierVo = qlBasisSupplierMapper.selectVoById(bo.getSupplierId());
+        //未付款金额 = 该供应商当前数据库中未付款金额 - 当前修改的合同在数据库中已存在的合同金额 + 前端传送过来的合同金额
+        qlBasisSupplierVo.setUnpaid(qlBasisSupplierVo.getUnpaid().subtract(currentContractAmount).add(bo.getAmount()));
+        QlBasisSupplier qlBasisSupplier = BeanUtil.toBean(qlBasisSupplierVo, QlBasisSupplier.class);
+        qlBasisSupplierMapper.updateById(qlBasisSupplier);
+
         return baseMapper.updateById(update) > 0;
     }
 

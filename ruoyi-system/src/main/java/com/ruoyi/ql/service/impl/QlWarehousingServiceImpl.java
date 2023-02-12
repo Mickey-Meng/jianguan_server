@@ -105,7 +105,21 @@ public class QlWarehousingServiceImpl implements IQlWarehousingService {
      * 修改入库管理
      */
     @Override
+    @Transactional
     public Boolean updateByBo(QlWarehousingBo bo) {
+        // 1 获取上一次入库清单
+
+        QlWarehousing qlWarehousing = baseMapper.selectById(bo.getId());
+        Long n = qlWarehousing.getWarehousingNumber();
+
+
+        // 2  获取该产品实时库存数量
+        QlShopGoods qlShopGoods  = qlShopGoodsMapper.selectById(bo.getProudctId());
+        Long seedNumber = qlShopGoods.getStockNumber();
+        // 3 修改后库存数据 =  实时库存 - 上一次入库数量 + 当前页面库存数量
+        qlShopGoods.setStockNumber(seedNumber + bo.getWarehousingNumber() - n);
+        qlShopGoodsMapper.updateById(qlShopGoods);
+
         QlWarehousing update = BeanUtil.toBean(bo, QlWarehousing.class);
         validEntityBeforeSave(update);
         return baseMapper.updateById(update) > 0;
