@@ -137,10 +137,9 @@ public class MeaLedgerApprovalController extends BaseController {
         //TODO 不需要启动多个流程，合并成一个流程。
         for(MeaLedgerApprovalBo bo:bos){
             Boolean aBoolean = iMeaLedgerApprovalService.insertByBo(bo);
-            if(aBoolean){
-                processService.startMeaProcess(process_1669973630070,formKey,bo.getId().toString(), bo);
-            }
         }
+        MeaLedgerApprovalBo meaLedgerApprovalBo = bos.get(0);
+        processService.startMeaProcess(process_1669973630070,formKey,"台账报审-申请期次;"+meaLedgerApprovalBo.getSqqc(), bos);
         return R.ok();
     }
 

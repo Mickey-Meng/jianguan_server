@@ -287,6 +287,9 @@ public class WfProcessServiceImpl extends FlowServiceFactory implements IWfProce
             for(MeaFlowDataInfo me:meaFlowDataInfos){
                 MeaFlow meaFlow=new MeaFlow();
                 meaFlow.setData(JsonUtils.parseMap(me.getBussinessData()));
+                if(meaFlow.getData()==null){
+                    meaFlow.setData(JsonUtils.parseArrayMap(me.getBussinessData()));
+                }
                 meaFlow.setFormKey(me.getBussinessKey());
                 meaFlows.add(meaFlow);
             }
