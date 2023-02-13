@@ -134,6 +134,7 @@ public class MeaLedgerApprovalController extends BaseController {
         if(StrUtil.isBlank(process_1669973630070)){
             return R.fail("流程图未定义");
         }
+        //TODO 不需要启动多个流程，合并成一个流程。
         for(MeaLedgerApprovalBo bo:bos){
             Boolean aBoolean = iMeaLedgerApprovalService.insertByBo(bo);
             if(aBoolean){

@@ -84,6 +84,7 @@ public class MeaLedgerApprovalVo {
     @ExcelProperty(value = "关联台账分解ID")
     @ApiModelProperty(value = "关联台账分解ID", required = true)
     private String breakdownId;
+    private String reviewCode;
 
 
     private MeaLedgerBreakdownDetailVo meaLedgerBreakdownDetailVo;

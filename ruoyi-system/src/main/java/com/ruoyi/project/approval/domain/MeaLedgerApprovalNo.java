@@ -50,6 +50,10 @@ public class MeaLedgerApprovalNo extends BaseEntity {
      */
     private String status;
     /**
+     * 申报状态（1申报中 2完成申报 3申报打回）
+     */
+    private String reviewCode;
+    /**
      * 备注
      */
     private String remark;

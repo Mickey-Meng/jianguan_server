@@ -51,7 +51,10 @@ public class MeaLedgerApprovalNoBo extends BaseEntity {
      * 申报状态
      */
     private String spzt;
-
+    /**
+     * 申报状态（1申报中 2完成申报 3申报打回）
+     */
+    private String reviewCode;
     /**
      * 状态（0正常 1停用）
      */

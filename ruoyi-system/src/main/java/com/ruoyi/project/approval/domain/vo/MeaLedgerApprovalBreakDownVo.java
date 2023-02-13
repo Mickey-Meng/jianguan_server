@@ -152,5 +152,8 @@ public class MeaLedgerApprovalBreakDownVo {
     @ExcelProperty(value = "状态", converter = ExcelDictConvert.class)
     @ExcelDictFormat(dictType = "change_status")
     private String fjlx;
-
+    /**
+     * 申报状态（1申报中 2完成申报 3申报打回）
+     */
+    private String reviewCode;
 }

@@ -45,7 +45,10 @@ public class MeaLedgerApprovalNoVo {
      */
     @ExcelProperty(value = "申报日期")
     private Date sbsj;
-
+    /**
+     * 申报状态（1申报中 2完成申报 3申报打回）
+     */
+    private String reviewCode;
     /**
      * 申报状态
      */

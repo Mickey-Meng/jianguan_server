@@ -74,4 +74,7 @@ public class MeaLedgerApprovalBo extends BaseEntity {
      */
     @NotBlank(message = "关联台账分解ID不能为空", groups = { AddGroup.class, EditGroup.class })
     private String breakdownId;
+
+    private String reviewCode;
+
 }
