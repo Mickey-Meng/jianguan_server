@@ -200,14 +200,18 @@ public class WfProcessServiceImpl extends FlowServiceFactory implements IWfProce
         this.buildProcessVariables(variables);
         ProcessInstance processInstance = runtimeService.startProcessInstanceById(procDefId,bussinessKey,variables);
         // 第一个用户任务为发起人，则自动完成任务
-        String task = wfTaskService.startFirstBatchTask(processInstance, variables);
-        MeaFlowDataInfo meaFlowDataInfo=new MeaFlowDataInfo();
-        meaFlowDataInfo.setTaskId(task);
-        meaFlowDataInfo.setStatus("0");
-        meaFlowDataInfo.setBussinessData(JsonUtils.toJsonString(formData));
-        meaFlowDataInfo.setBussinessKey(formKey);
-        meaFlowDataInfo.setBussinessId(bussinessKey);
-        meaFlowDataInfoMapper.insert(meaFlowDataInfo);
+        List<String> task = wfTaskService.startFirstBatchTask(processInstance, variables);
+        if(CollUtil.isNotEmpty(task)){
+            for (String taskId:task){
+                MeaFlowDataInfo meaFlowDataInfo=new MeaFlowDataInfo();
+                meaFlowDataInfo.setTaskId(taskId);
+                meaFlowDataInfo.setStatus("0");
+                meaFlowDataInfo.setBussinessData(JsonUtils.toJsonString(formData));
+                meaFlowDataInfo.setBussinessKey(formKey);
+                meaFlowDataInfo.setBussinessId(bussinessKey);
+                meaFlowDataInfoMapper.insert(meaFlowDataInfo);
+            }
+        }
     }
 
     /**

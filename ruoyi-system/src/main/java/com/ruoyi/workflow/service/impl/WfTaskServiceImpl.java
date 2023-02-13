@@ -4,10 +4,12 @@ package com.ruoyi.workflow.service.impl;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.ruoyi.common.core.domain.entity.SysRole;
 import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.helper.LoginHelper;
+import com.ruoyi.common.utils.JsonUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.flowable.common.constant.ProcessConstants;
 import com.ruoyi.flowable.common.constant.TaskConstants;
@@ -18,10 +20,13 @@ import com.ruoyi.flowable.flow.FindNextNodeUtil;
 import com.ruoyi.flowable.flow.FlowableUtils;
 import com.ruoyi.flowable.utils.ModelUtils;
 import com.ruoyi.flowable.utils.TaskUtils;
+import com.ruoyi.project.flowidatenfo.domain.MeaFlowDataInfo;
+import com.ruoyi.project.flowidatenfo.mapper.MeaFlowDataInfoMapper;
 import com.ruoyi.system.service.ISysRoleService;
 import com.ruoyi.system.service.ISysUserService;
 import com.ruoyi.workflow.domain.bo.WfTaskBo;
 import com.ruoyi.workflow.domain.dto.WfNextDto;
+import com.ruoyi.workflow.domain.vo.MeaFlow;
 import com.ruoyi.workflow.domain.vo.WfViewerVo;
 import com.ruoyi.workflow.service.IWfCopyService;
 import com.ruoyi.workflow.service.IWfTaskService;
@@ -70,6 +75,8 @@ public class WfTaskServiceImpl extends FlowServiceFactory implements IWfTaskServ
 
     private final IWfCopyService copyService;
 
+    private final MeaFlowDataInfoMapper meaFlowDataInfoMapper;
+
     /**
      * 完成任务
      *
@@ -78,6 +85,9 @@ public class WfTaskServiceImpl extends FlowServiceFactory implements IWfTaskServ
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void complete(WfTaskBo taskBo) {
+        QueryWrapper<MeaFlowDataInfo> queryWrapper=new QueryWrapper();
+        queryWrapper.eq("task_id",taskBo.getTaskId());
+        List<MeaFlowDataInfo> meaFlowDataInfos = meaFlowDataInfoMapper.selectList(queryWrapper);
         Task task = taskService.createTaskQuery().taskId(taskBo.getTaskId()).singleResult();
         if (Objects.isNull(task)) {
             throw new ServiceException("任务不存在");
@@ -100,6 +110,15 @@ public class WfTaskServiceImpl extends FlowServiceFactory implements IWfTaskServ
         // 处理抄送用户
         if (!copyService.makeCopy(taskBo)) {
             throw new RuntimeException("抄送任务失败");
+        }
+        List<Task> list = taskService.createTaskQuery().processInstanceId(taskBo.getProcInsId()).list();
+        if(CollUtil.isNotEmpty(list)){
+            for (Task taskId:list){
+                MeaFlowDataInfo meaFlowDataInfo = meaFlowDataInfos.get(0);
+                meaFlowDataInfo.setId(null);
+                meaFlowDataInfo.setTaskId(taskId.getId());
+                meaFlowDataInfoMapper.insert(meaFlowDataInfo);
+            }
         }
     }
 
@@ -687,23 +706,24 @@ public class WfTaskServiceImpl extends FlowServiceFactory implements IWfTaskServ
     }
 
     @Override
-    public String startFirstBatchTask(ProcessInstance processInstance, Map<String, Object> variables) {
+    public List<String> startFirstBatchTask(ProcessInstance processInstance, Map<String, Object> variables) {
         List<String> ids=new ArrayList<>();
         // 若第一个用户任务为发起人，则自动完成任务
         List<Task> list = taskService.createTaskQuery().processInstanceId(processInstance.getProcessInstanceId()).list();
         if(CollUtil.isNotEmpty(list)){
-            Task task = list.get(0);
-            if (ObjectUtil.isNotEmpty(task)) {
-                String userIdStr = (String) variables.get(TaskConstants.PROCESS_INITIATOR);
-                if (StrUtil.equals(task.getAssignee(), userIdStr)) {
-                    taskService.addComment(task.getId(), processInstance.getProcessInstanceId(), FlowComment.NORMAL.getType(), LoginHelper.getNickName() + "发起流程申请");
-                    // taskService.setAssignee(task.getId(), userIdStr);
-                    taskService.complete(task.getId(), variables);
+            for(Task task:list){
+                if (ObjectUtil.isNotEmpty(task)) {
+                    String userIdStr = (String) variables.get(TaskConstants.PROCESS_INITIATOR);
+                    if (StrUtil.equals(task.getAssignee(), userIdStr)) {
+                        taskService.addComment(task.getId(), processInstance.getProcessInstanceId(), FlowComment.NORMAL.getType(), LoginHelper.getNickName() + "发起流程申请");
+                        // taskService.setAssignee(task.getId(), userIdStr);
+                        taskService.complete(task.getId(), variables);
+                    }
                 }
+                ids.add(task.getId());
             }
-            return task.getId();
         }
-        return null;
+        return ids;
 
     }
 }

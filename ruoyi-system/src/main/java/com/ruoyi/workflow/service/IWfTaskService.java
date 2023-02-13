@@ -137,5 +137,5 @@ public interface IWfTaskService {
      * @param variables
      * @return
      */
-    String startFirstBatchTask(ProcessInstance processInstance, Map<String, Object> variables);
+    List<String> startFirstBatchTask(ProcessInstance processInstance, Map<String, Object> variables);
 }
