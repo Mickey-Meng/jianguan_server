@@ -78,6 +78,7 @@ public class QlShopGoodsBo extends BaseEntity {
      * 所属库位主键
      */
     private Long storageId;
+    private String storageName;
 
     /**
      * 商品单位【关联字典管理】

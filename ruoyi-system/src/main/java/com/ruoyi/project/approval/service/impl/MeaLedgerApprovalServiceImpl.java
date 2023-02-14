@@ -8,10 +8,12 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ruoyi.common.core.domain.PageQuery;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.project.approval.domain.MeaLedgerApproval;
+import com.ruoyi.project.approval.domain.MeaLedgerApprovalNo;
 import com.ruoyi.project.approval.domain.bo.MeaLedgerApprovalBo;
 import com.ruoyi.project.approval.domain.vo.MeaLedgerApprovalBreakDownVo;
 import com.ruoyi.project.approval.domain.vo.MeaLedgerApprovalVo;
 import com.ruoyi.project.approval.mapper.MeaLedgerApprovalMapper;
+import com.ruoyi.project.approval.mapper.MeaLedgerApprovalNoMapper;
 import com.ruoyi.project.approval.service.IMeaLedgerApprovalService;
 import com.ruoyi.project.ledger.domain.vo.MeaLedgerBreakdownDetailVo;
 import com.ruoyi.project.ledger.mapper.MeaLedgerBreakdownDetailMapper;
@@ -20,6 +22,7 @@ import com.ruoyi.ql.domain.vo.QlFinReimbursementItemVo;
 import io.micrometer.core.instrument.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -37,6 +40,8 @@ import java.util.Map;
 public class MeaLedgerApprovalServiceImpl implements IMeaLedgerApprovalService {
 
     private final MeaLedgerApprovalMapper baseMapper;
+
+    private final MeaLedgerApprovalNoMapper meaLedgerApprovalNoMapper;
 
     private final MeaLedgerBreakdownDetailMapper meaLedgerBreakdownDetailMapper;
 
@@ -104,6 +109,7 @@ public class MeaLedgerApprovalServiceImpl implements IMeaLedgerApprovalService {
      * 新增台账报审
      */
     @Override
+    @Transactional
     public Boolean insertByBo(MeaLedgerApprovalBo bo) {
         MeaLedgerApproval add = BeanUtil.toBean(bo, MeaLedgerApproval.class);
         validEntityBeforeSave(add);
@@ -112,6 +118,13 @@ public class MeaLedgerApprovalServiceImpl implements IMeaLedgerApprovalService {
         if (flag) {
             bo.setId(add.getId());
         }
+
+        LambdaQueryWrapper<MeaLedgerApprovalNo> lqw = Wrappers.lambdaQuery();
+        lqw.eq(StringUtils.isNotBlank(bo.getSqqc()), MeaLedgerApprovalNo::getSqqc, bo.getSqqc());
+        MeaLedgerApprovalNo meaLedgerApprovalNo =  meaLedgerApprovalNoMapper.selectOne(lqw) ;
+        meaLedgerApprovalNo.setReviewCode("1");
+        meaLedgerApprovalNoMapper.updateById(meaLedgerApprovalNo);
+
         return flag;
     }
 

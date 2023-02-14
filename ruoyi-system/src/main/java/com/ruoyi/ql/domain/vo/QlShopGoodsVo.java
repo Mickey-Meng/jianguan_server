@@ -35,6 +35,9 @@ public class QlShopGoodsVo {
     @ExcelProperty(value = "供应商名称")
     private String supplierName;
 
+
+    private Long supplierId;
+
     /**
      * 商品类别ID
      */
@@ -78,4 +81,16 @@ public class QlShopGoodsVo {
      */
     @ApiModelProperty(value = "成本价,用作商品进价", required = true)
     private BigDecimal costPrice;
+
+    @ApiModelProperty(value = "商品规格", required = true)
+    private String goodsSearchstandard;
+
+
+    @ApiModelProperty(value = "所属库位主键", required = true)
+    private Long storageId;
+    /**
+     * 所属库位名称
+     */
+    @ApiModelProperty(value = "所属库位名称", required = true)
+    private String storageName;
 }
