@@ -52,4 +52,7 @@ public interface IMeaLedgerApprovalService {
     Boolean deleteWithValidByIds(Collection<Long> ids, Boolean isValid);
 
     boolean insertByListBo(List<MeaLedgerApprovalBo> bo);
+
+    List<MeaLedgerApprovalBreakDownVo> getInfoData(List<MeaLedgerApprovalBo> bos);
+
 }

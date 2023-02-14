@@ -2,6 +2,7 @@ package com.ruoyi.web.controller.project;
 
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.ruoyi.common.annotation.Log;
@@ -18,6 +19,7 @@ import com.ruoyi.project.approval.domain.bo.MeaLedgerApprovalBo;
 import com.ruoyi.project.approval.domain.vo.MeaLedgerApprovalBreakDownVo;
 import com.ruoyi.project.approval.domain.vo.MeaLedgerApprovalVo;
 import com.ruoyi.project.approval.service.IMeaLedgerApprovalService;
+import com.ruoyi.project.ledger.domain.vo.MeaLedgerBreakdownDetailVo;
 import com.ruoyi.workflow.service.IWfProcessService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -138,8 +140,9 @@ public class MeaLedgerApprovalController extends BaseController {
         for(MeaLedgerApprovalBo bo:bos){
             Boolean aBoolean = iMeaLedgerApprovalService.insertByBo(bo);
         }
+        List<MeaLedgerApprovalBreakDownVo> boInfo=iMeaLedgerApprovalService.getInfoData(bos);
         MeaLedgerApprovalBo meaLedgerApprovalBo = bos.get(0);
-        processService.startMeaProcess(process_1669973630070,formKey,"台账报审-申请期次;"+meaLedgerApprovalBo.getSqqc(), bos);
+        processService.startMeaProcess(process_1669973630070,formKey,"台账报审-申请期次;"+meaLedgerApprovalBo.getSqqc(), boInfo);
         return R.ok();
     }
 

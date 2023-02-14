@@ -156,4 +156,20 @@ public class MeaLedgerApprovalServiceImpl implements IMeaLedgerApprovalService {
         return b;
 
     }
+
+    @Override
+    public List<MeaLedgerApprovalBreakDownVo> getInfoData(List<MeaLedgerApprovalBo> bos) {
+        List<MeaLedgerApprovalBreakDownVo> meaLedgerApprovalBreakDownVoList = new ArrayList<>();
+        for (MeaLedgerApprovalBo meaLedgerApprovalBo : bos) {
+            MeaLedgerBreakdownDetailVo meaLedgerBreakdownDetailVo =  meaLedgerBreakdownDetailMapper.selectVoById(meaLedgerApprovalBo.getBreakdownId());
+            MeaLedgerApprovalBreakDownVo meaLedgerApprovalBreakDownVo = new MeaLedgerApprovalBreakDownVo();
+            BeanUtil.copyProperties(meaLedgerApprovalBo,meaLedgerApprovalBreakDownVo);
+            BeanUtil.copyProperties(meaLedgerBreakdownDetailVo,meaLedgerApprovalBreakDownVo);
+            if(meaLedgerBreakdownDetailVo != null){
+                meaLedgerApprovalBreakDownVo.setGcbw(meaLedgerBreakdownDetailVo.getFjmulu());
+            }
+            meaLedgerApprovalBreakDownVoList.add(meaLedgerApprovalBreakDownVo);
+        }
+        return  meaLedgerApprovalBreakDownVoList;
+    }
 }
