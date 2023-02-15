@@ -5,7 +5,9 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.log.StaticLog;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.ruoyi.project.approval.domain.MeaLedgerApproval;
+import com.ruoyi.project.approval.domain.MeaLedgerApprovalNo;
 import com.ruoyi.project.approval.mapper.MeaLedgerApprovalMapper;
+import com.ruoyi.project.approval.mapper.MeaLedgerApprovalNoMapper;
 import com.ruoyi.project.flowidatenfo.domain.MeaFlowDataInfo;
 import com.ruoyi.project.flowidatenfo.mapper.MeaFlowDataInfoMapper;
 import com.ruoyi.project.ledger.domain.MeaLedgerBreakdownDetail;
@@ -23,7 +25,6 @@ import java.util.List;
  * @version 1.0.0
  * @date 2022/12/2 18:30
  */
-@Component
 public class LedgerApprovalEvent implements TaskListener {
 
     @Override
@@ -31,35 +32,54 @@ public class LedgerApprovalEvent implements TaskListener {
         MeaFlowDataInfoMapper meaFlowDataInfoMapper = SpringContextHolder.getBean(MeaFlowDataInfoMapper.class);
         MeaLedgerBreakdownDetailMapper meaLedgerBreakdownDetailMapper = SpringContextHolder.getBean(MeaLedgerBreakdownDetailMapper.class);
         MeaLedgerApprovalMapper meaLedgerApprovalMapper = SpringContextHolder.getBean(MeaLedgerApprovalMapper.class);
+        MeaLedgerApprovalNoMapper meaLedgerApprovalNoMapper = SpringContextHolder.getBean(MeaLedgerApprovalNoMapper.class);
         String taskId = delegateTask.getId();
-        QueryWrapper<MeaFlowDataInfo> queryWrapper=new QueryWrapper<>();
-        queryWrapper.eq("task_id",taskId);
+        QueryWrapper<MeaFlowDataInfo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("task_id", taskId);
         List<MeaFlowDataInfo> meaFlowDataInfos = meaFlowDataInfoMapper.selectList(queryWrapper);
-        if(CollUtil.isNotEmpty(meaFlowDataInfos)){
+        if (CollUtil.isNotEmpty(meaFlowDataInfos)) {
             MeaFlowDataInfo meaFlowDataInfo = meaFlowDataInfos.get(0);
-            MeaLedgerApproval meaLedgerApproval = meaLedgerApprovalMapper.selectById(meaFlowDataInfo.getBussinessId());
-            if(meaLedgerApproval!=null){
-                meaLedgerApproval.setReviewCode("2");
-                meaLedgerApprovalMapper.updateById(meaLedgerApproval);
-                if(StrUtil.isEmpty(meaLedgerApproval.getBreakdownId())){
-                    StaticLog.info("台账审批id"+meaFlowDataInfo.getBussinessId()+"绑定的分解明细getBreakdownId为空");
-                }else {
-                    MeaLedgerBreakdownDetail meaLedgerBreakdownDetail = meaLedgerBreakdownDetailMapper.selectById(meaLedgerApproval.getBreakdownId());
-                    if(meaLedgerBreakdownDetail!=null){
-                        meaLedgerBreakdownDetail.setFhsl(meaLedgerBreakdownDetail.getSjsl());
-                        if(meaLedgerBreakdownDetail.getSjsl()!=null){
-                            meaLedgerBreakdownDetail.setFhje(meaLedgerBreakdownDetail.getSjsl().multiply(meaLedgerBreakdownDetail.getHtdj()));
-                        }else {
-                            meaLedgerBreakdownDetail.setFhje(BigDecimal.ZERO);
+
+            //1 update  MeaLedgerApprovalNo.reviewCode = 2
+            QueryWrapper<MeaLedgerApprovalNo> queryWrapper2 = new QueryWrapper<>();
+            queryWrapper2.eq("sqqc", meaFlowDataInfo.getBussinessId());
+            List<MeaLedgerApprovalNo> meaLedgerApprovalNoList = meaLedgerApprovalNoMapper.selectList(queryWrapper2);
+            MeaLedgerApprovalNo meaLedgerApprovalNo = meaLedgerApprovalNoList.get(0);
+
+            meaLedgerApprovalNo.setReviewCode("2");
+            meaLedgerApprovalNoMapper.updateById(meaLedgerApprovalNo);
+
+
+            //2  更新台账报审明细表中MeaLedgerApproval.    reviewCode
+
+            QueryWrapper<MeaLedgerApproval> queryWrapper1 = new QueryWrapper<>();
+            queryWrapper1.eq("sqqc", meaFlowDataInfo.getBussinessId());
+            List<MeaLedgerApproval> meaLedgerApprovals = meaLedgerApprovalMapper.selectList(queryWrapper1);
+            meaLedgerApprovals.forEach((e) -> {
+                e.setReviewCode("2");
+            });
+            meaLedgerApprovalMapper.updateBatchById(meaLedgerApprovals);
+            //3   更新台账分解明细表
+
+            if (meaLedgerApprovals != null) {
+                meaLedgerApprovals.forEach((e) -> {
+                    if (StrUtil.isEmpty(e.getBreakdownId())) {
+                        StaticLog.info("台账审批id" + meaFlowDataInfo.getBussinessId() + "绑定的分解明细getBreakdownId为空");
+                    } else {
+                        MeaLedgerBreakdownDetail meaLedgerBreakdownDetail = meaLedgerBreakdownDetailMapper.selectById(e.getBreakdownId());
+                        if (meaLedgerBreakdownDetail != null) {
+                            meaLedgerBreakdownDetail.setFhsl(meaLedgerBreakdownDetail.getSjsl());
+                            if (meaLedgerBreakdownDetail.getSjsl() != null) {
+                                meaLedgerBreakdownDetail.setFhje(meaLedgerBreakdownDetail.getSjsl().multiply(meaLedgerBreakdownDetail.getHtdj()));
+                            } else {
+                                meaLedgerBreakdownDetail.setFhje(BigDecimal.ZERO);
+                            }
+                            meaLedgerBreakdownDetailMapper.updateById(meaLedgerBreakdownDetail);
                         }
-                        meaLedgerBreakdownDetailMapper.updateById(meaLedgerBreakdownDetail);
+                        StaticLog.info("分解明细审批完成");
                     }
-                    StaticLog.info("分解明细审批完成");
-                }
-
+                });
             }
-
         }
     }
-
 }

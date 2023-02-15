@@ -142,7 +142,7 @@ public class MeaLedgerApprovalController extends BaseController {
         }
         List<MeaLedgerApprovalBreakDownVo> boInfo=iMeaLedgerApprovalService.getInfoData(bos);
         MeaLedgerApprovalBo meaLedgerApprovalBo = bos.get(0);
-        processService.startMeaProcess(process_1669973630070,formKey,"台账报审-申请期次;"+meaLedgerApprovalBo.getSqqc(), boInfo);
+        processService.startMeaProcess(process_1669973630070,formKey,meaLedgerApprovalBo.getSqqc(), boInfo);
         return R.ok();
     }
 
