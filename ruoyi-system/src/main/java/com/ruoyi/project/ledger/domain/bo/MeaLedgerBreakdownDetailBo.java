@@ -99,6 +99,9 @@ public class MeaLedgerBreakdownDetailBo extends BaseEntity {
 //    @NotNull(message = "已计量数量不能为空", groups = { AddGroup.class, EditGroup.class })
     private BigDecimal yjlsl;
 
+    //合同数量
+    private BigDecimal htsl;
+
     /**
      * 复核金额
      */

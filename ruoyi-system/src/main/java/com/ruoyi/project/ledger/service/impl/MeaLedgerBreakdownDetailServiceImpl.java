@@ -149,9 +149,15 @@ public class MeaLedgerBreakdownDetailServiceImpl implements IMeaLedgerBreakdownD
 
     @Override
     public Boolean insertByListBo(List<MeaLedgerBreakdownDetailBo> bo) {
+
+        bo.forEach((e) -> {
+            e.setSjsl(e.getHtsl());
+        });
+
         List<MeaLedgerBreakdownDetail> meaLedgerBreakdownDetailList = BeanUtil.copyToList(bo, MeaLedgerBreakdownDetail.class);
 //        meaLedgerBreakdownDetailList.forEach(meaLedgerBreakdownDetail ->  );
         validEntityBeforeSave(meaLedgerBreakdownDetailList.get(0));
+
         boolean b = baseMapper.insertBatch(meaLedgerBreakdownDetailList);
         return  b;
     }
