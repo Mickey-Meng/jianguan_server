@@ -46,6 +46,7 @@ public class MeaLedgerApprovalNoServiceImpl implements IMeaLedgerApprovalNoServi
     @Override
     public TableDataInfo<MeaLedgerApprovalNoVo> queryPageList(MeaLedgerApprovalNoBo bo, PageQuery pageQuery) {
         LambdaQueryWrapper<MeaLedgerApprovalNo> lqw = buildQueryWrapper(bo);
+        lqw.orderByAsc(MeaLedgerApprovalNo::getSqqc);
         Page<MeaLedgerApprovalNoVo> result = baseMapper.selectVoPage(pageQuery.build(), lqw);
         return TableDataInfo.build(result);
     }
