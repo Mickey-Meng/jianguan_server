@@ -56,5 +56,9 @@ public class MeaMeasurementDocumentsDetail extends BaseEntity {
      * 备注
      */
     private String remark;
+    /**
+     * 台账分解明细ID
+     */
+    private String meaLedgerBreakdownDetailId;
 
 }

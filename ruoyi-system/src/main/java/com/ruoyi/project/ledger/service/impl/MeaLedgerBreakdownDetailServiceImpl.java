@@ -51,6 +51,8 @@ public class MeaLedgerBreakdownDetailServiceImpl implements IMeaLedgerBreakdownD
 
     private final MeaContractBillMapper meaContractBillMapper;
 
+    private static final  String _QUERY_TYPE_DEFAULT = "r";
+
     /**
      * 查询台账分解明细
      */
@@ -63,7 +65,7 @@ public class MeaLedgerBreakdownDetailServiceImpl implements IMeaLedgerBreakdownD
      * 查询台账分解明细列表
      */
     @Override
-    public TableDataInfo<MeaLedgerBreakdownDetailVo> queryPageList(MeaLedgerBreakdownDetailBo bo, PageQuery pageQuery) {
+    public TableDataInfo<MeaLedgerBreakdownDetailVo> queryPageList(MeaLedgerBreakdownDetailBo bo,String queryType, PageQuery pageQuery) {
         if(StrUtil.isNotBlank(bo.getReviewCode())){
             if(bo.getReviewCode().equals("2")){
                 QueryWrapper<MeaLedgerApproval> queryWrapper=new QueryWrapper<>();
@@ -74,7 +76,7 @@ public class MeaLedgerBreakdownDetailServiceImpl implements IMeaLedgerBreakdownD
                 }
             }
         }
-        LambdaQueryWrapper<MeaLedgerBreakdownDetail> lqw = buildQueryWrapper(bo);
+        LambdaQueryWrapper<MeaLedgerBreakdownDetail> lqw = buildQueryWrapper(bo,queryType);
         Page<MeaLedgerBreakdownDetailVo> result = baseMapper.selectVoPage(pageQuery.build(), lqw);
         return TableDataInfo.build(result);
     }
@@ -84,7 +86,7 @@ public class MeaLedgerBreakdownDetailServiceImpl implements IMeaLedgerBreakdownD
      */
     @Override
     public List<MeaLedgerBreakdownDetailVo> queryList(MeaLedgerBreakdownDetailBo bo) {
-        LambdaQueryWrapper<MeaLedgerBreakdownDetail> lqw = buildQueryWrapper(bo);
+        LambdaQueryWrapper<MeaLedgerBreakdownDetail> lqw = buildQueryWrapper(bo,"r");
         return baseMapper.selectVoList(lqw);
     }
 
@@ -97,11 +99,16 @@ public class MeaLedgerBreakdownDetailServiceImpl implements IMeaLedgerBreakdownD
         return baseMapper.selectVoList(lqw);
     }
 
-    private LambdaQueryWrapper<MeaLedgerBreakdownDetail> buildQueryWrapper(MeaLedgerBreakdownDetailBo bo) {
+    private LambdaQueryWrapper<MeaLedgerBreakdownDetail> buildQueryWrapper(MeaLedgerBreakdownDetailBo bo,String queryType) {
         Map<String, Object> params = bo.getParams();
         LambdaQueryWrapper<MeaLedgerBreakdownDetail> lqw = Wrappers.lambdaQuery();
         lqw.eq(StringUtils.isNotBlank(bo.getBdbh()), MeaLedgerBreakdownDetail::getBdbh, bo.getBdbh());
-        lqw.likeRight(StringUtils.isNotBlank(bo.getTzfjbh()), MeaLedgerBreakdownDetail::getTzfjbh, bo.getTzfjbh());
+        if ("e".equalsIgnoreCase(queryType)){
+            lqw.eq(StringUtils.isNotBlank(bo.getTzfjbh()), MeaLedgerBreakdownDetail::getTzfjbh, bo.getTzfjbh());
+        }else if("r".equalsIgnoreCase(queryType)){
+            lqw.likeRight(StringUtils.isNotBlank(bo.getTzfjbh()), MeaLedgerBreakdownDetail::getTzfjbh, bo.getTzfjbh());
+        }
+
         lqw.eq(StringUtils.isNotBlank(bo.getFjmulu()), MeaLedgerBreakdownDetail::getFjmulu, bo.getFjmulu());
         lqw.eq(StringUtils.isNotBlank(bo.getZmh()), MeaLedgerBreakdownDetail::getZmh, bo.getZmh());
         lqw.eq(StringUtils.isNotBlank(bo.getZmmc()), MeaLedgerBreakdownDetail::getZmmc, bo.getZmmc());
@@ -116,6 +123,7 @@ public class MeaLedgerBreakdownDetailServiceImpl implements IMeaLedgerBreakdownD
         lqw.eq(bo.getFhje() != null, MeaLedgerBreakdownDetail::getFhje, bo.getFhje());
         lqw.eq(StringUtils.isNotBlank(bo.getFjlx()), MeaLedgerBreakdownDetail::getFjlx, bo.getFjlx());
         lqw.eq(StringUtils.isNotBlank(bo.getStatus()), MeaLedgerBreakdownDetail::getStatus, bo.getStatus());
+        lqw.eq(StringUtils.isNotBlank(bo.getReviewCode()), MeaLedgerBreakdownDetail::getReviewCode, bo.getReviewCode());
         if(StrUtil.isNotBlank(bo.getReviewCode())){
             if(bo.getReviewCode().equals("2")){
                 QueryWrapper<MeaLedgerApproval> queryWrapper=new QueryWrapper<>();
@@ -126,7 +134,6 @@ public class MeaLedgerBreakdownDetailServiceImpl implements IMeaLedgerBreakdownD
                     lqw.in(MeaLedgerBreakdownDetail::getTzfjbh,collect);
                 }
             }
-
         }
         return lqw;
     }
@@ -231,7 +238,7 @@ public class MeaLedgerBreakdownDetailServiceImpl implements IMeaLedgerBreakdownD
             }
         }
         List<MeaLedgerBreakdownDetailInfoVo> meaLedgerBreakdownDetailInfoVos=new ArrayList<>();
-        LambdaQueryWrapper<MeaLedgerBreakdownDetail> lqw = buildQueryWrapper(bo);
+        LambdaQueryWrapper<MeaLedgerBreakdownDetail> lqw = buildQueryWrapper(bo,_QUERY_TYPE_DEFAULT);
         Page<MeaLedgerBreakdownDetailVo> result = baseMapper.selectVoPage(pageQuery.build(), lqw);
         Map<String, List<MeaLedgerBreakdownDetailVo>> stringListMap=new LinkedHashMap<>();
         if(CollUtil.isNotEmpty(result.getRecords())){

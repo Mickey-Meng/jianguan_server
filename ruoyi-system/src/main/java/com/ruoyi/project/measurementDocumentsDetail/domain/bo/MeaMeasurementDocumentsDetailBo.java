@@ -67,5 +67,11 @@ public class MeaMeasurementDocumentsDetailBo extends BaseEntity {
 //    @NotBlank(message = "状态（0正常 1停用）不能为空", groups = { AddGroup.class, EditGroup.class })
     private String status;
 
+    /**
+     * 台账分解明细ID
+     * add by yangaogao  20230216   新增台账分解明细对应的id，中间计量是针对于台账分解进行的，因为一个清单子目号，可能会分解多次，因此需要关联台账分解编号。
+     */
+    @NotBlank(message = "台账分解明细ID不能为空", groups = { AddGroup.class, EditGroup.class })
+    private String meaLedgerBreakdownDetailId;
 
 }

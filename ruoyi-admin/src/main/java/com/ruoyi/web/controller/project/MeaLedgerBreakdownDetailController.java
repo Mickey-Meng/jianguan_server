@@ -59,8 +59,8 @@ public class MeaLedgerBreakdownDetailController extends BaseController {
      */
     @SaCheckPermission("ledgerDetail:ledgerBreakdownDetail:list")
     @GetMapping("/list")
-    public TableDataInfo<MeaLedgerBreakdownDetailVo> list(MeaLedgerBreakdownDetailBo bo, PageQuery pageQuery) {
-        return iMeaLedgerBreakdownDetailService.queryPageList(bo, pageQuery);
+    public TableDataInfo<MeaLedgerBreakdownDetailVo> list(MeaLedgerBreakdownDetailBo bo,String queryType, PageQuery pageQuery) {
+        return iMeaLedgerBreakdownDetailService.queryPageList(bo,queryType, pageQuery);
     }
 
     /**

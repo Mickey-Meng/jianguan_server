@@ -9,6 +9,8 @@ import com.ruoyi.common.core.domain.PageQuery;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.project.bill.domain.MeaContractBill;
 import com.ruoyi.project.bill.mapper.MeaContractBillMapper;
+import com.ruoyi.project.ledger.domain.MeaLedgerBreakdownDetail;
+import com.ruoyi.project.ledger.mapper.MeaLedgerBreakdownDetailMapper;
 import com.ruoyi.project.measurementDocumentsDetail.domain.MeaMeasurementDocumentsDetail;
 import com.ruoyi.project.measurementDocumentsDetail.domain.bo.MeaMeasurementDocumentsDetailBo;
 import com.ruoyi.project.measurementDocumentsDetail.domain.vo.MeaMeasurementDocumentsDetailVo;
@@ -37,6 +39,8 @@ public class MeaMeasurementDocumentsDetailServiceImpl implements IMeaMeasurement
     private final MeaMeasurementDocumentsDetailMapper baseMapper;
     private final MeaContractBillMapper meaContractBillMapper;
 
+    private final MeaLedgerBreakdownDetailMapper meaLedgerBreakdownDetailMapper;
+
     /**
      * 查询台账变更/工程变更 明细
      */
@@ -53,7 +57,7 @@ public class MeaMeasurementDocumentsDetailServiceImpl implements IMeaMeasurement
         LambdaQueryWrapper<MeaMeasurementDocumentsDetail> lqw = buildQueryWrapper(bo);
         Page<MeaMeasurementDocumentsDetailVo> result = baseMapper.selectVoPage(pageQuery.build(), lqw);
         if(result.getTotal()>0){
-            for(MeaMeasurementDocumentsDetailVo meaMeasurementDocumentsDetailVo:result.getRecords()){
+          /*  for(MeaMeasurementDocumentsDetailVo meaMeasurementDocumentsDetailVo:result.getRecords()){
                 QueryWrapper<MeaContractBill> queryWrapper=new QueryWrapper<>();
                 queryWrapper.eq("zmh",meaMeasurementDocumentsDetailVo.getZmh());
                 MeaContractBill meaContractBill = meaContractBillMapper.selectOne(queryWrapper);
@@ -76,10 +80,13 @@ public class MeaMeasurementDocumentsDetailServiceImpl implements IMeaMeasurement
                             meaMeasurementDocumentsDetailVo.setLjjlbl(String.valueOf((div.longValue()*100)));
                         }
                     }
-                    meaMeasurementDocumentsDetailVo.setMeaContractBill(meaContractBill);
+//                    meaMeasurementDocumentsDetailVo.setMeaContractBill(meaContractBill);
                 }
+            }*/
+            for(MeaMeasurementDocumentsDetailVo meaMeasurementDocumentsDetailVo:result.getRecords()){
+                MeaLedgerBreakdownDetail meaLedgerBreakdownDetail = meaLedgerBreakdownDetailMapper.selectById(meaMeasurementDocumentsDetailVo.getMeaLedgerBreakdownDetailId());
+                meaMeasurementDocumentsDetailVo.setMeaLedgerBreakdownDetail(meaLedgerBreakdownDetail);
             }
-
         }
         return TableDataInfo.build(result);
     }

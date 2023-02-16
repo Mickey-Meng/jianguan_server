@@ -6,6 +6,8 @@ import com.alibaba.excel.annotation.ExcelProperty;
 import com.ruoyi.common.annotation.ExcelDictFormat;
 import com.ruoyi.common.convert.ExcelDictConvert;
 import com.ruoyi.project.bill.domain.MeaContractBill;
+import com.ruoyi.project.ledger.domain.MeaLedgerBreakdownDetail;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import java.util.Date;
 
@@ -67,9 +69,16 @@ public class MeaMeasurementDocumentsDetailVo {
     private String status;
 
 
+    //modify yangaogao  20230216  中间计量是针对台账分解进行的，不是针对清单进行的。
+//    private MeaContractBill meaContractBill;
 
-    private MeaContractBill meaContractBill;
-
+    private MeaLedgerBreakdownDetail meaLedgerBreakdownDetail;
+    /**
+     * 台账分解明细ID
+     */
+    @ExcelProperty(value = "台账分解明细ID")
+    @ApiModelProperty(value = "台账分解明细ID", required = true)
+    private String meaLedgerBreakdownDetailId;
 
     /**
      * 可设计数量

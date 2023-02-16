@@ -26,7 +26,7 @@ public interface IMeaLedgerBreakdownDetailService {
     /**
      * 查询台账分解明细列表
      */
-    TableDataInfo<MeaLedgerBreakdownDetailVo> queryPageList(MeaLedgerBreakdownDetailBo bo, PageQuery pageQuery);
+    TableDataInfo<MeaLedgerBreakdownDetailVo> queryPageList(MeaLedgerBreakdownDetailBo bo,String queryType, PageQuery pageQuery);
 
     /**
      * 查询台账分解明细列表
@@ -52,5 +52,5 @@ public interface IMeaLedgerBreakdownDetailService {
      */
     Boolean deleteWithValidByIds(Collection<String> ids, Boolean isValid);
 
-    TableDataInfo<MeaLedgerBreakdownDetailInfoVo> listInfo(MeaLedgerBreakdownDetailBo bo, PageQuery pageQuery);
+    TableDataInfo<MeaLedgerBreakdownDetailInfoVo> listInfo(MeaLedgerBreakdownDetailBo bo ,PageQuery pageQuery);
 }

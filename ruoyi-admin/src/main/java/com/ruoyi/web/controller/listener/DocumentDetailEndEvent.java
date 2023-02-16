@@ -54,6 +54,7 @@ public class DocumentDetailEndEvent implements ServletContextListener,TaskListen
                     QueryWrapper<MeaLedgerBreakdownDetail> qw=new QueryWrapper<>();
                     qw.eq("tzfjbh",meaMeasurementDocuments.getTzfjbh());
                     qw.eq("zmh",meaMeasurementDocumentsDetail.getZmh());
+                    qw.eq("review","2");
                     MeaLedgerBreakdownDetail meaLedgerBreakdownDetail = meaLedgerBreakdownDetailMapper.selectOne(qw);
                     if(meaLedgerBreakdownDetail!=null){
                         if(meaLedgerBreakdownDetail.getYjlsl()!=null){

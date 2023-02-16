@@ -96,6 +96,12 @@ public class MeaMeasurementDocumentsVo {
     private String fj;
 
     /**
+     * 审批状态
+     */
+    @ExcelProperty(value = "审批状态")
+    private String reviewCode;
+
+    /**
      * 状态（0正常 1停用）
      */
     @ExcelProperty(value = "状态", converter = ExcelDictConvert.class)
