@@ -29,6 +29,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * 台账变更/工程变更
@@ -106,9 +107,13 @@ public class MeaLedgerChangeController extends BaseController {
         if(StrUtil.isBlank(process_1669973630070)){
             return R.fail("流程图未定义");
         }
+        String UUId = UUID.randomUUID().toString().replace("-", "");
+        bo.setBgbh(UUId);
         Boolean aBoolean=iMeaLedgerChangeService.save(bo);
+
+
         if(aBoolean){
-            processService.startMeaProcess(process_1669973630070,formKey,bo.getId(), bo);
+            processService.startMeaProcess(process_1669973630070,formKey,bo.getBgbh(), bo);
         }
         return toAjax(aBoolean ? 1 : 0);
 

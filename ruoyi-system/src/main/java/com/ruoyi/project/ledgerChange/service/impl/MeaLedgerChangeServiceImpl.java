@@ -138,9 +138,9 @@ public class MeaLedgerChangeServiceImpl implements IMeaLedgerChangeService {
     @Transactional(rollbackFor = Exception.class)
     public Boolean save(MeaLedgerChangeAndDetailBo bo) {
         MeaLedgerChange add = BeanUtil.toBean(bo, MeaLedgerChange.class);
-        String UUId = UUID.randomUUID().toString().replace("-", "");
+      String bgbh = bo.getBgbh();
         validEntityBeforeSave(add);
-        add.setBgbh(UUId);
+        add.setBgbh(bgbh);
         add.setReviewCode("0");
         boolean flag = baseMapper.insert(add) > 0;
         if (flag) {
@@ -150,7 +150,7 @@ public class MeaLedgerChangeServiceImpl implements IMeaLedgerChangeService {
             List<MeaLedgerChangeDetail> detailBos = new ArrayList<>();
             for(MeaLedgerChangeDetailBo me:bo.getDetailBos()){
                 MeaLedgerChangeDetail meaLedgerChangeDetail = BeanUtil.toBean(me, MeaLedgerChangeDetail.class);
-                meaLedgerChangeDetail.setBgbh(UUId);
+                meaLedgerChangeDetail.setBgbh(bgbh);
                 detailBos.add(meaLedgerChangeDetail);
             }
             meaLedgerChangeDetailMapper.insertBatch(detailBos);

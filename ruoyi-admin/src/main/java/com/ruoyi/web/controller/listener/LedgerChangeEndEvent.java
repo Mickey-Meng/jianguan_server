@@ -49,20 +49,25 @@ public class LedgerChangeEndEvent implements TaskListener {
         List<MeaFlowDataInfo> meaFlowDataInfos = meaFlowDataInfoMapper.selectList(queryWrapper);
         if(CollUtil.isNotEmpty(meaFlowDataInfos)){
             MeaFlowDataInfo meaFlowDataInfo = meaFlowDataInfos.get(0);
-            MeaLedgerChange meaLedgerChange = meaLedgerChangeMapper.selectById(meaFlowDataInfo.getBussinessId());
+
+            QueryWrapper<MeaLedgerChange> queryWrapperInfoMeaLedgerChange=new QueryWrapper<>();
+            queryWrapperInfoMeaLedgerChange.eq("bgbh",meaFlowDataInfo.getBussinessId());
+            MeaLedgerChange meaLedgerChange = meaLedgerChangeMapper.selectOne(queryWrapperInfoMeaLedgerChange);
+
             QueryWrapper<MeaLedgerChangeDetail> queryWrapperInfo=new QueryWrapper<>();
             queryWrapperInfo.eq("bgbh",meaFlowDataInfo.getBussinessId());
             List<MeaLedgerChangeDetail> meaLedgerChangeDetails = meaLedgerChangeDetailMapper.selectList(queryWrapperInfo);
             if(CollUtil.isNotEmpty(meaLedgerChangeDetails)){
                 for(MeaLedgerChangeDetail meaLedgerChangeDetail:meaLedgerChangeDetails){
-                    QueryWrapper<MeaLedgerBreakdownDetail> qw=new QueryWrapper<>();
+                   /* QueryWrapper<MeaLedgerBreakdownDetail> qw=new QueryWrapper<>();
                     qw.eq("zmh",meaLedgerChangeDetail.getZmh());
-                    MeaLedgerBreakdownDetail meaLedgerBreakdownDetail = meaLedgerBreakdownDetailMapper.selectOne(qw);
-                    if(meaLedgerBreakdownDetail!=null){
+                    MeaLedgerBreakdownDetail meaLedgerBreakdownDetail = meaLedgerBreakdownDetailMapper.selectOne(qw);*/
+                   /* if(meaLedgerBreakdownDetail!=null){
                         meaLedgerBreakdownDetail.setBgsl(meaLedgerChangeDetail.getXzsl());
-                        meaLedgerBreakdownDetailMapper.updateById(meaLedgerBreakdownDetail);
+                        meaLedgerBreakdownDetailMapper.updateById(meaLedgerBreakdownDetail);*/
                         QueryWrapper<MeaContractBill> contractBillQueryWrapper=new QueryWrapper<>();
                         contractBillQueryWrapper.eq("zmh",meaLedgerChangeDetail.getZmh());
+                        contractBillQueryWrapper.eq("status","1");
                         MeaContractBill meaContractBill = contractBillMapper.selectOne(contractBillQueryWrapper);
                         if(meaContractBill!=null){
                             /*if(meaContractBill.getXzje()==null){
@@ -89,8 +94,8 @@ public class LedgerChangeEndEvent implements TaskListener {
                             meaContractBill.setId(null);
                             meaContractBill.setXzje(meaLedgerChangeDetail.getXzje());// 修正金额
                             meaContractBill.setXzsl(meaLedgerChangeDetail.getXzsl());
-                            meaContractBill.setZsl(meaContractBill.getZsl().add(meaLedgerChangeDetail.getShsl()));
-                            meaContractBill.setZje(meaContractBill.getZje().add(meaLedgerChangeDetail.getShje()));
+                         /*   meaContractBill.setZsl(meaContractBill.getZsl().add(meaLedgerChangeDetail.getXzsl()));
+                            meaContractBill.setZje(meaContractBill.getZje().add(meaLedgerChangeDetail.getXzje()));*/
                             meaContractBill.setStatus("0");//标识为变更清单
                             contractBillMapper.insert(meaContractBill);
                         }
@@ -99,7 +104,7 @@ public class LedgerChangeEndEvent implements TaskListener {
                 meaLedgerChange.setReviewCode("2");
                 meaLedgerChangeMapper.updateById(meaLedgerChange);
             }
-        }
+//        }
     }
 
 }
