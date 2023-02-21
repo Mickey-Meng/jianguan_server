@@ -28,6 +28,14 @@ import java.util.List;
 @Component
 public class LedgerChangeEndEvent implements TaskListener {
 
+    /***
+     *
+     * add by yangaogao  20230221
+     *
+     * 变更审批完成后，姜变更信息作为一条新清单数据，插入到工程量清单表中，
+     * 台账分解功能，可以针对以上数据进行分解，需要标记为变更，多次变更，多条变更记录插入数据库即可
+     * @param delegateTask
+     */
     @Override
     public void notify(DelegateTask delegateTask) {
         MeaFlowDataInfoMapper meaFlowDataInfoMapper = SpringContextHolder.getBean(MeaFlowDataInfoMapper.class);
@@ -57,8 +65,8 @@ public class LedgerChangeEndEvent implements TaskListener {
                         contractBillQueryWrapper.eq("zmh",meaLedgerChangeDetail.getZmh());
                         MeaContractBill meaContractBill = contractBillMapper.selectOne(contractBillQueryWrapper);
                         if(meaContractBill!=null){
-                            if(meaContractBill.getXzje()==null){
-                                meaContractBill.setXzje(meaLedgerChangeDetail.getXzje());
+                            /*if(meaContractBill.getXzje()==null){
+                                meaContractBill.setXzje(meaLedgerChangeDetail.getXzje());// 修正金额
                             }else {
                                 meaContractBill.setXzje(meaContractBill.getXzje().add(meaLedgerChangeDetail.getXzje()));
                             }
@@ -77,7 +85,14 @@ public class LedgerChangeEndEvent implements TaskListener {
                             }else {
                                 meaContractBill.setZje(meaContractBill.getZje().add(meaLedgerChangeDetail.getShje()));
                             }
-                            contractBillMapper.updateById(meaContractBill);
+                            contractBillMapper.updateById(meaContractBill);*/
+                            meaContractBill.setId(null);
+                            meaContractBill.setXzje(meaLedgerChangeDetail.getXzje());// 修正金额
+                            meaContractBill.setXzsl(meaLedgerChangeDetail.getXzsl());
+                            meaContractBill.setZsl(meaContractBill.getZsl().add(meaLedgerChangeDetail.getShsl()));
+                            meaContractBill.setZje(meaContractBill.getZje().add(meaLedgerChangeDetail.getShje()));
+                            meaContractBill.setStatus("0");//标识为变更清单
+                            contractBillMapper.insert(meaContractBill);
                         }
                     }
                 }

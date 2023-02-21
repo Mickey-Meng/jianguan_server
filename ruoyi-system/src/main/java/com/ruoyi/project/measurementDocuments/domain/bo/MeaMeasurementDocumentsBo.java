@@ -80,7 +80,6 @@ public class MeaMeasurementDocumentsBo extends BaseEntity {
     /**
      * 计算式
      */
-    @NotBlank(message = "计算式不能为空", groups = { AddGroup.class, EditGroup.class })
     private String jss;
 
     /**

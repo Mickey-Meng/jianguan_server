@@ -84,9 +84,11 @@ public class MeaLedgerBreakdownDetailBo extends BaseEntity {
     /**
      * 变更数量
      */
-//    @NotNull(message = "变更数量不能为空", groups = { AddGroup.class, EditGroup.class })
     private BigDecimal bgsl;
-
+    /**
+     * 变更分解数量
+     */
+    private Long bgfjsl;
     /**
      * 复核数量
      */

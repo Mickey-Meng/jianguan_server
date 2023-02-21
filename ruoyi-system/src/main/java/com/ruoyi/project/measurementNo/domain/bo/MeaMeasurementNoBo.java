@@ -74,7 +74,7 @@ public class MeaMeasurementNoBo extends BaseEntity {
     /**
      * 状态（0正常 1停用）
      */
-    @NotBlank(message = "状态（0正常 1停用）不能为空", groups = { AddGroup.class, EditGroup.class })
+    @NotBlank(message = " 锁定状态（0未锁定 1 已锁定）不能为空", groups = { AddGroup.class, EditGroup.class })
     private String status;
 
 

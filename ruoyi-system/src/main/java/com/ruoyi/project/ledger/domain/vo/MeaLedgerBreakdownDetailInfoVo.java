@@ -89,6 +89,11 @@ public class MeaLedgerBreakdownDetailInfoVo {
     private BigDecimal bgsl;
 
     /**
+     * 变更分解数量
+     */
+    @ExcelProperty(value = "变更分解数量")
+    private Long bgfjsl;
+    /**
      * 复核数量
      */
     @ExcelProperty(value = "复核数量")

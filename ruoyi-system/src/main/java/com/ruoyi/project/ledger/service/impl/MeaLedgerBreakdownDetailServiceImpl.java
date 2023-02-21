@@ -118,6 +118,7 @@ public class MeaLedgerBreakdownDetailServiceImpl implements IMeaLedgerBreakdownD
         lqw.eq(bo.getSjsl() != null, MeaLedgerBreakdownDetail::getSjsl, bo.getSjsl());
         lqw.eq(bo.getFjsl() != null, MeaLedgerBreakdownDetail::getFjsl, bo.getFjsl());
         lqw.eq(bo.getBgsl() != null, MeaLedgerBreakdownDetail::getBgsl, bo.getBgsl());
+        lqw.eq(bo.getBgfjsl() != null, MeaLedgerBreakdownDetail::getBgfjsl, bo.getBgfjsl());
         lqw.eq(bo.getFhsl() != null, MeaLedgerBreakdownDetail::getFhsl, bo.getFhsl());
         lqw.eq(bo.getYjlsl() != null, MeaLedgerBreakdownDetail::getYjlsl, bo.getYjlsl());
         lqw.eq(bo.getFhje() != null, MeaLedgerBreakdownDetail::getFhje, bo.getFhje());

@@ -32,30 +32,44 @@ import java.util.List;
 public class DocumentDetailEndEvent implements ServletContextListener,TaskListener {
 
 
-
+    /***
+     * 中间计量审批通过后，要更新台账分解明细表中的 已计量数量。
+     *
+     *
+     *
+     * @param delegateTask
+     */
     @Override
     public void notify(DelegateTask delegateTask) {
         MeaMeasurementDocumentsMapper meaMeasurementDocumentsMapper = SpringContextHolder.getBean(MeaMeasurementDocumentsMapper.class);
         MeaMeasurementDocumentsDetailMapper meaMeasurementDocumentsDetailMapper = SpringContextHolder.getBean(MeaMeasurementDocumentsDetailMapper.class);
         MeaFlowDataInfoMapper meaFlowDataInfoMapper = SpringContextHolder.getBean(MeaFlowDataInfoMapper.class);
         MeaLedgerBreakdownDetailMapper meaLedgerBreakdownDetailMapper = SpringContextHolder.getBean(MeaLedgerBreakdownDetailMapper.class);
+        //  1.通过工作流taskid 查找 流程业务主表，获取 busnessid(业务主键)
         String taskId = delegateTask.getId();
         QueryWrapper<MeaFlowDataInfo> queryWrapper=new QueryWrapper<>();
         queryWrapper.eq("task_id",taskId);
         List<MeaFlowDataInfo> meaFlowDataInfos = meaFlowDataInfoMapper.selectList(queryWrapper);
+
         if(CollUtil.isNotEmpty(meaFlowDataInfos)){
             MeaFlowDataInfo meaFlowDataInfo = meaFlowDataInfos.get(0);
+
+            // 2.通过业务主键（中间计量凭证编号），获取改凭证下面所有凭证明细，明细中有 台账分解明细ID
             MeaMeasurementDocuments meaMeasurementDocuments = meaMeasurementDocumentsMapper.selectById(meaFlowDataInfo.getBussinessId());
             QueryWrapper<MeaMeasurementDocumentsDetail> queryWrapperInfo=new QueryWrapper<>();
             queryWrapperInfo.eq("pzbh",meaFlowDataInfo.getBussinessId());
             List<MeaMeasurementDocumentsDetail> meaMeasurementDocumentsDetails = meaMeasurementDocumentsDetailMapper.selectList(queryWrapperInfo);
             if(CollUtil.isNotEmpty(meaMeasurementDocumentsDetails)){
                 for(MeaMeasurementDocumentsDetail meaMeasurementDocumentsDetail:meaMeasurementDocumentsDetails){
-                    QueryWrapper<MeaLedgerBreakdownDetail> qw=new QueryWrapper<>();
+                    // 3. 通过 台账分解明细ID， 获取台账分解明细，
+                   /* QueryWrapper<MeaLedgerBreakdownDetail> qw=new QueryWrapper<>();
                     qw.eq("tzfjbh",meaMeasurementDocuments.getTzfjbh());
                     qw.eq("zmh",meaMeasurementDocumentsDetail.getZmh());
-                    qw.eq("review","2");
-                    MeaLedgerBreakdownDetail meaLedgerBreakdownDetail = meaLedgerBreakdownDetailMapper.selectOne(qw);
+                    qw.eq("reviewCode","2");
+                    MeaLedgerBreakdownDetail meaLedgerBreakdownDetail = meaLedgerBreakdownDetailMapper.selectOne(qw);*/
+
+                    MeaLedgerBreakdownDetail meaLedgerBreakdownDetail  = meaLedgerBreakdownDetailMapper.selectById(meaMeasurementDocumentsDetail.getMeaLedgerBreakdownDetailId());
+
                     if(meaLedgerBreakdownDetail!=null){
                         if(meaLedgerBreakdownDetail.getYjlsl()!=null){
                             meaLedgerBreakdownDetail.setYjlsl(meaLedgerBreakdownDetail.getYjlsl().add(meaMeasurementDocumentsDetail.getBqjlsl()));

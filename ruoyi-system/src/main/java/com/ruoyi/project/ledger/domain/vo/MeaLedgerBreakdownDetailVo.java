@@ -5,6 +5,7 @@ import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.ruoyi.common.annotation.ExcelDictFormat;
 import com.ruoyi.common.convert.ExcelDictConvert;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import java.util.Date;
 
@@ -88,6 +89,12 @@ public class MeaLedgerBreakdownDetailVo {
     @ExcelProperty(value = "变更数量")
     private BigDecimal bgsl;
 
+    /**
+     * 变更分解数量
+     */
+    @ExcelProperty(value = "变更分解数量")
+    @ApiModelProperty(value = "变更分解数量", required = true)
+    private Long bgfjsl;
     /**
      * 复核数量
      */

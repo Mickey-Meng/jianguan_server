@@ -16,6 +16,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="sjsl" column="sjsl"/>
         <result property="fjsl" column="fjsl"/>
         <result property="bgsl" column="bgsl"/>
+        <result property="bgfjsl" column="bgfjsl"/>
         <result property="fhsl" column="fhsl"/>
         <result property="yjlsl" column="yjlsl"/>
         <result property="fhje" column="fhje"/>
