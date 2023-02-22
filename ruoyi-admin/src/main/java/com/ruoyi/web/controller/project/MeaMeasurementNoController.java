@@ -103,6 +103,13 @@ public class MeaMeasurementNoController extends BaseController {
         return toAjax(iMeaMeasurementNoService.updateByBo(bo) ? 1 : 0);
     }
 
+
+
+    @RepeatSubmit()
+    @PostMapping("/lockingMeaMeasurementNo")
+    public R<Void> lockingMeaMeasurementNo(@RequestBody String s) {
+        return toAjax(iMeaMeasurementNoService.lockingByJlqcbh(s));
+    }
     /**
      * 删除中间计量期数管理
      *

@@ -9,11 +9,16 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ruoyi.common.core.domain.PageQuery;
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.page.TableDataInfo;
+import com.ruoyi.project.measurementDocuments.domain.MeaMeasurementDocuments;
+import com.ruoyi.project.measurementDocuments.domain.vo.MeaMeasurementDocumentsVo;
+import com.ruoyi.project.measurementDocuments.mapper.MeaMeasurementDocumentsMapper;
 import com.ruoyi.project.measurementNo.domain.MeaMeasurementNo;
 import com.ruoyi.project.measurementNo.domain.bo.MeaMeasurementNoBo;
 import com.ruoyi.project.measurementNo.domain.vo.MeaMeasurementNoVo;
 import com.ruoyi.project.measurementNo.mapper.MeaMeasurementNoMapper;
 import com.ruoyi.project.measurementNo.service.IMeaMeasurementNoService;
+import com.ruoyi.ql.domain.QlWarehousing;
+import com.ruoyi.ql.domain.bo.QlWarehousingBo;
 import io.micrometer.core.instrument.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -35,6 +40,8 @@ import java.util.logging.SimpleFormatter;
 public class MeaMeasurementNoServiceImpl implements IMeaMeasurementNoService {
 
     private final MeaMeasurementNoMapper baseMapper;
+
+    private final MeaMeasurementDocumentsMapper meaMeasurementDocumentsMapper;
 
     /**
      * 查询中间计量期数管理
@@ -99,6 +106,27 @@ public class MeaMeasurementNoServiceImpl implements IMeaMeasurementNoService {
         MeaMeasurementNo update = BeanUtil.toBean(bo, MeaMeasurementNo.class);
         validEntityBeforeSave(update);
         return baseMapper.updateById(update) > 0;
+    }
+
+    @Override
+    public Boolean lockingByJlqcbh(String jlqcbh) {
+        LambdaQueryWrapper<MeaMeasurementDocuments> lqw = Wrappers.lambdaQuery();
+        lqw.eq(StringUtils.isNotBlank(jlqcbh), MeaMeasurementDocuments::getJlqsbh,jlqcbh);
+        List<MeaMeasurementDocumentsVo> meaMeasurementDocumentsVos = meaMeasurementDocumentsMapper.selectVoList(lqw);
+        Boolean f = true;
+        for (MeaMeasurementDocumentsVo meaMeasurementDocumentsVo : meaMeasurementDocumentsVos) {
+            if("1".equalsIgnoreCase(meaMeasurementDocumentsVo.getReviewCode())){
+                f = false;
+            }
+        }
+        if(f){
+            LambdaQueryWrapper<MeaMeasurementNo> lqwMeaMeasurementNo = Wrappers.lambdaQuery();
+            lqwMeaMeasurementNo.eq(StringUtils.isNotBlank(jlqcbh), MeaMeasurementNo::getJlqsbh, jlqcbh);
+            MeaMeasurementNo meaMeasurementNo = baseMapper.selectOne(lqwMeaMeasurementNo);
+            meaMeasurementNo.setStatus("1");//修改未已锁定
+            baseMapper.updateById(meaMeasurementNo);
+        }
+        return f;
     }
 
     /**

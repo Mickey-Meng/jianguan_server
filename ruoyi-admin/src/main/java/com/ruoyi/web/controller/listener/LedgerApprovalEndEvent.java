@@ -25,7 +25,7 @@ import java.util.List;
  * @date 2022/12/2 18:30
  */
 @Component
-public class LedgerApprovalEvent implements TaskListener {
+public class LedgerApprovalEndEvent implements TaskListener {
 
     @Override
     public void notify(DelegateTask delegateTask) {
