@@ -106,9 +106,9 @@ public class MeaMeasurementNoController extends BaseController {
 
 
     @RepeatSubmit()
-    @PostMapping("/lockingMeaMeasurementNo")
-    public R<Void> lockingMeaMeasurementNo(@RequestBody String s) {
-        return toAjax(iMeaMeasurementNoService.lockingByJlqcbh(s));
+    @GetMapping("/lockingMeaMeasurementNo")
+    public R<Void> lockingMeaMeasurementNo(@RequestBody String meaMeasurementNo) {
+        return toAjax(iMeaMeasurementNoService.lockingByJlqcbh(meaMeasurementNo));
     }
     /**
      * 删除中间计量期数管理
