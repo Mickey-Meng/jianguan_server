@@ -96,7 +96,7 @@ public class LedgerChangeEndEvent implements TaskListener {
                             meaContractBill.setXzsl(meaLedgerChangeDetail.getXzsl());
                          /*   meaContractBill.setZsl(meaContractBill.getZsl().add(meaLedgerChangeDetail.getXzsl()));
                             meaContractBill.setZje(meaContractBill.getZje().add(meaLedgerChangeDetail.getXzje()));*/
-                            meaContractBill.setStatus("0");//标识为变更清单
+                            meaContractBill.setIsChange("1");//标识为变更清单
                             contractBillMapper.insert(meaContractBill);
                         }
                     }

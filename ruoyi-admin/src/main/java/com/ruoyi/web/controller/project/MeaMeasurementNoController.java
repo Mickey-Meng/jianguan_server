@@ -11,6 +11,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.core.validate.AddGroup;
 import com.ruoyi.common.core.validate.EditGroup;
 import com.ruoyi.common.enums.BusinessType;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.project.measurementNo.domain.bo.MeaMeasurementNoBo;
 import com.ruoyi.project.measurementNo.domain.vo.MeaMeasurementNoVo;
@@ -106,9 +107,12 @@ public class MeaMeasurementNoController extends BaseController {
 
 
     @RepeatSubmit()
-    @GetMapping("/lockingMeaMeasurementNo")
-    public R<Void> lockingMeaMeasurementNo(@RequestBody String meaMeasurementNo) {
-        return toAjax(iMeaMeasurementNoService.lockingByJlqcbh(meaMeasurementNo));
+    @GetMapping("/lockingMeaMeasurementNo/{meaMeasurementNo}")
+    public R<Void> lockingMeaMeasurementNo(@PathVariable String meaMeasurementNo) {
+
+            String b =  iMeaMeasurementNoService.lockingByJlqcbh(meaMeasurementNo);
+            if(StringUtils.isEmpty(b)) return  R.ok("1");
+            else return R.ok(b);
     }
     /**
      * 删除中间计量期数管理

@@ -29,6 +29,7 @@
         <result property="updateTime" column="update_time"/>
         <result property="remark" column="remark"/>
         <result property="parentId" column="parent_id"/>
+        <result property="isChange" column="is_change"/>
     </resultMap>
     <select id="chapter_collect" resultType="com.ruoyi.project.bill.domain.pojo.ChapterCollectDto">
         SELECT

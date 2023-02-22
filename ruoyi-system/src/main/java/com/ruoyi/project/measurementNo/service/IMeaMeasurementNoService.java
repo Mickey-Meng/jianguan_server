@@ -45,7 +45,7 @@ public interface IMeaMeasurementNoService {
     /**
      * 修改中间计量期数管理
      */
-    Boolean lockingByJlqcbh(String jlqcbh) ;
+    String lockingByJlqcbh(String jlqcbh) ;
     /**
      * 校验并批量删除中间计量期数管理信息
      */

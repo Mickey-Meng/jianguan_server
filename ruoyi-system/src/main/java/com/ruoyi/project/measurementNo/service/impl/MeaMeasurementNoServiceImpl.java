@@ -109,14 +109,16 @@ public class MeaMeasurementNoServiceImpl implements IMeaMeasurementNoService {
     }
 
     @Override
-    public Boolean lockingByJlqcbh(String jlqcbh) {
+    public String lockingByJlqcbh(String jlqcbh) {
+        String sName = "";
         LambdaQueryWrapper<MeaMeasurementDocuments> lqw = Wrappers.lambdaQuery();
         lqw.eq(StringUtils.isNotBlank(jlqcbh), MeaMeasurementDocuments::getJlqsbh,jlqcbh);
         List<MeaMeasurementDocumentsVo> meaMeasurementDocumentsVos = meaMeasurementDocumentsMapper.selectVoList(lqw);
         Boolean f = true;
         for (MeaMeasurementDocumentsVo meaMeasurementDocumentsVo : meaMeasurementDocumentsVos) {
-            if("1".equalsIgnoreCase(meaMeasurementDocumentsVo.getReviewCode())){
+            if(!"2".equalsIgnoreCase(meaMeasurementDocumentsVo.getReviewCode())){
                 f = false;
+                sName =sName + meaMeasurementDocumentsVo.getPzbh();
             }
         }
         if(f){
@@ -126,7 +128,7 @@ public class MeaMeasurementNoServiceImpl implements IMeaMeasurementNoService {
             meaMeasurementNo.setStatus("1");//修改未已锁定
             baseMapper.updateById(meaMeasurementNo);
         }
-        return f;
+        return sName;
     }
 
     /**

@@ -5,6 +5,7 @@ import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.ruoyi.common.annotation.ExcelDictFormat;
 import com.ruoyi.common.convert.ExcelDictConvert;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import java.util.Date;
 
@@ -144,6 +145,13 @@ public class MeaContractBillVo {
      */
     @ExcelProperty(value = "树id")
     private String parentId;
+    /**
+     * 数据是否是变更获取（1 变更数据 0正常合同）
+     */
+    @ExcelProperty(value = "数据是否是变更获取", converter = ExcelDictConvert.class)
+    @ExcelDictFormat(readConverterExp = "1=,变=更数据,0=正常合同")
+    @ApiModelProperty(value = "数据是否是变更获取", required = true)
+    private String isChange;
 
 
 }

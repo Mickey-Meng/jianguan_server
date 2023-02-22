@@ -136,5 +136,8 @@ public class MeaContractBillBo extends TreeEntity<MeaContractBillBo> {
 //    @NotBlank(message = "备注不能为空", groups = { AddGroup.class, EditGroup.class })
     private String remark;
 
-
+    /**
+     * 数据是否是变更获取（1 变更数据 0正常合同）
+     */
+    private String isChange;
 }
