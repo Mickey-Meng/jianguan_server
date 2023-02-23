@@ -251,6 +251,7 @@ public class MeaLedgerBreakdownDetailServiceImpl implements IMeaLedgerBreakdownD
                 QueryWrapper<MeaContractBill> queryWrapper1=new QueryWrapper<>();
                 queryWrapper1.eq("zmh",meaLedgerBreakdownDetailVo.getZmh());
                 queryWrapper1.eq("status","0");
+                queryWrapper1.eq("is_change","0");// add by yangaogao 20220223  新增变更清单，因为一个子目号可能对应多条数据了，但查询仅是为了获取其中一些数据，跟是否变更无关，因此取那条合同清单即可。
                 MeaContractBill meaLedgerBreakdown = meaContractBillMapper.selectOne(queryWrapper1);
                 if(meaLedgerBreakdown==null){
                     continue;
