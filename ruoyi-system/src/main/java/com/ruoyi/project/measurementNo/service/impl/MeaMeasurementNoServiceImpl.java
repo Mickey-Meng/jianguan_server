@@ -118,7 +118,7 @@ public class MeaMeasurementNoServiceImpl implements IMeaMeasurementNoService {
         for (MeaMeasurementDocumentsVo meaMeasurementDocumentsVo : meaMeasurementDocumentsVos) {
             if(!"2".equalsIgnoreCase(meaMeasurementDocumentsVo.getReviewCode())){
                 f = false;
-                sName =sName + meaMeasurementDocumentsVo.getPzbh();
+                sName =sName + "," + meaMeasurementDocumentsVo.getPzbh();
             }
         }
         if(f){

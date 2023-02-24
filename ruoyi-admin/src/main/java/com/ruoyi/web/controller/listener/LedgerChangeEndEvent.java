@@ -67,7 +67,7 @@ public class LedgerChangeEndEvent implements TaskListener {
                         meaLedgerBreakdownDetailMapper.updateById(meaLedgerBreakdownDetail);*/
                         QueryWrapper<MeaContractBill> contractBillQueryWrapper=new QueryWrapper<>();
                         contractBillQueryWrapper.eq("zmh",meaLedgerChangeDetail.getZmh());
-                        contractBillQueryWrapper.eq("status","1");
+                        contractBillQueryWrapper.eq("is_change","0");
                         MeaContractBill meaContractBill = contractBillMapper.selectOne(contractBillQueryWrapper);
                         if(meaContractBill!=null){
                             /*if(meaContractBill.getXzje()==null){

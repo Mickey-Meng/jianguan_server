@@ -173,6 +173,7 @@ public class MeaContractBillServiceImpl implements IMeaContractBillService {
     public List<MeaContractBillVo> treeList(MeaContractBillBo bo) {
         LambdaQueryWrapper<MeaContractBill> lqw = new LambdaQueryWrapper<>();
         lqw.isNull(true, MeaContractBill::getHtdj);
+        lqw.orderByAsc(MeaContractBill::getZmh);
         return baseMapper.selectVoList(lqw);
     }
 

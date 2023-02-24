@@ -112,6 +112,7 @@ public class MeaMeasurementNoController extends BaseController {
     public R<Void> lockingMeaMeasurementNoTest(@PathVariable String meaMeasurementNo) {
 
             String b =  iMeaMeasurementNoService.lockingByJlqcbh(meaMeasurementNo);
+            b = "有以下计量凭证流程未结束： " + b;
             if(StringUtils.isEmpty(b)) return  R.ok("1");
             else return R.ok(b);
     }
