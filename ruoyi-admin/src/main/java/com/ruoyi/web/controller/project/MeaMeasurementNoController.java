@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.websocket.server.PathParam;
 import java.util.Arrays;
 import java.util.List;
 
@@ -108,11 +109,19 @@ public class MeaMeasurementNoController extends BaseController {
 
     @RepeatSubmit()
     @GetMapping("/lockingMeaMeasurementNo/{meaMeasurementNo}")
-    public R<Void> lockingMeaMeasurementNo(@PathVariable String meaMeasurementNo) {
+    public R<Void> lockingMeaMeasurementNoTest(@PathVariable String meaMeasurementNo) {
 
             String b =  iMeaMeasurementNoService.lockingByJlqcbh(meaMeasurementNo);
             if(StringUtils.isEmpty(b)) return  R.ok("1");
             else return R.ok(b);
+    }
+    @RepeatSubmit()
+    @GetMapping("/lockingMeaMeasurementNo")
+    public R<Void> lockingMeaMeasurementNo(@PathParam("meaMeasurementNo") String meaMeasurementNo) {
+
+        String b =  iMeaMeasurementNoService.lockingByJlqcbh(meaMeasurementNo);
+        if(StringUtils.isEmpty(b)) return  R.ok("1");
+        else return R.ok(b);
     }
     /**
      * 删除中间计量期数管理
