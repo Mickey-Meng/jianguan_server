@@ -78,7 +78,7 @@ public class QlWarehousingVo {
      */
     @ExcelProperty(value = "采购数量")
     @ApiModelProperty(value = "采购数量", required = true)
-    private Integer orderNumber;
+    private BigDecimal orderNumber;
 
     /**
      * 采购金额
@@ -96,7 +96,7 @@ public class QlWarehousingVo {
      * 入库数量
      */
     @ApiModelProperty(value = "入库数量")
-    private Long warehousingNumber;
+    private BigDecimal warehousingNumber;
 
     /**
      * 产品id

@@ -48,7 +48,7 @@ public class QlWarehousing extends BaseEntity {
     /**
      * 入库数量
      */
-    private Long warehousingNumber;
+    private BigDecimal warehousingNumber;
     /**
      * 入库时间
      */
@@ -65,7 +65,7 @@ public class QlWarehousing extends BaseEntity {
     /**
      * 采购数量
      */
-    private Integer orderNumber;
+    private BigDecimal orderNumber;
     /**
      * 采购金额
      */

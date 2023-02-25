@@ -56,7 +56,7 @@ public class QlWarehousingBo extends BaseEntity {
     /**
      * 入库数量
      */
-    private Long warehousingNumber;
+    private BigDecimal warehousingNumber;
 
     /**
      * 入库时间
@@ -77,7 +77,7 @@ public class QlWarehousingBo extends BaseEntity {
      * 采购数量
      */
     @NotNull(message = "采购数量不能为空", groups = { AddGroup.class, EditGroup.class })
-    private Integer orderNumber;
+    private BigDecimal orderNumber;
 
     /**
      * 采购金额

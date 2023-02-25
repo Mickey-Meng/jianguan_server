@@ -18,6 +18,7 @@ import com.ruoyi.ql.mapper.QlOutboundMapper;
 import com.ruoyi.ql.service.IQlOutboundService;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Collection;
@@ -80,14 +81,14 @@ public class QlOutboundServiceImpl implements IQlOutboundService {
         QlOutbound add = BeanUtil.toBean(bo, QlOutbound.class);
         validEntityBeforeSave(add);
         String productId = add.getProudctId();
-        Long i = add.getOutboundNumber();
+        BigDecimal i = add.getOutboundNumber();
 
         QlShopGoods qlShopGoods  = qlShopGoodsMapper.selectById(productId);
-        Long seedNumber = qlShopGoods.getStockNumber();
-        if (i>seedNumber){
+        BigDecimal seedNumber = qlShopGoods.getStockNumber();
+        if (i.compareTo(seedNumber)>0){
             return false;
         }else {
-            qlShopGoods.setStockNumber(seedNumber - i);
+            qlShopGoods.setStockNumber(seedNumber.subtract(i));
             qlShopGoodsMapper.updateById(qlShopGoods);
         }
         boolean flag = baseMapper.insert(add) > 0;

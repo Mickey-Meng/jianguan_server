@@ -100,7 +100,7 @@ public class QlShopGoods extends BaseEntity {
     /**
      * 实时库存
      */
-    private Long stockNumber;
+    private BigDecimal stockNumber;
     /**
      * 删除标志（0代表存在 2代表删除）
      */

@@ -18,6 +18,7 @@ import com.ruoyi.ql.mapper.QlWarehousingMapper;
 import com.ruoyi.ql.service.IQlWarehousingService;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Collection;
@@ -86,12 +87,12 @@ public class QlWarehousingServiceImpl implements IQlWarehousingService {
         QlWarehousing add = BeanUtil.toBean(bo, QlWarehousing.class);
         validEntityBeforeSave(add);
         String productId = add.getProudctId();
-        Long i = add.getWarehousingNumber();
+        BigDecimal i = add.getWarehousingNumber();
 
         QlShopGoods qlShopGoods  = qlShopGoodsMapper.selectById(productId);
-        Long seedNumber = qlShopGoods.getStockNumber();
+        BigDecimal seedNumber = qlShopGoods.getStockNumber();
 
-        qlShopGoods.setStockNumber(seedNumber + i);
+        qlShopGoods.setStockNumber(seedNumber.add(i));
         qlShopGoodsMapper.updateById(qlShopGoods);
 
         boolean flag = baseMapper.insert(add) > 0;
@@ -110,14 +111,15 @@ public class QlWarehousingServiceImpl implements IQlWarehousingService {
         // 1 获取上一次入库清单
 
         QlWarehousing qlWarehousing = baseMapper.selectById(bo.getId());
-        Long n = qlWarehousing.getWarehousingNumber();
+        BigDecimal n = qlWarehousing.getWarehousingNumber();
 
 
         // 2  获取该产品实时库存数量
         QlShopGoods qlShopGoods  = qlShopGoodsMapper.selectById(bo.getProudctId());
-        Long seedNumber = qlShopGoods.getStockNumber();
+        BigDecimal seedNumber = qlShopGoods.getStockNumber();
         // 3 修改后库存数据 =  实时库存 - 上一次入库数量 + 当前页面库存数量
-        qlShopGoods.setStockNumber(seedNumber + bo.getWarehousingNumber() - n);
+        qlShopGoods.setStockNumber(seedNumber.add(bo.getWarehousingNumber()).subtract(n) );
+
         qlShopGoodsMapper.updateById(qlShopGoods);
 
         QlWarehousing update = BeanUtil.toBean(bo, QlWarehousing.class);

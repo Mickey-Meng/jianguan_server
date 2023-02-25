@@ -129,4 +129,11 @@ public class MeaLedgerBreakdownDetailVo {
 
     @ExcelProperty(value = "流程状态")
     private String reviewCode;
+    /**
+     *  '数据是否是变更获取（1 变更数据 0正常合同）',
+     */
+    @ExcelProperty(value = " '数据是否是变更获取", converter = ExcelDictConvert.class)
+    @ExcelDictFormat(readConverterExp = "1=,变=更数据,0=正常合同")
+    @ApiModelProperty(value = " '数据是否是变更获取", required = true)
+    private String isChange;
 }

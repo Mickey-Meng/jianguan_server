@@ -44,7 +44,7 @@ public class QlOutbound extends BaseEntity {
     /**
      * 出库数量
      */
-    private Long outboundNumber;
+    private BigDecimal outboundNumber;
     /**
      * 出库时间
      */

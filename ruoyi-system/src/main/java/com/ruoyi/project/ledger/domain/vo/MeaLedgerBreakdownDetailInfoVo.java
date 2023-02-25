@@ -124,7 +124,12 @@ public class MeaLedgerBreakdownDetailInfoVo {
     @ExcelProperty(value = "状态", converter = ExcelDictConvert.class)
     @ExcelDictFormat(dictType = "data_status")
     private String status;
-
+    /**
+     *  '数据是否是变更获取（1 变更数据 0正常合同）',
+     */
+    @ExcelProperty(value = " '数据是否是变更获取", converter = ExcelDictConvert.class)
+    @ExcelDictFormat(readConverterExp = "1=,变=更数据,0=正常合同")
+    private String isChange;
     private List<MeaLedgerBreakdownDetailVo> children;
 
 

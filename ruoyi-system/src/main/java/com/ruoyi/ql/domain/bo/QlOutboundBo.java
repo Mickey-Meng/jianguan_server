@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import javax.validation.constraints.*;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import java.util.Date;
@@ -49,7 +50,7 @@ public class QlOutboundBo extends BaseEntity {
      * 出库数量
      */
     @NotNull(message = "出库数量不能为空", groups = { AddGroup.class, EditGroup.class })
-    private Long outboundNumber;
+    private BigDecimal outboundNumber;
 
     /**
      * 出库时间
