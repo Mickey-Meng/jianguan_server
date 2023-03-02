@@ -19,6 +19,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updateTime" column="update_time"/>
         <result property="remark" column="remark"/>
         <result property="parentId" column="parent_id"/>
+        <result property="isChange" column="is_change"/>
+
     </resultMap>
     <select id="getNextCode" resultType="java.lang.String">
 

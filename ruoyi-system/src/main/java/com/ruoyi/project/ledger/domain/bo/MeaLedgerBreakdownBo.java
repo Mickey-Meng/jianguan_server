@@ -74,4 +74,8 @@ public class MeaLedgerBreakdownBo extends TreeEntity<MeaLedgerBreakdownBo> {
     private String remark;
 
 
+    /**
+     *  '数据是否是变更获取（1 变更数据 0正常合同）',
+     */
+    private String isChange;
 }

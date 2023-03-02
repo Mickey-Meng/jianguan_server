@@ -77,6 +77,11 @@ public class MeaOtherPaymentVo {
      */
     @ExcelProperty(value = "附件")
     private String fj;
+    /**
+     * 备注
+     */
+    @ExcelProperty(value = "备注")
+    private String remark;
 
     /**
      * 状态（0正常 1停用）
