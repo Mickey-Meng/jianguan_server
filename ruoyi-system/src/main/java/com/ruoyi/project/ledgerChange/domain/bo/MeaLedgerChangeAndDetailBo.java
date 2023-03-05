@@ -120,5 +120,8 @@ public class MeaLedgerChangeAndDetailBo extends BaseEntity implements Serializab
 
     private List<MeaLedgerChangeDetailBo> detailBos;
 
-
+    /**
+     * 变更编号名称
+     */
+    private String bgbhName;
 }

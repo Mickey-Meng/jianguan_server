@@ -117,5 +117,9 @@ public class MeaLedgerChangeBo extends BaseEntity implements Serializable {
 
     private String remark;
 
-
+    /**
+     * 变更编号名称
+     */
+    @NotBlank(message = "变更编号名称不能为空", groups = { AddGroup.class, EditGroup.class })
+    private String bgbhName;
 }

@@ -8,6 +8,7 @@ import com.alibaba.excel.annotation.ExcelProperty;
 import com.ruoyi.common.annotation.ExcelDictFormat;
 import com.ruoyi.common.convert.ExcelDictConvert;
 import com.ruoyi.project.ledgerChangeDetail.domain.MeaLedgerChangeDetail;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import java.util.Date;
 import java.util.List;
@@ -112,6 +113,11 @@ public class MeaLedgerChangeVo {
     //add by yangaogao 20221207 添加变更明细
 
 
-
+    /**
+     * 变更编号名称
+     */
+    @ExcelProperty(value = "变更编号名称")
+    @ApiModelProperty(value = "变更编号名称", required = true)
+    private String bgbhName;
 
 }
