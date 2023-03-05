@@ -279,6 +279,9 @@ public class WfProcessServiceImpl extends FlowServiceFactory implements IWfProce
         detailVo.setHistoryProcNodeList(historyProcNodeList(procInsId));
         detailVo.setProcessFormList(processFormList(procInsId, deployId, taskIns));
         detailVo.setFlowViewer(getFlowViewer(procInsId));
+
+        // add by zhangjing 为了计量中，个性化表单流程数据， 流程新增的时候，会往流程业务表中插入表单数据，此时，会获取数据。
+        // 讲表单数据插入到setProcessInfoFormList,覆盖原来的树形值。需要考虑
         QueryWrapper<MeaFlowDataInfo> queryWrapper=new QueryWrapper();
         queryWrapper.eq("task_id",taskId);
         List<MeaFlowDataInfo> meaFlowDataInfos = meaFlowDataInfoMapper.selectList(queryWrapper);
