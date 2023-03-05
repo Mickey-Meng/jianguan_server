@@ -48,6 +48,13 @@ public interface IMeaLedgerBreakdownDetailService {
     Boolean updateByBo(MeaLedgerBreakdownDetailBo bo);
 
     /**
+     * 批量修改台账分解
+     * @param bos
+     * @return
+     */
+    Boolean updateBatchByBOList(List<MeaLedgerBreakdownDetailBo> bos);
+
+    /**
      * 校验并批量删除台账分解明细信息
      */
     Boolean deleteWithValidByIds(Collection<String> ids, Boolean isValid);

@@ -19,7 +19,9 @@ import com.ruoyi.project.approval.domain.bo.MeaLedgerApprovalBo;
 import com.ruoyi.project.approval.domain.vo.MeaLedgerApprovalBreakDownVo;
 import com.ruoyi.project.approval.domain.vo.MeaLedgerApprovalVo;
 import com.ruoyi.project.approval.service.IMeaLedgerApprovalService;
+import com.ruoyi.project.ledger.domain.bo.MeaLedgerBreakdownDetailBo;
 import com.ruoyi.project.ledger.domain.vo.MeaLedgerBreakdownDetailVo;
+import com.ruoyi.project.ledger.service.IMeaLedgerBreakdownDetailService;
 import com.ruoyi.workflow.service.IWfProcessService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +32,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -48,6 +51,8 @@ public class MeaLedgerApprovalController extends BaseController {
     private final IMeaLedgerApprovalService iMeaLedgerApprovalService;
 
     private final IWfProcessService processService;
+
+    private final IMeaLedgerBreakdownDetailService iMeaLedgerBreakdownDetailService;
 
     @Value("${mea.flowable.ledgerApproval}")
     private String formKey;
@@ -143,6 +148,21 @@ public class MeaLedgerApprovalController extends BaseController {
         List<MeaLedgerApprovalBreakDownVo> boInfo=iMeaLedgerApprovalService.getInfoData(bos);
         MeaLedgerApprovalBo meaLedgerApprovalBo = bos.get(0);
         processService.startMeaProcess(process_1669973630070,formKey,meaLedgerApprovalBo.getSqqc(), boInfo);
+
+        List<MeaLedgerBreakdownDetailBo> meaLedgerBreakdownDetails = new ArrayList<>();
+        // 批量查询台账分解明细
+        // TODO: 2023/3/5 后期修改为批量查询，不在循环内单条查询
+        for (MeaLedgerApprovalBo bo : bos) {
+            MeaLedgerBreakdownDetailVo meaLedgerBreakdownDetailVo = iMeaLedgerBreakdownDetailService.queryById(bo.getBreakdownId());
+            MeaLedgerBreakdownDetailBo meaLedgerBreakdownDetailBo = new MeaLedgerBreakdownDetailBo();
+            meaLedgerBreakdownDetailBo.setId(bo.getBreakdownId());
+            meaLedgerBreakdownDetailBo.setStatus(meaLedgerBreakdownDetailVo.getStatus());
+            meaLedgerBreakdownDetailBo.setTzfjbh(meaLedgerBreakdownDetailVo.getTzfjbh());
+            // 台账上报，台账分解明细修改为已上报状态
+            meaLedgerBreakdownDetailBo.setReviewCode("1");
+            meaLedgerBreakdownDetails.add(meaLedgerBreakdownDetailBo);
+        }
+        iMeaLedgerBreakdownDetailService.updateBatchByBOList(meaLedgerBreakdownDetails);
         return R.ok();
     }
 

@@ -74,6 +74,8 @@ public class LedgerApprovalEndEvent implements TaskListener {
                             } else {
                                 meaLedgerBreakdownDetail.setFhje(BigDecimal.ZERO);
                             }
+                            // 台账审批通过，台账分解明细的审批状态也通过修改为审批通过
+                            meaLedgerBreakdownDetail.setReviewCode("2");
                             meaLedgerBreakdownDetailMapper.updateById(meaLedgerBreakdownDetail);
                         }
                         StaticLog.info("分解明细审批完成");

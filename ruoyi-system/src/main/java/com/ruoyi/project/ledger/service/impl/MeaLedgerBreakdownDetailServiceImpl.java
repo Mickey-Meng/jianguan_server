@@ -181,6 +181,21 @@ public class MeaLedgerBreakdownDetailServiceImpl implements IMeaLedgerBreakdownD
     }
 
     /**
+     * 批量修改台账分解明细
+     */
+    @Override
+    public Boolean updateBatchByBOList(List<MeaLedgerBreakdownDetailBo> bos) {
+        if(CollUtil.isEmpty(bos)) {
+            return true;
+        }
+        List<MeaLedgerBreakdownDetail> meaLedgerBreakdownDetails = BeanUtil.copyToList(bos, MeaLedgerBreakdownDetail.class);
+        for (MeaLedgerBreakdownDetail meaLedgerBreakdownDetail : meaLedgerBreakdownDetails) {
+            validEntityBeforeSave(meaLedgerBreakdownDetail);
+        }
+        return baseMapper.updateBatchById(meaLedgerBreakdownDetails);
+    }
+
+    /**
      * 保存前的数据校验
      */
     private void validEntityBeforeSave(MeaLedgerBreakdownDetail entity){
