@@ -85,9 +85,7 @@ public class WfTaskServiceImpl extends FlowServiceFactory implements IWfTaskServ
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void complete(WfTaskBo taskBo) {
-        QueryWrapper<MeaFlowDataInfo> queryWrapper=new QueryWrapper();
-        queryWrapper.eq("task_id",taskBo.getTaskId());
-        List<MeaFlowDataInfo> meaFlowDataInfos = meaFlowDataInfoMapper.selectList(queryWrapper);
+
         Task task = taskService.createTaskQuery().taskId(taskBo.getTaskId()).singleResult();
         if (Objects.isNull(task)) {
             throw new ServiceException("任务不存在");
@@ -112,7 +110,13 @@ public class WfTaskServiceImpl extends FlowServiceFactory implements IWfTaskServ
             throw new RuntimeException("抄送任务失败");
         }
         List<Task> list = taskService.createTaskQuery().processInstanceId(taskBo.getProcInsId()).list();
-        if(CollUtil.isNotEmpty(list)){
+        //TODO ,需要区分  个性化表单  流程表单，个性化表单需要插入meaFlowDataInfo, 流程表单不需要，按照原有的逻辑处理即可
+        /**       如何区分个性化表单  流程表单,  可以通过获取流程模型名称来判断，约束流程模型若为个性化表单，则必须以S_开头命名，后台进行判断*/
+
+        QueryWrapper<MeaFlowDataInfo> queryWrapper=new QueryWrapper();
+        queryWrapper.eq("task_id",taskBo.getTaskId());
+        List<MeaFlowDataInfo> meaFlowDataInfos = meaFlowDataInfoMapper.selectList(queryWrapper);
+        if(CollUtil.isNotEmpty(list) && CollUtil.isNotEmpty(meaFlowDataInfos)){
             for (Task taskId:list){
                 MeaFlowDataInfo meaFlowDataInfo = meaFlowDataInfos.get(0);
                 meaFlowDataInfo.setId(null);
@@ -696,11 +700,11 @@ public class WfTaskServiceImpl extends FlowServiceFactory implements IWfTaskServ
         Task task = taskService.createTaskQuery().processInstanceId(processInstance.getProcessInstanceId()).singleResult();
         if (ObjectUtil.isNotEmpty(task)) {
             String userIdStr = (String) variables.get(TaskConstants.PROCESS_INITIATOR);
-            if (StrUtil.equals(task.getAssignee(), userIdStr)) {
+           /* if (StrUtil.equals(task.getAssignee(), userIdStr)) {
                 taskService.addComment(task.getId(), processInstance.getProcessInstanceId(), FlowComment.NORMAL.getType(), LoginHelper.getNickName() + "发起流程申请");
                 // taskService.setAssignee(task.getId(), userIdStr);
                 taskService.complete(task.getId(), variables);
-            }
+            }*/
         }
         return task.getId();
     }

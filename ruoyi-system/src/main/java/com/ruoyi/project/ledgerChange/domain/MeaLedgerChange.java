@@ -97,7 +97,10 @@ public class MeaLedgerChange extends BaseEntity {
      */
     private String remark;
 
-
+    /**
+     * 变更编号名称
+     */
+    private String bgbhName;
 
 
 }
