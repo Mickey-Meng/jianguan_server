@@ -97,7 +97,8 @@ public class MeaLedgerApprovalServiceImpl implements IMeaLedgerApprovalService {
         LambdaQueryWrapper<MeaLedgerApproval> lqw = Wrappers.lambdaQuery();
         lqw.eq(StringUtils.isNotBlank(bo.getBdbh()), MeaLedgerApproval::getBdbh, bo.getBdbh());
         lqw.eq(StringUtils.isNotBlank(bo.getSqqc()), MeaLedgerApproval::getSqqc, bo.getSqqc());
-//        lqw.eq(StringUtils.isNotBlank(bo.getTzfjbh()), MeaLedgerApproval::getTzfjbh, bo.getTzfjbh());
+        // 增加查询条件
+        lqw.eq(StringUtils.isNotBlank(bo.getTzfjbh()), MeaLedgerApproval::getTzfjbh, bo.getTzfjbh());
         lqw.eq(StringUtils.isNotBlank(bo.getGcbw()), MeaLedgerApproval::getGcbw, bo.getGcbw());
         lqw.eq(StringUtils.isNotBlank(bo.getDataStatus()), MeaLedgerApproval::getDataStatus, bo.getDataStatus());
         lqw.eq(StringUtils.isNotBlank(bo.getSpzt()), MeaLedgerApproval::getSpzt, bo.getSpzt());
