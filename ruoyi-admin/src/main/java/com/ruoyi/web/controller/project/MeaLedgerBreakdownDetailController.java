@@ -83,6 +83,16 @@ public class MeaLedgerBreakdownDetailController extends BaseController {
         return R.ok(list);
     }
     /**
+     * 查询台账分解集合
+     * @return
+     */
+    @GetMapping("/queryBreakdownDetails")
+    public R<List<MeaLedgerBreakdownDetailVo>> queryMeaLedgerBreakdownDetails(MeaLedgerBreakdownDetailBo meaLedgerBreakdownDetailBo) {
+        List<MeaLedgerBreakdownDetailVo> meaLedgerBreakdownDetailVos = iMeaLedgerBreakdownDetailService.queryList(meaLedgerBreakdownDetailBo);
+        return R.ok(meaLedgerBreakdownDetailVos);
+    }
+
+    /**
      * 导出台账分解明细列表
      */
     @SaCheckPermission("ledgerDetail:ledgerBreakdownDetail:export")

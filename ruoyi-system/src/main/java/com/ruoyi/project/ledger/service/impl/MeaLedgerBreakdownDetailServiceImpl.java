@@ -136,6 +136,8 @@ public class MeaLedgerBreakdownDetailServiceImpl implements IMeaLedgerBreakdownD
                 }
             }
         }
+        // add by gaoxinlong 20230307  【增加子目号排序】
+        lqw.orderByAsc(MeaLedgerBreakdownDetail::getZmh);
         return lqw;
     }
 
