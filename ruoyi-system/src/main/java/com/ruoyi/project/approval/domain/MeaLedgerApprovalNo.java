@@ -42,6 +42,10 @@ public class MeaLedgerApprovalNo extends BaseEntity {
      */
     private Date sbsj;
     /**
+     * 申报结束日期
+     */
+    private Date sbjsrq;
+    /**
      * 申报状态
      */
     private String spzt;

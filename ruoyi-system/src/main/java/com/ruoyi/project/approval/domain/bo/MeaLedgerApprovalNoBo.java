@@ -48,6 +48,12 @@ public class MeaLedgerApprovalNoBo extends BaseEntity {
     private Date sbsj;
 
     /**
+     * 申报结束日期
+     */
+    @NotNull(message = "申报结束日期不能为空", groups = { AddGroup.class, EditGroup.class })
+    private Date sbjsrq;
+
+    /**
      * 申报状态
      */
     private String spzt;

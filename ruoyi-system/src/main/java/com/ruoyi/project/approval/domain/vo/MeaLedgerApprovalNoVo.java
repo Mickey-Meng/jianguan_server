@@ -27,7 +27,7 @@ public class MeaLedgerApprovalNoVo {
      * 主键id
      */
     @ExcelProperty(value = "主键id")
-    private Long id;
+    private String id;
     /**
      * 标段编号
      */
@@ -45,6 +45,11 @@ public class MeaLedgerApprovalNoVo {
      */
     @ExcelProperty(value = "申报日期")
     private Date sbsj;
+    /**
+     * 申报结束日期
+     */
+    @ExcelProperty(value = "申报结束日期")
+    private Date sbjsrq;
     /**
      * 申报状态（1申报中 2完成申报 3申报打回）
      */
