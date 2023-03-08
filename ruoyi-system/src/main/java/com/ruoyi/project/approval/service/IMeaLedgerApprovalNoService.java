@@ -33,6 +33,13 @@ public interface IMeaLedgerApprovalNoService {
     List<MeaLedgerApprovalNoVo> queryList(MeaLedgerApprovalNoBo bo);
 
     /**
+     * 查询期数数量
+     * @param bo
+     * @return
+     */
+    long count(MeaLedgerApprovalNoBo bo);
+
+    /**
      * 新增期数管理
      */
     Boolean insertByBo(MeaLedgerApprovalNoBo bo);

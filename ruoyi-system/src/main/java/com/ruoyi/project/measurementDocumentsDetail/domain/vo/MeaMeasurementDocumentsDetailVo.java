@@ -90,6 +90,16 @@ public class MeaMeasurementDocumentsDetailVo {
      */
     private String ljjlbl;
 
+    /**
+     * 本期计量金额 = 本期计量数量 * 合同单价
+     */
+    private BigDecimal bqjlje;
+
+    /**
+     * 累计计量金额 = 累计数量 * 合同单价
+     */
+    private BigDecimal ljjlje;
+
 
 
 }

@@ -2,6 +2,8 @@ package com.ruoyi.web.controller.project;
 
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.StrUtil;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.annotation.RepeatSubmit;
 import com.ruoyi.common.core.controller.BaseController;
@@ -79,7 +81,16 @@ public class MeaLedgerApprovalNoController extends BaseController {
     @RepeatSubmit()
     @PostMapping()
     public R<Void> add(@Validated(AddGroup.class) @RequestBody MeaLedgerApprovalNoBo bo) {
-        return toAjax(iMeaLedgerApprovalNoService.insertByBo(bo) ? 1 : 0);
+        // TODO: 2023/3/8 待调整后端查询mapper, 增加reviewCodes查询条件  目前先用查询全量，java代码过滤是否包含审批中的数据来控制是否可以新增
+        List<MeaLedgerApprovalNoVo> meaLedgerApprovalNoVos = iMeaLedgerApprovalNoService.queryList(new MeaLedgerApprovalNoBo());
+        if(CollUtil.isNotEmpty(meaLedgerApprovalNoVos)) {
+            long count = meaLedgerApprovalNoVos.stream().filter(meaLedgerApprovalNoVo -> StrUtil.equalsAny(meaLedgerApprovalNoVo.getReviewCode(), "0", "1")).count();
+            // 存在未审批和审批中的数据，不能创建新的申报期数
+            if (count > 0) {
+                return R.fail("存在未审批和审批中的数据，不能创建新的申报期数");
+            }
+        }
+        return iMeaLedgerApprovalNoService.insertByBo(bo) ? R.ok() : R.fail();
     }
 
     /**

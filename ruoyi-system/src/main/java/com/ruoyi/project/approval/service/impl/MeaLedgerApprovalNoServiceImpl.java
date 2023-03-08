@@ -60,6 +60,15 @@ public class MeaLedgerApprovalNoServiceImpl implements IMeaLedgerApprovalNoServi
         return baseMapper.selectVoList(lqw);
     }
 
+    /**
+     * 查询期数管理列表
+     */
+    @Override
+    public long count(MeaLedgerApprovalNoBo bo) {
+        LambdaQueryWrapper<MeaLedgerApprovalNo> lqw = buildQueryWrapper(bo);
+        return baseMapper.selectCount(lqw);
+    }
+
     private LambdaQueryWrapper<MeaLedgerApprovalNo> buildQueryWrapper(MeaLedgerApprovalNoBo bo) {
         Map<String, Object> params = bo.getParams();
         LambdaQueryWrapper<MeaLedgerApprovalNo> lqw = Wrappers.lambdaQuery();
@@ -68,6 +77,7 @@ public class MeaLedgerApprovalNoServiceImpl implements IMeaLedgerApprovalNoServi
         lqw.eq(bo.getSbsj() != null, MeaLedgerApprovalNo::getSbsj, bo.getSbsj());
         lqw.eq(StringUtils.isNotBlank(bo.getSpzt()), MeaLedgerApprovalNo::getSpzt, bo.getSpzt());
         lqw.eq(StringUtils.isNotBlank(bo.getStatus()), MeaLedgerApprovalNo::getStatus, bo.getStatus());
+        lqw.orderByAsc(MeaLedgerApprovalNo:: getSqqc);
         return lqw;
     }
 

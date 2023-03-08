@@ -2,6 +2,7 @@ package com.ruoyi.web.controller.project;
 
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.hutool.core.collection.CollUtil;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.annotation.RepeatSubmit;
 import com.ruoyi.common.core.controller.BaseController;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -45,7 +47,17 @@ public class MeaMeasurementDocumentsDetailController extends BaseController {
     @SaCheckPermission("measurementDocumentsDetail:measurementDocumentsDetail:list")
     @GetMapping("/list")
     public TableDataInfo<MeaMeasurementDocumentsDetailVo> list(MeaMeasurementDocumentsDetailBo bo, PageQuery pageQuery) {
-        return iMeaMeasurementDocumentsDetailService.queryPageList(bo, pageQuery);
+        TableDataInfo<MeaMeasurementDocumentsDetailVo> meaMeasurementDocumentsDetailVoTableDataInfo = iMeaMeasurementDocumentsDetailService.queryPageList(bo, pageQuery);
+
+        List<MeaMeasurementDocumentsDetailVo> rows = meaMeasurementDocumentsDetailVoTableDataInfo.getRows();
+
+        if (CollUtil.isNotEmpty(rows)) {
+            rows.forEach(detail -> {
+                detail.setBqjlje(detail.getBqjlsl().multiply(detail.getMeaLedgerBreakdownDetail().getHtdj()).setScale(2, BigDecimal.ROUND_HALF_UP));
+                detail.setLjjlje(detail.getMeaLedgerBreakdownDetail().getYjlsl().multiply(detail.getMeaLedgerBreakdownDetail().getHtdj()).setScale(2, BigDecimal.ROUND_HALF_UP));
+            });
+        }
+        return meaMeasurementDocumentsDetailVoTableDataInfo;
     }
 
     /**
