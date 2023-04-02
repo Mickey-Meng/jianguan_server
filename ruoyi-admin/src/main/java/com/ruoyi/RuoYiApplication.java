@@ -15,7 +15,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @EnableScheduling
 @ConfigurationPropertiesScan
-@MapperScan("com.ruoyi.*.**.mapper.**")
+@MapperScan(basePackages = {"com.ruoyi.*.**.mapper.**","com.ruoyi.*.**.dao.**"})
 @SpringBootApplication(scanBasePackages = "com.ruoyi")
 public class RuoYiApplication {
 

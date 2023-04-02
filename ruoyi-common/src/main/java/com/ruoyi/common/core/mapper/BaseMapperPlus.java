@@ -16,6 +16,7 @@ import com.ruoyi.common.utils.BeanCopyUtils;
 import org.apache.ibatis.binding.MapperMethod;
 import org.apache.ibatis.logging.Log;
 import org.apache.ibatis.logging.LogFactory;
+import org.springframework.context.annotation.Primary;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -32,6 +33,7 @@ import java.util.Objects;
  * @author Lion Li
  * @since 2021-05-13
  */
+@Primary
 @SuppressWarnings("unchecked")
 public interface BaseMapperPlus<M, T, V> extends BaseMapper<T> {
 
