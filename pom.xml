@@ -47,6 +47,15 @@
         <!-- SMS 配置 -->
         <aliyun.sms.version>2.0.18</aliyun.sms.version>
         <tencent.sms.version>3.1.591</tencent.sms.version>
+        <fastjson.version>1.2.83</fastjson.version>
+        <pagehelper.version>5.3.2</pagehelper.version>
+        <joda-time.version>2.12.5</joda-time.version>
+        <jjwt.version>0.9.1</jjwt.version>
+        <jwt.version>3.5.0</jwt.version>
+        <mapstruct.version>1.5.3.Final</mapstruct.version>
+        <beanquery.version>1.1.5</beanquery.version>
+        <!-- httpclient:4.5.13 up to httpclient5:5.2.1 -->
+        <httpclient5.version>5.2.1</httpclient5.version>
     </properties>
 
     <!-- 依赖声明 -->
@@ -63,6 +72,7 @@
             </dependency>
 
             <!-- hutool 的依赖配置-->
+
             <dependency>
                 <groupId>cn.hutool</groupId>
                 <artifactId>hutool-bom</artifactId>
