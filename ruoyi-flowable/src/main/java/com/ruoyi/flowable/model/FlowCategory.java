@@ -71,6 +71,6 @@ public class FlowCategory {
 
     @Mapper
     public interface FlowCategoryModelMapper extends BaseModelMapper<FlowCategoryVo, FlowCategory> {
+        public static final FlowCategoryModelMapper INSTANCE = Mappers.getMapper(FlowCategoryModelMapper.class);
     }
-    public static final FlowCategoryModelMapper INSTANCE = Mappers.getMapper(FlowCategoryModelMapper.class);
 }

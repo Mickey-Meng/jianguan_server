@@ -147,6 +147,6 @@ public class FlowWorkOrder {
 
     @Mapper
     public interface FlowWorkOrderModelMapper extends BaseModelMapper<FlowWorkOrderVo, FlowWorkOrder> {
+        public static final FlowWorkOrderModelMapper INSTANCE = Mappers.getMapper(FlowWorkOrderModelMapper.class);
     }
-    public static final FlowWorkOrderModelMapper INSTANCE = Mappers.getMapper(FlowWorkOrderModelMapper.class);
 }

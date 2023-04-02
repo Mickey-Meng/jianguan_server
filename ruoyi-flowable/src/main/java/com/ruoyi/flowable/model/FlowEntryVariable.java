@@ -83,6 +83,7 @@ public class FlowEntryVariable {
 
     @Mapper
     public interface FlowEntryVariableModelMapper extends BaseModelMapper<FlowEntryVariableVo, FlowEntryVariable> {
+        public static final FlowEntryVariableModelMapper INSTANCE = Mappers.getMapper(FlowEntryVariableModelMapper.class);
     }
-    public static final FlowEntryVariableModelMapper INSTANCE = Mappers.getMapper(FlowEntryVariableModelMapper.class);
+
 }

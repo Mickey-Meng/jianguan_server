@@ -4,6 +4,7 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.metrics.buffering.BufferingApplicationStartup;
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
@@ -13,7 +14,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
  */
 
 @EnableScheduling
-@MapperScan("com.ruoyi.*.mapper")
+@ConfigurationPropertiesScan
+@MapperScan("com.ruoyi.*.**.mapper.**")
 @SpringBootApplication(scanBasePackages = "com.ruoyi")
 public class RuoYiApplication {
 

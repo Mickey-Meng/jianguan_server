@@ -167,6 +167,6 @@ public class FlowMessage {
 
     @Mapper
     public interface FlowMessageModelMapper extends BaseModelMapper<FlowMessageVo, FlowMessage> {
+        public static final FlowMessageModelMapper INSTANCE = Mappers.getMapper(FlowMessageModelMapper.class);
     }
-    public static final FlowMessageModelMapper INSTANCE = Mappers.getMapper(FlowMessageModelMapper.class);
 }

@@ -2,6 +2,7 @@ package com.ruoyi.common.core.sequence.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
 
 /**
  * common-sequence模块的配置类。

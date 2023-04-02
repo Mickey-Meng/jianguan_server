@@ -116,6 +116,6 @@ public class FlowTaskComment {
 
     @Mapper
     public interface FlowTaskCommentModelMapper extends BaseModelMapper<FlowTaskCommentVo, FlowTaskComment> {
+        public static final FlowTaskCommentModelMapper INSTANCE = Mappers.getMapper(FlowTaskCommentModelMapper.class);
     }
-    public static final FlowTaskCommentModelMapper INSTANCE = Mappers.getMapper(FlowTaskCommentModelMapper.class);
 }

@@ -132,6 +132,7 @@ public class FlowEntry {
 
     @Mapper
     public interface FlowEntryModelMapper extends BaseModelMapper<FlowEntryVo, FlowEntry> {
+        public static final FlowEntryModelMapper INSTANCE = Mappers.getMapper(FlowEntryModelMapper.class);
         /**
          * 转换Vo对象到实体对象。
          *
@@ -153,5 +154,5 @@ public class FlowEntry {
         @Override
         FlowEntryVo fromModel(FlowEntry flowEntry);
     }
-    public static final FlowEntryModelMapper INSTANCE = Mappers.getMapper(FlowEntryModelMapper.class);
+
 }

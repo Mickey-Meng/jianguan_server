@@ -206,6 +206,12 @@
             <artifactId>mapstruct</artifactId>
             <version>${mapstruct.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct-processor</artifactId>
+            <version>${mapstruct.version}</version>
+        </dependency>
+
         <!-- https://mvnrepository.com/artifact/cn.jimmyshi/bean-query -->
         <dependency>
             <groupId>cn.jimmyshi</groupId>
