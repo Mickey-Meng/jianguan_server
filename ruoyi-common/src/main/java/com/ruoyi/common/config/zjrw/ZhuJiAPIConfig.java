@@ -5,6 +5,8 @@ import com.ruoyi.common.utils.zjbim.zjrw.httputils.HttpParamers;
 import com.ruoyi.common.utils.zjbim.zjrw.httputils.HttpService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.PostConstruct;
@@ -23,12 +25,13 @@ public class ZhuJiAPIConfig {
 
     static Logger log = LoggerFactory.getLogger(ZhuJiAPIConfig.class);
 
+    @Value("${zhujiapi.host}")
     private static String host;
 
     @PostConstruct
     public void getHostInit() throws IOException {
         //读取配置文件, 注入静态变量
-        InputStream inputStream = ZhuJiAPIConfig.class.getResourceAsStream("/application-prod.properties");
+        InputStream inputStream = ZhuJiAPIConfig.class.getResourceAsStream("/application-prod.yml");
         Properties properties = new Properties();
         properties.load(inputStream);
         this.host = properties.getProperty("zhujiapi.host");
