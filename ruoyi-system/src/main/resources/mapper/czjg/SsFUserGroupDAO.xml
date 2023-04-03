@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.czjg.zjrw.dao.SsFUserGroupDAO">
+  <resultMap id="BaseResultMap" type="com.ruoyi.czjg.zjrw.domain.entity.SsFUserGroup">
+    <result column="USERID" jdbcType="INTEGER" property="userid" />
+    <result column="GROUPID" jdbcType="INTEGER" property="groupid" />
+    <result column="STTIME" jdbcType="TIMESTAMP" property="sttime" />
+    <result column="STSTATE" jdbcType="INTEGER" property="ststate" />
+    <result column="STORDER" jdbcType="INTEGER" property="storder" />
+  </resultMap>
+
+  <resultMap id="userMap" type="com.ruoyi.czjg.zjrw.domain.entity.SsFUsers">
+    <id column="ID" jdbcType="INTEGER" property="id" />
+    <result column="USERNAME" jdbcType="VARCHAR" property="username" />
+    <result column="PWD" jdbcType="VARCHAR" property="pwd" />
+    <result column="NAME" jdbcType="VARCHAR" property="name" />
+    <result column="USERCODE" jdbcType="VARCHAR" property="usercode" />
+    <result column="STTIME" jdbcType="TIMESTAMP" property="sttime" />
+    <result column="STSTATE" jdbcType="INTEGER" property="ststate" />
+    <result column="STORDER" jdbcType="INTEGER" property="storder" />
+    <result column="ugid" jdbcType="INTEGER" property="ugid" />
+  </resultMap>
+
+  <insert id="insert" parameterType="com.ruoyi.czjg.zjrw.domain.entity.SsFUserGroup">
+    insert into ss_f_user_project (USERID, GROUPID, STTIME,
+      STSTATE, STORDER)
+    values (#{userid,jdbcType=INTEGER}, #{groupid,jdbcType=INTEGER}, #{sttime,jdbcType=TIMESTAMP},
+      #{ststate,jdbcType=INTEGER}, #{storder,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ruoyi.czjg.zjrw.domain.entity.SsFUserGroup">
+    insert into ss_f_user_project
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userid != null">
+        USERID,
+      </if>
+      <if test="groupid != null">
+        GROUPID,
+      </if>
+      <if test="sttime != null">
+        STTIME,
+      </if>
+      <if test="ststate != null">
+        STSTATE,
+      </if>
+      <if test="storder != null">
+        STORDER,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userid != null">
+        #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="groupid != null">
+        #{groupid,jdbcType=INTEGER},
+      </if>
+      <if test="sttime != null">
+        #{sttime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="ststate != null">
+        #{ststate,jdbcType=INTEGER},
+      </if>
+      <if test="storder != null">
+        #{storder,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+
+  <delete id="deleteByUserIds" parameterType="java.util.ArrayList">
+    delete from ss_f_user_project where userid in
+    <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </delete>
+
+  <select id="getUserByGroupsIds" resultMap="userMap">
+    select a.* from ss_f_users a
+    LEFT JOIN ss_f_user_group b ON a.id = b.userid
+    where b.groupid in
+    <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </select>
+
+  <delete id="deleteProjectsByUser" parameterType="integer">
+    delete from ss_f_user_project where userid = #{userid} and
+    groupid in
+    <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </delete>
+
+  <select id="getAllCount" parameterType="string" resultType="integer">
+    select count(a.id) from ss_f_users a
+        left join ss_f_user_group b on a.id = b.userid
+        left join ss_f_groups c on b.groupid = c.id
+        where a.ststate = 1 and c.id in
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+  </select>
+
+  <resultMap id="ClockInCensusReturnMap" type="com.ruoyi.czjg.zjrw.domain.dto.ClockInCensusReturn">
+    <result column="userId" jdbcType="INTEGER" property="userId" />
+    <result column="userName" jdbcType="VARCHAR" property="userName" />
+    <result column="ststate" jdbcType="INTEGER" property="ststate" />
+    <result column="roleId" jdbcType="INTEGER" property="roleId" />
+    <result column="roleName" jdbcType="VARCHAR" property="roleName" />
+    <result column="unitId" jdbcType="INTEGER" property="unitId" />
+    <result column="unitName" jdbcType="VARCHAR" property="unitName" />
+  </resultMap>
+
+  <select id="getCensusList" resultMap="ClockInCensusReturnMap">
+    select
+        c.id as userId, c.name as userName, c.ststate,
+        e.id as roleId, e.name as roleName, a.id as unitId,
+        a.name as unitName
+    from ss_f_groups a
+        LEFT JOIN ss_f_user_group b on a.id = b.groupid
+        LEFT JOIN ss_f_users c on b.USERID = c.id
+        LEFT JOIN ss_f_user_role d on c.id = d.USERID
+        LEFT JOIN ss_f_roles e on d.roleid = e.id
+    where a.id in
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+  </select>
+
+  <select id="getAllUserCountByGroupIds" resultType="integer">
+    select count(a.id) from ss_f_users a
+        left join ss_f_user_group b on a.id = b.userid
+        left join ss_f_groups c on b.groupid = c.id
+    where c.id in
+    <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </select>
+
+  <select id="getAllUserOnDutyByGroupIds" resultType="integer">
+    select count(a.id) from ss_f_users a
+    left join ss_f_user_group b on a.id = b.userid
+    left join ss_f_groups c on b.groupid = c.id
+    where a.ststate = 1 and c.id in
+    <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </select>
+</mapper>

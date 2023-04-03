@@ -56,6 +56,10 @@
         <beanquery.version>1.1.5</beanquery.version>
         <!-- httpclient:4.5.13 up to httpclient5:5.2.1 -->
         <httpclient5.version>5.2.1</httpclient5.version>
+        <spring-websocket.version>5.2.23.RELEASE</spring-websocket.version>
+        <simplemagic.version>1.16</simplemagic.version>
+        <thumbnailator.version>0.4.19</thumbnailator.version>
+        <commons-httpclient.version>3.1</commons-httpclient.version>
     </properties>
 
     <!-- 依赖声明 -->

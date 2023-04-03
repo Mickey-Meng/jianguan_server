@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -119,6 +120,22 @@ public class ZjPersonLeave implements Serializable {
     private String processDefinitionKey;
     @ApiModelProperty(value = "下级审批人")
     private String variables;
+
+
+
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @ApiModelProperty(value = "审核完成时间")
+    private Date approvalTime;
+
+
+    @ApiModelProperty(value = "businessKey")
+    private String businessKey;
+
+    @ApiModelProperty(value = "流程key")
+    private String flowKey;
+
+    private Map<String, Object> auditUser;
 
     public Integer getProjectId() {
         return projectId;
@@ -322,5 +339,37 @@ public class ZjPersonLeave implements Serializable {
                 ", processDefinitionKey='" + processDefinitionKey + '\'' +
                 ", variables='" + variables + '\'' +
                 '}';
+    }
+
+    public Date getApprovalTime() {
+        return approvalTime;
+    }
+
+    public void setApprovalTime(Date approvalTime) {
+        this.approvalTime = approvalTime;
+    }
+
+    public String getBusinessKey() {
+        return businessKey;
+    }
+
+    public void setBusinessKey(String businessKey) {
+        this.businessKey = businessKey;
+    }
+
+    public String getFlowKey() {
+        return flowKey;
+    }
+
+    public void setFlowKey(String flowKey) {
+        this.flowKey = flowKey;
+    }
+
+    public Map<String, Object> getAuditUser() {
+        return auditUser;
+    }
+
+    public void setAuditUser(Map<String, Object> auditUser) {
+        this.auditUser = auditUser;
     }
 }

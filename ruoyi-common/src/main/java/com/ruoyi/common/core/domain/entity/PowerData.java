@@ -29,6 +29,11 @@ public class PowerData {
         this.gongqus = gongqus;
     }
 
+    public PowerData(Integer id, Integer role) {
+        this.id=id;
+        this.role = role;
+    }
+
     public PowerData() {
     }
 

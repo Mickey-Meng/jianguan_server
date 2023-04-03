@@ -1,6 +1,7 @@
 package com.ruoyi.common.core.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.annotations.ApiModelProperty;
 
 import java.util.Date;
 import java.util.Map;
@@ -77,6 +78,22 @@ public class PersonDTO {
      * 发起流程时的id
      */
     private String taskId;
+
+
+    /**
+     * 审核通过时间
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date approvalTime;
+
+
+
+    @ApiModelProperty(value = "流程实例")
+    private String businessKey;
+
+    @ApiModelProperty(value = "流程key")
+    private String flowKey;
+
 
     public String getTaskId() {
         return taskId;
@@ -227,5 +244,29 @@ public class PersonDTO {
 
     public void setMaps(Map<String, Object> maps) {
         this.maps = maps;
+    }
+
+    public Date getApprovalTime() {
+        return approvalTime;
+    }
+
+    public void setApprovalTime(Date approvalTime) {
+        this.approvalTime = approvalTime;
+    }
+
+    public String getBusinessKey() {
+        return businessKey;
+    }
+
+    public void setBusinessKey(String businessKey) {
+        this.businessKey = businessKey;
+    }
+
+    public String getFlowKey() {
+        return flowKey;
+    }
+
+    public void setFlowKey(String flowKey) {
+        this.flowKey = flowKey;
     }
 }

@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-
 /**
  * swagger配置
  *
@@ -45,7 +44,7 @@ public class SwaggerConfig {
     @Bean
     public Docket projectDocket() {
         return new Docket(DocumentationType.SWAGGER_2)
-            .apiInfo(apiInfo())
+            .apiInfo(this.apiInfo())
             .select()
             .apis(RequestHandlerSelectors.basePackage("com.ruoyi.web.controller.project"))
             .paths(PathSelectors.any())
@@ -80,7 +79,7 @@ public class SwaggerConfig {
 
 
     /**
-     * api相关配置
+     *  配置在线文档的基本信息
      */
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
@@ -110,4 +109,15 @@ public class SwaggerConfig {
     private boolean shouldRegisterLinksMapping(WebEndpointProperties webEndpointProperties, Environment environment, String basePath) {
         return webEndpointProperties.getDiscovery().isEnabled() && (StringUtils.hasText(basePath) || ManagementPortType.get(environment).equals(ManagementPortType.DIFFERENT));
     }
+
+    @Bean
+    public Docket createRestApi() {
+        return new Docket(DocumentationType.SWAGGER_2)
+            .apiInfo(apiInfo())
+            .select()
+            .apis(RequestHandlerSelectors.basePackage("com.ruoyi.web.controller.czjg.zjrw"))
+            .paths(PathSelectors.any())
+            .build();
+    }
+
 }

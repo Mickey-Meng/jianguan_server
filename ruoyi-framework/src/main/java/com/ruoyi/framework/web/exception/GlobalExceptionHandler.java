@@ -6,7 +6,9 @@ import cn.dev33.satoken.exception.NotRoleException;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.http.HttpStatus;
 import com.ruoyi.common.core.domain.R;
+import com.ruoyi.common.core.domain.object.ResponseBase;
 import com.ruoyi.common.exception.DemoModeException;
+import com.ruoyi.common.exception.LoginException;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.StreamUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +19,7 @@ import org.springframework.validation.BindException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.servlet.http.HttpServletRequest;
@@ -164,5 +167,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DemoModeException.class)
     public R<Void> handleDemoModeException(DemoModeException e) {
         return R.fail("演示模式，不允许操作");
+    }
+
+    @ExceptionHandler(LoginException.class)
+    @ResponseBody
+    public ResponseBase customException(Exception e){
+        return new ResponseBase(500,e.getMessage());
     }
 }

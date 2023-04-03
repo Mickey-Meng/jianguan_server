@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.czjg.zjrw.dao.ProjectsDAO">
+  <resultMap id="BaseResultMap" type="com.ruoyi.czjg.zjrw.domain.entity.SsFProjects">
+    <id column="ID" jdbcType="INTEGER" property="id" />
+    <result column="NAME" jdbcType="VARCHAR" property="name" />
+    <result column="CODE" jdbcType="VARCHAR" property="code" />
+    <result column="PARENTID" jdbcType="INTEGER" property="parentid" />
+    <result column="TYPE" jdbcType="VARCHAR" property="type" />
+    <result column="GROUPLEVEL" jdbcType="INTEGER" property="grouplevel" />
+    <result column="VISIBLE" jdbcType="VARCHAR" property="visible" />
+    <result column="STTIME" jdbcType="TIMESTAMP" property="sttime" />
+    <result column="STSTATE" jdbcType="INTEGER" property="ststate" />
+    <result column="STORDER" jdbcType="INTEGER" property="storder" />
+    <result column="GROUPID" jdbcType="VARCHAR" property="groupid" />
+    <result column="ISAUTO" jdbcType="INTEGER" property="isauto" />
+    <result column="PROJECTPIC" jdbcType="VARCHAR" property="projectpic" />
+    <result column="CONTRACTNUM" jdbcType="VARCHAR" property="contractnum" />
+    <result column="COORDINATE" jdbcType="VARCHAR" property="coordinate" />
+    <result column="INVESTMENT" jdbcType="VARCHAR" property="investment" />
+    <result column="PROJECTTYPE" jdbcType="VARCHAR" property="projecttype" />
+    <result column="INTRODUCTION" jdbcType="VARCHAR" property="introduction" />
+  </resultMap>
+
+  <resultMap id="groupMap" type="com.ruoyi.czjg.zjrw.domain.entity.SsFGroups">
+    <id column="ID" jdbcType="INTEGER" property="id" />
+    <result column="NAME" jdbcType="VARCHAR" property="name" />
+    <result column="CODE" jdbcType="VARCHAR" property="code" />
+    <result column="PARENTID" jdbcType="INTEGER" property="parentid" />
+    <result column="TYPE" jdbcType="VARCHAR" property="type" />
+    <result column="GROUPLEVEL" jdbcType="INTEGER" property="grouplevel" />
+    <result column="VISIBLE" jdbcType="VARCHAR" property="visible" />
+    <result column="STTIME" jdbcType="TIMESTAMP" property="sttime" />
+    <result column="STSTATE" jdbcType="INTEGER" property="ststate" />
+    <result column="STORDER" jdbcType="INTEGER" property="storder" />
+  </resultMap>
+
+  <resultMap id="userMap" type="com.ruoyi.czjg.zjrw.domain.entity.SsFUsers">
+    <id column="ID" jdbcType="INTEGER" property="id" />
+    <result column="USERNAME" jdbcType="VARCHAR" property="username" />
+    <result column="PWD" jdbcType="VARCHAR" property="pwd" />
+    <result column="NAME" jdbcType="VARCHAR" property="name" />
+    <result column="USERCODE" jdbcType="VARCHAR" property="usercode" />
+    <result column="STTIME" jdbcType="TIMESTAMP" property="sttime" />
+    <result column="STSTATE" jdbcType="INTEGER" property="ststate" />
+    <result column="STORDER" jdbcType="INTEGER" property="storder" />
+    <result column="ugid" jdbcType="INTEGER" property="ugid" />
+  </resultMap>
+
+  <resultMap id="companyMap" type="com.ruoyi.czjg.zjrw.domain.entity.SsFCompany">
+    <id column="ID" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="typename" jdbcType="VARCHAR" property="typename" />
+    <result column="typecode" jdbcType="VARCHAR" property="typecode" />
+    <result column="legalperson" jdbcType="VARCHAR" property="legalperson" />
+    <result column="legalphone" jdbcType="VARCHAR" property="legalphone" />
+    <result column="data" jdbcType="VARCHAR" property="data" />
+    <result column="dutynum" jdbcType="VARCHAR" property="dutynum" />
+    <result column="enclosure" jdbcType="VARCHAR" property="enclosure" />
+  </resultMap>
+
+  <resultMap id="groupTreeMap" type="com.ruoyi.czjg.zjrw.domain.dto.ProjectGroupUserTree">
+    <id column="ID" jdbcType="INTEGER" property="id" />
+    <result column="NAME" jdbcType="VARCHAR" property="name" />
+    <result column="CODE" jdbcType="VARCHAR" property="code" />
+    <result column="PARENTID" jdbcType="INTEGER" property="parentid" />
+    <result column="TYPE" jdbcType="VARCHAR" property="type" />
+    <result column="GROUPLEVEL" jdbcType="INTEGER" property="grouplevel" />
+    <result column="VISIBLE" jdbcType="VARCHAR" property="visible" />
+    <result column="STTIME" jdbcType="TIMESTAMP" property="sttime" />
+    <result column="STSTATE" jdbcType="INTEGER" property="ststate" />
+    <result column="STORDER" jdbcType="INTEGER" property="storder" />
+  </resultMap>
+
+  <insert id="addCompany">
+    inert into ss_f_company (`name`, `code`, `typename`, `typecode`, `legalperson`,
+                            `legalphone`, `data`, `dutynum`, `enclosure`)
+    value (#{name,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR}, #{typename,jdbcType=VARCHAR},
+            #{typecode,jdbcType=VARCHAR}, #{legalperson,jdbcType=VARCHAR}, #{legalphone,jdbcType=VARCHAR},
+            #{data,jdbcType=VARCHAR}, #{dutynum,jdbcType=VARCHAR}, #{enclosure,jdbcType=VARCHAR});
+  </insert>
+
+  <update id="updateCompany" parameterType="com.ruoyi.czjg.zjrw.domain.entity.SsFCompany">
+    update ss_f_company
+    <set>
+      <if test="name != null">
+        `name` = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null">
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="typename != null">
+        `typename` = #{typename,jdbcType=VARCHAR},
+      </if>
+      <if test="typecode != null">
+        `typecode` = #{typecode,jdbcType=VARCHAR},
+      </if>
+      <if test="legalperson != null">
+        `legalperson` = #{legalperson,jdbcType=VARCHAR},
+      </if>
+      <if test="legalphone != null">
+        `legalphone` = #{legalphone,jdbcType=VARCHAR},
+      </if>
+      <if test="data != null">
+        `data` = #{data,jdbcType=VARCHAR},
+      </if>
+      <if test="dutynum != null">
+        `dutynum` = #{dutynum,jdbcType=VARCHAR},
+      </if>
+      <if test="enclosure != null">
+        `enclosure` = #{enclosure,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <insert id="addProject" parameterType="com.ruoyi.czjg.zjrw.domain.dto.ProjectsDTO">
+    insert into
+        ss_f_projects (`NAME`, `CODE`, `PARENTID`, `TYPE`, `GROUPLEVEL`,
+         `VISIBLE`, `STTIME`, `STSTATE`, `STORDER`, `GROUPID`, `ISAUTO`,
+         `PROJECTPIC`, `CONTRACTNUM`, `COORDINATE`, `INVESTMENT`, `PROJECTTYPE`,
+         `PROJECTPOINT`, `PROJECTLINE`, `PROJECTSURFACE`, `INTRODUCTION`)
+     values (#{name}, #{code}, #{parentid}, #{type}, #{grouplevel},
+      #{visible}, #{sttime}, #{ststate}, #{storder}, #{groupid}, #{isauto},
+      #{projectpic}, #{contractnum}, #{coordinate}, #{investment}, #{projecttype},
+      #{projectpoint}, #{projectline}, #{projectsurface}, #{introduction});
+  </insert>
+
+  <update id="updateProjects" parameterType="com.ruoyi.czjg.zjrw.domain.dto.ProjectsDTO">
+    update
+        ss_f_projects
+        <set>
+          <if test="name != null">
+            `NAME` = #{name,jdbcType=VARCHAR},
+          </if>
+          <if test="code != null">
+            `CODE` = #{code,jdbcType=VARCHAR},
+          </if>
+          <if test="parentid != null">
+            `PARENTID` = #{parentid,jdbcType=INTEGER},
+          </if>
+          <if test="type != null">
+            `TYPE` = #{type,jdbcType=VARCHAR},
+          </if>
+          <if test="grouplevel != null">
+            `GROUPLEVEL` = #{grouplevel,jdbcType=INTEGER},
+          </if>
+          <if test="visible != null">
+            `VISIBLE` = #{visible,jdbcType=VARCHAR},
+          </if>
+          <if test="sttime != null">
+            `STTIME` = #{sttime,jdbcType=TIMESTAMP},
+          </if>
+          <if test="ststate != null">
+            `STSTATE` = #{ststate,jdbcType=INTEGER},
+          </if>
+          <if test="groupid != null">
+            `GROUPID` = #{groupid,jdbcType=VARCHAR},
+          </if>
+          <if test="isauto != null">
+            `ISAUTO` = #{isauto,jdbcType=INTEGER},
+          </if>
+          <if test="projectpic != null">
+            `PROJECTPIC` = #{projectpic,jdbcType=INTEGER},
+          </if>
+          <if test="contractnum != null">
+            `CONTRACTNUM` = #{contractnum,jdbcType=INTEGER},
+          </if>
+          <if test="coordinate != null">
+            `COORDINATE` = #{coordinate,jdbcType=INTEGER},
+          </if>
+          <if test="investment != null">
+            `INVESTMENT` = #{investment,jdbcType=INTEGER},
+          </if>
+          <if test="projecttype != null">
+            `PROJECTTYPE` = #{projecttype,jdbcType=VARCHAR},
+          </if>
+          <if test="projectpoint != null">
+            `PROJECTPOINT` = #{projectpoint,jdbcType=VARCHAR},
+          </if>
+          <if test="projectline != null">
+            `PROJECTLINE` = #{projectline,jdbcType=VARCHAR},
+          </if>
+          <if test="projectsurface != null">
+            `PROJECTSURFACE` = #{projectsurface,jdbcType=VARCHAR},
+          </if>
+          <if test="introduction != null">
+            `INTRODUCTION` = #{introduction,jdbcType=VARCHAR},
+          </if>
+        </set>
+         where id = #{id}
+  </update>
+
+  <select id="getALlProjectByIds" parameterType="integer" resultType="com.ruoyi.czjg.zjrw.domain.dto.SsFProjectsTree">
+    select * from ss_f_projects where id in
+    <foreach collection="list" index="index" item ="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </select>
+
+  <select id="getCompnayByIds" resultMap="companyMap">
+    select * from ss_f_company where id in
+    <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </select>
+
+  <select id="getGroupInfosByIds" parameterType="java.util.ArrayList" resultMap="groupMap">
+    select
+        *
+    from
+        ss_f_groups
+    where
+        id in
+    <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </select>
+
+  <select id="getUserInfosByGroupsIds" parameterType="java.util.ArrayList" resultMap="userMap">
+    select t1.* from ss_f_users t1
+    LEFT JOIN ss_f_user_group t2 ON t1.id = t2.userid
+    where t2.groupid in
+    <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </select>
+
+  <insert id="addProjectCompany" parameterType="java.util.ArrayList">
+    insert into ss_f_project_company (`companyid`, `projectid`, `state`, `sttime`)
+    values
+    <foreach collection="list" index="index" item="item" separator=",">
+      (#{item.companyid,jdbcType=INTEGER}, #{item.projectid,jdbcType=INTEGER},
+      #{item.state,jdbcType=INTEGER}, #{item.sttime,jdbcType=TIMESTAMP})
+    </foreach>
+  </insert>
+
+  <select id="getGroups" resultMap="groupTreeMap">
+    select * from ss_f_groups where GROUPLEVEL in (1, 2)
+    or id in
+    <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </select>
+
+  <select id="getGroupsLevel3" resultMap="groupTreeMap">
+    select * from ss_f_groups where GROUPLEVEL = 3
+    and id in
+    <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </select>
+
+  <select id="getChildCode" resultType="string">
+    select
+        d.projectid
+    from
+        zj_f_groups_projects d
+    left join ss_f_projects c on c.id = d.groupid
+    left join ss_f_projects b on b.id = c.parentid
+    left join ss_f_projects a on a.id = b.parentid
+    where a.id = #{id}
+  </select>
+</mapper>

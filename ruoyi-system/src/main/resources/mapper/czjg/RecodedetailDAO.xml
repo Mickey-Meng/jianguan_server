@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.czjg.zjrw.dao.RecodedetailDAO">
+  <resultMap id="BaseResultMap" type="com.ruoyi.czjg.zjrw.domain.entity.Recodedetail">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="userid" jdbcType="INTEGER" property="userid" />
+    <result column="creatrtime" jdbcType="TIMESTAMP" property="creatrtime" />
+    <result column="picurl" jdbcType="VARCHAR" property="picurl" />
+    <result column="checktype" jdbcType="INTEGER" property="checktype" />
+    <result column="checktime" jdbcType="TIMESTAMP" property="checktime" />
+    <result column="updatetime" jdbcType="TIMESTAMP" property="updatetime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, userid, creatrtime, picurl, checktype, checktime, updatetime
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from recodedetail
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from recodedetail
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.ruoyi.czjg.zjrw.domain.entity.Recodedetail" useGeneratedKeys="true">
+    insert into recodedetail (userid, creatrtime, picurl,
+      checktype, checktime, updatetime
+      )
+    values (#{userid,jdbcType=INTEGER}, #{creatrtime,jdbcType=TIMESTAMP}, #{picurl,jdbcType=VARCHAR},
+      #{checktype,jdbcType=INTEGER}, #{checktime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.ruoyi.czjg.zjrw.domain.entity.Recodedetail" useGeneratedKeys="true">
+    insert into recodedetail
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userid != null">
+        userid,
+      </if>
+      <if test="creatrtime != null">
+        creatrtime,
+      </if>
+      <if test="picurl != null">
+        picurl,
+      </if>
+      <if test="checktype != null">
+        checktype,
+      </if>
+      <if test="checktime != null">
+        checktime,
+      </if>
+      <if test="updatetime != null">
+        updatetime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userid != null">
+        #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="creatrtime != null">
+        #{creatrtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="picurl != null">
+        #{picurl,jdbcType=VARCHAR},
+      </if>
+      <if test="checktype != null">
+        #{checktype,jdbcType=INTEGER},
+      </if>
+      <if test="checktime != null">
+        #{checktime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatetime != null">
+        #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ruoyi.czjg.zjrw.domain.entity.Recodedetail">
+    update recodedetail
+    <set>
+      <if test="userid != null">
+        userid = #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="creatrtime != null">
+        creatrtime = #{creatrtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="picurl != null">
+        picurl = #{picurl,jdbcType=VARCHAR},
+      </if>
+      <if test="checktype != null">
+        checktype = #{checktype,jdbcType=INTEGER},
+      </if>
+      <if test="checktime != null">
+        checktime = #{checktime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatetime != null">
+        updatetime = #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ruoyi.czjg.zjrw.domain.entity.Recodedetail">
+    update recodedetail
+    set userid = #{userid,jdbcType=INTEGER},
+      creatrtime = #{creatrtime,jdbcType=TIMESTAMP},
+      picurl = #{picurl,jdbcType=VARCHAR},
+      checktype = #{checktype,jdbcType=INTEGER},
+      checktime = #{checktime,jdbcType=TIMESTAMP},
+      updatetime = #{updatetime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

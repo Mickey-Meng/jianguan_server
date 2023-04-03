@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.czjg.zjrw.dao.SsFUserRoleDAO">
+  <resultMap id="BaseResultMap" type="com.ruoyi.czjg.zjrw.domain.entity.SsFUserRole">
+    <result column="userid" jdbcType="INTEGER" property="userid" />
+    <result column="roleid" jdbcType="INTEGER" property="roleid" />
+    <result column="sttime" jdbcType="TIMESTAMP" property="sttime" />
+    <result column="ststate" jdbcType="INTEGER" property="ststate" />
+    <result column="STORDER" jdbcType="INTEGER" property="storder" />
+  </resultMap>
+
+  <select id="getRoleByUserids" resultType="com.ruoyi.czjg.zjrw.domain.dto.RoleDataDTO">
+    select a.id as roleid, a.name as name, a.code from ss_f_roles a
+    LEFT JOIN ss_f_user_role b ON a.id = b.roleid where b.userid in
+    <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </select>
+
+  <select id="getRolesIdByUserids" parameterType="java.util.ArrayList" resultType="integer">
+    select roleid from ss_f_user_role where userid in
+    <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </select>
+
+  <select id="getRolesByGroupIds" resultType="com.ruoyi.czjg.zjrw.domain.entity.SsFRoles">
+    select
+        a.id, a.NAME, a.CODE, a.PARENTID, a.TYPE,
+        a.ROLELEVEL, a.VISIBLE, a.STTIME, a.STSTATE, a.STORDER
+    from
+        ss_f_roles a
+    left join ss_f_user_role b on a.id = b.roleid
+    left join ss_f_user_group c on b.userid = c.userid
+    where
+        c.groupid in
+    <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+        group by a.NAME, a.CODE
+  </select>
+</mapper>

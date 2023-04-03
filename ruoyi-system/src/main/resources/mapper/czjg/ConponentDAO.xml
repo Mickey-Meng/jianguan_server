@@ -1,0 +1,536 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.czjg.zjrw.dao.ConponentDAO">
+  <resultMap id="BaseResultMap" type="com.ruoyi.common.core.domain.entity.Conponent">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="mouldid" jdbcType="VARCHAR" property="mouldid" />
+    <result column="conponenttype" jdbcType="VARCHAR" property="conponenttype" />
+    <result column="projectcode" jdbcType="VARCHAR" property="projectcode" />
+    <result column="w1" jdbcType="VARCHAR" property="w1" />
+    <result column="w1code" jdbcType="VARCHAR" property="w1code" />
+    <result column="w2" jdbcType="VARCHAR" property="w2" />
+    <result column="w2code" jdbcType="VARCHAR" property="w2code" />
+    <result column="w3" jdbcType="VARCHAR" property="w3" />
+    <result column="w3code" jdbcType="VARCHAR" property="w3code" />
+    <result column="w4" jdbcType="VARCHAR" property="w4" />
+    <result column="w4code" jdbcType="VARCHAR" property="w4code" />
+    <result column="w5" jdbcType="VARCHAR" property="w5" />
+    <result column="w5code" jdbcType="VARCHAR" property="w5code" />
+    <result column="w6" jdbcType="VARCHAR" property="w6" />
+    <result column="w6code" jdbcType="VARCHAR" property="w6code" />
+    <result column="w7" jdbcType="VARCHAR" property="w7" />
+    <result column="w7code" jdbcType="VARCHAR" property="w7code" />
+    <result column="w8" jdbcType="VARCHAR" property="w8" />
+    <result column="w8code" jdbcType="VARCHAR" property="w8code" />
+    <result column="w9" jdbcType="VARCHAR" property="w9" />
+    <result column="w9code" jdbcType="VARCHAR" property="w9code" />
+    <result column="w10" jdbcType="VARCHAR" property="w10" />
+    <result column="w10code" jdbcType="VARCHAR" property="w10code" />
+    <result column="produceid" jdbcType="INTEGER" property="produceid" />
+    <result column="zhuangnumber" jdbcType="INTEGER" property="zhuangnumber" />
+    <result column="dunnumber" jdbcType="INTEGER" property="dunnumber" />
+    <result column="mark" jdbcType="VARCHAR" property="mark" />
+    <result column="conponentcode" jdbcType="VARCHAR" property="conponentcode" />
+    <result column="conponentstatus" jdbcType="INTEGER" property="conponentstatus" />
+    <result column="belongw6" jdbcType="VARCHAR" property="belongw6" />
+    <result column="issafe" jdbcType="INTEGER" property="issafe" />
+    <result column="isvaild" jdbcType="INTEGER" property="isvaild" />
+    <result column="pcode" jdbcType="VARCHAR" property="pcode" />
+    <result column="pname" jdbcType="VARCHAR" property="pname" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="pid" jdbcType="INTEGER" property="pid" />
+    <result column="projecttype" jdbcType="VARCHAR" property="projecttype" />
+    <result column="conponenttypename" jdbcType="VARCHAR" property="conponenttypename" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, mouldid, conponenttype, projectcode, w1, w1code, w2, w2code, w3, w3code, w4,
+    w4code, w5, w5code, w6, w6code, w7, w7code, w8, w8code, w9, w9code, w10, w10code,
+    produceid, zhuangnumber, dunnumber, mark, conponentcode, conponentstatus, belongw6,
+    issafe, isvaild, pcode, pname, `name`, code, pid, projecttype, conponenttypename
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from conponent
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from conponent
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.ruoyi.common.core.domain.entity.Conponent" useGeneratedKeys="true">
+    insert into conponent (mouldid, conponenttype, projectcode,
+      w1, w1code, w2, w2code,
+      w3, w3code, w4, w4code,
+      w5, w5code, w6, w6code,
+      w7, w7code, w8, w8code,
+      w9, w9code, w10, w10code,
+      produceid, zhuangnumber, dunnumber,
+      mark, conponentcode, conponentstatus,
+      belongw6, issafe, isvaild,
+      pcode, pname, `name`,
+      code, pid, projecttype,
+      conponenttypename)
+    values (#{mouldid,jdbcType=VARCHAR}, #{conponenttype,jdbcType=VARCHAR}, #{projectcode,jdbcType=VARCHAR},
+      #{w1,jdbcType=VARCHAR}, #{w1code,jdbcType=VARCHAR}, #{w2,jdbcType=VARCHAR}, #{w2code,jdbcType=VARCHAR},
+      #{w3,jdbcType=VARCHAR}, #{w3code,jdbcType=VARCHAR}, #{w4,jdbcType=VARCHAR}, #{w4code,jdbcType=VARCHAR},
+      #{w5,jdbcType=VARCHAR}, #{w5code,jdbcType=VARCHAR}, #{w6,jdbcType=VARCHAR}, #{w6code,jdbcType=VARCHAR},
+      #{w7,jdbcType=VARCHAR}, #{w7code,jdbcType=VARCHAR}, #{w8,jdbcType=VARCHAR}, #{w8code,jdbcType=VARCHAR},
+      #{w9,jdbcType=VARCHAR}, #{w9code,jdbcType=VARCHAR}, #{w10,jdbcType=VARCHAR}, #{w10code,jdbcType=VARCHAR},
+      #{produceid,jdbcType=INTEGER}, #{zhuangnumber,jdbcType=INTEGER}, #{dunnumber,jdbcType=INTEGER},
+      #{mark,jdbcType=VARCHAR}, #{conponentcode,jdbcType=VARCHAR}, #{conponentstatus,jdbcType=INTEGER},
+      #{belongw6,jdbcType=VARCHAR}, #{issafe,jdbcType=INTEGER}, #{isvaild,jdbcType=INTEGER},
+      #{pcode,jdbcType=VARCHAR}, #{pname,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR},
+      #{code,jdbcType=VARCHAR}, #{pid,jdbcType=INTEGER}, #{projecttype,jdbcType=VARCHAR},
+      #{conponenttypename,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.ruoyi.common.core.domain.entity.Conponent" useGeneratedKeys="true">
+    insert into conponent
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="mouldid != null">
+        mouldid,
+      </if>
+      <if test="conponenttype != null">
+        conponenttype,
+      </if>
+      <if test="projectcode != null">
+        projectcode,
+      </if>
+      <if test="w1 != null">
+        w1,
+      </if>
+      <if test="w1code != null">
+        w1code,
+      </if>
+      <if test="w2 != null">
+        w2,
+      </if>
+      <if test="w2code != null">
+        w2code,
+      </if>
+      <if test="w3 != null">
+        w3,
+      </if>
+      <if test="w3code != null">
+        w3code,
+      </if>
+      <if test="w4 != null">
+        w4,
+      </if>
+      <if test="w4code != null">
+        w4code,
+      </if>
+      <if test="w5 != null">
+        w5,
+      </if>
+      <if test="w5code != null">
+        w5code,
+      </if>
+      <if test="w6 != null">
+        w6,
+      </if>
+      <if test="w6code != null">
+        w6code,
+      </if>
+      <if test="w7 != null">
+        w7,
+      </if>
+      <if test="w7code != null">
+        w7code,
+      </if>
+      <if test="w8 != null">
+        w8,
+      </if>
+      <if test="w8code != null">
+        w8code,
+      </if>
+      <if test="w9 != null">
+        w9,
+      </if>
+      <if test="w9code != null">
+        w9code,
+      </if>
+      <if test="w10 != null">
+        w10,
+      </if>
+      <if test="w10code != null">
+        w10code,
+      </if>
+      <if test="produceid != null">
+        produceid,
+      </if>
+      <if test="zhuangnumber != null">
+        zhuangnumber,
+      </if>
+      <if test="dunnumber != null">
+        dunnumber,
+      </if>
+      <if test="mark != null">
+        mark,
+      </if>
+      <if test="conponentcode != null">
+        conponentcode,
+      </if>
+      <if test="conponentstatus != null">
+        conponentstatus,
+      </if>
+      <if test="belongw6 != null">
+        belongw6,
+      </if>
+      <if test="issafe != null">
+        issafe,
+      </if>
+      <if test="isvaild != null">
+        isvaild,
+      </if>
+      <if test="pcode != null">
+        pcode,
+      </if>
+      <if test="pname != null">
+        pname,
+      </if>
+      <if test="name != null">
+        `name`,
+      </if>
+      <if test="code != null">
+        code,
+      </if>
+      <if test="pid != null">
+        pid,
+      </if>
+      <if test="projecttype != null">
+        projecttype,
+      </if>
+      <if test="conponenttypename != null">
+        conponenttypename,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="mouldid != null">
+        #{mouldid,jdbcType=VARCHAR},
+      </if>
+      <if test="conponenttype != null">
+        #{conponenttype,jdbcType=VARCHAR},
+      </if>
+      <if test="projectcode != null">
+        #{projectcode,jdbcType=VARCHAR},
+      </if>
+      <if test="w1 != null">
+        #{w1,jdbcType=VARCHAR},
+      </if>
+      <if test="w1code != null">
+        #{w1code,jdbcType=VARCHAR},
+      </if>
+      <if test="w2 != null">
+        #{w2,jdbcType=VARCHAR},
+      </if>
+      <if test="w2code != null">
+        #{w2code,jdbcType=VARCHAR},
+      </if>
+      <if test="w3 != null">
+        #{w3,jdbcType=VARCHAR},
+      </if>
+      <if test="w3code != null">
+        #{w3code,jdbcType=VARCHAR},
+      </if>
+      <if test="w4 != null">
+        #{w4,jdbcType=VARCHAR},
+      </if>
+      <if test="w4code != null">
+        #{w4code,jdbcType=VARCHAR},
+      </if>
+      <if test="w5 != null">
+        #{w5,jdbcType=VARCHAR},
+      </if>
+      <if test="w5code != null">
+        #{w5code,jdbcType=VARCHAR},
+      </if>
+      <if test="w6 != null">
+        #{w6,jdbcType=VARCHAR},
+      </if>
+      <if test="w6code != null">
+        #{w6code,jdbcType=VARCHAR},
+      </if>
+      <if test="w7 != null">
+        #{w7,jdbcType=VARCHAR},
+      </if>
+      <if test="w7code != null">
+        #{w7code,jdbcType=VARCHAR},
+      </if>
+      <if test="w8 != null">
+        #{w8,jdbcType=VARCHAR},
+      </if>
+      <if test="w8code != null">
+        #{w8code,jdbcType=VARCHAR},
+      </if>
+      <if test="w9 != null">
+        #{w9,jdbcType=VARCHAR},
+      </if>
+      <if test="w9code != null">
+        #{w9code,jdbcType=VARCHAR},
+      </if>
+      <if test="w10 != null">
+        #{w10,jdbcType=VARCHAR},
+      </if>
+      <if test="w10code != null">
+        #{w10code,jdbcType=VARCHAR},
+      </if>
+      <if test="produceid != null">
+        #{produceid,jdbcType=INTEGER},
+      </if>
+      <if test="zhuangnumber != null">
+        #{zhuangnumber,jdbcType=INTEGER},
+      </if>
+      <if test="dunnumber != null">
+        #{dunnumber,jdbcType=INTEGER},
+      </if>
+      <if test="mark != null">
+        #{mark,jdbcType=VARCHAR},
+      </if>
+      <if test="conponentcode != null">
+        #{conponentcode,jdbcType=VARCHAR},
+      </if>
+      <if test="conponentstatus != null">
+        #{conponentstatus,jdbcType=INTEGER},
+      </if>
+      <if test="belongw6 != null">
+        #{belongw6,jdbcType=VARCHAR},
+      </if>
+      <if test="issafe != null">
+        #{issafe,jdbcType=INTEGER},
+      </if>
+      <if test="isvaild != null">
+        #{isvaild,jdbcType=INTEGER},
+      </if>
+      <if test="pcode != null">
+        #{pcode,jdbcType=VARCHAR},
+      </if>
+      <if test="pname != null">
+        #{pname,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null">
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="pid != null">
+        #{pid,jdbcType=INTEGER},
+      </if>
+      <if test="projecttype != null">
+        #{projecttype,jdbcType=VARCHAR},
+      </if>
+      <if test="conponenttypename != null">
+        #{conponenttypename,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ruoyi.common.core.domain.entity.Conponent">
+    update conponent
+    <set>
+      <if test="mouldid != null">
+        mouldid = #{mouldid,jdbcType=VARCHAR},
+      </if>
+      <if test="conponenttype != null">
+        conponenttype = #{conponenttype,jdbcType=VARCHAR},
+      </if>
+      <if test="projectcode != null">
+        projectcode = #{projectcode,jdbcType=VARCHAR},
+      </if>
+      <if test="w1 != null">
+        w1 = #{w1,jdbcType=VARCHAR},
+      </if>
+      <if test="w1code != null">
+        w1code = #{w1code,jdbcType=VARCHAR},
+      </if>
+      <if test="w2 != null">
+        w2 = #{w2,jdbcType=VARCHAR},
+      </if>
+      <if test="w2code != null">
+        w2code = #{w2code,jdbcType=VARCHAR},
+      </if>
+      <if test="w3 != null">
+        w3 = #{w3,jdbcType=VARCHAR},
+      </if>
+      <if test="w3code != null">
+        w3code = #{w3code,jdbcType=VARCHAR},
+      </if>
+      <if test="w4 != null">
+        w4 = #{w4,jdbcType=VARCHAR},
+      </if>
+      <if test="w4code != null">
+        w4code = #{w4code,jdbcType=VARCHAR},
+      </if>
+      <if test="w5 != null">
+        w5 = #{w5,jdbcType=VARCHAR},
+      </if>
+      <if test="w5code != null">
+        w5code = #{w5code,jdbcType=VARCHAR},
+      </if>
+      <if test="w6 != null">
+        w6 = #{w6,jdbcType=VARCHAR},
+      </if>
+      <if test="w6code != null">
+        w6code = #{w6code,jdbcType=VARCHAR},
+      </if>
+      <if test="w7 != null">
+        w7 = #{w7,jdbcType=VARCHAR},
+      </if>
+      <if test="w7code != null">
+        w7code = #{w7code,jdbcType=VARCHAR},
+      </if>
+      <if test="w8 != null">
+        w8 = #{w8,jdbcType=VARCHAR},
+      </if>
+      <if test="w8code != null">
+        w8code = #{w8code,jdbcType=VARCHAR},
+      </if>
+      <if test="w9 != null">
+        w9 = #{w9,jdbcType=VARCHAR},
+      </if>
+      <if test="w9code != null">
+        w9code = #{w9code,jdbcType=VARCHAR},
+      </if>
+      <if test="w10 != null">
+        w10 = #{w10,jdbcType=VARCHAR},
+      </if>
+      <if test="w10code != null">
+        w10code = #{w10code,jdbcType=VARCHAR},
+      </if>
+      <if test="produceid != null">
+        produceid = #{produceid,jdbcType=INTEGER},
+      </if>
+      <if test="zhuangnumber != null">
+        zhuangnumber = #{zhuangnumber,jdbcType=INTEGER},
+      </if>
+      <if test="dunnumber != null">
+        dunnumber = #{dunnumber,jdbcType=INTEGER},
+      </if>
+      <if test="mark != null">
+        mark = #{mark,jdbcType=VARCHAR},
+      </if>
+      <if test="conponentcode != null">
+        conponentcode = #{conponentcode,jdbcType=VARCHAR},
+      </if>
+      <if test="conponentstatus != null">
+        conponentstatus = #{conponentstatus,jdbcType=INTEGER},
+      </if>
+      <if test="belongw6 != null">
+        belongw6 = #{belongw6,jdbcType=VARCHAR},
+      </if>
+      <if test="issafe != null">
+        issafe = #{issafe,jdbcType=INTEGER},
+      </if>
+      <if test="isvaild != null">
+        isvaild = #{isvaild,jdbcType=INTEGER},
+      </if>
+      <if test="pcode != null">
+        pcode = #{pcode,jdbcType=VARCHAR},
+      </if>
+      <if test="pname != null">
+        pname = #{pname,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        `name` = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null">
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="pid != null">
+        pid = #{pid,jdbcType=INTEGER},
+      </if>
+      <if test="projecttype != null">
+        projecttype = #{projecttype,jdbcType=VARCHAR},
+      </if>
+      <if test="conponenttypename != null">
+        conponenttypename = #{conponenttypename,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ruoyi.common.core.domain.entity.Conponent">
+    update conponent
+    set mouldid = #{mouldid,jdbcType=VARCHAR},
+      conponenttype = #{conponenttype,jdbcType=VARCHAR},
+      projectcode = #{projectcode,jdbcType=VARCHAR},
+      w1 = #{w1,jdbcType=VARCHAR},
+      w1code = #{w1code,jdbcType=VARCHAR},
+      w2 = #{w2,jdbcType=VARCHAR},
+      w2code = #{w2code,jdbcType=VARCHAR},
+      w3 = #{w3,jdbcType=VARCHAR},
+      w3code = #{w3code,jdbcType=VARCHAR},
+      w4 = #{w4,jdbcType=VARCHAR},
+      w4code = #{w4code,jdbcType=VARCHAR},
+      w5 = #{w5,jdbcType=VARCHAR},
+      w5code = #{w5code,jdbcType=VARCHAR},
+      w6 = #{w6,jdbcType=VARCHAR},
+      w6code = #{w6code,jdbcType=VARCHAR},
+      w7 = #{w7,jdbcType=VARCHAR},
+      w7code = #{w7code,jdbcType=VARCHAR},
+      w8 = #{w8,jdbcType=VARCHAR},
+      w8code = #{w8code,jdbcType=VARCHAR},
+      w9 = #{w9,jdbcType=VARCHAR},
+      w9code = #{w9code,jdbcType=VARCHAR},
+      w10 = #{w10,jdbcType=VARCHAR},
+      w10code = #{w10code,jdbcType=VARCHAR},
+      produceid = #{produceid,jdbcType=INTEGER},
+      zhuangnumber = #{zhuangnumber,jdbcType=INTEGER},
+      dunnumber = #{dunnumber,jdbcType=INTEGER},
+      mark = #{mark,jdbcType=VARCHAR},
+      conponentcode = #{conponentcode,jdbcType=VARCHAR},
+      conponentstatus = #{conponentstatus,jdbcType=INTEGER},
+      belongw6 = #{belongw6,jdbcType=VARCHAR},
+      issafe = #{issafe,jdbcType=INTEGER},
+      isvaild = #{isvaild,jdbcType=INTEGER},
+      pcode = #{pcode,jdbcType=VARCHAR},
+      pname = #{pname,jdbcType=VARCHAR},
+      `name` = #{name,jdbcType=VARCHAR},
+      code = #{code,jdbcType=VARCHAR},
+      pid = #{pid,jdbcType=INTEGER},
+      projecttype = #{projecttype,jdbcType=VARCHAR},
+      conponenttypename = #{conponenttypename,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="getAllByProject" parameterType="java.util.ArrayList"  resultMap="BaseResultMap">
+    select * from conponent where projectcode in
+    <foreach collection="list" index="index" item ="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </select>
+
+  <select id="getAddids" parameterType="java.util.ArrayList"  resultMap="BaseResultMap">
+    select * from conponent where id in
+    <foreach collection="list" index="index" item ="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </select>
+
+  <select id="getConponentByRole" parameterType="java.util.ArrayList"  resultMap="BaseResultMap">
+    select * from conponent where projectcode in
+    <foreach collection="list" index="index" item ="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+    and conponenttype = #{type}
+  </select>
+
+
+  <select id="getConponentByRule" parameterType="java.util.ArrayList"  resultMap="BaseResultMap">
+    select * from conponent where projectcode in
+    <foreach collection="list" index="index" item ="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+    and conponenttype is not null
+  </select>
+
+  <select id="getCheckTypeAndName" parameterType="java.lang.String" resultType="java.lang.String">
+    select DISTINCT CONCAT(w5,'-',w5code) as names from conponent
+    where conponenttype is not null
+    and projectcode = #{projectid}
+  </select>
+
+  <update id="updateLayerName" parameterType="string">
+    update conponent set layername = #{layername} where mouldid = #{mouldid}
+  </update>
+</mapper>

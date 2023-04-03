@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.czjg.zjrw.dao.ZjYcperdayDAO">
+  <resultMap id="BaseResultMap" type="com.ruoyi.czjg.zjrw.domain.entity.ZjYcperday">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="daytime" jdbcType="TIMESTAMP" property="daytime" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="addr" jdbcType="VARCHAR" property="addr" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, `type`, `status`, daytime, code, addr
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from zj_ycperday
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from zj_ycperday
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.ruoyi.czjg.zjrw.domain.entity.ZjYcperday" useGeneratedKeys="true">
+    insert into zj_ycperday (`type`, `status`, daytime,
+      code, addr)
+    values (#{type,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{daytime,jdbcType=TIMESTAMP},
+      #{code,jdbcType=VARCHAR}, #{addr,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.ruoyi.czjg.zjrw.domain.entity.ZjYcperday" useGeneratedKeys="true">
+    insert into zj_ycperday
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="type != null">
+        `type`,
+      </if>
+      <if test="status != null">
+        `status`,
+      </if>
+      <if test="daytime != null">
+        daytime,
+      </if>
+      <if test="code != null">
+        code,
+      </if>
+      <if test="addr != null">
+        addr,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="type != null">
+        #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="daytime != null">
+        #{daytime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="code != null">
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="addr != null">
+        #{addr,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ruoyi.czjg.zjrw.domain.entity.ZjYcperday">
+    update zj_ycperday
+    <set>
+      <if test="type != null">
+        `type` = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        `status` = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="daytime != null">
+        daytime = #{daytime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="code != null">
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="addr != null">
+        addr = #{addr,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ruoyi.czjg.zjrw.domain.entity.ZjYcperday">
+    update zj_ycperday
+    set `type` = #{type,jdbcType=VARCHAR},
+      `status` = #{status,jdbcType=INTEGER},
+      daytime = #{daytime,jdbcType=TIMESTAMP},
+      code = #{code,jdbcType=VARCHAR},
+      addr = #{addr,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+
+
+  <select id="searchByStAndEnd" parameterType="java.util.Date" resultMap="BaseResultMap">
+    select * from zj_ycperday
+    where 1=1
+    <if test="sttime != null ">
+      and daytime &gt;= #{sttime}
+    </if>
+    <if test="endtime != null ">
+      and daytime &lt;= #{endtime}
+    </if>
+
+  </select>
+
+  <select id="searchByStAndEndAndCode" parameterType="java.util.Date" resultMap="BaseResultMap">
+    select * from zj_ycperday
+    where 1=1
+    and code = #{code}
+    <if test="sttime != null ">
+      and daytime &gt;= #{sttime}
+    </if>
+    <if test="endtime != null ">
+      and daytime &lt;= #{endtime}
+    </if>
+
+
+  </select>
+</mapper>

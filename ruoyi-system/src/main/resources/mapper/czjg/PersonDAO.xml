@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.czjg.zjrw.dao.PersonDAO">
+
+  <resultMap id="ssFGroupsMap" type="com.ruoyi.czjg.zjrw.domain.entity.SsFGroups">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="parentid" jdbcType="INTEGER" property="parentid" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="grouplevel" jdbcType="INTEGER" property="grouplevel" />
+    <result column="visible" jdbcType="VARCHAR" property="visible" />
+    <result column="sttime" jdbcType="TIMESTAMP" property="sttime" />
+    <result column="ststate" jdbcType="INTEGER" property="ststate" />
+    <result column="storder" jdbcType="INTEGER" property="storder" />
+  </resultMap>
+
+  <resultMap id="userGroupMaps" type="com.ruoyi.czjg.zjrw.domain.entity.SsFUserGroup">
+    <id column="userid" jdbcType="INTEGER" property="userid" />
+    <result column="groupid" jdbcType="VARCHAR" property="groupid" />
+    <result column="ststate" jdbcType="INTEGER" property="ststate" />
+    <result column="sttime" jdbcType="TIMESTAMP" property="sttime" />
+    <result column="storder" jdbcType="INTEGER" property="storder" />
+  </resultMap>
+
+  <insert id="insertUserGroup" parameterType="com.ruoyi.czjg.zjrw.domain.entity.PersonUserGroupRole">
+    insert into ss_f_person_user_group_role
+    (`userid`, `username`, `personGroupid`, `personGroupName`,
+    `roleid`, `rolename`,`status`, `sttime`, `storder`)
+    values
+      (#{userid}, #{username}, #{personGroupid}, #{personGroupName},
+       #{roleid}, #{rolename}, #{status}, #{sttime}, #{storder})
+  </insert>
+
+  <insert id="bulkInsertSsFGroups">
+    insert into
+        ss_f_person_groups
+        (`name`, `code`, `pid`, `status`, `order`)
+    values
+    <foreach collection="ssFGroups" item ="item" separator=",">
+      (#{item.name}, #{item.code}, #{item.pid},  #{item.status}, #{item.order})
+    </foreach>
+  </insert>
+
+  <update id="updateDepartment" parameterType="com.ruoyi.czjg.zjrw.domain.entity.SsFGroups">
+    update ss_f_person_groups set
+    <if test="name != null">
+      `name` = #{name}
+    </if>
+    where id = #{id}
+  </update>
+
+  <insert id="newContract" parameterType="com.ruoyi.czjg.zjrw.domain.dto.PersonDTO">
+    insert into zj_person (`projectId`, `recordId`, `recorder`, `subDate`, `isContract`, `status`, `order`, `taskId`, `businessKey`)
+    values (#{projectId,jdbcType=INTEGER}, #{recordId, jdbcType=INTEGER}, #{recorder, jdbcType=INTEGER},
+            #{subDate, jdbcType=TIMESTAMP}, #{isContract, jdbcType=INTEGER}, #{status, jdbcType=INTEGER},
+            #{order, jdbcType=INTEGER}, #{taskId, jdbcType=VARCHAR}, #{businessKey});
+  </insert>
+
+  <update id="updateContract" parameterType="com.ruoyi.czjg.zjrw.domain.dto.PersonDTO">
+    update zj_person
+    <set>
+      <if test="projectId != null">
+        projectId = #{projectId,jdbcType=INTEGER},
+      </if>
+      <if test="recordId != null">
+        recordId = #{recordId,jdbcType=INTEGER},
+      </if>
+      <if test="recorder != null">
+        recorder = #{recorder,jdbcType=VARCHAR},
+      </if>
+      <if test="subDate != null">
+        subDate = #{subDate,jdbcType=DATE},
+      </if>
+      <if test="isContract != null">
+        isContract = #{isContract,jdbcType=INTEGER},
+      </if>
+      <if test="handle != null">
+        handle = #{handle,jdbcType=INTEGER},
+      </if>
+      <if test="resolution != null">
+        resolution = #{resolution,jdbcType=VARCHAR},
+      </if>
+      <if test="handlingTime != null">
+        handlingTime = #{handlingTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="handle1 != null">
+        handle1 = #{handle1,jdbcType=INTEGER},
+      </if>
+      <if test="resolution1 != null">
+        resolution1 = #{resolution1,jdbcType=VARCHAR},
+      </if>
+      <if test="handlingTime1 != null">
+        handlingTime1 = #{handlingTime1,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER}
+      </if>
+    </set>
+    where id = #{id}
+  </update>
+
+  <update id="updateContractPersons">
+    update zj_person_people_sub
+    <set>
+      <if test="gid != null">
+        `gid` = #{gid,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        `userId` = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="name != null">
+        `identityId` = #{identityId,jdbcType=VARCHAR},
+      </if>
+      <if test="identityId != null">
+        `identityId` = #{identityId,jdbcType==INTEGER},
+      </if>
+      <if test="identityTime != null">
+        `identityTime` = #{identityTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gender != null">
+        `gender` = #{gender,jdbcType=INTEGER},
+      </if>
+      <if test="roleId != null">
+        `roleId` = #{roleId,jdbcType=INTEGER},
+      </if>
+      <if test="post != null">
+        `post` = #{post,jdbcType=VARCHAR},
+      </if>
+      <if test="certificateName != null">
+        `certificateName` = #{certificateName,jdbcType=VARCHAR},
+      </if>
+      <if test="certificateCode != null">
+        `certificateCode` = #{certificateCode,jdbcType=VARCHAR},
+      </if>
+      <if test="issuer != null">
+        `issuer` = #{issuer,jdbcType=VARCHAR},
+      </if>
+      <if test="effectiveTime != null">
+        `effectiveTime` = #{effectiveTime,jdbcType=VARCHAR},
+      </if>
+      <if test="education != null">
+        `education` = #{education,jdbcType=VARCHAR},
+      </if>
+      <if test="peoplePic != null">
+        `peoplePic` = #{peoplePic,jdbcType=VARCHAR},
+      </if>
+    </set>
+     where id = #{id}
+  </update>
+
+  <insert id="addPersonSub" parameterType="java.util.ArrayList">
+    insert into zj_person_people_sub (`gid`, `userId`, `name`, `identityId`, `identityTime`,
+     `gender`, `roleId`, `post`, `certificateName`, `certificateCode`, `issuer`, `effectiveTime`,
+     `education`, `peoplePic`)
+    values (#{gid}, #{userId}, #{name}, #{identityId}, #{identityTime}, #{gender}, #{roleId},
+    #{post}, #{certificateName}, #{certificateCode}, #{issuer}, #{effectiveTime},
+    #{education}, #{peoplePic})
+  </insert>
+
+  <update id="updatePersonSub" parameterType="com.ruoyi.czjg.zjrw.domain.entity.PersonSub">
+    update zj_person_people_sub
+        <set>
+          <if test="gid != null">
+            `gid` = #{gid,jdbcType=INTEGER},
+          </if>
+          <if test="userId != null">
+            `userId` = #{userId,jdbcType=INTEGER},
+          </if>
+          <if test="name != null">
+            `name` = #{name,jdbcType=VARCHAR},
+          </if>
+          <if test="identityId != null">
+            `identityId` = #{identityId,jdbcType=VARCHAR},
+          </if>
+          <if test="identityTime != null">
+            `identityTime` = #{identityTime,jdbcType=VARCHAR},
+          </if>
+          <if test="gender != null">
+            `gender` = #{gender,jdbcType=INTEGER},
+          </if>
+          <if test="roleId != null">
+            `roleId` = #{roleId,jdbcType=INTEGER},
+          </if>
+          <if test="post != null">
+            `post` = #{post,jdbcType=VARCHAR},
+          </if>
+          <if test="certificateName != null">
+            `certificateName` = #{certificateName,jdbcType=VARCHAR},
+          </if>
+          <if test="certificateCode != null">
+            `certificateCode` = #{certificateCode,jdbcType=VARCHAR},
+          </if>
+          <if test="issuer != null">
+            `issuer` = #{issuer,jdbcType=VARCHAR},
+          </if>
+          <if test="effectiveTime != null">
+            `effectiveTime` = #{effectiveTime,jdbcType=VARCHAR},
+          </if>
+          <if test="education != null">
+            `education` = #{education,jdbcType=VARCHAR},
+          </if>
+          <if test="peoplePic != null">
+            `peoplePic` = #{peoplePic,jdbcType=VARCHAR},
+          </if>
+        </set>
+        where id = #{id}
+  </update>
+
+  <update id="updatePerson" parameterType="com.ruoyi.czjg.zjrw.domain.entity.Person">
+    update zj_person
+    <set>
+      <if test="handle != null">
+        handle = #{handle},
+      </if>
+      <if test="status != null">
+        status = #{status}
+      </if>
+    </set>
+    where id = #{id}
+  </update>
+
+  <select id="getByRoleId" resultType="com.ruoyi.czjg.zjrw.domain.entity.SsFUsers">
+    select
+        a.id, a.username, a.name,a.usercode,
+        a.sttime, a.ststate, a.storder, a.ugid
+    from ss_f_users a
+    left join ss_f_user_role b on a.id = b.userid
+    left join ss_f_user_group c on b.userid = c.userid
+    where b.roleid = #{roleid} and c.groupid in
+    <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+        #{item}
+    </foreach>
+  </select>
+</mapper>

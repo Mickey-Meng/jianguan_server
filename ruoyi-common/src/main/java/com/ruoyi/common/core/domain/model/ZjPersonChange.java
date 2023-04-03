@@ -184,6 +184,25 @@ public class ZjPersonChange implements Serializable {
     @ApiModelProperty(value = "下级审批人")
     private String variables;
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @ApiModelProperty(value = "审核完成时间")
+    private Date approvalTime;
+
+
+    /**
+     * 附件集合，以逗号分开
+     */
+   /* @ApiModelProperty(value = "附件集合，以逗号分开")
+    private List<ZjPersonChangeFile> files;*/
+
+
+    @ApiModelProperty(value = "businessKey")
+    private String businessKey;
+
+    @ApiModelProperty(value = "流程key")
+    private String flowKey;
+
+
     public String getTaskId() {
         return taskId;
     }
@@ -504,5 +523,29 @@ public class ZjPersonChange implements Serializable {
                 ", processDefinitionKey='" + processDefinitionKey + '\'' +
                 ", variables='" + variables + '\'' +
                 '}';
+    }
+
+    public Date getApprovalTime() {
+        return approvalTime;
+    }
+
+    public void setApprovalTime(Date approvalTime) {
+        this.approvalTime = approvalTime;
+    }
+
+    public String getBusinessKey() {
+        return businessKey;
+    }
+
+    public void setBusinessKey(String businessKey) {
+        this.businessKey = businessKey;
+    }
+
+    public String getFlowKey() {
+        return flowKey;
+    }
+
+    public void setFlowKey(String flowKey) {
+        this.flowKey = flowKey;
     }
 }

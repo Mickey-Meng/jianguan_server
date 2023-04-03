@@ -1,0 +1,473 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.czjg.zjrw.dao.ZjQualityEventDAO">
+  <resultMap id="BaseResultMap" type="com.ruoyi.czjg.zjrw.domain.entity.ZjQualityEvent">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="qualityfirst" jdbcType="INTEGER" property="qualityfirst" />
+    <result column="qualitysecond" jdbcType="INTEGER" property="qualitysecond" />
+    <result column="uploadid" jdbcType="INTEGER" property="uploadid" />
+    <result column="uploadname" jdbcType="VARCHAR" property="uploadname" />
+    <result column="uploadurl" jdbcType="VARCHAR" property="uploadurl" />
+    <result column="uploadtime" jdbcType="TIMESTAMP" property="uploadtime" />
+    <result column="uploadloaction" jdbcType="VARCHAR" property="uploadloaction" />
+    <result column="loacltion" jdbcType="VARCHAR" property="loacltion" />
+    <result column="uploadremark" jdbcType="VARCHAR" property="uploadremark" />
+    <result column="modifyid" jdbcType="INTEGER" property="modifyid" />
+    <result column="modifyname" jdbcType="VARCHAR" property="modifyname" />
+    <result column="modifydate" jdbcType="INTEGER" property="modifydate" />
+    <result column="modifytime" jdbcType="TIMESTAMP" property="modifytime" />
+    <result column="modifyremark" jdbcType="VARCHAR" property="modifyremark" />
+    <result column="delayday" jdbcType="INTEGER" property="delayday" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="normal" jdbcType="INTEGER" property="normal" />
+    <result column="modifyurl" jdbcType="VARCHAR" property="modifyurl" />
+    <result column="delayreason" jdbcType="VARCHAR" property="delayreason" />
+    <result column="delayresult" jdbcType="INTEGER" property="delayresult" />
+    <result column="dodelayreason" jdbcType="VARCHAR" property="dodelayreason" />
+    <result column="gongquid" jdbcType="INTEGER" property="gongquid" />
+    <result column="qualityfirstname" jdbcType="VARCHAR" property="qualityfirstname" />
+    <result column="qualitysecondname" jdbcType="VARCHAR" property="qualitysecondname" />
+    <result column="projectId" jdbcType="INTEGER" property="projectId" />
+    <result column="singleProjectId" jdbcType="INTEGER" property="singleProjectId" />
+  </resultMap>
+
+
+  <resultMap id="abd" type="com.ruoyi.czjg.zjrw.domain.dto.EventGroup">
+    <result column="gongquname" jdbcType="VARCHAR" property="gongquname" />
+    <result column="gongquid" jdbcType="INTEGER" property="gongquid" />
+    <result column="safefirstname" jdbcType="VARCHAR" property="safefirstname" />
+    <result column="count" jdbcType="INTEGER" property="count" />
+  </resultMap>
+
+  <resultMap id="abc" type="com.ruoyi.czjg.zjrw.domain.entity.SafeGongQugroup">
+    <result column="gongquname" jdbcType="VARCHAR" property="gongquname" />
+    <result column="gongquid" jdbcType="INTEGER" property="gongquid" />
+    <result column="count" jdbcType="INTEGER" property="count" />
+    <result column="finish" jdbcType="INTEGER" property="finish" />
+  </resultMap>
+
+  <resultMap id="abcd" type="com.ruoyi.czjg.zjrw.domain.entity.SafeGongQugroupOverdue">
+    <result column="gongquname" jdbcType="VARCHAR" property="gongquname" />
+    <result column="gongquid" jdbcType="INTEGER" property="gongquid" />
+    <result column="overdue" jdbcType="INTEGER" property="overdue" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id, qualityfirst, qualitysecond, uploadid, uploadname, uploadurl, uploadtime, uploadloaction,
+    loacltion, uploadremark, modifyid, modifyname, modifydate, modifytime, modifyremark,
+    delayday, `status`, normal, modifyurl, delayreason, delayresult, dodelayreason, gongquid,
+    qualityfirstname, qualitysecondname, singleProjectId, projectId
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from zj_quality_event
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from zj_quality_event
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.ruoyi.czjg.zjrw.domain.entity.ZjQualityEvent">
+    insert into zj_quality_event (id, qualityfirst, qualitysecond,
+      uploadid, uploadname, uploadurl,
+      uploadtime, uploadloaction, loacltion,
+      uploadremark, modifyid, modifyname,
+      modifydate, modifytime, modifyremark,
+      delayday, `status`, normal,
+      modifyurl, delayreason, delayresult,
+      dodelayreason, gongquid, qualityfirstname,
+      qualitysecondname, singleProjectId, projectId)
+    values (#{id,jdbcType=INTEGER}, #{qualityfirst,jdbcType=INTEGER}, #{qualitysecond,jdbcType=INTEGER},
+      #{uploadid,jdbcType=INTEGER}, #{uploadname,jdbcType=VARCHAR}, #{uploadurl,jdbcType=VARCHAR},
+      #{uploadtime,jdbcType=TIMESTAMP}, #{uploadloaction,jdbcType=VARCHAR}, #{loacltion,jdbcType=VARCHAR},
+      #{uploadremark,jdbcType=VARCHAR}, #{modifyid,jdbcType=INTEGER}, #{modifyname,jdbcType=VARCHAR},
+      #{modifydate,jdbcType=INTEGER}, #{modifytime,jdbcType=TIMESTAMP}, #{modifyremark,jdbcType=VARCHAR},
+      #{delayday,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, #{normal,jdbcType=INTEGER},
+      #{modifyurl,jdbcType=VARCHAR}, #{delayreason,jdbcType=VARCHAR}, #{delayresult,jdbcType=INTEGER},
+      #{dodelayreason,jdbcType=VARCHAR}, #{gongquid,jdbcType=INTEGER}, #{qualityfirstname,jdbcType=VARCHAR},
+      #{qualitysecondname,jdbcType=VARCHAR}, #{singleProjectId,jdbcType=INTEGER}, #{projectId,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.ruoyi.czjg.zjrw.domain.entity.ZjQualityEvent">
+    insert into zj_quality_event
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="qualityfirst != null">
+        qualityfirst,
+      </if>
+      <if test="qualitysecond != null">
+        qualitysecond,
+      </if>
+      <if test="uploadid != null">
+        uploadid,
+      </if>
+      <if test="uploadname != null">
+        uploadname,
+      </if>
+      <if test="uploadurl != null">
+        uploadurl,
+      </if>
+      <if test="uploadtime != null">
+        uploadtime,
+      </if>
+      <if test="uploadloaction != null">
+        uploadloaction,
+      </if>
+      <if test="loacltion != null">
+        loacltion,
+      </if>
+      <if test="uploadremark != null">
+        uploadremark,
+      </if>
+      <if test="modifyid != null">
+        modifyid,
+      </if>
+      <if test="modifyname != null">
+        modifyname,
+      </if>
+      <if test="modifydate != null">
+        modifydate,
+      </if>
+      <if test="modifytime != null">
+        modifytime,
+      </if>
+      <if test="modifyremark != null">
+        modifyremark,
+      </if>
+      <if test="delayday != null">
+        delayday,
+      </if>
+      <if test="status != null">
+        `status`,
+      </if>
+      <if test="normal != null">
+        normal,
+      </if>
+      <if test="modifyurl != null">
+        modifyurl,
+      </if>
+      <if test="delayreason != null">
+        delayreason,
+      </if>
+      <if test="delayresult != null">
+        delayresult,
+      </if>
+      <if test="dodelayreason != null">
+        dodelayreason,
+      </if>
+      <if test="gongquid != null">
+        gongquid,
+      </if>
+      <if test="qualityfirstname != null">
+        qualityfirstname,
+      </if>
+      <if test="qualitysecondname != null">
+        qualitysecondname,
+      </if>
+      <if test="singleProjectId != null">
+        singleProjectId,
+      </if>
+      <if test="projectId != null">
+        projectId,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="qualityfirst != null">
+        #{qualityfirst,jdbcType=INTEGER},
+      </if>
+      <if test="qualitysecond != null">
+        #{qualitysecond,jdbcType=INTEGER},
+      </if>
+      <if test="uploadid != null">
+        #{uploadid,jdbcType=INTEGER},
+      </if>
+      <if test="uploadname != null">
+        #{uploadname,jdbcType=VARCHAR},
+      </if>
+      <if test="uploadurl != null">
+        #{uploadurl,jdbcType=VARCHAR},
+      </if>
+      <if test="uploadtime != null">
+        #{uploadtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="uploadloaction != null">
+        #{uploadloaction,jdbcType=VARCHAR},
+      </if>
+      <if test="loacltion != null">
+        #{loacltion,jdbcType=VARCHAR},
+      </if>
+      <if test="uploadremark != null">
+        #{uploadremark,jdbcType=VARCHAR},
+      </if>
+      <if test="modifyid != null">
+        #{modifyid,jdbcType=INTEGER},
+      </if>
+      <if test="modifyname != null">
+        #{modifyname,jdbcType=VARCHAR},
+      </if>
+      <if test="modifydate != null">
+        #{modifydate,jdbcType=INTEGER},
+      </if>
+      <if test="modifytime != null">
+        #{modifytime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifyremark != null">
+        #{modifyremark,jdbcType=VARCHAR},
+      </if>
+      <if test="delayday != null">
+        #{delayday,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="normal != null">
+        #{normal,jdbcType=INTEGER},
+      </if>
+      <if test="modifyurl != null">
+        #{modifyurl,jdbcType=VARCHAR},
+      </if>
+      <if test="delayreason != null">
+        #{delayreason,jdbcType=VARCHAR},
+      </if>
+      <if test="delayresult != null">
+        #{delayresult,jdbcType=INTEGER},
+      </if>
+      <if test="dodelayreason != null">
+        #{dodelayreason,jdbcType=VARCHAR},
+      </if>
+      <if test="gongquid != null">
+        #{gongquid,jdbcType=INTEGER},
+      </if>
+      <if test="qualityfirstname != null">
+        #{qualityfirstname,jdbcType=VARCHAR},
+      </if>
+      <if test="qualitysecondname != null">
+        #{qualitysecondname,jdbcType=VARCHAR},
+      </if>
+      <if test="singleProjectId != null">
+        #{singleProjectId,jdbcType=INTEGER},
+      </if>
+      <if test="projectId != null">
+        #{projectId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ruoyi.czjg.zjrw.domain.entity.ZjQualityEvent">
+    update zj_quality_event
+    <set>
+      <if test="qualityfirst != null">
+        qualityfirst = #{qualityfirst,jdbcType=INTEGER},
+      </if>
+      <if test="qualitysecond != null">
+        qualitysecond = #{qualitysecond,jdbcType=INTEGER},
+      </if>
+      <if test="uploadid != null">
+        uploadid = #{uploadid,jdbcType=INTEGER},
+      </if>
+      <if test="uploadname != null">
+        uploadname = #{uploadname,jdbcType=VARCHAR},
+      </if>
+      <if test="uploadurl != null">
+        uploadurl = #{uploadurl,jdbcType=VARCHAR},
+      </if>
+      <if test="uploadtime != null">
+        uploadtime = #{uploadtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="uploadloaction != null">
+        uploadloaction = #{uploadloaction,jdbcType=VARCHAR},
+      </if>
+      <if test="loacltion != null">
+        loacltion = #{loacltion,jdbcType=VARCHAR},
+      </if>
+      <if test="uploadremark != null">
+        uploadremark = #{uploadremark,jdbcType=VARCHAR},
+      </if>
+      <if test="modifyid != null">
+        modifyid = #{modifyid,jdbcType=INTEGER},
+      </if>
+      <if test="modifyname != null">
+        modifyname = #{modifyname,jdbcType=VARCHAR},
+      </if>
+      <if test="modifydate != null">
+        modifydate = #{modifydate,jdbcType=INTEGER},
+      </if>
+      <if test="modifytime != null">
+        modifytime = #{modifytime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifyremark != null">
+        modifyremark = #{modifyremark,jdbcType=VARCHAR},
+      </if>
+      <if test="delayday != null">
+        delayday = #{delayday,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        `status` = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="normal != null">
+        normal = #{normal,jdbcType=INTEGER},
+      </if>
+      <if test="modifyurl != null">
+        modifyurl = #{modifyurl,jdbcType=VARCHAR},
+      </if>
+      <if test="delayreason != null">
+        delayreason = #{delayreason,jdbcType=VARCHAR},
+      </if>
+      <if test="delayresult != null">
+        delayresult = #{delayresult,jdbcType=INTEGER},
+      </if>
+      <if test="dodelayreason != null">
+        dodelayreason = #{dodelayreason,jdbcType=VARCHAR},
+      </if>
+      <if test="gongquid != null">
+        gongquid = #{gongquid,jdbcType=INTEGER},
+      </if>
+      <if test="qualityfirstname != null">
+        qualityfirstname = #{qualityfirstname,jdbcType=VARCHAR},
+      </if>
+      <if test="qualitysecondname != null">
+        qualitysecondname = #{qualitysecondname,jdbcType=VARCHAR},
+      </if>
+      <if test="singleProjectId != null">
+        singleProjectId = #{singleProjectId,jdbcType=INTEGER},
+      </if>
+      <if test="projectId != null">
+        projectId = #{projectId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="getGQ" resultMap="BaseResultMap">
+    select
+    *
+    from zj_quality_event where
+     uploadtime &gt;= #{sttime}
+      and uploadtime &lt;= #{endtime}
+
+  </select>
+
+
+  <select id="getByGQ" resultMap="BaseResultMap">
+    select
+    *
+    from zj_quality_event where
+     uploadtime &gt;= #{sttime}
+      and uploadtime &lt;= #{endtime}
+      and gongquid = #{gqid}
+
+  </select>
+
+  <update id="updateByPrimaryKey" parameterType="com.ruoyi.czjg.zjrw.domain.entity.ZjQualityEvent">
+    update zj_quality_event
+    set qualityfirst = #{qualityfirst,jdbcType=INTEGER},
+      qualitysecond = #{qualitysecond,jdbcType=INTEGER},
+      uploadid = #{uploadid,jdbcType=INTEGER},
+      uploadname = #{uploadname,jdbcType=VARCHAR},
+      uploadurl = #{uploadurl,jdbcType=VARCHAR},
+      uploadtime = #{uploadtime,jdbcType=TIMESTAMP},
+      uploadloaction = #{uploadloaction,jdbcType=VARCHAR},
+      loacltion = #{loacltion,jdbcType=VARCHAR},
+      uploadremark = #{uploadremark,jdbcType=VARCHAR},
+      modifyid = #{modifyid,jdbcType=INTEGER},
+      modifyname = #{modifyname,jdbcType=VARCHAR},
+      modifydate = #{modifydate,jdbcType=INTEGER},
+      modifytime = #{modifytime,jdbcType=TIMESTAMP},
+      modifyremark = #{modifyremark,jdbcType=VARCHAR},
+      delayday = #{delayday,jdbcType=INTEGER},
+      `status` = #{status,jdbcType=INTEGER},
+      normal = #{normal,jdbcType=INTEGER},
+      modifyurl = #{modifyurl,jdbcType=VARCHAR},
+      delayreason = #{delayreason,jdbcType=VARCHAR},
+      delayresult = #{delayresult,jdbcType=INTEGER},
+      dodelayreason = #{dodelayreason,jdbcType=VARCHAR},
+      gongquid = #{gongquid,jdbcType=INTEGER},
+      qualityfirstname = #{qualityfirstname,jdbcType=VARCHAR},
+      qualitysecondname = #{qualitysecondname,jdbcType=VARCHAR},
+      singleProjectId = #{singleProjectId,jdbcType=INTEGER},
+      projectId = #{projectId,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+
+
+  <select id="getAllStatusCount" parameterType="java.util.ArrayList" resultMap="abc">
+    select  count(1) as count, count( case when status = 3 then 1 end ) as finish, gongquid
+    from zj_quality_event
+    where
+    gongquid in
+    <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+    and uploadtime &gt;= #{sttime}
+    and uploadtime &lt;= #{endtime}
+    group by gongquid
+  </select>
+
+ <select id="getOverdueCount" parameterType="java.util.ArrayList" resultMap="abcd">
+   SELECT count(1) as overdue,gongquid FROM zj_quality_event
+   WHERE
+        gongquid IN
+    <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+    AND DATE_ADD(uploadtime, INTERVAL modifydate DAY) &lt; SYSDATE()
+    AND STATUS in (0,1,2)
+     group by gongquid
+ </select>
+
+  <select id="group" parameterType="java.util.ArrayList" resultMap="abd" >
+    select count(1) as count, gongquid ,qualityfirstname as safefirstname from zj_quality_event
+      where gongquid in
+    <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+    and uploadtime &gt;= #{sttime}
+    and uploadtime &lt;= #{endtime}
+    group by gongquid ,safefirstname
+
+  </select>
+
+  <select id="getGQByUserId" parameterType="java.util.ArrayList" resultMap="BaseResultMap">
+    select * from zj_quality_event
+     where modifyid = #{modifyid} and status = 0
+  </select>
+
+  <select id="getGQByGongQuIds" resultMap="BaseResultMap">
+    select * from zj_quality_event
+    where gongquid in
+    <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+    and uploadtime &gt;= #{sttime}
+    and uploadtime &lt;= #{endtime}
+  </select>
+
+  <select id="getDataById" parameterType="java.util.ArrayList" resultMap="BaseResultMap">
+    select
+    *
+    from zj_quality_event where id in
+    <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </select>
+
+  <delete id="batchDeleteById" parameterType="java.util.ArrayList">
+    delete from zj_quality_event where id in
+    <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </delete>
+
+  <select id="getDelayByJianLiId" resultMap="BaseResultMap">
+    select * from zj_quality_event where uploadid = #{uploadid} and status = 1
+  </select>
+
+  <select id="getRectificationByJianLiId" resultMap="BaseResultMap">
+    select * from zj_quality_event where uploadid = #{uploadid} and status = 2
+  </select>
+</mapper>

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.czjg.zjrw.dao.DigitalTwinDAO">
+  <resultMap id="BaseResultMap" type="com.ruoyi.czjg.zjrw.domain.entity.ZjDigitalTwin">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="groupid" jdbcType="INTEGER" property="groupid" />
+    <result column="groupname" jdbcType="VARCHAR" property="groupname" />
+    <result column="projectcode" jdbcType="VARCHAR" property="projectcode" />
+    <result column="projectname" jdbcType="VARCHAR" property="projectname" />
+    <result column="process" jdbcType="VARCHAR" property="process" />
+    <result column="desginnum" jdbcType="INTEGER" property="desginnum" />
+    <result column="finishnum" jdbcType="INTEGER" property="finishnum" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="altitude" jdbcType="INTEGER" property="altitude" />
+    <result column="longlatitude" jdbcType="VARCHAR" property="longlatitude" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+  </resultMap>
+
+  <insert id="insert">
+    insert into zj_workpoint
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="groupid != null">
+        groupid,
+      </if>
+      <if test="groupname != null">
+        groupname,
+      </if>
+      <if test="projectcode != null">
+        projectcode,
+      </if>
+      <if test="projectname != null">
+        projectname,
+      </if>
+      <if test="process != null">
+        process,
+      </if>
+      <if test="desginnum != null">
+        desginnum,
+      </if>
+      <if test="finishnum != null">
+        finishnum,
+      </if>
+      <if test="type != null">
+        type,
+      </if>
+      <if test="altitude != null">
+        altitude,
+      </if>
+      <if test="longlatitude != null">
+        longlatitude,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="groupid != null">
+        #{groupid, jdbcType=INTEGER},
+      </if>
+      <if test="groupname != null">
+      #{groupname,jdbcType=VARCHAR},
+      </if>
+      <if test="projectcode != null">
+        #{projectcode,jdbcType=VARCHAR},
+      </if>
+      <if test="projectname != null">
+        #{projectname,jdbcType=VARCHAR},
+      </if>
+      <if test="process != null">
+        #{process,jdbcType=VARCHAR},
+      </if>
+      <if test="desginnum != null">
+        #{desginnum,jdbcType=INTEGER},
+      </if>
+      <if test="finishnum != null">
+        #{finishnum,jdbcType=INTEGER},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=INTEGER},
+      </if>
+      <if test="altitude != null">
+        #{altitude,jdbcType=INTEGER},
+      </if>
+      <if test="longlatitude != null">
+        #{longlatitude,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <select id="getData" resultType="com.ruoyi.czjg.zjrw.domain.entity.ZjDigitalTwin">
+    select * from zj_workpoint where projectcode in
+    <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </select>
+
+  <update id="updateData">
+    update zj_workpoint set
+    <trim suffixOverrides=",">
+      <if test="groupid != null">
+        groupid = #{groupid,jdbcType=INTEGER},
+      </if>
+      <if test="groupname != null">
+        groupname = #{groupname,jdbcType=VARCHAR},
+      </if>
+      <if test="projectcode != null">
+        projectcode = #{projectcode,jdbcType=VARCHAR},
+      </if>
+      <if test="projectname != null">
+        projectname = #{projectname,jdbcType=VARCHAR},
+      </if>
+      <if test="process != null">
+        process = #{process,jdbcType=VARCHAR},
+      </if>
+      <if test="desginnum != null">
+        desginnum = #{desginnum,jdbcType=INTEGER},
+      </if>
+      <if test="finishnum != null">
+        finishnum = #{finishnum,jdbcType=INTEGER},
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="altitude != null">
+        altitude = #{altitude,jdbcType=INTEGER},
+      </if>
+      <if test="longlatitude != null">
+        longlatitude = #{longlatitude,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+    where id = #{id}
+  </update>
+</mapper>

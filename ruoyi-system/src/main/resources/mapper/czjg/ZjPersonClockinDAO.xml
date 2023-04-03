@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.czjg.zjrw.dao.ZjPersonClockinDAO">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ruoyi.czjg.zjrw.domain.entity.ZjPersonClockin">
+        <id column="id" property="id" />
+        <result column="projectId" property="projectId" />
+        <result column="projectName" property="projectName" />
+        <result column="gid" property="gid" />
+        <result column="attendancePersonId" property="attendancePersonId" />
+        <result column="attendancePersonName" property="attendancePersonName" />
+        <result column="groupId" property="groupId" />
+        <result column="groupName" property="groupName" />
+        <result column="clockTime" property="clockTime" />
+        <result column="clockAddr" property="clockAddr" />
+        <result column="clockCoordinate" property="clockCoordinate" />
+        <result column="clockPic" property="clockPic" />
+        <result column="state" property="state" />
+        <result column="order" property="order" />
+    </resultMap>
+
+    <insert id="AddClockIn">
+        insert into
+            zj_person_clockin
+        (`projectId`, `projectName`, `gid`, `attendancePersonId`, `attendancePersonName`, `groupId`,
+         `groupName`, `clockTime`, `clockAddr`, `clockCoordinate`, `clockPic`, `state`, `order`)
+        values
+        (#{projectId}, #{projectName}, #{gid}, #{attendancePersonId}, #{attendancePersonName}, #{groupId},
+         #{groupName}, #{clockTime}, #{clockAddr}, #{clockCoordinate}, #{clockPic}, #{state}, #{order})
+    </insert>
+
+    <update id="updateClockIn" parameterType="com.ruoyi.czjg.zjrw.domain.entity.ZjPersonClockin">
+        update zj_person_clockin
+        <set>
+            <if test="projectId != null">
+                projectId = #{projectId},
+            </if>
+            <if test="projectName != null">
+                projectName = #{projectName},
+            </if>
+            <if test="gid != null">
+                gid = #{gid},
+            </if>
+            <if test="attendancePersonId != null">
+                attendancePersonId = #{attendancePersonId},
+            </if>
+            <if test="attendancePersonName != null">
+                attendancePersonName = #{attendancePersonName},
+            </if>
+            <if test="groupId != null">
+                groupId = #{groupId},
+            </if>
+            <if test="groupName != null">
+                groupName = #{groupName},
+            </if>
+            <if test="clockTime != null">
+                clockTime = #{clockTime},
+            </if>
+            <if test="clockAddr != null">
+                clockAddr = #{clockAddr},
+            </if>
+            <if test="clockCoordinate != null">
+                clockCoordinate = #{clockCoordinate},
+            </if>
+            <if test="clockPic != null">
+                clockPic = #{clockPic},
+            </if>
+            <if test="state != null">
+                state = #{state},
+            </if>
+            <if test="order != null">
+                `order` = #{order},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <select id="getGroupClockInfo" resultMap="BaseResultMap">
+        select
+            a.*
+        from zj_person_clockin a
+            left join ss_f_users b on a.attendancePersonId = b.id
+            left join ss_f_user_group c on b.id = c.userid
+            left join ss_f_groups d on c.groupid = d.id
+        where b.ststate = 1 and d.id = #{groupId}
+        and a.clockTime &gt;= #{start} and a.clockTime &lt;= #{end}
+    </select>
+</mapper>
