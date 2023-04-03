@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
+@Repository("zjAreaDAO")
 @Mapper
 public interface AreaDAO {
     int deleteByPrimaryKey(Integer id);

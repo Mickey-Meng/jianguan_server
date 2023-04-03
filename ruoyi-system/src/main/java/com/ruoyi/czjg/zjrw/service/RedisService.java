@@ -2,16 +2,19 @@ package com.ruoyi.czjg.zjrw.service;
 
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
+import com.ruoyi.common.core.dao.SsFGroupsDAO;
+import com.ruoyi.common.core.dao.SsFUserGroupDAO;
+import com.ruoyi.common.core.dao.ZjFGroupsProjectsDAO;
 import com.ruoyi.common.core.domain.entity.Conponent;
 import com.ruoyi.common.core.domain.entity.PowerData;
+import com.ruoyi.common.core.domain.entity.SsFGroups;
+import com.ruoyi.common.core.domain.entity.ZjFGroupsProjects;
 import com.ruoyi.common.core.domain.object.ResponseBase;
 import com.ruoyi.czjg.zjrw.dao.ConponentDAO;
-import com.ruoyi.czjg.zjrw.dao.SsFGroupsDAO;
-import com.ruoyi.czjg.zjrw.dao.SsFUserGroupDAO;
-import com.ruoyi.czjg.zjrw.dao.ZjFGroupsProjectsDAO;
 import com.ruoyi.czjg.zjrw.domain.entity.*;
 import com.ruoyi.common.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -40,6 +43,7 @@ public class RedisService {
     @Autowired
     private SsFUserGroupDAO ssFUserGroupDAO;
     @Autowired
+    @Qualifier("zjFGroupsProjectsDAO")
     private ZjFGroupsProjectsDAO zjFGroupsProjectsDAO;
 
     @Autowired
@@ -172,7 +176,7 @@ public class RedisService {
     public ResponseBase getTree() {
         PowerData tokenUser = JwtUtil.getTokenUser();
         Integer userId = JwtUtil.getTokenUser().getId();
-        List<Integer> gongqus = ssFUserGroupDAO.getGroupsByUserId(userId);
+        List<Integer> gongqus = ssFUserGroupDAO.getGroupsOfProjectByUserId(userId);
         NodeTree nodeTree1 =new NodeTree();
         nodeTree1.setName("235项目");
         nodeTree1.setCode("0");

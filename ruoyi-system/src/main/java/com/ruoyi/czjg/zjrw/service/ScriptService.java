@@ -2,13 +2,16 @@ package com.ruoyi.czjg.zjrw.service;
 
 import com.ruoyi.common.core.domain.entity.Conponent;
 import com.ruoyi.common.core.domain.entity.Produceandrecode;
+import com.ruoyi.common.core.domain.entity.SsFUsers;
 import com.ruoyi.common.core.domain.entity.ZjConponentProducetime;
+import com.ruoyi.common.core.domain.model.SsFUserRole;
 import com.ruoyi.common.core.domain.object.ResponseBase;
 import com.ruoyi.czjg.zjrw.dao.*;
 import com.ruoyi.czjg.zjrw.domain.entity.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,6 +43,7 @@ public class ScriptService {
     @Autowired
     private ZjQualityEventDAO qualityEventDAO;
     @Autowired
+    @Qualifier("zjSsFUsersDAO")
     private SsFUsersDAO usersDAO;
     @Autowired
     private SsFUserOnlineDAO userOnlineDAO;

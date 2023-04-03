@@ -5,9 +5,15 @@ import cn.hutool.core.date.DateTime;
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.ruoyi.common.config.zjrw.WebSocketServer;
+import com.ruoyi.common.core.dao.SsFGroupsDAO;
+import com.ruoyi.common.core.dao.SsFUserGroupDAO;
+import com.ruoyi.common.core.dao.ZjFGroupsProjectsDAO;
 import com.ruoyi.common.core.domain.dto.WebsocketMessageDTO;
 import com.ruoyi.common.core.domain.entity.PowerData;
+import com.ruoyi.common.core.domain.entity.SsFGroups;
+import com.ruoyi.common.core.domain.entity.SsFProjects;
 import com.ruoyi.common.core.domain.model.SafePerData;
+import com.ruoyi.common.core.domain.model.SsFUserRole;
 import com.ruoyi.common.core.domain.object.ResponseBase;
 import com.ruoyi.czjg.zjrw.dao.*;
 import com.ruoyi.czjg.zjrw.domain.dto.*;
@@ -18,6 +24,7 @@ import com.ruoyi.common.utils.zjbim.zjrw.MyExcelUtil;
 import com.ruoyi.common.utils.zjbim.zjrw.RestApiUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -41,6 +48,7 @@ public class QualityService {
     ZjSafeEventDAO zjSafeEventDAO;
 
     @Autowired
+    @Qualifier("zjFGroupsProjectsDAO")
     ZjFGroupsProjectsDAO zjFGroupsProjectsDAO;
 
     @Autowired
@@ -50,6 +58,7 @@ public class QualityService {
     SsFGroupsDAO ssFGroupsDAO;
 
     @Autowired
+    @Qualifier("zjSsFUsersDAO")
     SsFUsersDAO ssFUsersDAO;
 
     @Autowired
@@ -503,7 +512,7 @@ public class QualityService {
         }
 
         Integer userId = JwtUtil.getTokenUser().getId();
-        List<Integer> gongqus = ssFUserGroupDAO.getGroupsByUserId(userId);
+        List<Integer> gongqus = ssFUserGroupDAO.getGroupsOfProjectByUserId(userId);
         //根据工区维度获取数据
         List<ZjQualityEvent> zjSafeEventList = Lists.newArrayList();
         if(gongqus.size() > 0){
@@ -642,7 +651,7 @@ public class QualityService {
 
         //获取到用户所拥有的工区权限
         Integer id = JwtUtil.getTokenUser().getId();
-        List<Integer> gongqus = ssFUserGroupDAO.getGroupsByUserId(id);
+        List<Integer> gongqus = ssFUserGroupDAO.getGroupsOfProjectByUserId(id);
         if (gongqus.size() == 0){
             return new ResponseBase(200, "该用户暂时没有绑定单位工程!");
         }
@@ -756,7 +765,7 @@ public class QualityService {
 
         Integer id = JwtUtil.getTokenUser().getId();
         // 根据用户ID，查询用户所属的工具集合
-        List<Integer> gongqus = ssFUserGroupDAO.getGroupsByUserId(id);
+        List<Integer> gongqus = ssFUserGroupDAO.getGroupsOfProjectByUserId(id);
         if (gongqus.size() == 0){
             return new ResponseBase(200,"查询成功", resb);
         }
@@ -826,7 +835,7 @@ public class QualityService {
         List<GqDataAll> resb = Lists.newArrayList();
         Integer id = JwtUtil.getTokenUser().getId();
         //获取当前用户的工区清单
-        List<Integer> groups = ssFUserGroupDAO.getGroupsByUserId(id);
+        List<Integer> groups = ssFUserGroupDAO.getGroupsOfProjectByUserId(id);
         if (groups.size() == 0){
             //当用户没有工区权限时, 返回空集合
             return new ResponseBase(200, "查询成功!", resb);

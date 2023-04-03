@@ -1,4 +1,4 @@
-package com.ruoyi.common.config.zjrw;
+package com.ruoyi.common.config;
 
 /**
  * @author ：lin_zhixiong
@@ -37,7 +37,7 @@ import java.security.KeyStore;
  */
 @Configuration
 @ConfigurationProperties(prefix = "httpclient")
-public class HttpClient {
+public class HttpClientConfig {
     private Integer maxTotal;
 
     private Integer defaultMaxPerRoute;

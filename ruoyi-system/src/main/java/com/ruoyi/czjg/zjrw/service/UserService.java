@@ -7,9 +7,18 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.ruoyi.common.annotation.CheckRepeatCommit;
+import com.ruoyi.common.core.dao.SsFGroupsDAO;
+import com.ruoyi.common.core.dao.SsFUserGroupDAO;
+import com.ruoyi.common.core.dao.ZjFGroupsProjectsDAO;
+import com.ruoyi.common.core.domain.dto.UserOnlineDTO;
 import com.ruoyi.common.core.domain.entity.PowerData;
+import com.ruoyi.common.core.domain.entity.SsFGroups;
+import com.ruoyi.common.core.domain.entity.SsFUserGroup;
+import com.ruoyi.common.core.domain.entity.SsFUsers;
+import com.ruoyi.common.core.domain.model.SsFUserRole;
 import com.ruoyi.common.core.domain.object.ResponseBase;
 import com.ruoyi.common.config.zjrw.ZhuJiOfferConfig;
+import com.ruoyi.common.core.domain.object.TokenData;
 import com.ruoyi.common.utils.JwtUtil;
 import com.ruoyi.czjg.zjrw.dao.*;
 import com.ruoyi.czjg.zjrw.domain.dto.*;
@@ -20,6 +29,7 @@ import com.ruoyi.common.utils.zjbim.zjrw.MyExcelUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -39,7 +49,7 @@ import java.util.Map;
  * @slogan: 天下风云出我辈，一入代码苦耕耘
  * @description:
  **/
-@Service
+@Service("loginUserService")
 public class UserService {
 
     Logger log = LoggerFactory.getLogger(UserService.class);
@@ -50,6 +60,7 @@ public class UserService {
 //    private UserDAO userDAO;
 
     @Autowired
+    @Qualifier("zjSsFUsersDAO")
     private SsFUsersDAO ssFUsersDAO;
 
     @Autowired
@@ -70,8 +81,8 @@ public class UserService {
     @Autowired
     private HttpsUtils httpsUtils;
 
-
     @Autowired
+    @Qualifier("zjFGroupsProjectsDAO")
     private ZjFGroupsProjectsDAO zjFGroupsProjectsDAO;
 
     public volatile int a = 0;
@@ -97,7 +108,7 @@ public class UserService {
             return new ResponseBase(200, "密码不正确");
         }
 
-        List<SsFUserGroup> ssFUserGroups = ssFUserGroupDAO.getGroups(findUser.getId());
+        List<SsFUserGroup> ssFUserGroups = ssFUserGroupDAO.getUserGroupsOfProject(findUser.getId());
 //        List<SsFGroups> ssFGroups = Lists.newArrayList();
 //        for (SsFUserGroup ssFUserGroup : ssFUserGroups) {
 //            SsFGroups ssFGroup = ssFGroupsDAO.selectByPrimaryKey(ssFUserGroup.getGroupid());
@@ -232,7 +243,7 @@ public class UserService {
             return new ResponseBase(200, "查询组织机构成功!", groupsList);
         }
 
-        List<SsFUserGroup> groupsList = ssFUserGroupDAO.getGroups(userId);
+        List<SsFUserGroup> groupsList = ssFUserGroupDAO.getUserGroupsOfProject(userId);
         return new ResponseBase(200, "根据用户id查询用户拥有的组织机构成功!", groupsList);
 
     }
@@ -401,7 +412,7 @@ public class UserService {
             for (UserOnlineDTO onlineDTO : userOnlineDTO) {
                 Map<String, Object> dataMap = Maps.newHashMap();
                 dataMap.put("用户ID", onlineDTO.getUserId());
-                dataMap.put("昵称", onlineDTO.getUsername());
+                dataMap.put("昵称", onlineDTO.getUserName());
                 dataMap.put("名字", onlineDTO.getName());
                 dataMap.put("角色ID", onlineDTO.getRoleId());
                 dataMap.put("角色名称", onlineDTO.getRoleName());

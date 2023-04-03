@@ -1,5 +1,8 @@
 package com.ruoyi.czjg.zjrw.dao;
 
+import com.ruoyi.common.core.domain.dto.PersonDTO;
+import com.ruoyi.common.core.domain.entity.SsFGroups;
+import com.ruoyi.common.core.domain.entity.SsFUsers;
 import com.ruoyi.czjg.zjrw.domain.dto.PersonGroupTree;
 import com.ruoyi.czjg.zjrw.domain.entity.*;
 import org.apache.ibatis.annotations.Delete;

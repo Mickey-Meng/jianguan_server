@@ -99,7 +99,7 @@
         </foreach>
   </select>
 
-  <resultMap id="ClockInCensusReturnMap" type="com.ruoyi.czjg.zjrw.domain.dto.ClockInCensusReturn">
+  <resultMap id="ClockInCensusReturnMap" type="com.ruoyi.common.core.domain.entity.ClockInCensusReturn">
     <result column="userId" jdbcType="INTEGER" property="userId" />
     <result column="userName" jdbcType="VARCHAR" property="userName" />
     <result column="ststate" jdbcType="INTEGER" property="ststate" />

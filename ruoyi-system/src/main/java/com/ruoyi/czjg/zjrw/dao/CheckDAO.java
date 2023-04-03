@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
+@Repository("zjCheckDAO")
 @Mapper
 public interface CheckDAO {
     int deleteByPrimaryKey(Integer id);

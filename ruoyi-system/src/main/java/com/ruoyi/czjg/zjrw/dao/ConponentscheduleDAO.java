@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
+@Repository("zjConponentscheduleDAO")
 @Mapper
 public interface ConponentscheduleDAO {
     int deleteByPrimaryKey(Integer id);

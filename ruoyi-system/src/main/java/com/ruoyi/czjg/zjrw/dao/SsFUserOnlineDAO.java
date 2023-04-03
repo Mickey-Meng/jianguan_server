@@ -1,6 +1,6 @@
 package com.ruoyi.czjg.zjrw.dao;
 
-import com.ruoyi.czjg.zjrw.domain.dto.UserOnlineDTO;
+import com.ruoyi.common.core.domain.dto.UserOnlineDTO;
 import com.ruoyi.czjg.zjrw.domain.entity.SsFUserOnline;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
+@Repository("zjSsFUserOnlineDAO")
 @Mapper
 public interface SsFUserOnlineDAO {
 

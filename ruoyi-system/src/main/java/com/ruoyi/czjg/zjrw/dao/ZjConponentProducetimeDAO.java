@@ -1,5 +1,6 @@
 package com.ruoyi.czjg.zjrw.dao;
 
+import com.ruoyi.common.core.domain.entity.SsFGroups;
 import com.ruoyi.common.core.domain.entity.ZjConponentProducetime;
 import com.ruoyi.czjg.zjrw.domain.dto.*;
 import com.ruoyi.czjg.zjrw.domain.entity.*;

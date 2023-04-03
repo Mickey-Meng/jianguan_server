@@ -4,7 +4,7 @@ import com.ruoyi.czjg.zjrw.domain.entity.Item;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
-@Repository
+@Repository("zjItemDAO")
 @Mapper
 public interface ItemDAO {
     int deleteByPrimaryKey(Integer id);

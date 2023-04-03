@@ -1,6 +1,8 @@
 package com.ruoyi.czjg.zjrw.service;
 
 import com.google.common.collect.Lists;
+import com.ruoyi.common.core.dao.SsFGroupsDAO;
+import com.ruoyi.common.core.dao.SsFUserGroupDAO;
 import com.ruoyi.common.core.domain.entity.PowerData;
 import com.ruoyi.common.core.domain.entity.Produceandrecode;
 import com.ruoyi.common.core.domain.object.ResponseBase;
@@ -9,6 +11,7 @@ import com.ruoyi.czjg.zjrw.domain.dto.MessageUserDTO;
 import com.ruoyi.czjg.zjrw.domain.entity.*;
 import com.ruoyi.common.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,6 +35,7 @@ public class MessageService {
     @Autowired
     SsFGroupsDAO groupsDAO;
     @Autowired
+    @Qualifier("zjProduceandrecodeDAO")
     ProduceandrecodeDAO produceandrecodeDAO;
 
     public ResponseBase getSupervisorMessagePrompt(){

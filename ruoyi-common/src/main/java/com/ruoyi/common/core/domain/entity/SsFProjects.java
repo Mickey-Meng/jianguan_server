@@ -1,6 +1,7 @@
 package com.ruoyi.common.core.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -73,6 +74,33 @@ public class SsFProjects implements Serializable {
      * 项目照片
      */
     private String projectpic;
+
+    /**
+     * 合同号
+     */
+    @ApiModelProperty(value = "合同号")
+    private String contractnum;
+
+    @ApiModelProperty(value = "坐标")
+    private String coordinate;
+
+    @ApiModelProperty(value = "投资金额(单位: 万元)")
+    private Integer investment;
+
+    @ApiModelProperty(value = "项目类型（交通类、市政类、房建类、其他类）")
+    private String projecttype;
+
+    @ApiModelProperty(value = "项目点")
+    private String projectpoint;
+
+    @ApiModelProperty(value = "项目线")
+    private String projectline;
+
+    @ApiModelProperty(value = "项目面")
+    private String projectsurface;
+
+    @ApiModelProperty(value = "项目简介")
+    private String introduction;
 
     private static final long serialVersionUID = 1L;
 
@@ -222,5 +250,69 @@ public class SsFProjects implements Serializable {
                 ", isauto=" + isauto +
                 ", projectpic='" + projectpic + '\'' +
                 '}';
+    }
+
+    public String getContractnum() {
+        return contractnum;
+    }
+
+    public void setContractnum(String contractnum) {
+        this.contractnum = contractnum;
+    }
+
+    public String getCoordinate() {
+        return coordinate;
+    }
+
+    public void setCoordinate(String coordinate) {
+        this.coordinate = coordinate;
+    }
+
+    public Integer getInvestment() {
+        return investment;
+    }
+
+    public void setInvestment(Integer investment) {
+        this.investment = investment;
+    }
+
+    public String getProjecttype() {
+        return projecttype;
+    }
+
+    public void setProjecttype(String projecttype) {
+        this.projecttype = projecttype;
+    }
+
+    public String getProjectpoint() {
+        return projectpoint;
+    }
+
+    public void setProjectpoint(String projectpoint) {
+        this.projectpoint = projectpoint;
+    }
+
+    public String getProjectline() {
+        return projectline;
+    }
+
+    public void setProjectline(String projectline) {
+        this.projectline = projectline;
+    }
+
+    public String getProjectsurface() {
+        return projectsurface;
+    }
+
+    public void setProjectsurface(String projectsurface) {
+        this.projectsurface = projectsurface;
+    }
+
+    public String getIntroduction() {
+        return introduction;
+    }
+
+    public void setIntroduction(String introduction) {
+        this.introduction = introduction;
     }
 }

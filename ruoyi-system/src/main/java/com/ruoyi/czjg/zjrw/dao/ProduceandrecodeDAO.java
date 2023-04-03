@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-@Repository
+@Repository("zjProduceandrecodeDAO")
 @Mapper
 public interface ProduceandrecodeDAO {
     int deleteByPrimaryKey(Integer id);

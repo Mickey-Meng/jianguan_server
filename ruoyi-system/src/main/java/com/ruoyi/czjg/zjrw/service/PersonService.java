@@ -5,7 +5,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.ruoyi.common.config.zjrw.ZhuJiAPIConfig;
+import com.ruoyi.common.core.dao.SsFUserGroupDAO;
 import com.ruoyi.common.core.domain.dto.PersonDTO;
+import com.ruoyi.common.core.domain.entity.SsFGroups;
+import com.ruoyi.common.core.domain.entity.SsFProjects;
+import com.ruoyi.common.core.domain.entity.SsFUsers;
 import com.ruoyi.common.core.domain.model.SsFUserRole;
 import com.ruoyi.common.core.domain.model.ZjPersonChange;
 import com.ruoyi.common.core.domain.model.ZjPersonChangeFile;
@@ -23,10 +27,12 @@ import com.ruoyi.common.utils.zjbim.zjrw.httputils.HttpUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -46,6 +52,7 @@ public class PersonService {
     @Autowired
     private PersonDAO personDAO;
     @Autowired
+    @Qualifier("zjSsFUsersDAO")
     private SsFUsersDAO usersDAO;
     @Autowired
     private ProjectsDAO projectsDAO;
@@ -725,7 +732,7 @@ public class PersonService {
             personChangeDAO.newPersonChange(personChange);
             Integer id = personChangeDAO.getLastInsertId();
             if (personChange.getFiles() != null && personChange.getFiles().size() > 0) {
-                for (ZjPersonChangeFile file : personChange.getFiles()) {
+                for (ZjPersonChangeFile file : personChange.getChangeFiles()) {
                     file.setGid(id);
                     personChangeDAO.addPersonFile(file);
                 }
@@ -782,7 +789,7 @@ public class PersonService {
             }
             for (ZjPersonChange personChange : personChanges) {
                 List<ZjPersonChangeFile> files = personChangeDAO.getFileIdsByGid(personChange.getId());
-                personChange.setFiles(files);
+                personChange.setChangeFiles(files);
             }
         }
 
@@ -1044,7 +1051,7 @@ public class PersonService {
 
             for (ZjPersonChange personChange : personChanges) {
                 List<ZjPersonChangeFile> files = personChangeDAO.getFileIdsByGid(personChange.getId());
-                personChange.setFiles(files);
+                personChange.setChangeFiles(files);
             }
         }
         Integer allCount = personChangeDAO.getAllCount();
@@ -1561,9 +1568,8 @@ public class PersonService {
             Integer userId = ssFUserOnline.getUserid();
             //先查询请假表, 查看当天该人员是否在请假, 如果没有请假则发起消息通知
             ZjPersonLeave leave = personLeaveDAO.getFinishLeaveByUserId(userId);
-            Date now = new Date();
-            Date leaveEndTime = leave.getEndTime();
-            int result = now.compareTo(leaveEndTime);
+            LocalDateTime leaveEndTime = leave.getEndTime();
+            int result = LocalDateTime.now().compareTo(leaveEndTime);
             if (result == 1) {
                 //说明当前时间大于请假结束时间, 说明请假时间已过
                 //再查看在线表, 今天是否有记录, 如果没有则发送通知
@@ -1673,7 +1679,7 @@ public class PersonService {
 
             for (ZjPersonChange personChange : personChanges) {
                 List<ZjPersonChangeFile> files = personChangeDAO.getFileIdsByGid(personChange.getId());
-                personChange.setFiles(files);
+                personChange.setChangeFiles(files);
             }
         }
         return new ResponseBase(200, "查询人员变更台账成功!", personChanges);

@@ -2,11 +2,11 @@ package com.ruoyi.czjg.zjrw.service;
 
 import com.google.common.collect.Lists;
 import com.ruoyi.common.constant.ComponentType;
+import com.ruoyi.common.core.dao.SsFGroupsDAO;
+import com.ruoyi.common.core.dao.SsFUserGroupDAO;
+import com.ruoyi.common.core.dao.ZjFGroupsProjectsDAO;
 import com.ruoyi.common.core.domain.BaseTree;
-import com.ruoyi.common.core.domain.entity.Conponent;
-import com.ruoyi.common.core.domain.entity.Produce;
-import com.ruoyi.common.core.domain.entity.Produceandrecode;
-import com.ruoyi.common.core.domain.entity.ZjConponentProducetime;
+import com.ruoyi.common.core.domain.entity.*;
 import com.ruoyi.common.core.domain.object.ResponseBase;
 import com.ruoyi.common.utils.JwtUtil;
 import com.ruoyi.czjg.zjrw.dao.*;
@@ -16,6 +16,7 @@ import com.ruoyi.common.utils.zjbim.zjrw.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,10 +41,13 @@ public class ComponentSevice {
     Logger log = LoggerFactory.getLogger(ComponentSevice.class);
 
     @Autowired
+    @Qualifier("zjFGroupsProjectsDAO")
     ZjFGroupsProjectsDAO zjFGroupsProjectsDAO;
     @Autowired
+    @Qualifier("zjConponentDAO")
     ConponentDAO conponentDAO;
     @Autowired
+    @Qualifier("zjProduceandrecodeDAO")
     ProduceandrecodeDAO produceandrecodeDAO;
     @Autowired
     ProduceDAO produceDAO;
@@ -310,7 +314,7 @@ public class ComponentSevice {
         Integer userId = JwtUtil.getTokenUser().getId();
         //该人员的单位工程权限id
 //        Integer userId = 14;
-        List<Integer> gongqus = ssFUserGroupDAO.getGroupsByUserId(userId);
+        List<Integer> gongqus = ssFUserGroupDAO.getGroupsOfProjectByUserId(userId);
         List<Integer> gongqusSet = gongqus.stream()
                 .filter(proChildId::contains)
                 .collect(Collectors.toList());

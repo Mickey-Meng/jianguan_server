@@ -3,10 +3,13 @@ package com.ruoyi.czjg.zjrw.service;
 import cn.hutool.core.collection.CollUtil;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.ruoyi.common.core.domain.entity.Conponent;
-import com.ruoyi.common.core.domain.entity.PowerData;
-import com.ruoyi.common.core.domain.entity.ZjConponentProducetime;
+import com.ruoyi.common.core.dao.SsFGroupsDAO;
+import com.ruoyi.common.core.dao.SsFUserGroupDAO;
+import com.ruoyi.common.core.dao.ZjFGroupsProjectsDAO;
+import com.ruoyi.common.core.domain.entity.ClockInCensusReturn;
+import com.ruoyi.common.core.domain.entity.*;
 import com.ruoyi.common.core.domain.model.SafePerData;
+import com.ruoyi.common.core.domain.model.ZjPersonLeave;
 import com.ruoyi.common.core.domain.object.ResponseBase;
 import com.ruoyi.common.utils.JwtUtil;
 import com.ruoyi.czjg.zjrw.dao.*;
@@ -18,6 +21,7 @@ import com.ruoyi.common.utils.zjbim.zjrw.ListUtils;
 import com.ruoyi.common.utils.zjbim.zjrw.MyExcelUtil;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
@@ -25,6 +29,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
@@ -57,6 +62,7 @@ public class CountService {
     private ZjConponentProducetimeDAO zjConponentProducetimeDao;
 
     @Autowired
+    @Qualifier("zjFGroupsProjectsDAO")
     private ZjFGroupsProjectsDAO zjFGroupsProjectsDAO;
 
     @Autowired
@@ -75,6 +81,7 @@ public class CountService {
     @Autowired
     private SsFUserRoleDAO userRoleDAO;
     @Autowired
+    @Qualifier("zjSsFUsersDAO")
     private SsFUsersDAO usersDAO;
 
     @Autowired
@@ -96,7 +103,7 @@ public class CountService {
 
     public ResponseBase getPerMonthSafeData(SafePerData safePerData) throws ParseException {
         Integer userId = JwtUtil.getTokenUser().getId();
-        List<Integer> gongqus = ssFUserGroupDAO.getGroupsByUserId(userId);
+        List<Integer> gongqus = ssFUserGroupDAO.getGroupsOfProjectByUserId(userId);
 
         //设置safePerData 的开始与结束时间
         safePerData = DateUtils.getStAndEndByMonth(safePerData);
@@ -163,7 +170,7 @@ public class CountService {
     public ResponseBase getPerSafeData(String askTime, int size) throws ParseException {
         WeekAndMonthCount weekAndMonthCount = new WeekAndMonthCount();
         Integer userId = JwtUtil.getTokenUser().getId();
-        List<Integer> gongqus = ssFUserGroupDAO.getGroupsByUserId(userId);
+        List<Integer> gongqus = ssFUserGroupDAO.getGroupsOfProjectByUserId(userId);
         //固定返回4个数据
         List<SafePerData> list = DateUtils.getFourDateByType(askTime, size);
         //查询每周数据
@@ -212,7 +219,7 @@ public class CountService {
 
     public ResponseBase getDayData(String askTime) throws ParseException {
         Integer userId = JwtUtil.getTokenUser().getId();
-        List<Integer> gongqus = ssFUserGroupDAO.getGroupsByUserId(userId);
+        List<Integer> gongqus = ssFUserGroupDAO.getGroupsOfProjectByUserId(userId);
         //获取当前日期最早事件
         Date stTime = DateUtils.getEarlyDate(askTime);
         Date endTime = DateUtils.getlateDate(askTime);
@@ -227,7 +234,7 @@ public class CountService {
     public ResponseBase getByFirstType() {
         List<SafeCountByType> safeCountByTypes = Lists.newArrayList();
         Integer userId = JwtUtil.getTokenUser().getId();
-        List<Integer> gongqus = ssFUserGroupDAO.getGroupsByUserId(userId);
+        List<Integer> gongqus = ssFUserGroupDAO.getGroupsOfProjectByUserId(userId);
 //        List<ZjSafeEvent> zjSafeEventList =zjSafeEventDAO.getDataByProjectId(gongqus);
 
         List<SafeCheckData> safeCheckData = zjSafeEventDAO.getSafeCheckData(gongqus);
@@ -725,7 +732,7 @@ public class CountService {
         //查询该项目下的子级的单位工程
         List<Integer> allGroups = ssFUserGroupDAO.getAllGroupsByProjectId(projectId);
         Integer userId = JwtUtil.getTokenUser().getId();
-        List<Integer> gongqus = ssFUserGroupDAO.getGroupsByUserId(userId);
+        List<Integer> gongqus = ssFUserGroupDAO.getGroupsOfProjectByUserId(userId);
         if (!gongqus.contains(group) && group != null) {
             return new ResponseBase(503, "查询失败，该用户没有该单位工程的工区的权限！");
         }
@@ -760,7 +767,7 @@ public class CountService {
         Map<String, List<NewProjectConType>> res = Maps.newHashMap();
 
         Integer userId = JwtUtil.getTokenUser().getId();
-        List<Integer> gongqus = ssFUserGroupDAO.getGroupsByUserId(userId);
+        List<Integer> gongqus = ssFUserGroupDAO.getGroupsOfProjectByUserId(userId);
 
         List<NewProjectConType> list = Lists.newArrayList();
         List<NewProjectConType> list1 = Lists.newArrayList();
@@ -808,7 +815,7 @@ public class CountService {
             return new ResponseBase(200, "该项目id无数据!");
         }
         Integer userId = JwtUtil.getTokenUser().getId();
-        List<Integer> gongqus = ssFUserGroupDAO.getGroupsByUserId(userId);
+        List<Integer> gongqus = ssFUserGroupDAO.getGroupsOfProjectByUserId(userId);
         List<Integer> singleProjectId = ssFUserGroupDAO.getAllGroupsByProjectId(projectId);
         // 用户只能查当前项目下的工区
         gongqus = new ArrayList<>(CollUtil.intersectionDistinct(gongqus, singleProjectId));
@@ -982,9 +989,8 @@ public class CountService {
                 ZjPersonLeave leave = leaveDAO.getFinishLeaveByUserId(notCount);
                 if (leave != null) {
                     //获取请假结束时间, 与当前时间作比较
-                    Date leaveEndTime = leave.getEndTime();
-                    Date now = new Date();
-                    int result = now.compareTo(leaveEndTime);
+                    LocalDateTime leaveEndTime = leave.getEndTime();
+                    int result = LocalDateTime.now().compareTo(leaveEndTime);
                     if (result == 1) {
                         //当前时间大于请假结束时间
                         //说明请假已过期, 请假已过期就不加入到请假集合中
@@ -1005,9 +1011,8 @@ public class CountService {
                 ZjPersonLeave leave = leaveDAO.getFinishLeaveByUserId(id);
                 //获取请假结束时间, 与当前时间作比较
                 if (leave != null) {
-                    Date leaveEndTime = leave.getEndTime();
-                    Date now = new Date();
-                    int result = now.compareTo(leaveEndTime);
+                    LocalDateTime leaveEndTime = leave.getEndTime();
+                    int result = LocalDateTime.now().compareTo(leaveEndTime);
                     if (result == 1) {
                         //当前时间大于请假结束时间
                         //说明请假已过期, 请假已过期就不加入到请假集合中

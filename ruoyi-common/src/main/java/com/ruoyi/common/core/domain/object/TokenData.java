@@ -92,6 +92,11 @@ public class TokenData {
      */
     private String headImageUrl;
 
+    private String access_token;
+    private Integer expires_in;
+    private String  token_type;
+    private String scope;
+
     /**
      * 将令牌对象添加到Http请求对象。
      *

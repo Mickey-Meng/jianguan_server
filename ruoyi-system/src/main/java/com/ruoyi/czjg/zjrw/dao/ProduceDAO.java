@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
+@Repository("zjProduceDAO")
 @Mapper
 public interface ProduceDAO {
     int deleteByPrimaryKey(Integer id);

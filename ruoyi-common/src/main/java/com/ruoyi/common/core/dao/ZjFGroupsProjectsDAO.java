@@ -1,11 +1,9 @@
 package com.ruoyi.common.core.dao;
 
 import com.ruoyi.common.core.domain.entity.SsFProjects;
+import com.ruoyi.common.core.domain.entity.TypeNameAndCode;
 import com.ruoyi.common.core.domain.entity.ZjFGroupsProjects;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -61,4 +59,19 @@ public interface ZjFGroupsProjectsDAO {
      */
     @Select("select * from ss_f_projects where PARENTID = #{projectId} and GROUPLEVEL = 3")
     List<SsFProjects> getBuildSectionByProjectId(Integer projectId);
+
+    @Select(" select conponenttype, conponenttypename from zj_conponent_producetime where projecttype = #{type}" +
+        " GROUP BY conponenttype, conponenttypename")
+    List<TypeNameAndCode> getTypeNameAndCode(@Param("type") String type);
+
+
+    @Select("select * from zj_f_groups_projects where groupid = #{groupid}")
+    ZjFGroupsProjects getProjectCodeByProjectId(@Param("groupid")Integer id);
+
+    @Select("select * from zj_f_groups_projects where PROJECTNAME = #{name}")
+    ZjFGroupsProjects getProjectByProjectName(@Param("name")String name);
+
+    @Update("update zj_f_groups_projects set GROUPID = #{id} where PROJECTNAME = #{name}")
+    void updateGroupId(@Param("id")Integer id,
+                       @Param("name")String name);
 }

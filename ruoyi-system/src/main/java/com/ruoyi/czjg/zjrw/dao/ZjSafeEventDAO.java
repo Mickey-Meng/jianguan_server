@@ -1,5 +1,6 @@
 package com.ruoyi.czjg.zjrw.dao;
 
+import com.ruoyi.common.core.domain.entity.SsFGroups;
 import com.ruoyi.czjg.zjrw.domain.dto.EventGroup;
 import com.ruoyi.czjg.zjrw.domain.entity.*;
 import org.apache.ibatis.annotations.Mapper;

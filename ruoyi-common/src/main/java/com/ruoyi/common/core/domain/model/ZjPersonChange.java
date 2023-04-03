@@ -192,8 +192,8 @@ public class ZjPersonChange implements Serializable {
     /**
      * 附件集合，以逗号分开
      */
-   /* @ApiModelProperty(value = "附件集合，以逗号分开")
-    private List<ZjPersonChangeFile> files;*/
+    @ApiModelProperty(value = "附件集合，以逗号分开")
+    private List<ZjPersonChangeFile> changeFiles;
 
 
     @ApiModelProperty(value = "businessKey")
@@ -547,5 +547,13 @@ public class ZjPersonChange implements Serializable {
 
     public void setFlowKey(String flowKey) {
         this.flowKey = flowKey;
+    }
+
+    public List<ZjPersonChangeFile> getChangeFiles() {
+        return changeFiles;
+    }
+
+    public void setChangeFiles(List<ZjPersonChangeFile> changeFiles) {
+        this.changeFiles = changeFiles;
     }
 }

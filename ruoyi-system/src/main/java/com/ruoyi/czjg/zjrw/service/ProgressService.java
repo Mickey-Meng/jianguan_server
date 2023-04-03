@@ -2,15 +2,16 @@ package com.ruoyi.czjg.zjrw.service;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.ruoyi.common.core.dao.SsFGroupsDAO;
+import com.ruoyi.common.core.dao.SsFUserGroupDAO;
 import com.ruoyi.common.core.domain.entity.PowerData;
+import com.ruoyi.common.core.domain.entity.SsFGroups;
 import com.ruoyi.common.core.domain.model.ItemCount;
 import com.ruoyi.common.core.domain.entity.ZjConponentProducetime;
 import com.ruoyi.common.core.domain.model.RightData;
 import com.ruoyi.common.core.domain.entity.ZjYcdata;
 import com.ruoyi.common.core.domain.object.ResponseBase;
 import com.ruoyi.czjg.zjrw.dao.ProjectsDAO;
-import com.ruoyi.czjg.zjrw.dao.SsFGroupsDAO;
-import com.ruoyi.czjg.zjrw.dao.SsFUserGroupDAO;
 import com.ruoyi.czjg.zjrw.dao.ZjConponentProducetimeDAO;
 import com.ruoyi.czjg.zjrw.domain.dto.*;
 import com.ruoyi.czjg.zjrw.domain.entity.*;

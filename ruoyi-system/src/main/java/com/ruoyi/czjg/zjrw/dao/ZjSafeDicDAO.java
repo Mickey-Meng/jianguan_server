@@ -1,6 +1,6 @@
 package com.ruoyi.czjg.zjrw.dao;
 
-import com.ruoyi.czjg.zjrw.domain.dto.SafeCheck;
+import com.ruoyi.common.core.domain.entity.SafeCheck;
 import com.ruoyi.czjg.zjrw.domain.entity.ZjSafeDic;
 import com.ruoyi.czjg.zjrw.domain.entity.ZjSafeEvent;
 import org.apache.ibatis.annotations.Mapper;

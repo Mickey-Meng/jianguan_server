@@ -1,8 +1,8 @@
 package com.ruoyi.czjg.zjrw.dao;
 
-import com.ruoyi.czjg.zjrw.domain.dto.CheckModel;
-import com.ruoyi.czjg.zjrw.domain.dto.SafeCheck;
-import com.ruoyi.czjg.zjrw.domain.entity.SsFUsers;
+import com.ruoyi.common.core.domain.entity.CheckModel;
+import com.ruoyi.common.core.domain.entity.SafeCheck;
+import com.ruoyi.common.core.domain.entity.SsFUsers;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
+@Repository("zjSsFUsersDAO")
 @Mapper
 public interface SsFUsersDAO {
     int deleteByPrimaryKey(Integer id);

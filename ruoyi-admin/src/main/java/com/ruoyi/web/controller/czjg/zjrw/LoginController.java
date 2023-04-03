@@ -1,14 +1,15 @@
 package com.ruoyi.web.controller.czjg.zjrw;
 
 import com.ruoyi.common.annotation.AuthIgnore;
+import com.ruoyi.common.core.domain.entity.SsFUsers;
 import com.ruoyi.common.core.domain.object.ResponseBase;
 import com.ruoyi.czjg.zjrw.domain.dto.UserAddGroupsDTO;
-import com.ruoyi.czjg.zjrw.domain.entity.SsFUsers;
 import com.ruoyi.czjg.zjrw.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,6 +29,7 @@ public class LoginController {
 
 
     @Autowired
+    @Qualifier("loginUserService")
     private UserService userService;
 
 

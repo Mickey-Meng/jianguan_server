@@ -1,10 +1,12 @@
 package com.ruoyi.common.core.domain.dto;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * 当前在线会话
@@ -31,6 +33,7 @@ public class UserOnlineDTO implements Serializable {
     /**
      * 用户名称
      */
+    @ApiModelProperty(value = "昵称")
     private String userName;
 
     /**
@@ -57,5 +60,35 @@ public class UserOnlineDTO implements Serializable {
      * 登录时间
      */
     private Long loginTime;
+
+
+
+    /**
+     * 用户id
+     */
+    @ApiModelProperty(value = "用户id")
+    private Integer userId;
+
+    /**
+     * 名称
+     */
+    @ApiModelProperty(value = "名称")
+    private String name;
+
+    /**
+     * 角色id
+     */
+    @ApiModelProperty(value = "角色id")
+    private Integer roleId;
+
+    /**
+     * 角色名
+     */
+    private String roleName;
+
+    /**
+     * 最后更新在线时间
+     */
+    private Date updateTime;
 
 }

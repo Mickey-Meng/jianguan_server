@@ -2,6 +2,7 @@ package com.ruoyi.web.controller.czjg.zjrw;
 
 import com.ruoyi.common.annotation.CheckRepeatCommit;
 import com.ruoyi.common.core.domain.model.ZjPersonChange;
+import com.ruoyi.common.core.domain.model.ZjPersonLeave;
 import com.ruoyi.common.core.domain.object.ResponseBase;
 import com.ruoyi.czjg.zjrw.domain.dto.PersonSubDTO;
 import com.ruoyi.czjg.zjrw.domain.entity.*;

@@ -8,9 +8,13 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.ruoyi.common.config.zjrw.WebSocketServer;
 import com.ruoyi.common.constant.ComponentType;
+import com.ruoyi.common.core.dao.SsFGroupsDAO;
+import com.ruoyi.common.core.dao.SsFUserGroupDAO;
+import com.ruoyi.common.core.dao.ZjFGroupsProjectsDAO;
 import com.ruoyi.common.core.domain.dto.WebsocketMessageDTO;
 import com.ruoyi.common.core.domain.entity.*;
 import com.ruoyi.common.core.domain.model.Head;
+import com.ruoyi.common.core.domain.model.SsFUserRole;
 import com.ruoyi.common.core.domain.object.ResponseBase;
 import com.ruoyi.common.utils.JwtUtil;
 import com.ruoyi.czjg.zjrw.dao.*;
@@ -19,12 +23,11 @@ import com.ruoyi.czjg.zjrw.domain.entity.*;
 import com.ruoyi.common.utils.zjbim.zjrw.DateUtils;
 import com.ruoyi.common.utils.zjbim.zjrw.MyExcelUtil;
 import com.ruoyi.common.utils.zjbim.zjrw.RestApiUtils;
-import com.ruoyi.czjg.zjrw.domain.entity.SsFUsers;
-import com.ruoyi.czjg.zjrw.domain.entity.ZjFGroupsProjects;
 import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -67,6 +70,7 @@ public class ProduceService {
     ProduceDAO produceDAO;
 
     @Autowired
+    @Qualifier("zjConponentDAO")
     ConponentDAO conponentDAO;
 
     @Autowired
@@ -85,10 +89,12 @@ public class ProduceService {
     RecodedetailDAO recodedetailDAO;
 
     @Autowired
+@Qualifier("zjProduceandrecodeDAO")
     ProduceandrecodeDAO produceandrecodeDAO;
     @Autowired
     private SsFUserGroupDAO ssFUserGroupDAO;
     @Autowired
+    @Qualifier("zjFGroupsProjectsDAO")
     ZjFGroupsProjectsDAO zjFGroupsProjectsDAO;
     @Autowired
     RecodeDAO recodeDAO;
@@ -96,6 +102,7 @@ public class ProduceService {
     @Autowired
     ZjConponentProducetimeDAO zjConponentProducetimeDAO;
     @Autowired
+    @Qualifier("zjSsFUsersDAO")
     SsFUsersDAO ssFUsersDAO;
     @Autowired
     WebSocketServer webSocketServer;
@@ -112,7 +119,7 @@ public class ProduceService {
         List<String> proChildCode = projectsDAO.getChildCode(recodeQueryData.getProjectId());
 
         Integer userId = JwtUtil.getTokenUser().getId();
-        List<Integer> groups = ssFUserGroupDAO.getGroupsByUserId(userId);
+        List<Integer> groups = ssFUserGroupDAO.getGroupsOfProjectByUserId(userId);
         PowerData tokenUser = JwtUtil.getTokenUser();
         String type = recodeQueryData.getType();
         //获取用户所拥有的单位工程code

@@ -9,7 +9,7 @@ import java.util.Date;
 import java.util.List;
 
 @Mapper
-@Repository
+@Repository("zjWeatherDAO")
 public interface WeatherDAO {
     int deleteByPrimaryKey(Integer id);
 

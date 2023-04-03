@@ -54,6 +54,7 @@ public class SsFUsers implements Serializable {
      */
     private Integer ugid;
 
+    private Date updatetime;
 
     private static final long serialVersionUID = 1L;
 
@@ -186,5 +187,13 @@ public class SsFUsers implements Serializable {
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();
+    }
+
+    public Date getUpdatetime() {
+        return updatetime;
+    }
+
+    public void setUpdatetime(Date updatetime) {
+        this.updatetime = updatetime;
     }
 }

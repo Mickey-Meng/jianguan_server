@@ -5,8 +5,15 @@ import cn.hutool.core.date.DateTime;
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.ruoyi.common.config.zjrw.WebSocketServer;
+import com.ruoyi.common.core.dao.SsFGroupsDAO;
+import com.ruoyi.common.core.dao.SsFUserGroupDAO;
 import com.ruoyi.common.core.domain.dto.WebsocketMessageDTO;
+import com.ruoyi.common.core.domain.entity.SafeCheck;
+import com.ruoyi.common.core.domain.entity.SsFGroups;
+import com.ruoyi.common.core.domain.entity.SsFProjects;
+import com.ruoyi.common.core.domain.entity.SsFUserGroup;
 import com.ruoyi.common.core.domain.model.SafePerData;
+import com.ruoyi.common.core.domain.model.SsFUserRole;
 import com.ruoyi.common.core.domain.object.ResponseBase;
 import com.ruoyi.czjg.zjrw.dao.*;
 import com.ruoyi.czjg.zjrw.domain.dto.*;
@@ -19,6 +26,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -50,6 +58,7 @@ public class SafeService {
     @Autowired
     ZjSafeDicDAO zjSafeDicDAO;
     @Autowired
+    @Qualifier("zjSsFUsersDAO")
     SsFUsersDAO ssFUsersDAO;
     @Autowired
     SsFGroupsDAO ssFGroupsDAO;
@@ -482,9 +491,9 @@ public class SafeService {
         }
         List<ZjSafeEvent> zjSafeEventList = Lists.newArrayList();
         Integer userId = JwtUtil.getTokenUser().getId();
-        List<Integer> gongqus = ssFUserGroupDAO.getGroupsByUserId(userId);
+        List<Integer> gongqus = ssFUserGroupDAO.getGroupsOfProjectByUserId(userId);
         //当查到的用户的角色权限为2时,默认拥有所有工区权限
-        List<Integer> allGroups = ssFUserGroupDAO.getAllGroups();
+        List<Integer> allGroups = ssFUserGroupDAO.getAllGroupsOfProject();
         if (gongqus.size() > 0){
             if (gongqus.contains(2)){
                 gongqus.clear();
@@ -516,7 +525,7 @@ public class SafeService {
             return new ResponseBase(200,"查询成功", zjSafeEventList);
         }
         Integer userId = JwtUtil.getTokenUser().getId();
-        List<Integer> gongqus = ssFUserGroupDAO.getGroupsByUserId(userId);
+        List<Integer> gongqus = ssFUserGroupDAO.getGroupsOfProjectByUserId(userId);
         //根据工区维度获取数据
         List<ZjSafeEvent> zjSafeEventList = Lists.newArrayList();
         if (gongqus.size() > 0){
@@ -526,12 +535,12 @@ public class SafeService {
     }
 
     public ResponseBase getQu() {
-        List<SsFGroups> lists = ssFUserGroupDAO.getall();
+        List<SsFGroups> lists = ssFUserGroupDAO.getAllUserGroup();
         return new ResponseBase(200,null,lists);
     }
 
     public ResponseBase getProject(Integer id) {
-        List<SsFGroups> lists = ssFUserGroupDAO.getallGq(id);
+        List<SsFGroups> lists = ssFUserGroupDAO.getAllUserGroupGq(id);
         return new ResponseBase(200,null,lists);
     }
 
@@ -659,7 +668,7 @@ public class SafeService {
         safePerData = DateUtils.getDay(count);
         //获取到用户所拥有的工区权限
         Integer id = JwtUtil.getTokenUser().getId();
-        List<Integer> gongqus = ssFUserGroupDAO.getGroupsByUserId(id);
+        List<Integer> gongqus = ssFUserGroupDAO.getGroupsOfProjectByUserId(id);
         if (gongqus.size() == 0){
             return new ResponseBase(200, "该用户暂时没有绑定单位工程!");
         }
@@ -770,7 +779,7 @@ public class SafeService {
         }
         List<GqDataAll> resb = Lists.newArrayList();
         Integer id = JwtUtil.getTokenUser().getId();
-        List<Integer> gongqus = ssFUserGroupDAO.getGroupsByUserId(id);
+        List<Integer> gongqus = ssFUserGroupDAO.getGroupsOfProjectByUserId(id);
         if (gongqus.size() == 0){
             return new ResponseBase(200,"查询成功", resb);
         }
@@ -848,7 +857,7 @@ public class SafeService {
         List<GqDataAll> resb = Lists.newArrayList();
         //获取该查询角色的工区
         Integer id = JwtUtil.getTokenUser().getId();
-        List<Integer> groups = ssFUserGroupDAO.getGroupsByUserId(id);
+        List<Integer> groups = ssFUserGroupDAO.getGroupsOfProjectByUserId(id);
         if (groups.size() == 0){
             //当用户没有工区权限时, 返回空集合
             return new ResponseBase(200, "查询成功!", resb);
@@ -1023,7 +1032,7 @@ public class SafeService {
                 .collect(Collectors.toMap(SsFProjects::getId, ssFProjects -> ssFProjects, (oldObj, netObj) -> oldObj));
         // 查询用户拥有的项目
         Integer userId = JwtUtil.getTokenUser().getId();
-        List<SsFUserGroup> userGroups = ssFUserGroupDAO.getGroups(userId);
+        List<SsFUserGroup> userGroups = ssFUserGroupDAO.getUserGroupsOfProject(userId);
         // 数据集合取交集，用户拥有权限的项目
         List<GqDataAll> datas = Lists.newArrayList();
         for (SsFUserGroup userGroup : userGroups) {
@@ -1051,11 +1060,11 @@ public class SafeService {
         List<Integer> groups = Lists.newArrayList();
         //通过token获取用户所拥有的工区数
         Integer userId = JwtUtil.getTokenUser().getId();
-        List<Integer> groupIds = ssFUserGroupDAO.getGroupsByUserId(userId);
+        List<Integer> groupIds = ssFUserGroupDAO.getGroupsOfProjectByUserId(userId);
         if (groupIds.contains(2) || groupIds.contains(3)){
             //说明 该用户工区权限为总部, 先清空
             groupIds.clear();
-            groupIds = ssFUserGroupDAO.getAllGroups();
+            groupIds = ssFUserGroupDAO.getAllGroupsOfProject();
             for (Integer groupId : groupIds) {
                 GqDataAll data = new GqDataAll();
                 SsFProjects project = ssFGroupsDAO.getProjectById(groupId);
@@ -1066,7 +1075,7 @@ public class SafeService {
                 datas.add(data);
             }
         } else{
-            List<SsFUserGroup> userGroups = ssFUserGroupDAO.getGroups(userId);
+            List<SsFUserGroup> userGroups = ssFUserGroupDAO.getUserGroupsOfProject(userId);
             for (SsFUserGroup userGroup : userGroups) {
                 GqDataAll data = new GqDataAll();
                 groups.add(userGroup.getGroupid());
@@ -1093,7 +1102,7 @@ public class SafeService {
         List<Integer> groupIds = ssFGroupsDAO.getGroupsById(projectId);
         if (groupIds.contains(group)){
             //通过groupid 查询对应的有多少用户
-            List<SsFUserGroup> userGroups = ssFUserGroupDAO.getAllByGroupId(group);
+            List<SsFUserGroup> userGroups = ssFUserGroupDAO.getAllOfProjectByGroupId(group);
             List<Integer> userIds = Lists.newArrayList();
             for (SsFUserGroup userGroup : userGroups) {
                 userIds.add(userGroup.getUserid());

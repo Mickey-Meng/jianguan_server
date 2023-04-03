@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
+@Repository("zjConponentDAO")
 @Mapper
 public interface ConponentDAO {
     int deleteByPrimaryKey(Integer id);

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
+@Repository("zjRecodeDAO")
 @Mapper
 public interface RecodeDAO {
     int deleteByPrimaryKey(Integer id);
