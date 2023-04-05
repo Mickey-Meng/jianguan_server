@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.jianguan.quality.mapper.SupervisionNoticeMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ruoyi.jianguan.quality.domain.entity.SupervisionNotice">
+        <id column="id" property="id"/>
+        <result column="create_user_id" property="createUserId"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user_id" property="updateUserId"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="project_id" property="projectId"/>
+        <result column="code" property="code"/>
+        <result column="main_sent" property="mainSent"/>
+        <result column="title" property="title"/>
+        <result column="copy" property="copy"/>
+        <result column="content" property="content"/>
+        <result column="status" property="status"/>
+        <result column="draft_flag" property="draftFlag"/>
+        <result column="deleted_flag" property="deletedFlag"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        create_user_id,
+        create_time,
+        update_user_id,
+        update_time,
+        id, project_id, code, main_sent, title, copy, content, status, draft_flag, deleted_flag
+    </sql>
+
+    <select id="getPageInfo" parameterType="com.ruoyi.jianguan.quality.domain.dto.SupervisionNoticePageDTO"
+            resultType="com.ruoyi.jianguan.quality.domain.vo.SupervisionNoticePageVo">
+        select a.*,u.NAME as createUserName from
+        zz_supervision_notice a
+        left join ss_f_users u on a.create_user_id = u.ID
+        where a.project_id = #{pageDto.projectId} and a.build_section = #{pageDto.buildSection}
+        <if test="pageDto.title != null and pageDto.title != ''">
+            and a.title like concat('%',#{pageDto.title},'%')
+        </if>
+        <if test="pageDto.createStartTime != null and pageDto.createStartTime != ''">
+            and a.create_time >= #{pageDto.createStartTime}
+        </if>
+        <if test="pageDto.createEndTime != null and pageDto.createEndTime != ''">
+            and a.create_time &lt;= #{pageDto.createEndTime}
+        </if>
+        <if test="pageDto.draftFlag != null">
+            and a.draft_flag = #{pageDto.draftFlag}
+        </if>
+        order by a.create_time desc
+    </select>
+</mapper>

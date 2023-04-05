@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.jianguan.quality.mapper.HiddenProjectAcceptMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ruoyi.jianguan.quality.domain.entity.HiddenProjectAccept">
+        <id column="id" property="id"/>
+        <result column="create_user_id" property="createUserId"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user_id" property="updateUserId"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="project_id" property="projectId"/>
+        <result column="project_code" property="projectCode"/>
+        <result column="sub_project" property="subProject"/>
+        <result column="unit" property="unit"/>
+        <result column="hidden_project" property="hiddenProject"/>
+        <result column="build_checkself_result" property="buildCheckselfResult"/>
+        <result column="attach_list" property="attachList"/>
+        <result column="attachment" property="attachment"/>
+        <result column="quality_check_user" property="qualityCheckUser"/>
+        <result column="project_build_user" property="projectBuildUser"/>
+        <result column="supervisor_user" property="supervisorUser"/>
+        <result column="supervisor_engineer_user" property="supervisorEngineerUser"/>
+        <result column="project_charge_user" property="projectChargeUser"/>
+        <result column="draft_flag" property="draftFlag"/>
+        <result column="deleted_flag" property="deletedFlag"/>
+        <result column="status" property="status"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        create_user_id,
+        create_time,
+        update_user_id,
+        update_time,
+        id, project_id, project_code, sub_project, unit, hidden_project, build_checkself_result, attach_list, attachment, quality_check_user, project_build_user, supervisor_user, supervisor_engineer_user, project_charge_user, draft_flag, deleted_flag
+    </sql>
+
+    <!-- 分页查询隐蔽工程验收记录数据 -->
+    <select id="getPageInfo" parameterType="com.ruoyi.jianguan.quality.domain.dto.HiddenProjectAcceptPageDTO" resultType="com.ruoyi.jianguan.quality.domain.vo.HiddenProjectAcceptPageVo">
+        select p.name as projectName,pb.`NAME` as buildSectionName,
+             a.*,pb.CONTRACTNUM as contractCode,u.NAME as createUserName
+          from zz_hidden_project_accept a
+        left join ss_f_projects p on p.ID = a.project_id and p.GROUPLEVEL = 2
+        left join ss_f_projects pb on pb.id = a.build_section and pb.GROUPLEVEL = 3
+        left join ss_f_users u on a.create_user_id = u.ID
+         where a.project_id = #{pageDto.projectId} and a.build_section = #{pageDto.buildSection}
+        <if test="pageDto.projectCode != null and pageDto.projectCode != ''">
+            and a.project_code like concat('%',#{pageDto.projectCode},'%')
+        </if>
+        <if test="pageDto.subProject != null and pageDto.subProject != ''">
+            and a.sub_project like concat('%',#{pageDto.subProject},'%')
+        </if>
+        <if test="pageDto.draftFlag != null">
+            and a.draft_flag = #{pageDto.draftFlag}
+        </if>
+        order by a.create_time desc
+    </select>
+
+</mapper>

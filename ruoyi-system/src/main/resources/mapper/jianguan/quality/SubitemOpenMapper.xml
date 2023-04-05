@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.jianguan.quality.mapper.SubitemOpenMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ruoyi.jianguan.quality.domain.entity.SubitemOpen">
+        <id column="id" property="id"/>
+        <result column="create_user_id" property="createUserId"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user_id" property="updateUserId"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="project_id" property="projectId"/>
+        <result column="build_section" property="buildSection"/>
+        <result column="project_code" property="projectCode"/>
+        <result column="open_date" property="openDate"/>
+        <result column="end_date" property="endDate"/>
+        <result column="place" property="place"/>
+        <result column="live_user" property="liveUser"/>
+        <result column="build_user" property="buildUser"/>
+        <result column="check_user" property="checkUser"/>
+        <result column="build_prepare_explain" property="buildPrepareExplain"/>
+        <result column="experiment_attachment" property="experimentAttachment"/>
+        <result column="experiment_explain" property="experimentExplain"/>
+        <result column="build_attachment" property="buildAttachment"/>
+        <result column="build_explain" property="buildExplain"/>
+        <result column="process_attachment" property="processAttachment"/>
+        <result column="process_explain" property="processExplain"/>
+        <result column="material_attachment" property="materialAttachment"/>
+        <result column="material_explain" property="materialExplain"/>
+        <result column="equipment_attachment" property="equipmentAttachment"/>
+        <result column="equipment_explain" property="equipmentExplain"/>
+        <result column="tech_attachment" property="techAttachment"/>
+        <result column="tech_explain" property="techExplain"/>
+        <result column="build_plan_attachment" property="buildPlanAttachment"/>
+        <result column="build_plan_explain" property="buildPlanExplain"/>
+        <result column="security_attachment" property="securityAttachment"/>
+        <result column="security_explain" property="securityExplain"/>
+        <result column="risk_attachment" property="riskAttachment"/>
+        <result column="risk_explain" property="riskExplain"/>
+        <result column="environment_attachment" property="environmentAttachment"/>
+        <result column="environment_explain" property="environmentExplain"/>
+        <result column="bottom_attachment" property="bottomAttachment"/>
+        <result column="bottom_explain" property="bottomExplain"/>
+        <result column="status" property="status"/>
+        <result column="draft_flag" property="draftFlag"/>
+        <result column="deleted_flag" property="deletedFlag"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        create_user_id
+        ,
+        create_time,
+        update_user_id,
+        update_time,
+        id, project_id, build_section, project_code, open_date, end_date, place, live_user, build_user, check_user, build_prepare_explain, experiment_attachment, experiment_explain, build_attachment, build_explain, process_attachment, process_explain, material_attachment, material_explain, equipment_attachment, equipment_explain, tech_attachment, tech_explain, build_plan_attachment, build_plan_explain, security_attachment, security_explain, risk_attachment, risk_explain, environment_attachment, environment_explain, bottom_attachment, bottom_explain, status, draft_flag, deleted_flag
+    </sql>
+
+
+    <select id="getPageInfo" parameterType="com.ruoyi.jianguan.quality.domain.dto.SubitemOpenPageDTO"
+            resultType="com.ruoyi.jianguan.quality.domain.vo.SubitemOpenPageVo">
+        select a.*,p.name as projectName,u.name as liveUserName,e.name as buildUserName ,r.name as checkUserName
+        ,x.NAME as createUserName from
+        zz_subitem_open a
+        left join ss_f_projects p on p.ID = a.project_id and p.GROUPLEVEL = 2
+        left join ss_f_projects s on s.ID = a.build_section and p.GROUPLEVEL = 3
+        left join ss_f_users u on u.id = a.live_user
+        left join ss_f_users e on e.id = a.build_user
+        left join ss_f_users r on r.id = a.check_user
+        left join ss_f_users x on a.create_user_id = x.ID
+        where a.project_id = #{pageDto.projectId} and a.build_section = #{pageDto.buildSection}
+        <if test="pageDto.buildSectionName != null and pageDto.buildSectionName != ''">
+            and s.name like concat('%',#{pageDto.buildSectionName},'%')
+        </if>
+        <if test="pageDto.place != null and pageDto.place != ''">
+            and a.place like concat('%',#{pageDto.place},'%')
+        </if>
+        <if test="pageDto.draftFlag != null">
+            and a.draft_flag = #{pageDto.draftFlag}
+        </if>
+        order by a.create_time desc
+    </select>
+
+
+</mapper>

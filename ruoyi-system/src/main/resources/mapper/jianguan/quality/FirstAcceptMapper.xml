@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.jianguan.quality.mapper.FirstAcceptMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ruoyi.jianguan.quality.domain.entity.FirstAccept">
+        <id column="id" property="id"/>
+        <result column="create_user_id" property="createUserId"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user_id" property="updateUserId"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="project_id" property="projectId"/>
+        <result column="build_section" property="buildSection"/>
+        <result column="first_project_name" property="firstProjectName"/>
+        <result column="sub_project" property="subProject"/>
+        <result column="sub_project_detail" property="subProjectDetail"/>
+        <result column="build_date" property="buildDate"/>
+        <result column="build_process_explain" property="buildProcessExplain"/>
+        <result column="supervision_work_explain" property="supervisionWorkExplain"/>
+        <result column="main_data_explain" property="mainDataExplain"/>
+        <result column="problem_deal_explain" property="problemDealExplain"/>
+        <result column="check_result_explain" property="checkResultExplain"/>
+        <result column="face_quelity_explain" property="faceQuelityExplain"/>
+        <result column="build_tech_attachment" property="buildTechAttachment"/>
+        <result column="measure_attachment" property="measureAttachment"/>
+        <result column="material_attachment" property="materialAttachment"/>
+        <result column="mechanical_attachment" property="mechanicalAttachment"/>
+        <result column="test_attachment" property="testAttachment"/>
+        <result column="open_attachment" property="openAttachment"/>
+        <result column="quality_attachment" property="qualityAttachment"/>
+        <result column="image_video" property="imageVideo"/>
+        <result column="first_project_video" property="firstProjectVideo"/>
+        <result column="first_pass_explain" property="firstPassExplain"/>
+        <result column="status" property="status"/>
+        <result column="draft_flag" property="draftFlag"/>
+        <result column="deleted_flag" property="deletedFlag"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        create_user_id
+        ,
+        create_time,
+        update_user_id,
+        update_time,
+        id, project_id, build_section, first_project_name, sub_project, sub_project_detail, build_date, build_process_explain, supervision_work_explain, main_data_explain, problem_deal_explain, check_result_explain, face_quelity_explain, build_tech_attachment, measure_attachment, material_attachment, mechanical_attachment, test_attachment, open_attachment, quality_attachment, image_video, first_project_video, first_pass_explain, status, draft_flag, deleted_flag
+    </sql>
+
+
+    <select id="getPageInfo" resultType="com.ruoyi.jianguan.quality.domain.vo.FirstAcceptPageVo"
+            parameterType="com.ruoyi.jianguan.quality.domain.dto.FirstAcceptPageDTO">
+        select a.*,p.name as buildSectionName,u.NAME as createName,u.NAME as createUserName from  zz_first_accept a
+        left join ss_f_projects p on p.ID = a.build_section and p.GROUPLEVEL = 3
+        left join ss_f_users u on u.ID = a.create_user_id
+        where a.project_id = #{pageDto.projectId} and a.build_section = #{pageDto.buildSection}
+        <if test="pageDto.firstProjectName != null and pageDto.firstProjectName != ''">
+            and a.first_project_name  like concat('%',#{pageDto.firstProjectName},'%')
+        </if>
+        <if test="pageDto.subProjectDetail != null and pageDto.subProjectDetail != ''">
+            and a.sub_project_detail like concat('%',#{pageDto.subProjectDetail},'%')
+        </if>
+        <if test="pageDto.buildDateStart != null and pageDto.buildDateStart != ''">
+            and a.build_date >= #{pageDto.buildDateStart}
+        </if>
+        <if test="pageDto.buildDateEnd != null and pageDto.buildDateEnd != ''">
+            and a.build_date &lt;= #{pageDto.buildDateEnd}
+        </if>
+        <if test="pageDto.draftFlag != null">
+            and a.draft_flag = #{pageDto.draftFlag}
+        </if>
+        order by a.create_time desc
+    </select>
+</mapper>

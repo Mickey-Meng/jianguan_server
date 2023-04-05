@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.jianguan.quality.mapper.SupervisionOrderMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ruoyi.jianguan.quality.domain.entity.SupervisionOrder">
+        <id column="id" property="id"/>
+        <result column="create_user_id" property="createUserId"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user_id" property="updateUserId"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="project_id" property="projectId"/>
+        <result column="address" property="address"/>
+        <result column="build_section" property="buildSection"/>
+        <result column="copy" property="copy"/>
+        <result column="order_code" property="orderCode"/>
+        <result column="order_title" property="orderTitle"/>
+        <result column="order_date" property="orderDate"/>
+        <result column="project_part" property="projectPart"/>
+        <result column="serious_level" property="seriousLevel"/>
+        <result column="order_content" property="orderContent"/>
+        <result column="problem_photo_attachment" property="problemPhotoAttachment"/>
+        <result column="other_attachment" property="otherAttachment"/>
+        <result column="reply_code" property="replyCode"/>
+        <result column="reply_date" property="replyDate"/>
+        <result column="reply_content" property="replyContent"/>
+        <result column="reply_photo_attachment" property="replyPhotoAttachment"/>
+        <result column="reply_other_attachment" property="replyOtherAttachment"/>
+        <result column="review_supervision" property="reviewSupervision"/>
+        <result column="review_director" property="reviewDirector"/>
+        <result column="status" property="status"/>
+        <result column="draft_flag" property="draftFlag"/>
+        <result column="deleted_flag" property="deletedFlag"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        create_user_id
+        ,
+        create_time,
+        update_user_id,
+        update_time,
+        id, project_id, address, build_section, copy, order_code, order_title, order_date, project_part, serious_level, order_content, problem_photo_attachment, other_attachment, reply_code, reply_date, reply_content, reply_photo_attachment, reply_other_attachment, review_supervision, review_director, status, draft_flag, deleted_flag
+    </sql>
+
+    <select id="getPageInfo" parameterType="com.ruoyi.jianguan.quality.domain.dto.SupervisionOrderPageDTO"
+            resultType="com.ruoyi.jianguan.quality.domain.vo.SupervisionOrderPageVo">
+        select a.*,p.name as buildSectionName,u.name as createUserName,f.name as projectName from
+        zz_supervision_order a
+        left join ss_f_projects p on p.ID = a.build_section and p.GROUPLEVEL = 3
+        left join ss_f_projects f on f.ID = a.project_id and p.GROUPLEVEL = 2
+        left join ss_f_users u on u.id = a.create_user_id
+        where a.project_id = #{pageDto.projectId} and a.build_section = #{pageDto.buildSection}
+        <if test="pageDto.createStartTime != null and pageDto.createStartTime != ''">
+            and a.create_time >= #{pageDto.createStartTime}
+        </if>
+        <if test="pageDto.createEndTime != null and pageDto.createEndTime != ''">
+            and a.create_time &lt;= #{pageDto.createEndTime}
+        </if>
+        <if test="pageDto.createUserName != null and pageDto.createUserName != ''">
+            and u.name like concat('%',#{pageDto.createUserName},'%')
+        </if>
+        <if test="pageDto.draftFlag != null">
+            and a.draft_flag = #{pageDto.draftFlag}
+        </if>
+        order by a.create_time desc
+    </select>
+
+</mapper>

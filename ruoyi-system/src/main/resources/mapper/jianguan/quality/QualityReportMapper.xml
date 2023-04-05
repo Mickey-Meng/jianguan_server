@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.jianguan.quality.mapper.QualityReportMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ruoyi.jianguan.quality.domain.entity.QualityReport">
+        <id column="id" property="id" />
+        <result column="create_user_id" property="createUserId" />
+        <result column="create_time" property="createTime" />
+        <result column="update_user_id" property="updateUserId" />
+        <result column="update_time" property="updateTime" />
+        <result column="project_id" property="projectId" />
+        <result column="build_section" property="buildSection" />
+        <result column="report_attachment" property="reportAttachment" />
+        <result column="status" property="status" />
+        <result column="draft_flag" property="draftFlag" />
+        <result column="deleted_flag" property="deletedFlag" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        create_user_id,
+        create_time,
+        update_user_id,
+        update_time,
+        id, project_id, build_section, report_attachment, status, draft_flag, deleted_flag
+    </sql>
+
+
+    <select id="getPageInfo" parameterType="com.ruoyi.jianguan.quality.domain.dto.QualityReportPageDTO"
+            resultType="com.ruoyi.jianguan.quality.domain.vo.QualityReportPageVo">
+        select a.*,p.NAME as projectName,s.NAME as buildSectionName,u.NAME as createUserName from zz_quality_report a
+        left join ss_f_projects p on a.project_id = p.ID and p.GROUPLEVEL = 2
+        left join ss_f_projects s on a.build_section = s.ID and s.GROUPLEVEL = 3
+        left join ss_f_users u on a.create_user_id = u.ID
+        where a.project_id = #{pageDto.projectId} and a.build_section = #{pageDto.buildSection}
+        <if test="pageDto.title != null and pageDto.title != ''">
+            and a.title like concat('%',#{pageDto.title},'%')
+        </if>
+        <if test="pageDto.buildSectionName != null and pageDto.buildSectionName != ''">
+            and s.`name` like concat('%',#{pageDto.buildSectionName},'%')
+        </if>
+        <if test="pageDto.draftFlag != null">
+            and a.draft_flag = #{pageDto.draftFlag}
+        </if>
+        order by a.create_time desc
+    </select>
+
+</mapper>

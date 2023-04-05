@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.jianguan.quality.mapper.QualityDetectionMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ruoyi.jianguan.quality.domain.entity.QualityDetection">
+        <id column="id" property="id" />
+        <result column="create_user_id" property="createUserId" />
+        <result column="create_time" property="createTime" />
+        <result column="update_user_id" property="updateUserId" />
+        <result column="update_time" property="updateTime" />
+        <result column="build_section" property="buildSection" />
+        <result column="inspection_code" property="inspectionCode" />
+        <result column="fill_date" property="fillDate" />
+        <result column="detection_info" property="detectionInfo" />
+        <result column="detection_report" property="detectionReport" />
+        <result column="factory_info" property="factoryInfo" />
+        <result column="other_attachment" property="otherAttachment" />
+        <result column="remark" property="remark" />
+        <result column="detection_user" property="detectionUser" />
+        <result column="deleted_flag" property="deletedFlag" />
+    </resultMap>
+
+
+
+    <select id="getPageInfo" parameterType="com.ruoyi.jianguan.quality.domain.dto.QualityDetectionPageDTO" resultType="com.ruoyi.jianguan.quality.domain.vo.QualityDetectionPageVo">
+        select p.NAME as buildSectionName,a.*,u.NAME as createUserName
+            from zz_quality_detection a
+            left join ss_f_projects p on a.build_section = p.id and p.GROUPLEVEL = 3
+        left join ss_f_users u on a.create_user_id = u.ID
+         where a.project_id = #{pageDto.projectId} and a.build_section = #{pageDto.buildSection}
+        <if test="pageDto.buildSection != null">
+           and build_section = #{pageDto.buildSection}
+        </if>
+        <if test="pageDto.name != null and pageDto.name != ''">
+            and detection_info -> '$[*].name' like concat('%',#{pageDto.name},'%')
+        </if>
+        <if test="pageDto.specification != null and pageDto.specification != ''">
+            and detection_info -> '$[*].specification' like concat('%',#{pageDto.specification},'%')
+        </if>
+        <if test="pageDto.detectionResult != null">
+            and JSON_CONTAINS(`detection_info`, JSON_OBJECT('detectionResult', #{pageDto.detectionResult}))
+        </if>
+        <if test="pageDto.createStartTime != null">
+            and build_section >= #{pageDto.createStartTime}
+        </if>
+        <if test="pageDto.createEndTime != null">
+            and build_section &lt;= #{pageDto.createEndTime}
+        </if>
+        <if test="pageDto.draftFlag != null">
+            and draft_flag = #{pageDto.draftFlag}
+        </if>
+            order by a.create_time desc
+    </select>
+</mapper>

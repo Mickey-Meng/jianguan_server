@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.jianguan.quality.mapper.ProjectOpenMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ruoyi.jianguan.quality.domain.entity.ProjectOpen">
+        <id column="id" property="id"/>
+        <result column="create_user_id" property="createUserId"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user_id" property="updateUserId"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="project_id" property="projectId"/>
+        <result column="open_date" property="openDate"/>
+        <result column="end_date" property="endDate"/>
+        <result column="contract_open_date" property="contractOpenDate"/>
+        <result column="contract_end_date" property="contractEndDate"/>
+        <result column="build_apply_explain" property="buildApplyExplain"/>
+        <result column="project_apply_explain" property="projectApplyExplain"/>
+        <result column="tech_apply_explain" property="techApplyExplain"/>
+        <result column="check_apply_explain" property="checkApplyExplain"/>
+        <result column="design_apply_explain" property="designApplyExplain"/>
+        <result column="again_apply_explain" property="againApplyExplain"/>
+        <result column="insurance_apply_explain" property="insuranceApplyExplain"/>
+        <result column="security_apply_explain" property="securityApplyExplain"/>
+        <result column="other_apply_explain" property="otherApplyExplain"/>
+        <result column="attachment" property="attachment"/>
+        <result column="draft_flag" property="draftFlag"/>
+        <result column="deleted_flag" property="deletedFlag"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        create_user_id
+        ,
+        create_time,
+        update_user_id,
+        update_time,
+        id, project_id, open_date, end_date, contract_open_date, contract_end_date, build_apply_explain, project_apply_explain, tech_apply_explain, check_apply_explain, design_apply_explain, again_apply_explain, insurance_apply_explain, security_apply_explain, other_apply_explain, attachment, draft_flag, deleted_flag
+    </sql>
+
+    <select id="getPageInfo" parameterType="com.ruoyi.jianguan.quality.domain.dto.ProjectOpenPageDTO"
+            resultType="com.ruoyi.jianguan.quality.domain.vo.ProjectOpenPageVo">
+        select a.*,p.name as projectName,u.NAME as createUserName from  zz_project_open a
+        left join ss_f_projects p on p.ID = a.project_id and p.GROUPLEVEL = 2
+        left join ss_f_users u on a.create_user_id = u.ID
+        where a.project_id = #{pageDto.projectId} and a.build_section = #{pageDto.buildSection}
+        <if test="pageDto.openDateStart != null and pageDto.openDateStart != ''">
+            and a.open_date >= #{pageDto.openDateStart}
+        </if>
+        <if test="pageDto.openDateEnd != null and pageDto.openDateEnd != ''">
+            and a.open_date &lt;= #{pageDto.openDateEnd}
+        </if>
+        <if test="pageDto.endDateStart != null and pageDto.endDateStart != ''">
+            and a.end_date >= #{pageDto.endDateStart}
+        </if>
+        <if test="pageDto.endDateEnd != null and pageDto.endDateEnd != ''">
+            and a.end_date &lt;= #{pageDto.endDateEnd}
+        </if>
+        <if test="pageDto.draftFlag != null">
+            and a.draft_flag = #{pageDto.draftFlag}
+        </if>
+        order by a.create_time desc
+    </select>
+
+
+</mapper>

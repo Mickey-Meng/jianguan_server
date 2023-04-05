@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.jianguan.quality.mapper.ManageRegimeMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ruoyi.jianguan.quality.domain.entity.ManageRegime">
+        <id column="id" property="id" />
+        <result column="create_user_id" property="createUserId" />
+        <result column="create_time" property="createTime" />
+        <result column="update_user_id" property="updateUserId" />
+        <result column="update_time" property="updateTime" />
+        <result column="project_id" property="projectId" />
+        <result column="compile_user" property="compileUser" />
+        <result column="compile_date" property="compileDate" />
+        <result column="regime_content" property="regimeContent" />
+        <result column="attachment" property="attachment" />
+        <result column="draft_flag" property="draftFlag" />
+        <result column="deleted_flag" property="deletedFlag" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        create_user_id,
+        create_time,
+        update_user_id,
+        update_time,
+        id, project_id, compile_user, compile_date, regime_content, attachment, draft_flag, deleted_flag
+    </sql>
+
+
+    <select id="getPageInfo" resultType="com.ruoyi.jianguan.quality.domain.vo.ManageRegimePageVo" parameterType="com.ruoyi.common.core.domain.dto.PageDTO">
+        select a.*,p.name as projectName,u.NAME as createUserName from zz_manage_regime a
+        left join ss_f_projects p on p.ID = a.project_id and p.GROUPLEVEL = 2
+        left join ss_f_users u on a.create_user_id = u.ID
+        where a.project_id = #{pageDto.projectId} and a.build_section = #{pageDto.buildSection}
+        <if test="pageDto.draftFlag != null">
+            and a.draft_flag = #{pageDto.draftFlag}
+        </if>
+        order by a.create_time desc
+    </select>
+
+</mapper>

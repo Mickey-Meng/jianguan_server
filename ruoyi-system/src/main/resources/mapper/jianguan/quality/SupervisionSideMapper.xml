@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.jianguan.quality.mapper.SupervisionSideMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ruoyi.jianguan.quality.domain.entity.SupervisionSide">
+        <id column="id" property="id" />
+        <result column="create_user_id" property="createUserId" />
+        <result column="create_time" property="createTime" />
+        <result column="update_user_id" property="updateUserId" />
+        <result column="update_time" property="updateTime" />
+        <result column="project_id" property="projectId" />
+        <result column="build_section" property="buildSection" />
+        <result column="address" property="address" />
+        <result column="side_date" property="sideDate" />
+        <result column="project_part_id" property="projectPartId" />
+        <result column="side_project_id" property="sideProjectId" />
+        <result column="project_part_desc" property="projectPartDesc" />
+        <result column="exception_condition" property="exceptionCondition" />
+        <result column="side_work_condition" property="sideWorkCondition" />
+        <result column="problem_deal_condition" property="problemDealCondition" />
+        <result column="scene_photo_attachment" property="scenePhotoAttachment" />
+        <result column="actual_check_attachment" property="actualCheckAttachment" />
+        <result column="video" property="video" />
+        <result column="attachment" property="attachment" />
+        <result column="status" property="status" />
+        <result column="draft_flag" property="draftFlag" />
+        <result column="deleted_flag" property="deletedFlag" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        create_user_id,
+        create_time,
+        update_user_id,
+        update_time,
+        id, project_id, build_section, address, side_date, project_part_id, side_project_id, project_part_desc, exception_condition, side_work_condition, problem_deal_condition, scene_photo_attachment, actual_check_attachment, video, attachment, status, draft_flag, deleted_flag
+    </sql>
+
+
+    <select id="getPageInfo" parameterType="com.ruoyi.jianguan.quality.domain.dto.SupervisionSidePageDTO"
+            resultType="com.ruoyi.jianguan.quality.domain.vo.SupervisionSidePageVo">
+        select a.*,p.name as projectName,u.name as createName,u.NAME as createUserName from
+           zz_supervision_side a
+        left join ss_f_projects p on p.ID = a.project_id and p.GROUPLEVEL = 2
+        left join ss_f_users u on u.id = a.create_user_id
+        where a.project_id = #{pageDto.projectId}  and a.build_section = #{pageDto.buildSection}
+        <if test="pageDto.sideDateStart != null and pageDto.sideDateStart != ''">
+            and a.side_date >= #{pageDto.sideDateStart}
+        </if>
+        <if test="pageDto.sideDateEnd != null and pageDto.sideDateEnd != ''">
+            and a.side_date &lt;= #{pageDto.sideDateEnd}
+        </if>
+        <if test="pageDto.createName != null and pageDto.createName != ''">
+            and u.name like concat('%',#{pageDto.createName},'%')
+        </if>
+        <if test="pageDto.projectPartDesc != null and pageDto.projectPartDesc != ''">
+            and a.project_part_desc like concat('%',#{pageDto.projectPartDesc},'%')
+        </if>
+        <if test="pageDto.sideProjectId != null">
+            and a.side_project_id = #{pageDto.sideProjectId}
+        </if>
+        <if test="pageDto.draftFlag != null">
+            and a.draft_flag = #{pageDto.draftFlag}
+        </if>
+        order by a.create_time desc
+    </select>
+
+</mapper>

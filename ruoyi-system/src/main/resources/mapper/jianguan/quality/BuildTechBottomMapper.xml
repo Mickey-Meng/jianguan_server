@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.jianguan.quality.mapper.BuildTechBottomMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ruoyi.jianguan.quality.domain.entity.BuildTechBottom">
+        <id column="id" property="id"/>
+        <result column="create_user_id" property="createUserId"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user_id" property="updateUserId"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="project_id" property="projectId"/>
+        <result column="build_section" property="buildSection"/>
+        <result column="check_date" property="checkDate"/>
+        <result column="build_tech_bottom" property="buildTechBottom"/>
+        <result column="remark" property="remark"/>
+        <result column="attachment" property="attachment"/>
+        <result column="status" property="status"/>
+        <result column="draft_flag" property="draftFlag"/>
+        <result column="deleted_flag" property="deletedFlag"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        create_user_id
+        ,
+        create_time,
+        update_user_id,
+        update_time,
+        id, project_id, build_section, check_date, build_tech_bottom, remark, attachment, status, draft_flag, deleted_flag
+    </sql>
+
+
+    <select id="getPageInfo" parameterType="com.ruoyi.jianguan.quality.domain.dto.BuildTechBottomPageDTO"
+            resultType="com.ruoyi.jianguan.quality.domain.vo.BuildTechBottomPageVo">
+        select a.*,s.NAME as buildSectionName,u.NAME as createName,u.NAME as createUserName from zz_build_tech_bottom a
+        left join ss_f_projects s on a.build_section = s.ID and s.GROUPLEVEL = 3
+        left join ss_f_users u on a.create_user_id = u.ID
+        where a.project_id = #{pageDto.projectId} and a.build_section = #{pageDto.buildSection}
+        <if test="pageDto.buildSectionName != null and pageDto.buildSectionName != ''">
+            and s.NAME like concat('%',#{pageDto.buildSectionName},'%')
+        </if>
+        <if test="pageDto.createName != null and pageDto.createName != ''">
+            and u.`name` like concat('%',#{pageDto.createName},'%')
+        </if>
+        <if test="pageDto.startCheckDate != null and pageDto.startCheckDate != ''">
+            and a.check_date >= #{pageDto.startCheckDate}
+        </if>
+        <if test="pageDto.endCheckDate != null and pageDto.endCheckDate != ''">
+            and a.check_date &lt;= #{pageDto.endCheckDate}
+        </if>
+        <if test="pageDto.draftFlag != null">
+            and a.draft_flag = #{pageDto.draftFlag}
+        </if>
+        order by a.create_time desc
+    </select>
+</mapper>
