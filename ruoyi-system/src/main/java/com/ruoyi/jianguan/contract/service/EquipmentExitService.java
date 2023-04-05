@@ -3,9 +3,9 @@ package com.ruoyi.jianguan.contract.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.github.pagehelper.PageInfo;
 import com.ruoyi.common.core.domain.object.ResponseBase;
-import com.ruoyi.jianguan.contract.domain.dto.EquipmentExit;
 import com.ruoyi.jianguan.contract.domain.dto.EquipmentExitPageDTO;
 import com.ruoyi.jianguan.contract.domain.dto.EquipmentExitSaveDTO;
+import com.ruoyi.jianguan.contract.domain.entity.EquipmentExit;
 import com.ruoyi.jianguan.contract.domain.vo.EquipmentExitDetailVo;
 import com.ruoyi.jianguan.contract.domain.vo.EquipmentExitPageVo;
 

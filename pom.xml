@@ -60,6 +60,7 @@
         <simplemagic.version>1.16</simplemagic.version>
         <thumbnailator.version>0.4.19</thumbnailator.version>
         <commons-httpclient.version>3.1</commons-httpclient.version>
+        <knife4j.version>2.0.8</knife4j.version>
     </properties>
 
     <!-- 依赖声明 -->

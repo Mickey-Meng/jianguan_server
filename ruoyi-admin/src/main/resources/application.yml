@@ -205,6 +205,10 @@ mybatis-plus:
       # 字段验证策略之 select,在 select 的时候的字段验证策略既 wrapper 根据内部 entity 生成的 where 条件
       where-strategy: NOT_NULL
 
+common-flow:
+  # 请慎重修改urlPrefix的缺省配置，注意不要以反斜杠(/)结尾。如必须修改其他路径，请同步修改数据库脚本。
+  urlPrefix: /admin/flow
+
 # Swagger配置
 swagger:
   # 是否开启swagger

@@ -1,8 +1,8 @@
 package com.ruoyi.jianguan.contract.mapper;
 
 import com.ruoyi.common.core.mapper.BaseDaoMapper;
-import com.ruoyi.jianguan.contract.domain.dto.EquipmentExit;
 import com.ruoyi.jianguan.contract.domain.dto.EquipmentExitPageDTO;
+import com.ruoyi.jianguan.contract.domain.entity.EquipmentExit;
 import com.ruoyi.jianguan.contract.domain.vo.EquipmentExitPageVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
