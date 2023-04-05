@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.jianguan.contract.mapper.EnterExitUserMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ruoyi.jianguan.contract.domain.entity.EnterExitUser">
+        <id column="id" property="id" />
+        <result column="enter_exit_id" property="enterExitId" />
+        <result column="type" property="type" />
+        <result column="name" property="name" />
+        <result column="phone" property="phone" />
+        <result column="card" property="card" />
+        <result column="household" property="household" />
+        <result column="body_status" property="bodyStatus" />
+        <result column="is_risk" property="isRisk" />
+        <result column="risk_area" property="riskArea" />
+        <result column="start_area" property="startArea" />
+        <result column="way_city" property="wayCity" />
+        <result column="is_vaccine" property="isVaccine" />
+        <result column="is_health" property="isHealth" />
+        <result column="work_type" property="workType" />
+        <result column="remark" property="remark" />
+        <result column="company_name" property="companyName" />
+        <result column="company_phone" property="companyPhone" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, enter_exit_id, type, name, phone, card, household, body_status, is_risk, risk_area, start_area, way_city, is_vaccine, is_health, work_type, remark, company_name, company_phone
+    </sql>
+
+
+    <select id="getPageInfo" parameterType="com.ruoyi.jianguan.contract.domain.dto.EnterExitUserPageDTO" resultMap="BaseResultMap">
+        select distinct a.*  from zz_enter_exit_user a
+        left join zz_enter_exit b on a.enter_exit_id = b.id
+        left join ss_f_projects s on b.build_section = s.ID and s.GROUPLEVEL = 3
+        where b.project_id = #{pageDto.projectId} and a.type = #{pageDto.type}
+        <if test="pageDto.buildSectionName != null and pageDto.buildSectionName != ''">
+            and s.`name` like concat('%',#{pageDto.buildSectionName},'%')
+        </if>
+        <if test="pageDto.name != null and pageDto.name != ''">
+            and a.`name` like concat('%',#{pageDto.name},'%')
+        </if>
+        <if test="pageDto.draftFlag != null">
+            and b.draft_flag = #{pageDto.draftFlag}
+        </if>
+        order by b.create_time desc
+    </select>
+</mapper>

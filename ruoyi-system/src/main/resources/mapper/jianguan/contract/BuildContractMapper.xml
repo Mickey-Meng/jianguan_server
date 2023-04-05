@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.jianguan.contract.mapper.BuildContractMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ruoyi.jianguan.contract.domain.entity.BuildContract">
+        <id column="id" property="id" />
+        <result column="create_user_id" property="createUserId" />
+        <result column="create_time" property="createTime" />
+        <result column="update_user_id" property="updateUserId" />
+        <result column="update_time" property="updateTime" />
+        <result column="project_id" property="projectId" />
+        <result column="project_name" property="projectName" />
+        <result column="build_section" property="buildSection" />
+        <result column="contract_code" property="contractCode" />
+        <result column="contract_user" property="contractUser" />
+        <result column="attachment" property="attachment" />
+        <result column="contract_info" property="contractInfo" />
+        <result column="project_manage_user" property="projectManageUser" />
+        <result column="supervision_user" property="supervisionUser" />
+        <result column="command_user" property="commandUser" />
+        <result column="draft_flag" property="draftFlag" />
+        <result column="deleted_flag" property="deletedFlag" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        create_user_id,
+        create_time,
+        update_user_id,
+        update_time,
+        id, project_id, project_name, build_section, contract_code, contract_user, attachment, contract_info, project_manage_user, supervision_user, command_user, draft_flag, deleted_flag
+    </sql>
+
+
+    <select id="getPageInfo" resultType="com.ruoyi.jianguan.contract.domain.vo.BuildContractPageVo" parameterType="com.ruoyi.jianguan.contract.domain.dto.BuildContractPageDTO">
+        select a.contract_code as contractCode,a.contract_user as contractUser,a.create_time as createTime,p.NAME as buildSectionName
+             ,a.id,a.project_id as projectId,a.build_section as buildSection,u.NAME as createUserName
+        from zz_build_contract a
+          left join ss_f_projects p on a.build_section = p.ID and p.GROUPLEVEL = 3
+          left join ss_f_users u on a.create_user_id = u.ID
+          where a.project_id = #{pageDto.projectId} and  a.build_section = #{pageDto.buildSection}
+        <if test="pageDto.contractCode != null and pageDto.contractCode != ''">
+            and a.contract_code like concat('%',#{pageDto.contractCode},'%')
+        </if>
+        <if test="pageDto.buildSectionName != null and pageDto.buildSectionName != ''">
+            and p.NAME like concat('%',#{pageDto.buildSectionName},'%')
+        </if>
+        <if test="pageDto.draftFlag != null">
+            and a.draft_flag = #{pageDto.draftFlag}
+        </if>
+        order by create_time desc
+    </select>
+
+</mapper>

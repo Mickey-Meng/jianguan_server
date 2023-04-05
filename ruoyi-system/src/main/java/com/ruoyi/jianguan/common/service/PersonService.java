@@ -28,10 +28,11 @@ import com.ruoyi.common.utils.jianguan.zjrw.RestApiUtils;
 import com.ruoyi.common.utils.jianguan.zjrw.httputils.HttpHeader;
 import com.ruoyi.common.utils.jianguan.zjrw.httputils.HttpParamers;
 import com.ruoyi.common.utils.jianguan.zjrw.httputils.HttpUtils;
+import com.ruoyi.jianguan.contract.dao.PersonDAO;
+import com.ruoyi.jianguan.contract.dao.ZjPersonFenceDAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 

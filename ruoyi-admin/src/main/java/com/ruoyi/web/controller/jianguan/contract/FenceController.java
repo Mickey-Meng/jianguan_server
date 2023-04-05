@@ -1,4 +1,4 @@
-package com.ruoyi.web.controller.jianguan.zjrw;
+package com.ruoyi.web.controller.jianguan.contract;
 
 import com.ruoyi.common.core.domain.object.ResponseBase;
 import com.ruoyi.jianguan.common.domain.entity.ZjPersonFence;

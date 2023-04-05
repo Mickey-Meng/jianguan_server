@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.jianguan.contract.mapper.EquipmentInfoMapper">
+
+    <!-- 通用查询映射结果 -->
+        <resultMap id="BaseResultMap" type="com.ruoyi.jianguan.contract.domain.entity.EquipmentInfo">
+        <id column="id" property="id" />
+        <result column="enter_id" property="enterId" />
+        <result column="equipment_type" property="equipmentType" />
+        <result column="equipment_name" property="equipmentName" />
+        <result column="specification" property="specification" />
+        <result column="num" property="num" />
+        <result column="enter_date" property="enterDate" />
+        <result column="tech_condition" property="techCondition" />
+        <result column="use_where" property="useWhere" />
+        <result column="remark" property="remark" />
+        <result column="exit_date" property="exitDate" />
+        <result column="exit_reason" property="exitReason" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, enter_id, equipment_type, equipment_name, specification, num, enter_date, tech_condition, use_where, remark, exit_date, exit_reason
+    </sql>
+
+    <select id="getPageInfo" resultMap="BaseResultMap" parameterType="com.ruoyi.jianguan.contract.domain.dto.EquipmentInfoPageDTO">
+        select a.* from zz_equipment_info a
+        left join zz_equipment_enter p on a.enter_id = p.id
+        where p.project_id = #{pageDto.projectId} and p.build_section = #{pageDto.buildSection}
+        <if test="pageDto.equipmentType != null and pageDto.equipmentType != ''">
+            and a.equipment_type like concat('%',#{pageDto.equipmentType},'%')
+        </if>
+        <if test="pageDto.equipmentName != null and pageDto.equipmentName != ''">
+            and a.`equipment_name` like concat('%',#{pageDto.equipmentName},'%')
+        </if>
+        <if test="pageDto.enterId != null">
+            and a.`enter_id` = #{pageDto.enterId}
+        </if>
+            and a.num > 0
+    </select>
+</mapper>

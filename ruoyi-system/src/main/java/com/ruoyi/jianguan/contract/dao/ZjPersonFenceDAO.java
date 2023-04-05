@@ -1,4 +1,4 @@
-package com.ruoyi.jianguan.common.dao;
+package com.ruoyi.jianguan.contract.dao;
 
 import com.ruoyi.jianguan.common.domain.entity.ZjPersonFence;
 import com.ruoyi.jianguan.common.domain.entity.ZjPersonFenceTime;

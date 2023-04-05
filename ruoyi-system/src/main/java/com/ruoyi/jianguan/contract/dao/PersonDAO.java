@@ -1,4 +1,4 @@
-package com.ruoyi.jianguan.common.dao;
+package com.ruoyi.jianguan.contract.dao;
 
 import com.ruoyi.common.core.domain.dto.PersonDTO;
 import com.ruoyi.common.core.domain.entity.SsFGroups;

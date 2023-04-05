@@ -1,4 +1,4 @@
-package com.ruoyi.web.controller.jianguan.zjrw;
+package com.ruoyi.web.controller.jianguan.contract;
 
 import com.ruoyi.common.annotation.CheckRepeatCommit;
 import com.ruoyi.common.core.domain.model.ZjPersonChange;
