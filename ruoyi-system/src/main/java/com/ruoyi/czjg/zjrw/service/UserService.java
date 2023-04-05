@@ -1,5 +1,6 @@
 package com.ruoyi.czjg.zjrw.service;
 
+import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.http.HttpUtil;
@@ -7,6 +8,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.ruoyi.common.annotation.CheckRepeatCommit;
+import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.core.dao.SsFGroupsDAO;
 import com.ruoyi.common.core.dao.SsFUserGroupDAO;
 import com.ruoyi.common.core.dao.ZjFGroupsProjectsDAO;
@@ -15,11 +17,18 @@ import com.ruoyi.common.core.domain.entity.PowerData;
 import com.ruoyi.common.core.domain.entity.SsFGroups;
 import com.ruoyi.common.core.domain.entity.SsFUserGroup;
 import com.ruoyi.common.core.domain.entity.SsFUsers;
+import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.core.domain.model.SsFUserRole;
 import com.ruoyi.common.core.domain.object.ResponseBase;
 import com.ruoyi.common.config.zjrw.ZhuJiOfferConfig;
 import com.ruoyi.common.core.domain.object.TokenData;
+import com.ruoyi.common.core.service.LogininforService;
+import com.ruoyi.common.enums.DeviceType;
+import com.ruoyi.common.enums.UserType;
+import com.ruoyi.common.helper.LoginHelper;
 import com.ruoyi.common.utils.JwtUtil;
+import com.ruoyi.common.utils.MessageUtils;
+import com.ruoyi.common.utils.ServletUtils;
 import com.ruoyi.czjg.zjrw.dao.*;
 import com.ruoyi.czjg.zjrw.domain.dto.*;
 import com.ruoyi.czjg.zjrw.domain.entity.*;
@@ -80,6 +89,9 @@ public class UserService {
 
     @Autowired
     private HttpsUtils httpsUtils;
+
+    @Autowired
+    private LogininforService asyncService;
 
     @Autowired
     @Qualifier("zjFGroupsProjectsDAO")
@@ -154,13 +166,25 @@ public class UserService {
 //                });
 //            }
 //        }
+
+        // 此处可根据登录用户的数据不同 自行创建 loginUser
+        LoginUser loginUser = new LoginUser();
+        loginUser.setUserId(Long.valueOf(findUser.getId()));
+        loginUser.setUsername(findUser.getUsername());
+        loginUser.setNickName(findUser.getName());
+        loginUser.setUserType(UserType.BUSINESS_USER.getUserType());
+        // 生成token
+        LoginHelper.loginByDevice(loginUser, DeviceType.PC);
+        String authToken = StpUtil.getTokenValue();
+        asyncService.recordLogininfor(findUser.getUsername(), Constants.LOGIN_SUCCESS, MessageUtils.message("user.login.success"), ServletUtils.getRequest());
+
         // todo 暂时只支持1对1,如果用户对应权限表变成了1对多,这个位置需要做修改
         Integer roleId = ssFUsersDAO.getRoleById(findUser.getId());
-
         PowerData powerData = new PowerData(findUser.getId(), roleId);
         //转token
-        String token = JwtUtil.sign(powerData, JwtUtil.SSO_TIME);
-        loginData.setToken(token);
+        String jwtToken = JwtUtil.sign(powerData, JwtUtil.SSO_TIME);
+        loginData.setToken(jwtToken);
+        loginData.setAuthToken(authToken);
         loginData.setId(findUser.getId());
         loginData.setName(findUser.getName());
 

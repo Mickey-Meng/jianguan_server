@@ -18,6 +18,10 @@ public enum UserType {
      * pc端
      */
     SYS_USER("sys_user"),
+    /**
+     * PC业务用户
+     */
+    BUSINESS_USER("business_user"),
 
     /**
      * app端

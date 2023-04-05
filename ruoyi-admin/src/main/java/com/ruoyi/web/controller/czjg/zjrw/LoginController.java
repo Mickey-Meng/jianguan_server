@@ -1,5 +1,6 @@
 package com.ruoyi.web.controller.czjg.zjrw;
 
+import com.ruoyi.common.annotation.Anonymous;
 import com.ruoyi.common.annotation.AuthIgnore;
 import com.ruoyi.common.core.domain.entity.SsFUsers;
 import com.ruoyi.common.core.domain.object.ResponseBase;
@@ -36,6 +37,7 @@ public class LoginController {
     @PostMapping("/login")
     @ResponseBody
     @AuthIgnore
+    @Anonymous
     @ApiOperation(value = "登录，支持单个用户对应多个组织机构（2022-03-08）")
     public ResponseBase login(@RequestBody SsFUsers user){
         return userService.login(user);
