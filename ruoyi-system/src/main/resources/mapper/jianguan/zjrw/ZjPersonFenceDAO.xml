@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.jianguan.common.dao.ZjPersonFenceDAO">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ruoyi.jianguan.common.domain.entity.ZjPersonFence">
+        <id column="id" property="id" />
+        <result column="title" property="title" />
+        <result column="clockAddrName" property="clockAddrName" />
+        <result column="coordinate" property="coordinate" />
+        <result column="centerPoint" property="centerPoint" />
+        <result column="describe" property="describe" />
+        <result column="status" property="status" />
+        <result column="order" property="order" />
+        <result column="projectId" property="projectId" />
+    </resultMap>
+
+    <insert id="newFence">
+        insert into zj_person_fence
+        (`projectId`, `title`,  `clockAddrName`, `coordinate`,
+         `centerPoint`, `describe`, `status`, `order`) values
+        (#{projectId}, #{title}, #{clockAddrName}, #{coordinate},
+         #{centerPoint}, #{describe}, #{status}, #{order})
+    </insert>
+
+    <update id="updateFence" parameterType="com.ruoyi.jianguan.common.domain.entity.ZjPersonFence">
+        update zj_person_fence
+        <set>
+            <if test="projectId != null">
+                `projectId` = #{projectId,jdbcType=INTEGER},
+            </if>
+            <if test="title != null">
+                `title` = #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="clockAddrName != null">
+                `clockAddrName` = #{clockAddrName,jdbcType=VARCHAR},
+            </if>
+            <if test="coordinate != null">
+                `coordinate` = #{coordinate,jdbcType=VARCHAR},
+            </if>
+            <if test="centerPoint != null">
+                `centerPoint` = #{centerPoint,jdbcType=VARCHAR},
+            </if>
+            <if test="describe != null">
+                `describe` = #{describe,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <update id="updateFenceTime" parameterType="com.ruoyi.jianguan.common.domain.entity.ZjPersonFenceTime">
+        update zj_person_fence_time
+        <set>
+            <if test="projectId != null">
+                `projectId` = #{projectId,jdbcType=INTEGER},
+            </if>
+            <if test="title != null">
+                `title` = #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="postId != null">
+                `postId` = #{postId,jdbcType=INTEGER},
+            </if>
+            <if test="clockInStartTime != null">
+                `clockInStartTime` = #{clockInStartTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="clockInEndTime != null">
+                `clockInEndTime` = #{clockInEndTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="clockInOften != null">
+                `clockInOften` = #{clockInOften,jdbcType=INTEGER},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <insert id="newFenceTimes" parameterType="com.ruoyi.jianguan.common.domain.entity.ZjPersonFenceTime">
+        insert into
+            zj_person_fence_time
+        (`projectId`, `title`, `postId`, `clockInStartTime`,
+                `clockInEndTime`, `clockInOften`, `status`, `order`)
+        values
+        (#{projectId}, #{title}, #{postId}, #{clockInStartTime},
+          #{clockInEndTime}, #{clockInOften}, #{status}, #{order})
+
+    </insert>
+</mapper>

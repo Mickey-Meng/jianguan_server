@@ -30,6 +30,8 @@ public interface SsFUsersDAO extends BaseDaoMapper<SsFUsers> {
     @Select("select * from ss_f_users where USERNAME = #{username} ")
     SsFUsers checkLogin(@Param("username") String username);
 
+    @Select("select * from ss_f_users where USERNAME = #{username}")
+    SsFUsers userLogin(@Param("username") String username);
 
     List<CheckModel> getSupCheck();
 
@@ -63,4 +65,18 @@ public interface SsFUsersDAO extends BaseDaoMapper<SsFUsers> {
      * @return
      */
     List<SsFUsers> getNamesByUserName(@Param("userNames")List<String> userNames);
+
+    @Select("select a.usercode, a.sttime, a.ststate, a.storder, a.ugid " +
+        " from ss_f_users a left join ss_f_user_group b on " +
+        " a.id = b.userid where groupid = #{id}")
+    List<SsFUsers> getUserByGroupId(@Param("id") Integer id);
+
+    @Select("select `username` from ss_f_users_copy where id =#{id}")
+    String getCopyNameByUserId(@Param("id") Integer id);
+
+    @Select("select * from ss_f_users where id = #{id} and ststate = 1")
+    SsFUsers getUsingInfoByUserId(Integer id);
+
+    @Select("SELECT sfu.USERID  FROM ss_f_user_project sfu , ss_f_projects sfp  WHERE sfu.GROUPID = sfp.ID AND sfp.PARENTID = #{projectId}")
+    List<String> getUserIDListByProjectId(String projectId);
 }

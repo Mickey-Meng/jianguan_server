@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.jianguan.common.dao.ZjYcdataDAO">
+  <resultMap id="BaseResultMap" type="com.ruoyi.common.core.domain.entity.ZjYcdata">
+    <result column="id" jdbcType="VARCHAR" property="id" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="lon" jdbcType="VARCHAR" property="lon" />
+    <result column="lat" jdbcType="VARCHAR" property="lat" />
+    <result column="pm10" jdbcType="REAL" property="pm10" />
+    <result column="pm25" jdbcType="REAL" property="pm25" />
+    <result column="noise" jdbcType="REAL" property="noise" />
+    <result column="tem" jdbcType="VARCHAR" property="tem" />
+    <result column="hum" jdbcType="VARCHAR" property="hum" />
+    <result column="time" jdbcType="TIMESTAMP" property="time" />
+  </resultMap>
+  <insert id="insert" parameterType="com.ruoyi.common.core.domain.entity.ZjYcdata">
+    insert into zj_ycdata (id, code, address,
+      lon, lat, pm10, pm25,
+      noise, tem, hum, `time`
+      )
+    values (#{id,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR},
+      #{lon,jdbcType=VARCHAR}, #{lat,jdbcType=VARCHAR}, #{pm10,jdbcType=REAL}, #{pm25,jdbcType=REAL},
+      #{noise,jdbcType=REAL}, #{tem,jdbcType=VARCHAR}, #{hum,jdbcType=VARCHAR}, #{time,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.ruoyi.common.core.domain.entity.ZjYcdata">
+    insert into zj_ycdata
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="code != null">
+        code,
+      </if>
+      <if test="address != null">
+        address,
+      </if>
+      <if test="lon != null">
+        lon,
+      </if>
+      <if test="lat != null">
+        lat,
+      </if>
+      <if test="pm10 != null">
+        pm10,
+      </if>
+      <if test="pm25 != null">
+        pm25,
+      </if>
+      <if test="noise != null">
+        noise,
+      </if>
+      <if test="tem != null">
+        tem,
+      </if>
+      <if test="hum != null">
+        hum,
+      </if>
+      <if test="time != null">
+        `time`,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null">
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="lon != null">
+        #{lon,jdbcType=VARCHAR},
+      </if>
+      <if test="lat != null">
+        #{lat,jdbcType=VARCHAR},
+      </if>
+      <if test="pm10 != null">
+        #{pm10,jdbcType=REAL},
+      </if>
+      <if test="pm25 != null">
+        #{pm25,jdbcType=REAL},
+      </if>
+      <if test="noise != null">
+        #{noise,jdbcType=REAL},
+      </if>
+      <if test="tem != null">
+        #{tem,jdbcType=VARCHAR},
+      </if>
+      <if test="hum != null">
+        #{hum,jdbcType=VARCHAR},
+      </if>
+      <if test="time != null">
+        #{time,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+
+  <resultMap id="dataMap" type="com.ruoyi.jianguan.common.domain.dto.YcDataDTO">
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="pm10" jdbcType="REAL" property="pm10" />
+    <result column="pm25" jdbcType="REAL" property="pm25" />
+    <result column="noise" jdbcType="REAL" property="noise" />
+    <result column="tem" jdbcType="VARCHAR" property="tem" />
+    <result column="hum" jdbcType="VARCHAR" property="hum" />
+    <result column="time" jdbcType="TIMESTAMP" property="time" />
+  </resultMap>
+
+  <select id="searchByStAndEndAndCode" parameterType="com.ruoyi.jianguan.common.domain.dto.YcDataDTO" resultMap="dataMap">
+    select
+        code, address, pm10, pm25,
+        noise, tem, hum, time
+    from zj_ycdata
+    where 1=1
+    and code = #{code}
+    <if test="sttime != null ">
+      and time &gt;= #{sttime}
+    </if>
+    <if test="endtime != null ">
+      and time &lt;= #{endtime}
+    </if>
+    group by
+        address, time
+  </select>
+
+</mapper>

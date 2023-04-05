@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.jianguan.common.dao.ConponentscheduleDAO">
+  <resultMap id="BaseResultMap" type="com.ruoyi.common.core.domain.entity.Conponentschedule">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="planbegintime" jdbcType="TIMESTAMP" property="planbegintime" />
+    <result column="planendtime" jdbcType="TIMESTAMP" property="planendtime" />
+    <result column="actulbegintime" jdbcType="TIMESTAMP" property="actulbegintime" />
+    <result column="actulendtime" jdbcType="TIMESTAMP" property="actulendtime" />
+    <result column="updater" jdbcType="VARCHAR" property="updater" />
+    <result column="updatetime" jdbcType="TIMESTAMP" property="updatetime" />
+    <result column="fordayreport" jdbcType="VARCHAR" property="fordayreport" />
+    <result column="conponentid" jdbcType="INTEGER" property="conponentid" />
+    <result column="mouldid" jdbcType="VARCHAR" property="mouldid" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, planbegintime, planendtime, actulbegintime, actulendtime, updater, updatetime,
+    fordayreport, conponentid, mouldid
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from conponentschedule
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from conponentschedule
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.ruoyi.common.core.domain.entity.Conponentschedule" useGeneratedKeys="true">
+    insert into conponentschedule (planbegintime, planendtime, actulbegintime,
+      actulendtime, updater, updatetime,
+      fordayreport, conponentid, mouldid
+      )
+    values (#{planbegintime,jdbcType=TIMESTAMP}, #{planendtime,jdbcType=TIMESTAMP}, #{actulbegintime,jdbcType=TIMESTAMP},
+      #{actulendtime,jdbcType=TIMESTAMP}, #{updater,jdbcType=VARCHAR}, #{updatetime,jdbcType=TIMESTAMP},
+      #{fordayreport,jdbcType=VARCHAR}, #{conponentid,jdbcType=INTEGER}, #{mouldid,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.ruoyi.common.core.domain.entity.Conponentschedule" useGeneratedKeys="true">
+    insert into conponentschedule
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="planbegintime != null">
+        planbegintime,
+      </if>
+      <if test="planendtime != null">
+        planendtime,
+      </if>
+      <if test="actulbegintime != null">
+        actulbegintime,
+      </if>
+      <if test="actulendtime != null">
+        actulendtime,
+      </if>
+      <if test="updater != null">
+        updater,
+      </if>
+      <if test="updatetime != null">
+        updatetime,
+      </if>
+      <if test="fordayreport != null">
+        fordayreport,
+      </if>
+      <if test="conponentid != null">
+        conponentid,
+      </if>
+      <if test="mouldid != null">
+        mouldid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="planbegintime != null">
+        #{planbegintime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="planendtime != null">
+        #{planendtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="actulbegintime != null">
+        #{actulbegintime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="actulendtime != null">
+        #{actulendtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updater != null">
+        #{updater,jdbcType=VARCHAR},
+      </if>
+      <if test="updatetime != null">
+        #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="fordayreport != null">
+        #{fordayreport,jdbcType=VARCHAR},
+      </if>
+      <if test="conponentid != null">
+        #{conponentid,jdbcType=INTEGER},
+      </if>
+      <if test="mouldid != null">
+        #{mouldid,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ruoyi.common.core.domain.entity.Conponentschedule">
+    update conponentschedule
+    <set>
+      <if test="planbegintime != null">
+        planbegintime = #{planbegintime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="planendtime != null">
+        planendtime = #{planendtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="actulbegintime != null">
+        actulbegintime = #{actulbegintime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="actulendtime != null">
+        actulendtime = #{actulendtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updater != null">
+        updater = #{updater,jdbcType=VARCHAR},
+      </if>
+      <if test="updatetime != null">
+        updatetime = #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="fordayreport != null">
+        fordayreport = #{fordayreport,jdbcType=VARCHAR},
+      </if>
+      <if test="conponentid != null">
+        conponentid = #{conponentid,jdbcType=INTEGER},
+      </if>
+      <if test="mouldid != null">
+        mouldid = #{mouldid,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ruoyi.common.core.domain.entity.Conponentschedule">
+    update conponentschedule
+    set planbegintime = #{planbegintime,jdbcType=TIMESTAMP},
+      planendtime = #{planendtime,jdbcType=TIMESTAMP},
+      actulbegintime = #{actulbegintime,jdbcType=TIMESTAMP},
+      actulendtime = #{actulendtime,jdbcType=TIMESTAMP},
+      updater = #{updater,jdbcType=VARCHAR},
+      updatetime = #{updatetime,jdbcType=TIMESTAMP},
+      fordayreport = #{fordayreport,jdbcType=VARCHAR},
+      conponentid = #{conponentid,jdbcType=INTEGER},
+      mouldid = #{mouldid,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

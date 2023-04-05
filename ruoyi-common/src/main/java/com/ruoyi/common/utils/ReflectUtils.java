@@ -1,7 +1,7 @@
 package com.ruoyi.common.utils;
 
 import cn.hutool.core.util.ReflectUtil;
-import com.ruoyi.common.utils.zjbim.StringUtils;
+import com.ruoyi.common.utils.jianguan.StringUtils;
 
 import java.lang.reflect.Method;
 
@@ -23,8 +23,8 @@ public class ReflectUtils extends ReflectUtil {
 	@SuppressWarnings("unchecked")
 	public static <E> E invokeGetter(Object obj, String propertyName) {
 		Object object = obj;
-		for (String name : com.ruoyi.common.utils.zjbim.StringUtils.split(propertyName, ".")) {
-			String getterMethodName = GETTER_PREFIX + com.ruoyi.common.utils.zjbim.StringUtils.capitalize(name);
+		for (String name : com.ruoyi.common.utils.jianguan.StringUtils.split(propertyName, ".")) {
+			String getterMethodName = GETTER_PREFIX + com.ruoyi.common.utils.jianguan.StringUtils.capitalize(name);
 			object = invoke(object, getterMethodName);
 		}
 		return (E) object;
@@ -36,10 +36,10 @@ public class ReflectUtils extends ReflectUtil {
 	 */
 	public static <E> void invokeSetter(Object obj, String propertyName, E value) {
 		Object object = obj;
-		String[] names = com.ruoyi.common.utils.zjbim.StringUtils.split(propertyName, ".");
+		String[] names = com.ruoyi.common.utils.jianguan.StringUtils.split(propertyName, ".");
 		for (int i = 0; i < names.length; i++) {
 			if (i < names.length - 1) {
-				String getterMethodName = GETTER_PREFIX + com.ruoyi.common.utils.zjbim.StringUtils.capitalize(names[i]);
+				String getterMethodName = GETTER_PREFIX + com.ruoyi.common.utils.jianguan.StringUtils.capitalize(names[i]);
 				object = invoke(object, getterMethodName);
 			} else {
 				String setterMethodName = SETTER_PREFIX + StringUtils.capitalize(names[i]);

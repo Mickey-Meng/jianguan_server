@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.jianguan.common.dao.ZjPersonLeaveDAO">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ruoyi.jianguan.zjrw.domain.entity.ZjPersonLeave">
+        <id column="id" property="id" />
+        <result column="leavePersonId" property="leavePersonId" />
+        <result column="leaverPersonName" property="leaverPersonName" />
+        <result column="leaverType" property="leaverType" />
+        <result column="startTime" property="startTime" />
+        <result column="endTime" property="endTime" />
+        <result column="leaveDay" property="leaveDay" />
+        <result column="handoffPersonId" property="handoffPersonId" />
+        <result column="handoffPerson" property="handoffPerson" />
+        <result column="leaveReason" property="leaveReason" />
+        <result column="remark" property="remark" />
+        <result column="status" property="status" />
+        <result column="order" property="order" />
+        <result column="processInstanceId" property="processInstanceId" />
+        <result column="businessKey" property="businessKey" />
+    </resultMap>
+
+    <insert id="newPersonLeave">
+        insert into zj_person_leave (`leavePersonId`, `leaverPersonName`, `leaverType`, `subDate`, `startTime`, `endTime`,
+        `leaveDay`, `handoffPersonId`, `handoffPerson`, `leaveReason`, `remark`, `status`, `order`, `processInstanceId`,
+        `businessKey`)
+        values (#{leavePersonId}, #{leaverPersonName}, #{leaverType}, #{subDate}, #{startTime}, #{endTime}, #{leaveDay},
+         #{handoffPersonId}, #{handoffPerson}, #{leaveReason}, #{remark}, #{status}, #{order}, #{processInstanceId},
+         #{businessKey});
+    </insert>
+
+    <update id="updatePersonLeave" parameterType="com.ruoyi.jianguan.zjrw.domain.entity.ZjPersonLeave">
+        update
+            zj_person_leave
+        <set>
+            <if test="leavePersonId != null">
+                leavePersonId = #{leavePersonId},
+            </if>
+            <if test="leaverPersonName != null">
+                leaverPersonName = #{leaverPersonName},
+            </if>
+            <if test="leaverType != null">
+                leaverType = #{leaverType},
+            </if>
+            <if test="subDate != null">
+                subDate = #{subDate},
+            </if>
+            <if test="startTime != null">
+                startTime = #{startTime},
+            </if>
+            <if test="endTime != null">
+                endTime = #{endTime},
+            </if>
+            <if test="leaveDay != null">
+                leaveDay = #{leaveDay},
+            </if>
+            <if test="handoffPersonId != null">
+                handoffPersonId = #{handoffPersonId},
+            </if>
+            <if test="handoffPerson != null">
+                handoffPerson = #{handoffPerson},
+            </if>
+            <if test="leaveReason != null">
+                leaveReason = #{leaveReason},
+            </if>
+            <if test="remark != null">
+                remark = #{remark},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+        </set>
+        where processInstanceId = #{processInstanceId}
+    </update>
+</mapper>

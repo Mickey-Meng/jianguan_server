@@ -1,7 +1,7 @@
 package com.ruoyi.flowable.service.impl;
 
 import com.google.common.collect.Sets;
-import com.ruoyi.common.core.dao.ZjFGroupsProjectsDAO;
+import com.ruoyi.common.core.dao.jianguan.ZjFGroupsProjectsDAO;
 import com.ruoyi.common.core.domain.entity.CompanyInfo;
 import com.ruoyi.common.core.domain.entity.SsFProjects;
 import com.ruoyi.flowable.service.ZjFGroupsProjectsService;
