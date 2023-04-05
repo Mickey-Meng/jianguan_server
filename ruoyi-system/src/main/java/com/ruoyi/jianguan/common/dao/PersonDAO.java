@@ -133,8 +133,10 @@ public interface PersonDAO {
     @Select("select PROC_INST_ID_ from act_hi_procinst where BUSINESS_KEY_ = #{key}")
     String getHisInstanceIdByBusinessKey(String key);
 
-    @Select("select * from zj_person where status = 2 group by subDate desc")
+    // #118 modify mengzhengbin 20230405 修改：group by subDate desc 改为 order by subDate desc。 [S]
+    @Select("select * from zj_person where status = 2 order by subDate desc")
     List<PersonDTO> getAllFinishContracts();
+    // #118 --[E]
 
     @Select("select id from ss_f_roles where code = 'shigongjihe'")
     Integer getShiGongRoleId();
