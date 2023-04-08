@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.map.mapper.MapServerConfigMapper">
+
+    <resultMap type="com.ruoyi.map.domain.MapServerConfig" id="SysMapServerConfigResult">
+        <result property="id" column="id"/>
+        <result property="serverName" column="server_name"/>
+        <result property="serverCode" column="server_code"/>
+        <result property="serverUrl" column="server_url"/>
+        <result property="serverType" column="server_type"/>
+        <result property="visiable" column="visiable"/>
+        <result property="status" column="status"/>
+        <result property="attrbuites" column="attrbuites"/>
+        <result property="thumbnail" column="thumbnail"/>
+        <result property="description" column="description"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+
+</mapper>
