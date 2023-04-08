@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.jianguan.common.dao.ProjectsDAO">
-  <resultMap id="BaseResultMap" type="com.ruoyi.jianguan.zjrw.domain.entity.SsFProjects">
+  <resultMap id="BaseResultMap" type="com.ruoyi.common.core.domain.entity.SsFProjects">
     <id column="ID" jdbcType="INTEGER" property="id" />
     <result column="NAME" jdbcType="VARCHAR" property="name" />
     <result column="CODE" jdbcType="VARCHAR" property="code" />
@@ -22,7 +22,7 @@
     <result column="INTRODUCTION" jdbcType="VARCHAR" property="introduction" />
   </resultMap>
 
-  <resultMap id="groupMap" type="com.ruoyi.jianguan.zjrw.domain.entity.SsFGroups">
+  <resultMap id="groupMap" type="com.ruoyi.common.core.domain.entity.SsFGroups">
     <id column="ID" jdbcType="INTEGER" property="id" />
     <result column="NAME" jdbcType="VARCHAR" property="name" />
     <result column="CODE" jdbcType="VARCHAR" property="code" />
@@ -35,7 +35,7 @@
     <result column="STORDER" jdbcType="INTEGER" property="storder" />
   </resultMap>
 
-  <resultMap id="userMap" type="com.ruoyi.jianguan.zjrw.domain.entity.SsFUsers">
+  <resultMap id="userMap" type="com.ruoyi.common.core.domain.entity.SsFUsers">
     <id column="ID" jdbcType="INTEGER" property="id" />
     <result column="USERNAME" jdbcType="VARCHAR" property="username" />
     <result column="PWD" jdbcType="VARCHAR" property="pwd" />
