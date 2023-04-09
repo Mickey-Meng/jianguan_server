@@ -37,15 +37,19 @@ public class MapPlan extends BaseEntity {
     private Long parentId;
     /**
      * 层级
+     * 关键字加`防止脚本执行报错
      */
+    @TableField("`level`")
     private Long level;
     /**
      * 分组
      */
+    @TableField("`group`")
     private String group;
     /**
      * 状态（0=正常,1=删除）
      */
+    @TableField("`status`")
     private String status;
     /**
      * 顺序编号

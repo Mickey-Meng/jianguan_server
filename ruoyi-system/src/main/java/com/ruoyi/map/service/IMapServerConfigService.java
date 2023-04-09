@@ -3,6 +3,7 @@ package com.ruoyi.map.service;
 import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.core.domain.PageQuery;
+import com.ruoyi.map.domain.MapServerConfig;
 import com.ruoyi.map.domain.bo.MapServerConfigBo;
 import com.ruoyi.map.domain.vo.MapServerConfigVo;
 
@@ -48,4 +49,6 @@ public interface IMapServerConfigService {
     Boolean deleteWithValidByIds(Collection<Long> ids, Boolean isValid);
 
     int updateServerStatus(MapServerConfigBo bo);
+
+    void doImportMapConfigSave(Collection<String> ids, Long mapPlanId);
 }

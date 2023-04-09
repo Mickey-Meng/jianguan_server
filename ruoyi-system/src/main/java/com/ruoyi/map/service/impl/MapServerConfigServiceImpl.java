@@ -126,4 +126,11 @@ public class MapServerConfigServiceImpl implements IMapServerConfigService {
         validEntityBeforeSave(update);
         return baseMapper.updateById(update) ;
     }
+
+    @Override
+    public void doImportMapConfigSave(Collection<String> ids, Long mapPlanId) {
+        // 查询表信息
+        List<MapServerConfig> mapServerConfigList = baseMapper.selectBatchIds(ids);
+        // TODO 保存地图方案服务信息
+    }
 }

@@ -1,12 +1,17 @@
 package com.ruoyi.map.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.lang.tree.Tree;
+import cn.hutool.core.util.ObjectUtil;
+import com.ruoyi.common.core.domain.entity.SysDept;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.core.domain.PageQuery;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.ruoyi.common.utils.TreeBuildUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import com.ruoyi.map.domain.bo.MapPlanBo;
@@ -111,5 +116,34 @@ public class MapPlanServiceImpl implements IMapPlanService {
             //TODO 做一些业务上的校验,判断是否需要校验
         }
         return baseMapper.deleteBatchIds(ids) > 0;
+    }
+
+    /**
+     * 查询地图方案管理树列表
+     * @param bo
+     * @return
+     */
+    @Override
+    public List<Tree<Long>> getMapPlanTree(MapPlanBo mapPlanBo) {
+        LambdaQueryWrapper<MapPlan> lqw = new LambdaQueryWrapper<>();
+        lqw.eq(ObjectUtil.isNotNull(mapPlanBo.getId()), MapPlan::getId, mapPlanBo.getId())
+            .eq(ObjectUtil.isNotNull(mapPlanBo.getParentId()), MapPlan::getParentId, mapPlanBo.getParentId())
+            .like(StringUtils.isNotBlank(mapPlanBo.getPlanName()), MapPlan::getPlanName, mapPlanBo.getPlanName())
+            .eq(StringUtils.isNotBlank(mapPlanBo.getStatus()), MapPlan::getStatus, mapPlanBo.getStatus())
+            .orderByAsc(MapPlan::getParentId)
+            .orderByAsc(MapPlan::getOrderNumber);
+        List<MapPlan> mapPlanList = baseMapper.selectList(lqw);
+        return buildMapPlanTree(mapPlanList);
+    }
+
+    public List<Tree<Long>> buildMapPlanTree(List<MapPlan> mapPlanList) {
+        if (CollUtil.isEmpty(mapPlanList)) {
+            return CollUtil.newArrayList();
+        }
+        return TreeBuildUtils.build(mapPlanList, (mapPlan, tree) ->
+            tree.setId(mapPlan.getId())
+                .setParentId(mapPlan.getParentId())
+                .setName(mapPlan.getPlanName())
+                .setWeight(mapPlan.getOrderNumber()));
     }
 }

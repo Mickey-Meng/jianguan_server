@@ -7,10 +7,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <resultMap type="com.ruoyi.map.domain.MapPlan" id="MapPlanResult">
         <result property="id" column="id"/>
         <result property="planName" column="plan_name"/>
-        <result property="parentId" column="parentId"/>
-        <result property="level" column="level"/>
-        <result property="group" column="group"/>
-        <result property="status" column="status"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="level" column="`level`"/>
+        <result property="group" column="`group`"/>
+        <result property="status" column="`status`"/>
         <result property="orderNumber" column="order_number"/>
         <result property="groupType" column="group_type"/>
         <result property="createBy" column="create_by"/>

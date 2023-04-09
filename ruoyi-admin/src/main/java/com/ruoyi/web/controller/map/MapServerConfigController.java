@@ -4,7 +4,10 @@ import java.util.List;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
+import cn.hutool.core.convert.Convert;
 import com.ruoyi.common.core.domain.entity.SysUser;
+import com.ruoyi.generator.domain.GenTable;
+import com.ruoyi.map.domain.MapServerConfig;
 import com.ruoyi.map.domain.bo.MapServerConfigBo;
 import com.ruoyi.map.domain.vo.MapServerConfigVo;
 import com.ruoyi.map.service.IMapServerConfigService;
@@ -92,7 +95,7 @@ public class MapServerConfigController extends BaseController {
     @SaCheckPermission("map:mapServerConfig:add")
     @Log(title = "地图服务注册" , businessType = BusinessType.INSERT)
     @RepeatSubmit()
-    @PostMapping()
+    @PostMapping("/add")
     public R<Void> add(@Validated(AddGroup.class) @RequestBody MapServerConfigBo bo) {
         return toAjax(mapServerConfigService.insertByBo(bo) ? 1 : 0);
     }
@@ -103,7 +106,7 @@ public class MapServerConfigController extends BaseController {
     @SaCheckPermission("map:mapServerConfig:edit")
     @Log(title = "地图服务注册" , businessType = BusinessType.UPDATE)
     @RepeatSubmit()
-    @PutMapping()
+    @PutMapping("/update")
     public R<Void> edit(@Validated(EditGroup.class) @RequestBody MapServerConfigBo bo) {
         return toAjax(mapServerConfigService.updateByBo(bo) ? 1 : 0);
     }
@@ -125,9 +128,23 @@ public class MapServerConfigController extends BaseController {
      */
     @SaCheckPermission("map:mapServerConfig:remove")
     @Log(title = "地图服务注册" , businessType = BusinessType.DELETE)
-    @DeleteMapping("/{ids}")
+    @DeleteMapping("/delete/{ids}")
     public R<Void> remove(@NotEmpty(message = "主键不能为空")
                           @PathVariable Long[] ids) {
         return toAjax(mapServerConfigService.deleteWithValidByIds(Arrays.asList(ids), true) ? 1 : 0);
+    }
+
+    /**
+     * 导入地图服务（保存）
+     *
+     * @param mapServerIds ID串
+     */
+    @SaCheckPermission("map:mapServerConfig:import")
+    @Log(title = "导入地图服务", businessType = BusinessType.IMPORT)
+    @PostMapping("/importMapConfig")
+    public R<Void> importMapConfigSave(String mapServerIds, Long mapPlanId) {
+        String[] mapServerIdArray = Convert.toStrArray(mapServerIds);
+        mapServerConfigService.doImportMapConfigSave(Arrays.asList(mapServerIdArray), mapPlanId);
+        return R.ok();
     }
 }

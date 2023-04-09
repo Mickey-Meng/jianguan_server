@@ -1,5 +1,6 @@
 package com.ruoyi.map.service;
 
+import cn.hutool.core.lang.tree.Tree;
 import com.ruoyi.map.domain.MapPlan;
 import com.ruoyi.map.domain.vo.MapPlanVo;
 import com.ruoyi.map.domain.bo.MapPlanBo;
@@ -46,4 +47,11 @@ public interface IMapPlanService {
      * 校验并批量删除地图方案管理信息
      */
     Boolean deleteWithValidByIds(Collection<Long> ids, Boolean isValid);
+
+    /**
+     * 查询地图方案管理树列表
+     * @param bo
+     * @return
+     */
+    List<Tree<Long>> getMapPlanTree(MapPlanBo bo);
 }

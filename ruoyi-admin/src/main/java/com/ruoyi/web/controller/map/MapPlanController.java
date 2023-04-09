@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
+import cn.hutool.core.lang.tree.Tree;
 import lombok.RequiredArgsConstructor;
 
 import javax.servlet.http.HttpServletResponse;
@@ -36,10 +37,10 @@ import com.ruoyi.common.core.page.TableDataInfo;
 @Validated
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/system/plan")
+@RequestMapping("/map/mapPlan")
 public class MapPlanController extends BaseController {
 
-    private final IMapPlanService iMapPlanService;
+    private final IMapPlanService mapPlanService;
 
 /**
  * 查询地图方案管理列表
@@ -47,7 +48,7 @@ public class MapPlanController extends BaseController {
 @SaCheckPermission("map:mapPlan:list")
 @GetMapping("/list")
     public TableDataInfo<MapPlanVo> list(MapPlanBo bo, PageQuery pageQuery) {
-        return iMapPlanService.queryPageList(bo, pageQuery);
+        return mapPlanService.queryPageList(bo, pageQuery);
     }
 
     /**
@@ -57,7 +58,7 @@ public class MapPlanController extends BaseController {
     @GetMapping("/page")
 
     public TableDataInfo<MapPlanVo> page(MapPlanBo bo, PageQuery pageQuery) {
-        return iMapPlanService.queryPageList(bo, pageQuery);
+        return mapPlanService.queryPageList(bo, pageQuery);
     }
 
 
@@ -68,7 +69,7 @@ public class MapPlanController extends BaseController {
     @Log(title = "地图方案管理" , businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(MapPlanBo bo, HttpServletResponse response) {
-        List<MapPlanVo> list = iMapPlanService.queryList(bo);
+        List<MapPlanVo> list = mapPlanService.queryList(bo);
         ExcelUtil.exportExcel(list, "地图方案管理" , MapPlanVo.class, response);
     }
 
@@ -81,7 +82,7 @@ public class MapPlanController extends BaseController {
     @GetMapping("/{id}")
     public R<MapPlanVo> getInfo(@NotNull(message = "主键不能为空")
                                      @PathVariable Long id) {
-        return R.ok(iMapPlanService.queryById(id));
+        return R.ok(mapPlanService.queryById(id));
     }
 
     /**
@@ -92,7 +93,7 @@ public class MapPlanController extends BaseController {
     @RepeatSubmit()
     @PostMapping()
     public R<Void> add(@Validated(AddGroup.class) @RequestBody MapPlanBo bo) {
-        return toAjax(iMapPlanService.insertByBo(bo) ? 1 : 0);
+        return toAjax(mapPlanService.insertByBo(bo) ? 1 : 0);
     }
 
     /**
@@ -103,7 +104,7 @@ public class MapPlanController extends BaseController {
     @RepeatSubmit()
     @PutMapping()
     public R<Void> edit(@Validated(EditGroup.class) @RequestBody MapPlanBo bo) {
-        return toAjax(iMapPlanService.updateByBo(bo) ? 1 : 0);
+        return toAjax(mapPlanService.updateByBo(bo) ? 1 : 0);
     }
 
     /**
@@ -116,6 +117,15 @@ public class MapPlanController extends BaseController {
     @DeleteMapping("/{ids}")
     public R<Void> remove(@NotEmpty(message = "主键不能为空")
                           @PathVariable Long[] ids) {
-        return toAjax(iMapPlanService.deleteWithValidByIds(Arrays.asList(ids), true) ? 1 : 0);
+        return toAjax(mapPlanService.deleteWithValidByIds(Arrays.asList(ids), true) ? 1 : 0);
+    }
+
+    /**
+     * 查询地图方案管理树列表
+     */
+    @SaCheckPermission("map:mapPlan:list")
+    @GetMapping("/getMapPlanTree")
+    public R<List<Tree<Long>>> getMapPlanTree(MapPlanBo bo) {
+        return R.ok(mapPlanService.getMapPlanTree(bo));
     }
 }
