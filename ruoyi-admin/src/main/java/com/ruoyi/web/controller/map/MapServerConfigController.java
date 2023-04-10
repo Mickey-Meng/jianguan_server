@@ -49,8 +49,8 @@ public class MapServerConfigController extends BaseController {
 /**
  * 查询地图服务注册列表
  */
-@SaCheckPermission("map:mapServerConfig:list")
-@GetMapping("/list")
+    @SaCheckPermission("map:mapServerConfig:list")
+    @GetMapping("/list")
     public TableDataInfo<MapServerConfigVo> list(MapServerConfigBo bo, PageQuery pageQuery) {
         return mapServerConfigService.queryPageList(bo, pageQuery);
     }
@@ -112,12 +112,12 @@ public class MapServerConfigController extends BaseController {
     }
 
     /**
-     * 状态修改
+     * 状态&是否可见修改
      */
     @SaCheckPermission("map:mapServerConfig:edit")
     @Log(title = "用户管理", businessType = BusinessType.UPDATE)
-    @PutMapping("/changeStatus")
-    public R<Void> changeStatus(@RequestBody MapServerConfigBo bo) {
+    @PutMapping("/changeStatusOrVisiable")
+    public R<Void> changeStatusOrVisiable(@RequestBody MapServerConfigBo bo) {
         return toAjax(mapServerConfigService.updateServerStatus(bo));
     }
 
@@ -134,17 +134,4 @@ public class MapServerConfigController extends BaseController {
         return toAjax(mapServerConfigService.deleteWithValidByIds(Arrays.asList(ids), true) ? 1 : 0);
     }
 
-    /**
-     * 导入地图服务（保存）
-     *
-     * @param mapServerIds ID串
-     */
-    @SaCheckPermission("map:mapServerConfig:import")
-    @Log(title = "导入地图服务", businessType = BusinessType.IMPORT)
-    @PostMapping("/importMapConfig")
-    public R<Void> importMapConfigSave(String mapServerIds, Long mapPlanId) {
-        String[] mapServerIdArray = Convert.toStrArray(mapServerIds);
-        mapServerConfigService.doImportMapConfigSave(Arrays.asList(mapServerIdArray), mapPlanId);
-        return R.ok();
-    }
 }
