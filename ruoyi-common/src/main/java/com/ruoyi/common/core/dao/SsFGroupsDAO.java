@@ -75,11 +75,11 @@ public interface SsFGroupsDAO {
     @Select("select * from ss_f_groups where name = #{name}")
     SsFGroups getGroupInit(@Param("name") String name);
 
-    @Select("select a.* from ss_f_groups  a  " +
-            "  left join zj_f_groups_projects b  " +
-            "  on a.id = b.GROUPID " +
-            "  where a.PARENTID = #{parentid} " +
-            "  and b.PROJECTTYPE = #{type} ")
+    @Select("select a.* from ss_f_projects  a  " +
+        "  left join zj_f_groups_projects b  " +
+        "  on a.id = b.GROUPID " +
+        "  where a.PARENTID = #{parentid} " +
+        "  and b.PROJECTTYPE = #{type} ")
     List<SsFGroups> getByParentIdType(@Param("parentid") Integer parentid, @Param("type") String type);
 
 /**
