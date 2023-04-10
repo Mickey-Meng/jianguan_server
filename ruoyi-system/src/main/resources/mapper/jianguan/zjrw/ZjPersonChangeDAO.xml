@@ -3,7 +3,7 @@
 <mapper namespace="com.ruoyi.jianguan.common.dao.ZjPersonChangeDAO">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.ruoyi.jianguan.zjrw.domain.entity.ZjPersonChange">
+    <resultMap id="BaseResultMap" type="com.ruoyi.common.core.domain.model.ZjPersonChange">
         <id column="id" property="id" />
         <result column="projectId" property="projectId" />
         <result column="projectName" property="projectName" />

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ruoyi.jianguan.zjrw.dao.SsFGroupsDAO">
-  <resultMap id="BaseResultMap" type="com.ruoyi.jianguan.zjrw.domain.entity.SsFGroups">
+<mapper namespace="com.ruoyi.common.core.dao.SsFGroupsDAO">
+  <resultMap id="BaseResultMap" type="com.ruoyi.common.core.domain.entity.SsFGroups">
     <id column="ID" jdbcType="INTEGER" property="id" />
     <result column="NAME" jdbcType="VARCHAR" property="name" />
     <result column="CODE" jdbcType="VARCHAR" property="code" />
@@ -26,7 +26,7 @@
     delete from ss_f_projects
     where ID = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" keyColumn="ID" keyProperty="id" parameterType="com.ruoyi.jianguan.zjrw.domain.entity.SsFGroups" useGeneratedKeys="true">
+  <insert id="insert" keyColumn="ID" keyProperty="id" parameterType="com.ruoyi.common.core.domain.entity.SsFGroups" useGeneratedKeys="true">
     insert into ss_f_projects (`NAME`, CODE, PARENTID,
       `TYPE`, GROUPLEVEL, VISIBLE,
       STTIME, STSTATE, STORDER
@@ -36,7 +36,7 @@
       #{sttime,jdbcType=TIMESTAMP}, #{ststate,jdbcType=INTEGER}, #{storder,jdbcType=INTEGER}
       )
   </insert>
-  <insert id="insertSelective" keyColumn="ID" keyProperty="id" parameterType="com.ruoyi.jianguan.zjrw.domain.entity.SsFGroups" useGeneratedKeys="true">
+  <insert id="insertSelective" keyColumn="ID" keyProperty="id" parameterType="com.ruoyi.common.core.domain.entity.SsFGroups" useGeneratedKeys="true">
     insert into ss_f_projects
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="name != null">
@@ -97,7 +97,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.ruoyi.jianguan.zjrw.domain.entity.SsFGroups">
+  <update id="updateByPrimaryKeySelective" parameterType="com.ruoyi.common.core.domain.entity.SsFGroups">
     update ss_f_projects
     <set>
       <if test="name != null">
@@ -130,7 +130,7 @@
     </set>
     where ID = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.ruoyi.jianguan.zjrw.domain.entity.SsFGroups">
+  <update id="updateByPrimaryKey" parameterType="com.ruoyi.common.core.domain.entity.SsFGroups">
     update ss_f_projects
     set `NAME` = #{name,jdbcType=VARCHAR},
       CODE = #{code,jdbcType=VARCHAR},
@@ -167,7 +167,7 @@
 
   </select>
 
-  <select id="getCheckByGongQi" resultType="com.ruoyi.jianguan.zjrw.domain.entity.SsFUsers">
+  <select id="getCheckByGongQi" resultType="com.ruoyi.common.core.domain.entity.SsFUsers">
     select
         b.id, b.username, b.name, b.usercode, b.sttime, b.ststate, b.storder, b.ugid
     from

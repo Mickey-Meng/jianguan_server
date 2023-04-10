@@ -3,7 +3,7 @@
 <mapper namespace="com.ruoyi.jianguan.common.dao.ZjPersonLeaveDAO">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.ruoyi.jianguan.zjrw.domain.entity.ZjPersonLeave">
+    <resultMap id="BaseResultMap" type="com.ruoyi.common.core.domain.model.ZjPersonLeave">
         <id column="id" property="id" />
         <result column="leavePersonId" property="leavePersonId" />
         <result column="leaverPersonName" property="leaverPersonName" />
@@ -30,7 +30,7 @@
          #{businessKey});
     </insert>
 
-    <update id="updatePersonLeave" parameterType="com.ruoyi.jianguan.zjrw.domain.entity.ZjPersonLeave">
+    <update id="updatePersonLeave" parameterType="com.ruoyi.common.core.domain.model.ZjPersonLeave">
         update
             zj_person_leave
         <set>

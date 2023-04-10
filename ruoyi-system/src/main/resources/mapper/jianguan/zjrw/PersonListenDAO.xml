@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ruoyi.jianguan.zjrw.dao.PersonListenDAO">
+<mapper namespace="com.ruoyi.common.core.dao.PersonListenDAO">
 
-    <update id="updateContract" parameterType="com.ruoyi.jianguan.zjrw.domain.dto.PersonDTO">
+    <update id="updateContract" parameterType="com.ruoyi.common.core.domain.dto.PersonDTO">
         update zj_person
         <set>
             <if test="projectId != null">
@@ -27,7 +27,7 @@
         where id = #{id}
     </update>
 
-    <update id="updatePersonChange" parameterType="com.ruoyi.jianguan.zjrw.domain.entity.ZjPersonChange">
+    <update id="updatePersonChange" parameterType="com.ruoyi.common.core.domain.model.ZjPersonChange">
         update
             zj_person_change
         <set>
@@ -103,7 +103,7 @@
         </set>
     </update>
 
-    <update id="updatePersonLeave" parameterType="com.ruoyi.jianguan.zjrw.domain.entity.ZjPersonLeave">
+    <update id="updatePersonLeave" parameterType="com.ruoyi.common.core.domain.model.ZjPersonChange">
         update
             zj_person_leave
         <set>

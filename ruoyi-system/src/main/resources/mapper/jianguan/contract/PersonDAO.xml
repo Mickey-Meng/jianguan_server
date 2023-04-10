@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.jianguan.contract.dao.PersonDAO">
 
-  <resultMap id="ssFGroupsMap" type="com.ruoyi.jianguan.zjrw.domain.entity.SsFGroups">
+  <resultMap id="ssFGroupsMap" type="com.ruoyi.common.core.domain.entity.SsFGroups">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="code" jdbcType="VARCHAR" property="code" />
@@ -15,7 +15,7 @@
     <result column="storder" jdbcType="INTEGER" property="storder" />
   </resultMap>
 
-  <resultMap id="userGroupMaps" type="com.ruoyi.jianguan.zjrw.domain.entity.SsFUserGroup">
+  <resultMap id="userGroupMaps" type="com.ruoyi.common.core.domain.entity.SsFUserGroup">
     <id column="userid" jdbcType="INTEGER" property="userid" />
     <result column="groupid" jdbcType="VARCHAR" property="groupid" />
     <result column="ststate" jdbcType="INTEGER" property="ststate" />
@@ -42,7 +42,7 @@
     </foreach>
   </insert>
 
-  <update id="updateDepartment" parameterType="com.ruoyi.jianguan.zjrw.domain.entity.SsFGroups">
+  <update id="updateDepartment" parameterType="com.ruoyi.common.core.domain.entity.SsFGroups">
     update ss_f_person_groups set
     <if test="name != null">
       `name` = #{name}
@@ -50,14 +50,14 @@
     where id = #{id}
   </update>
 
-  <insert id="newContract" parameterType="com.ruoyi.jianguan.zjrw.domain.dto.PersonDTO">
+  <insert id="newContract" parameterType="com.ruoyi.common.core.domain.dto.PersonDTO">
     insert into zj_person (`projectId`, `recordId`, `recorder`, `subDate`, `isContract`, `status`, `order`, `taskId`, `businessKey`)
     values (#{projectId,jdbcType=INTEGER}, #{recordId, jdbcType=INTEGER}, #{recorder, jdbcType=INTEGER},
             #{subDate, jdbcType=TIMESTAMP}, #{isContract, jdbcType=INTEGER}, #{status, jdbcType=INTEGER},
             #{order, jdbcType=INTEGER}, #{taskId, jdbcType=VARCHAR}, #{businessKey});
   </insert>
 
-  <update id="updateContract" parameterType="com.ruoyi.jianguan.zjrw.domain.dto.PersonDTO">
+  <update id="updateContract" parameterType="com.ruoyi.common.core.domain.dto.PersonDTO">
     update zj_person
     <set>
       <if test="projectId != null">
@@ -220,7 +220,7 @@
     where id = #{id}
   </update>
 
-  <select id="getByRoleId" resultType="com.ruoyi.jianguan.zjrw.domain.entity.SsFUsers">
+  <select id="getByRoleId" resultType="com.ruoyi.common.core.domain.entity.SsFUsers">
     select
         a.id, a.username, a.name,a.usercode,
         a.sttime, a.ststate, a.storder, a.ugid
