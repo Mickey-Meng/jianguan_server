@@ -50,5 +50,4 @@ public interface IMapServerConfigService {
 
     int updateServerStatus(MapServerConfigBo bo);
 
-    void doImportMapConfigSave(Collection<String> ids, Long mapPlanId);
 }
