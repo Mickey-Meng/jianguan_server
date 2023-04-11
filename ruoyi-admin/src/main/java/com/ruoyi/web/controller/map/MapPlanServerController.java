@@ -47,7 +47,7 @@ public class MapPlanServerController extends BaseController {
      */
     @SaCheckPermission("map:planServer:list")
     @GetMapping("/list/{planId}")
-    public TableDataInfo<MapServerConfigVo> listMapServerConfigByPlanId(@PathVariable("planId") Long planId, PageQuery pageQuery) {
+    public TableDataInfo<MapPlanServerVo> listMapServerConfigByPlanId(@PathVariable("planId") Long planId, PageQuery pageQuery) {
         return mapPlanServerService.queryPageList(planId, pageQuery);
     }
 

@@ -10,5 +10,30 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="serverId" column="server_id"/>
     </resultMap>
 
+    <select id="selectVoPageByPlanId" resultType="com.ruoyi.map.domain.vo.MapPlanServerVo">
+        SELECT
+            ms.id,
+            ms.plan_id,
+            ms.server_id,
+            mc.server_name,
+            mc.server_code,
+            mc.server_url,
+            mc.server_type,
+            mc.visiable,
+            mc.STATUS,
+            mc.attrbuites,
+            mc.thumbnail,
+            mc.description,
+            ms.create_by,
+            ms.create_time,
+            ms.update_by,
+            ms.update_time
+        FROM
+            map_server_config mc
+                JOIN map_plan_server ms ON ( ms.server_id = mc.id )
+        WHERE
+            ms.plan_id = #{planId}
+    </select>
+
 
 </mapper>

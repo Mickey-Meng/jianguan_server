@@ -46,7 +46,7 @@ public class MapServerConfig extends BaseEntity {
     /**
      * 是否可见
      */
-    private Long visiable;
+    private String visiable;
     /**
      * 状态（0=正常,1=删除）
      */

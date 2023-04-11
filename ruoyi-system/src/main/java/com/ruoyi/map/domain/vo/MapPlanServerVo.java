@@ -82,7 +82,7 @@ public class MapPlanServerVo {
      */
     @ExcelProperty(value = "是否可见")
     @ApiModelProperty(value = "是否可见", required = true)
-    private Long visiable;
+    private String visiable;
 
     /**
      * 状态（0=正常,1=删除）

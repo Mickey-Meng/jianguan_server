@@ -78,7 +78,11 @@ public class MapPlanServerServiceImpl implements IMapPlanServerService {
      * @return
      */
     @Override
-    public TableDataInfo<MapServerConfigVo> queryPageList(Long planId, PageQuery pageQuery) {
+    public TableDataInfo<MapPlanServerVo> queryPageList(Long planId, PageQuery pageQuery) {
+        IPage<MapPlanServerVo> result = mapPlanServerMapper.selectVoPageByPlanId(planId, pageQuery.build());
+        /**
+         * 优化为自定义SQL数据查询
+         *
         // 1.查询地图方案ID关联的地图服务ID集合
         LambdaQueryWrapper<MapPlanServer> lqw1 = Wrappers.lambdaQuery();
         lqw1.eq(planId > 0, MapPlanServer::getPlanId, planId);
@@ -92,6 +96,7 @@ public class MapPlanServerServiceImpl implements IMapPlanServerService {
             lqw2.in(!serverIdList.isEmpty(), MapServerConfig::getId, serverIdList);
             result = mapServerConfigMapper.selectVoPage(pageQuery.build(), lqw2);
         }
+         **/
         return TableDataInfo.build(result);
     }
 }

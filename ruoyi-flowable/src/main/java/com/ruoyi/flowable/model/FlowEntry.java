@@ -139,8 +139,8 @@ public class FlowEntry {
          * @param flowEntryVo 域对象。
          * @return 实体对象。
          */
-        @Mapping(target = "mainFlowEntryPublish", expression = "java(mapToBean(flowEntryVo.getMainFlowEntryPublish(), com.ruoyi.common.flow.model.FlowEntryPublish.class))")
-        @Mapping(target = "flowCategory", expression = "java(mapToBean(flowEntryVo.getFlowCategory(), com.ruoyi.common.flow.model.FlowCategory.class))")
+        @Mapping(target = "mainFlowEntryPublish", expression = "java(mapToBean(flowEntryVo.getMainFlowEntryPublish(), com.ruoyi.flowable.model.FlowEntryPublish.class))")
+        @Mapping(target = "flowCategory", expression = "java(mapToBean(flowEntryVo.getFlowCategory(), com.ruoyi.flowable.model.FlowCategory.class))")
         @Override
         FlowEntry toModel(FlowEntryVo flowEntryVo);
         /**

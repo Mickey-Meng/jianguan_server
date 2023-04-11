@@ -1,6 +1,7 @@
 package com.ruoyi.map.domain;
 
 import com.baomidou.mybatisplus.annotation.*;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import java.io.Serializable;
@@ -8,6 +9,7 @@ import java.util.Date;
 import java.math.BigDecimal;
 
 import com.ruoyi.common.core.domain.BaseEntity;
+import lombok.experimental.Accessors;
 
 /**
  * 地图方案管理对象 map_plan
@@ -16,6 +18,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
  * @date 2023-04-08
  */
 @Data
+@Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
 @TableName("map_plan")
 public class MapPlan extends BaseEntity {

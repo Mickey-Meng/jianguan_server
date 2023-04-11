@@ -32,5 +32,5 @@ public interface IMapPlanServerService {
      * @param pageQuery
      * @return
      */
-    TableDataInfo<MapServerConfigVo> queryPageList(Long planId, PageQuery pageQuery);
+    TableDataInfo<MapPlanServerVo> queryPageList(Long planId, PageQuery pageQuery);
 }

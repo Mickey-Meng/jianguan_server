@@ -137,10 +137,17 @@ public class MapPlanServiceImpl implements IMapPlanService {
     }
 
     public List<Tree<Long>> buildMapPlanTree(List<MapPlan> mapPlanList) {
-        if (CollUtil.isEmpty(mapPlanList)) {
-            return CollUtil.newArrayList();
-        }
-        return TreeBuildUtils.build(mapPlanList, (mapPlan, tree) ->
+        List<MapPlan> buildMapPlanList = CollUtil.newArrayList();
+        // 设置顶级树节点
+        MapPlan topMapPlan = new MapPlan();
+        topMapPlan.setId(0L)
+            .setParentId(-1L)
+            .setPlanName("顶级方案")
+            .setOrderNumber(0L);
+        buildMapPlanList.add(topMapPlan);
+        buildMapPlanList.addAll(mapPlanList);
+
+        return TreeBuildUtils.build(buildMapPlanList, (mapPlan, tree) ->
             tree.setId(mapPlan.getId())
                 .setParentId(mapPlan.getParentId())
                 .setName(mapPlan.getPlanName())

@@ -55,7 +55,7 @@ public class MapServerConfigBo extends BaseEntity {
      * 是否可见
      */
     @NotNull(message = "是否可见不能为空", groups = { AddGroup.class, EditGroup.class })
-    private Long visiable;
+    private String visiable;
 
     /**
      * 状态（0=正常,1=删除）
