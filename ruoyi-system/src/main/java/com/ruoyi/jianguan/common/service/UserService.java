@@ -13,11 +13,13 @@ import com.ruoyi.common.core.dao.SsFGroupsDAO;
 import com.ruoyi.common.core.dao.SsFUserGroupDAO;
 import com.ruoyi.common.core.dao.SsFUsersDAO;
 import com.ruoyi.common.core.dao.jianguan.ZjFGroupsProjectsDAO;
+import com.ruoyi.common.core.domain.dto.RoleDTO;
 import com.ruoyi.common.core.domain.dto.UserOnlineDTO;
 import com.ruoyi.common.core.domain.entity.PowerData;
 import com.ruoyi.common.core.domain.entity.SsFGroups;
 import com.ruoyi.common.core.domain.entity.SsFUserGroup;
 import com.ruoyi.common.core.domain.entity.SsFUsers;
+import com.ruoyi.common.core.domain.model.LoginBody;
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.core.domain.model.SsFUserRole;
 import com.ruoyi.common.core.domain.object.ResponseBase;
@@ -38,6 +40,8 @@ import com.ruoyi.jianguan.common.domain.entity.SsFUserOnline;
 import com.ruoyi.common.utils.jianguan.zjrw.HttpsUtils;
 import com.ruoyi.common.utils.jianguan.zjrw.MD5Util;
 import com.ruoyi.common.utils.jianguan.zjrw.MyExcelUtil;
+import com.ruoyi.system.service.SysLoginService;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +57,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author ：lin_zhixiong
@@ -62,6 +67,7 @@ import java.util.Map;
  * @description:
  **/
 @Service("loginUserService")
+@RequiredArgsConstructor
 public class UserService {
 
     Logger log = LoggerFactory.getLogger(UserService.class);
@@ -99,10 +105,43 @@ public class UserService {
     @Qualifier("zjFGroupsProjectsDAO")
     private ZjFGroupsProjectsDAO zjFGroupsProjectsDAO;
 
+    private final SysLoginService loginService;
+
     public volatile int a = 0;
 
 
-    public ResponseBase login(SsFUsers user) {
+    public ResponseBase login(LoginBody loginBody) {
+        // 生成令牌
+        String authToken = loginService.login(loginBody.getUsername(), loginBody.getPassword(), loginBody.getCode(),
+            loginBody.getUuid());
+
+        LoginUser currentUser = LoginHelper.getLoginUser();
+        PowerData powerData = PowerData.builder()
+            .id(currentUser.getUserId().intValue())
+            .roles(currentUser.getRoles().stream().map(role -> role.getRoleId().intValue()).collect(Collectors.toList()))
+            .build();
+        //转token
+        String jwtToken = JwtUtil.sign(powerData, JwtUtil.SSO_TIME);
+
+        LoginData loginData = new LoginData();
+        loginData.setToken(jwtToken);
+        loginData.setAuthToken(authToken);
+        loginData.setId(currentUser.getUserId().intValue());
+        loginData.setName(currentUser.getNickName());
+
+        LoginDataDTO dataDTO = new LoginDataDTO();
+        if (currentUser.getRoles().isEmpty() && currentUser.getRoleId() == null) {
+            return new ResponseBase(201, "该角色没有配置角色权限,请到运维系统进行配置! ");
+        }
+        /*if (ssFUserGroups.size() == 0) {
+            return new ResponseBase(201, "该角色没有配置工区, 请到管理员账号下进行配置! ");
+        }*/
+        dataDTO.setLoginData(loginData);
+        dataDTO.setGroupid(currentUser.getDeptId().intValue());
+        return new ResponseBase(200, "登录成功", dataDTO);
+    }
+
+    public ResponseBase login_old(SsFUsers user) {
         //根据 用户名与密码进行匹配
 //        SsFUsers findUser = ssFUsersDAO.checkLogin(user.getUsername());
         SsFUsers findUser = ssFUsersDAO.userLogin(user.getUsername());
@@ -182,7 +221,8 @@ public class UserService {
 
         // todo 暂时只支持1对1,如果用户对应权限表变成了1对多,这个位置需要做修改
         Integer roleId = ssFUsersDAO.getRoleById(findUser.getId());
-        PowerData powerData = new PowerData(findUser.getId(), roleId);
+        //PowerData powerData = new PowerData(findUser.getId(), roleId);
+        PowerData powerData = null;
         //转token
         String jwtToken = JwtUtil.sign(powerData, JwtUtil.SSO_TIME);
         loginData.setToken(jwtToken);

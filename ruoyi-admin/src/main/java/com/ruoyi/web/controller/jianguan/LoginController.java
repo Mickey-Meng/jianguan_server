@@ -1,8 +1,9 @@
-package com.ruoyi.web.controller.jianguan.zjrw;
+package com.ruoyi.web.controller.jianguan;
 
 import com.ruoyi.common.annotation.Anonymous;
 import com.ruoyi.common.annotation.AuthIgnore;
 import com.ruoyi.common.core.domain.entity.SsFUsers;
+import com.ruoyi.common.core.domain.model.LoginBody;
 import com.ruoyi.common.core.domain.object.ResponseBase;
 import com.ruoyi.jianguan.common.domain.dto.UserAddGroupsDTO;
 import com.ruoyi.jianguan.common.service.UserService;
@@ -11,6 +12,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -39,8 +41,8 @@ public class LoginController {
     @AuthIgnore
     @Anonymous
     @ApiOperation(value = "登录，支持单个用户对应多个组织机构（2022-03-08）")
-    public ResponseBase login(@RequestBody SsFUsers user){
-        return userService.login(user);
+    public ResponseBase login(@Validated @RequestBody LoginBody loginBody){
+        return userService.login(loginBody);
     }
 
     @PostMapping("/viewToken")

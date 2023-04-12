@@ -1,5 +1,9 @@
 package com.ruoyi.common.core.domain.entity;
 
+import lombok.Builder;
+import lombok.Data;
+import lombok.experimental.Accessors;
+
 import java.util.List;
 
 /**
@@ -10,62 +14,15 @@ import java.util.List;
  * @description: 权限对象，
  **/
 
+@Data
+@Builder
+@Accessors(chain = true)
 public class PowerData {
+
     private Integer id; //用户id
     private List<String> projects; // 关联的项目id
     private List<Integer> gongqus; //关联的工区id
     private Integer role; //关联的角色id
+    private List<Integer> roles; //关联的角色id
 
-    public PowerData(Integer id, List<String> projects, List<Integer> gongqus, Integer role) {
-        this.id=id;
-        this.projects = projects;
-        this.gongqus = gongqus;
-        this.role = role;
-    }
-
-    public PowerData(Integer id, List<String> projects, List<Integer> gongqus) {
-        this.id=id;
-        this.projects = projects;
-        this.gongqus = gongqus;
-    }
-
-    public PowerData(Integer id, Integer role) {
-        this.id=id;
-        this.role = role;
-    }
-
-    public PowerData() {
-    }
-
-    public List<Integer> getGongqus() {
-        return gongqus;
-    }
-
-    public void setGongqus(List<Integer> gongqus) {
-        this.gongqus = gongqus;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public List<String> getProjects() {
-        return projects;
-    }
-
-    public void setProjects(List<String> projects) {
-        this.projects = projects;
-    }
-
-    public Integer getRole() {
-        return role;
-    }
-
-    public void setRole(Integer role) {
-        this.role = role;
-    }
 }

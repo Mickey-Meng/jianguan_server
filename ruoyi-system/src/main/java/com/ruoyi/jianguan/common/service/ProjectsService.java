@@ -8,6 +8,7 @@ import com.ruoyi.common.core.domain.entity.SsFGroups;
 import com.ruoyi.common.core.domain.entity.SsFProjects;
 import com.ruoyi.common.core.domain.entity.SsFUsers;
 import com.ruoyi.common.core.domain.object.ResponseBase;
+import com.ruoyi.common.helper.LoginHelper;
 import com.ruoyi.jianguan.common.dao.FileMapper;
 import com.ruoyi.jianguan.common.dao.ProjectsDAO;
 import com.ruoyi.jianguan.common.dao.SsFUserRoleDAO;
@@ -529,8 +530,9 @@ public class ProjectsService {
 
     public ResponseBase getProjectByUser(){
         try {
-            Integer userId = JwtUtil.getTokenUser().getId();
-            List<SsFProjects> projects = projectsDAO.getSectionProjectsIdByUserId(userId);
+            //Integer userId = JwtUtil.getTokenUser().getId();
+            Long userId = LoginHelper.getLoginUser().getUserId();
+            List<SsFProjects> projects = projectsDAO.getSectionProjectsIdByUserId(userId.intValue());
             return new ResponseBase(200, "", projects);
         } catch (Exception e) {
             e.printStackTrace();
