@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ruoyi.common.core.mapper.BaseDaoMapper;
 import com.ruoyi.common.core.sequence.wrapper.IdGeneratorWrapper;
 import com.ruoyi.common.core.service.BaseService;
+import com.ruoyi.common.helper.LoginHelper;
 import com.ruoyi.common.utils.JwtUtil;
 import com.ruoyi.flowable.mapper.FlowTaskCommentMapper;
 import com.ruoyi.flowable.model.FlowTaskComment;
@@ -57,7 +58,7 @@ public class FlowTaskCommentServiceImpl extends BaseService<FlowTaskComment, Lon
         flowTaskComment.setId(idGenerator.nextLongId());
 //        TokenData tokenData = TokenData.takeFromRequest();
         String name = JwtUtil.getUserNameByToken();
-        Integer id = JwtUtil.getTokenUser().getId();
+        Integer id = LoginHelper.getUserId().intValue();
         flowTaskComment.setCreateUserId(id.longValue());
         flowTaskComment.setCreateLoginName(name);
         flowTaskComment.setCreateUsername(name);

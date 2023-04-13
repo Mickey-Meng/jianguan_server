@@ -2,8 +2,11 @@ package com.ruoyi.common.core.domain.model;
 
 import com.ruoyi.common.core.domain.dto.RoleDTO;
 import com.ruoyi.common.helper.LoginHelper;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 import java.util.List;
@@ -16,7 +19,10 @@ import java.util.Set;
  */
 
 @Data
+@Builder
+@Accessors(chain = true)
 @NoArgsConstructor
+@AllArgsConstructor
 public class LoginUser implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -105,6 +111,8 @@ public class LoginUser implements Serializable {
      * 数据权限 当前角色ID
      */
     private Long roleId;
+
+    private String roleIds;
 
     /**
      * 获取登录id

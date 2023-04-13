@@ -56,7 +56,7 @@ public class CheckRepeatCommitAspect {
         // 获取当前请求方法的注解，根据注解配置获取参数
         CheckRepeatCommit checkRepeatCommit = method.getAnnotation(CheckRepeatCommit.class);
 
-        String userNo = JwtUtil.getRequest().getHeader("token");
+        String userNo = JwtUtil.getRequest().getHeader("Authorization");
         String key;
 
         if (checkRepeatCommit != null) {

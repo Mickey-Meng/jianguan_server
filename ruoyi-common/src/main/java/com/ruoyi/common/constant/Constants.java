@@ -72,5 +72,7 @@ public interface Constants {
      */
     String TOKEN = "token";
 
+    String LOGIN_USER_INFO = "userInfo";
+
 }
 

@@ -8,7 +8,10 @@ import cn.hutool.core.util.ObjectUtil;
 import com.ruoyi.common.constant.CacheConstants;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.core.domain.dto.RoleDTO;
+import com.ruoyi.common.core.domain.entity.SysMenu;
+import com.ruoyi.common.core.domain.entity.SysRole;
 import com.ruoyi.common.core.domain.entity.SysUser;
+import com.ruoyi.common.core.domain.model.LoginBody;
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.core.domain.model.XcxLoginUser;
 import com.ruoyi.common.core.service.LogininforService;
@@ -31,6 +34,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.time.Duration;
 import java.util.List;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 /**
  * 登录校验方法
@@ -46,6 +50,7 @@ public class SysLoginService {
     private final ISysConfigService configService;
     private final LogininforService asyncService;
     private final SysPermissionService permissionService;
+    private final ISysMenuService sysMenuService;
 
     @Value("${user.password.maxRetryCount}")
     private Integer maxRetryCount;
@@ -130,7 +135,6 @@ public class SysLoginService {
             asyncService.recordLogininfor(username, Constants.LOGOUT, MessageUtils.message("user.logout.success"), ServletUtils.getRequest());
         } catch (NotLoginException e) {
             e.printStackTrace();
-
         }
     }
 
@@ -277,8 +281,44 @@ public class SysLoginService {
                 throw new UserException(loginType.getRetryLimitCount(), errorNumber);
             }
         }
-
         // 登录成功 清空错误次数
         RedisUtils.deleteObject(errorKey);
+    }
+
+    /**
+     * 前端用户登录
+     * @param loginBody
+     * @return
+     */
+    public LoginUser loginForUser(LoginBody loginBody) {
+        HttpServletRequest request = ServletUtils.getRequest();
+        boolean captchaEnabled = configService.selectCaptchaEnabled();
+        // 验证码开关
+        if (captchaEnabled) {
+            this.validateCaptcha(loginBody.getUsername(), loginBody.getCode(), loginBody.getUuid(), request);
+        }
+        SysUser user = this.loadUserByUsername(loginBody.getUsername());
+        this.checkLogin(LoginType.PASSWORD, loginBody.getUsername(), () -> !BCrypt.checkpw(loginBody.getPassword(), user.getPassword()));
+        // 此处可根据登录用户的数据不同 自行创建 loginUser
+        List<Long> roleIds = user.getRoles().stream().map(SysRole::getRoleId).collect(Collectors.toList());
+        LoginUser loginUser = LoginUser.builder()
+            .userId(user.getUserId())
+            .deptId(user.getDeptId())
+            .deptName(ObjectUtil.isNull(user.getDept()) ? "" : user.getDept().getDeptName())
+            .username(user.getUserName())
+            .nickName(user.getNickName())
+            .userType(user.getUserType())
+            .menuPermission(sysMenuService.selectMenuList(user.getUserId()).stream().map(SysMenu::getMenuCode).collect(Collectors.toSet()))
+            .rolePermission(permissionService.getRolePermission(user))
+            .roleIds(roleIds.stream().map(roleId -> String.valueOf(roleId)).collect(Collectors.joining(",")))
+            .roleId(roleIds.size() > 0 ? roleIds.get(0) : null)
+            .build();
+        // 生成token
+        LoginHelper.loginByDevice(loginUser, DeviceType.PC);
+        loginUser.setToken(StpUtil.getTokenValue());
+        // 记录登录信息
+        asyncService.recordLogininfor(user.getUserName(), Constants.LOGIN_SUCCESS, MessageUtils.message("user.login.success"), request);
+        recordLoginInfo(user.getUserId(), user.getUserName());
+        return loginUser;
     }
 }

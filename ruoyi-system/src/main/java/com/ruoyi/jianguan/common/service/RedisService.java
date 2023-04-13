@@ -10,6 +10,7 @@ import com.ruoyi.common.core.domain.entity.PowerData;
 import com.ruoyi.common.core.domain.entity.SsFGroups;
 import com.ruoyi.common.core.domain.entity.ZjFGroupsProjects;
 import com.ruoyi.common.core.domain.object.ResponseBase;
+import com.ruoyi.common.helper.LoginHelper;
 import com.ruoyi.jianguan.common.dao.ConponentDAO;
 import com.ruoyi.jianguan.common.domain.entity.NodeTree;
 
@@ -176,7 +177,7 @@ public class RedisService {
 
     public ResponseBase getTree() {
         PowerData tokenUser = JwtUtil.getTokenUser();
-        Integer userId = JwtUtil.getTokenUser().getId();
+        Integer userId = LoginHelper.getUserId().intValue();
         List<Integer> gongqus = ssFUserGroupDAO.getGroupsOfProjectByUserId(userId);
         NodeTree nodeTree1 =new NodeTree();
         nodeTree1.setName("235项目");

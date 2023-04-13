@@ -16,6 +16,7 @@ import com.ruoyi.common.core.domain.entity.SsFUserGroup;
 import com.ruoyi.common.core.domain.model.SafePerData;
 import com.ruoyi.common.core.domain.model.SsFUserRole;
 import com.ruoyi.common.core.domain.object.ResponseBase;
+import com.ruoyi.common.helper.LoginHelper;
 import com.ruoyi.jianguan.common.dao.*;
 import com.ruoyi.jianguan.common.domain.dto.*;
 import com.ruoyi.jianguan.common.domain.entity.SafeGongQugroup;
@@ -179,7 +180,7 @@ public class SafeService {
         if (count1 <= 0){
             return new ResponseBase(200, "该项目id无数据!");
         }
-        Integer userid = JwtUtil.getTokenUser().getId();
+        Integer userid = LoginHelper.getUserId().intValue();
         Map<String,Object> map = new HashMap<>();
         Integer role = zjQualityEventDAO.getRole(userid);
         //通过用户id查询用户对应权限
@@ -233,7 +234,7 @@ public class SafeService {
 
 
     public ResponseBase getDoneSafeEvent() {
-        Integer userid = JwtUtil.getTokenUser().getId();
+        Integer userid = LoginHelper.getUserId().intValue();
         List<ZjSafeEvent> zjSafeEventList = zjSafeEventDAO.getDoneSafeEventByModify(userid);
         if(zjSafeEventList.size()==0){
             return new ResponseBase(300,"暂无数据");
@@ -250,7 +251,7 @@ public class SafeService {
         if (count1 <= 0){
             return new ResponseBase(200, "该项目id无数据!");
         }
-        Integer userid = JwtUtil.getTokenUser().getId();
+        Integer userid = LoginHelper.getUserId().intValue();
         List<ZjSafeEvent> zjSafeEventList = zjSafeEventDAO.getDelaySafeEventByModify(userid, projectId);
         if(zjSafeEventList.size()==0){
             return new ResponseBase(300,"",new ArrayList<ZjSafeEvent>());
@@ -266,7 +267,7 @@ public class SafeService {
         if (count1 <= 0){
             return new ResponseBase(200, "该项目id无数据!");
         }
-        Integer userid = JwtUtil.getTokenUser().getId();
+        Integer userid = LoginHelper.getUserId().intValue();
         List<ZjSafeEvent> zjSafeEventList = zjSafeEventDAO.getNotDoneSafeEvent(userid, projectId);
         if(zjSafeEventList.size()==0){
             return new ResponseBase(300,"暂无数据");
@@ -493,7 +494,7 @@ public class SafeService {
             return new ResponseBase(200,"查询成功",zjSafeEventList);
         }
         List<ZjSafeEvent> zjSafeEventList = Lists.newArrayList();
-        Integer userId = JwtUtil.getTokenUser().getId();
+        Integer userId = LoginHelper.getUserId().intValue();
         List<Integer> gongqus = ssFUserGroupDAO.getGroupsOfProjectByUserId(userId);
         //当查到的用户的角色权限为2时,默认拥有所有工区权限
         List<Integer> allGroups = ssFUserGroupDAO.getAllGroupsOfProject();
@@ -527,7 +528,7 @@ public class SafeService {
             List<ZjSafeEvent> zjSafeEventList = zjSafeEventDAO.getAllStatusSafeByProjectcode(singleProjectId, projectId);
             return new ResponseBase(200,"查询成功", zjSafeEventList);
         }
-        Integer userId = JwtUtil.getTokenUser().getId();
+        Integer userId = LoginHelper.getUserId().intValue();
         List<Integer> gongqus = ssFUserGroupDAO.getGroupsOfProjectByUserId(userId);
         //根据工区维度获取数据
         List<ZjSafeEvent> zjSafeEventList = Lists.newArrayList();
@@ -670,7 +671,7 @@ public class SafeService {
         //采用新逻辑
         safePerData = DateUtils.getDay(count);
         //获取到用户所拥有的工区权限
-        Integer id = JwtUtil.getTokenUser().getId();
+        Integer id = LoginHelper.getUserId().intValue();
         List<Integer> gongqus = ssFUserGroupDAO.getGroupsOfProjectByUserId(id);
         if (gongqus.size() == 0){
             return new ResponseBase(200, "该用户暂时没有绑定单位工程!");
@@ -781,7 +782,7 @@ public class SafeService {
             return new ResponseBase(200, "该项目id无数据!");
         }
         List<GqDataAll> resb = Lists.newArrayList();
-        Integer id = JwtUtil.getTokenUser().getId();
+        Integer id = LoginHelper.getUserId().intValue();
         List<Integer> gongqus = ssFUserGroupDAO.getGroupsOfProjectByUserId(id);
         if (gongqus.size() == 0){
             return new ResponseBase(200,"查询成功", resb);
@@ -859,7 +860,7 @@ public class SafeService {
         }
         List<GqDataAll> resb = Lists.newArrayList();
         //获取该查询角色的工区
-        Integer id = JwtUtil.getTokenUser().getId();
+        Integer id = LoginHelper.getUserId().intValue();
         List<Integer> groups = ssFUserGroupDAO.getGroupsOfProjectByUserId(id);
         if (groups.size() == 0){
             //当用户没有工区权限时, 返回空集合
@@ -964,7 +965,7 @@ public class SafeService {
 
     public ResponseBase deleteEvent(List<Integer> gids){
         //先判断操作的用户groupid是否为顶级或者总部(1,2),否则没有该权限
-        Integer userId = JwtUtil.getTokenUser().getId();
+        Integer userId = LoginHelper.getUserId().intValue();
         SsFUserRole userRole = userRoleDAO.getByUserid(userId);
         if (userRole.getRoleid() != 1 && userRole.getRoleid() !=2){
             return new ResponseBase(500, "该操作用户没有删除权限", null);
@@ -1034,7 +1035,7 @@ public class SafeService {
                 .stream()
                 .collect(Collectors.toMap(SsFProjects::getId, ssFProjects -> ssFProjects, (oldObj, netObj) -> oldObj));
         // 查询用户拥有的项目
-        Integer userId = JwtUtil.getTokenUser().getId();
+        Integer userId = LoginHelper.getUserId().intValue();
         List<SsFUserGroup> userGroups = ssFUserGroupDAO.getUserGroupsOfProject(userId);
         // 数据集合取交集，用户拥有权限的项目
         List<GqDataAll> datas = Lists.newArrayList();
@@ -1062,7 +1063,7 @@ public class SafeService {
         List<GqDataAll> datas = Lists.newArrayList();
         List<Integer> groups = Lists.newArrayList();
         //通过token获取用户所拥有的工区数
-        Integer userId = JwtUtil.getTokenUser().getId();
+        Integer userId = LoginHelper.getUserId().intValue();
         List<Integer> groupIds = ssFUserGroupDAO.getGroupsOfProjectByUserId(userId);
         if (groupIds.contains(2) || groupIds.contains(3)){
             //说明 该用户工区权限为总部, 先清空

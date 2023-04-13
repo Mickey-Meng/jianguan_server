@@ -23,6 +23,6 @@ public class PowerData {
     private List<String> projects; // 关联的项目id
     private List<Integer> gongqus; //关联的工区id
     private Integer role; //关联的角色id
-    private List<Integer> roles; //关联的角色id
+    private String roleIds; //关联的角色id
 
 }

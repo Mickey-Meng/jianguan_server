@@ -445,7 +445,7 @@ public class ProjectsService {
             return new ResponseBase(503, "该用户没暂时没有角色权限");
         }
         if (userid == null || userid == 0){
-            userid = JwtUtil.getTokenUser().getId();
+            userid = LoginHelper.getUserId().intValue();
         }
         SsFRoles roles = ssFUserRoleDAO.getRolesByUserid(userid);
         return new ResponseBase(200, "查询成功!", roles);
@@ -459,7 +459,7 @@ public class ProjectsService {
         if (count1 <= 0){
             return new ResponseBase(200, "该项目id无数据!");
         }
-        Integer userid = JwtUtil.getTokenUser().getId();
+        Integer userid = LoginHelper.getUserId().intValue();
         if (userid <= 0){
             return new ResponseBase(200, "该用户id无效!");
         }
@@ -499,7 +499,7 @@ public class ProjectsService {
             return new ResponseBase(200, "该项目id无数据!");
         }
         Map<String, Object> maps = Maps.newHashMap();
-        Integer userId = JwtUtil.getTokenUser().getId();
+        Integer userId = LoginHelper.getUserId().intValue();
         SsFRoles role = ssFUserRoleDAO.getRolesByUserid(userId);
         String parentCode = ssFUserRoleDAO.getParentCodeByRoleId(role.getParentid());
         maps.put("role", role);
@@ -530,7 +530,7 @@ public class ProjectsService {
 
     public ResponseBase getProjectByUser(){
         try {
-            //Integer userId = JwtUtil.getTokenUser().getId();
+            //Integer userId = LoginHelper.getUserId().intValue();
             Long userId = LoginHelper.getLoginUser().getUserId();
             List<SsFProjects> projects = projectsDAO.getSectionProjectsIdByUserId(userId.intValue());
             return new ResponseBase(200, "", projects);
@@ -542,7 +542,7 @@ public class ProjectsService {
 
     public ResponseBase getAppProjectByUser (){
         try {
-            Integer userId = JwtUtil.getTokenUser().getId();
+            Integer userId = LoginHelper.getUserId().intValue();
             //查询用户所拥有的标段
             List<SsFProjects> projects = projectsDAO.getSectionProjectsIdByUserId(userId);
             List<Integer> projectIds = Lists.newArrayList();

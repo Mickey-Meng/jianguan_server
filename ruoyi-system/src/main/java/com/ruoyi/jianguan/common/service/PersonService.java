@@ -16,6 +16,7 @@ import com.ruoyi.common.core.domain.model.ZjPersonChange;
 import com.ruoyi.common.core.domain.model.ZjPersonChangeFile;
 import com.ruoyi.common.core.domain.model.ZjPersonLeave;
 import com.ruoyi.common.core.domain.object.ResponseBase;
+import com.ruoyi.common.helper.LoginHelper;
 import com.ruoyi.jianguan.common.dao.*;
 import com.ruoyi.jianguan.common.domain.dto.PersonGroupTree;
 import com.ruoyi.jianguan.common.domain.dto.PersonSubDTO;
@@ -241,7 +242,7 @@ public class PersonService {
             if (count1 <= 0) {
                 return new ResponseBase(200, "该项目id无数据!");
             }
-            String token = getRequest().getHeader("token");
+            String token = getRequest().getHeader("Authorization");
             if (token == null) {
                 return new ResponseBase(200, "token验证失败!");
             }
@@ -275,7 +276,7 @@ public class PersonService {
     }
 
     public ResponseBase updateContract(PersonSubDTO person) {
-        Integer userid = JwtUtil.getTokenUser().getId();
+        Integer userid = LoginHelper.getUserId().intValue();
 
         if (person.getPerson().getId() <= 0) {
             return new ResponseBase(200, "该合同id无效");
@@ -300,12 +301,12 @@ public class PersonService {
         if (count1 <= 0) {
             return new ResponseBase(200, "该项目id无数据!");
         }
-        Integer userId = JwtUtil.getTokenUser().getId();
+        Integer userId = LoginHelper.getUserId().intValue();
         List<PersonSubDTO> personSubDTOS = Lists.newArrayList();
         List<PersonDTO> persons = personDAO.getAllPersonByUserid(userId);
 
         //调用接口获取数据
-        String token = getRequest().getHeader("token");// 从 http 请求头中取出 token
+        String token = getRequest().getHeader("Authorization");// 从 http 请求头中取出 token
         //通过processInstanceId获取该流程的三个id
         if (persons.size() > 0) {
             for (PersonDTO person : persons) {
@@ -367,7 +368,7 @@ public class PersonService {
         if (count <= 0) {
             return new ResponseBase(200, "该项目id无数据!");
         }
-        String token = getRequest().getHeader("token");// 从 http 请求头中取出 token
+        String token = getRequest().getHeader("Authorization");// 从 http 请求头中取出 token
         Map<String, Object> maps = Maps.newHashMap();
         switch (taskType) {
             case 1:
@@ -525,7 +526,7 @@ public class PersonService {
         }
 
         //调用接口获取数据
-        String token = getRequest().getHeader("token");// 从 http 请求头中取出 token
+        String token = getRequest().getHeader("Authorization");// 从 http 请求头中取出 token
         //通过processInstanceId获取该流程的三个id
         Map<String, Object> maps = new WeakHashMap();
         if (persons.size() > 0) {
@@ -590,7 +591,7 @@ public class PersonService {
         if (count1 <= 0) {
             return new ResponseBase(200, "该项目id无数据!");
         }
-        Integer userId = JwtUtil.getTokenUser().getId();
+        Integer userId = LoginHelper.getUserId().intValue();
         List<PersonDTO> persons = personDAO.getAllVerifyPersonByUserid(userId);
         if (persons.size() == 0) {
             return new ResponseBase(200, "暂未查到数据!", persons);
@@ -617,7 +618,7 @@ public class PersonService {
             return new ResponseBase(200, "请输入有效的记录人id!");
         }
         //调用流程接口发起流程
-        String token = getRequest().getHeader("token");// 从 http 请求头中取出 token
+        String token = getRequest().getHeader("Authorization");// 从 http 请求头中取出 token
         long userid = JwtUtil.getTokenUser().getId().longValue();
         //流程定义的key
         String processKey = subDTO.getProcessKey();
@@ -687,7 +688,7 @@ public class PersonService {
                 .map(Integer::parseInt)
                 .collect(Collectors.toList());
         //通过token查询该用户的组织id,判断该用户是否在项目里面
-        Integer userid = JwtUtil.getTokenUser().getId();
+        Integer userid = LoginHelper.getUserId().intValue();
         Integer groupid = userGroupDAO.getGroupIdByUserId(userid);
         if (!groupids.contains(groupid)) {
             return new ResponseBase(200, "用户权限不在该项目标段中!");
@@ -704,7 +705,7 @@ public class PersonService {
             return new ResponseBase(200, "请输入有效的项目标段id!");
         }
         //调用流程接口发起流程
-        String token = getRequest().getHeader("token");// 从 http 请求头中取出 token
+        String token = getRequest().getHeader("Authorization");// 从 http 请求头中取出 token
         long userid = JwtUtil.getTokenUser().getId().longValue();
         //流程定义的key
         String processKey = personChange.getProcessDefinitionKey();
@@ -755,8 +756,8 @@ public class PersonService {
         if (count1 <= 0) {
             return new ResponseBase(200, "该项目id无数据!");
         }
-        Integer userId = JwtUtil.getTokenUser().getId();
-        String token = getRequest().getHeader("token");// 从 http 请求头中取出 token
+        Integer userId = LoginHelper.getUserId().intValue();
+        String token = getRequest().getHeader("Authorization");// 从 http 请求头中取出 token
 
         List<ZjPersonChange> personChanges = personChangeDAO.getChangeByUserId(userId);
         if (personChanges.size() > 0) {
@@ -808,7 +809,7 @@ public class PersonService {
         if (count <= 0) {
             return new ResponseBase(200, "该项目id无数据!");
         }
-        String token = getRequest().getHeader("token");// 从 http 请求头中取出 token
+        String token = getRequest().getHeader("Authorization");// 从 http 请求头中取出 token
         Map<String, Object> maps = Maps.newHashMap();
         switch (taskType) {
             case 1:
@@ -975,7 +976,7 @@ public class PersonService {
             return new ResponseBase(200, "该项目id无数据!");
         }
         List<ZjPersonChange> personChanges = Lists.newArrayList();
-        String token = getRequest().getHeader("token"); // 从 http 请求头中取出 token
+        String token = getRequest().getHeader("Authorization"); // 从 http 请求头中取出 token
         if (pageNum != null && !pageNum.equals("") && pageSize != null && !pageSize.equals("")) {
             Integer num = (pageNum - 1) * pageSize;
             if (roleType != null && !roleType.equals("")) {
@@ -1076,7 +1077,7 @@ public class PersonService {
             if (count1 <= 0) {
                 return new ResponseBase(200, "该项目id无数据!");
             }
-            String token = getRequest().getHeader("token");
+            String token = getRequest().getHeader("Authorization");
             ZjPersonChange personChange = personChangeDAO.selectByPrimaryKey(id);
             if (personChange == null) {
                 return new ResponseBase(200, "没有找到有效的人员变更数据!");
@@ -1137,7 +1138,7 @@ public class PersonService {
             //流程定义的key
             String processKey = personLeave.getProcessDefinitionKey();
             String businessKey = UUID.randomUUID().toString();
-            String token = getRequest().getHeader("token");// 从 http 请求头中取出 token
+            String token = getRequest().getHeader("Authorization");// 从 http 请求头中取出 token
             long userid = JwtUtil.getTokenUser().getId().longValue();
 
             HttpHeader header = new HttpHeader();
@@ -1183,8 +1184,8 @@ public class PersonService {
         if (count1 <= 0) {
             return new ResponseBase(200, "该项目id无数据!");
         }
-        Integer id = JwtUtil.getTokenUser().getId();
-        String token = getRequest().getHeader("token");// 从 http 请求头中取出 token
+        Integer id = LoginHelper.getUserId().intValue();
+        String token = getRequest().getHeader("Authorization");// 从 http 请求头中取出 token
         List<ZjPersonLeave> personLeaves = personLeaveDAO.getById(id);
         if (personLeaves.size() > 0) {
             for (ZjPersonLeave personLeave : personLeaves) {
@@ -1231,7 +1232,7 @@ public class PersonService {
         if (count <= 0) {
             return new ResponseBase(200, "该项目id无数据!");
         }
-        String token = getRequest().getHeader("token");// 从 http 请求头中取出 token
+        String token = getRequest().getHeader("Authorization");// 从 http 请求头中取出 token
         Map<String, Object> maps = Maps.newHashMap();
         switch (taskType) {
             case 1:
@@ -1328,7 +1329,7 @@ public class PersonService {
         if (count1 <= 0) {
             return new ResponseBase(200, "该项目id无数据!");
         }
-        String token = getRequest().getHeader("token");
+        String token = getRequest().getHeader("Authorization");
         List<ZjPersonLeave> personLeaves = Lists.newArrayList();
         Integer roleId = null;
         if (pageNum != null && !pageNum.equals("") && pageSize != null && !pageSize.equals("")) {
@@ -1423,7 +1424,7 @@ public class PersonService {
             if (count1 <= 0) {
                 return new ResponseBase(200, "该项目id无数据!");
             }
-            String token = getRequest().getHeader("token");
+            String token = getRequest().getHeader("Authorization");
             ZjPersonLeave personLeave = personLeaveDAO.selectByPrimaryKey(id);
             if (personLeave == null) {
                 return new ResponseBase(200, "没有找到有效的人员请假数据!");
@@ -1452,7 +1453,7 @@ public class PersonService {
             return new ResponseBase(200, "该项目id无数据!");
         }
         if (clockIn.getAttendancePersonId() == null) {
-            Integer id = JwtUtil.getTokenUser().getId();
+            Integer id = LoginHelper.getUserId().intValue();
             clockIn.setAttendancePersonId(id);
         }
         //先查询打卡记录表今天有没有该用户的打卡记录
@@ -1533,7 +1534,7 @@ public class PersonService {
         if (count1 <= 0) {
             return new ResponseBase(200, "该项目id无数据!");
         }
-        Integer userId = JwtUtil.getTokenUser().getId();
+        Integer userId = LoginHelper.getUserId().intValue();
 
         List<ZjPersonClockin> clockInList = Lists.newArrayList();
         if (startTime == null && endTime == null) {
@@ -1610,7 +1611,7 @@ public class PersonService {
             personDTOs = personDAO.getAllFinishContracts();
         }
         // 从 http 请求头中取出 token
-        String token = getRequest().getHeader("token");
+        String token = getRequest().getHeader("Authorization");
         //通过processInstanceId获取该流程的三个id
         Map<String, Object> maps = Maps.newHashMap();
         if (personDTOs.size() > 0) {
@@ -1651,7 +1652,7 @@ public class PersonService {
         if (count1 <= 0) {
             return new ResponseBase(200, "该项目id无数据!");
         }
-        String token = getRequest().getHeader("token");
+        String token = getRequest().getHeader("Authorization");
         List<ZjPersonChange> personChanges = Lists.newArrayList();
         if (parentRoleId != null && !parentRoleId.equals("")) {
             Integer roleId = getRoleIdByRoleType(parentRoleId);
@@ -1697,7 +1698,7 @@ public class PersonService {
         if (count1 <= 0) {
             return new ResponseBase(200, "该项目id无数据!");
         }
-        String token = getRequest().getHeader("token");
+        String token = getRequest().getHeader("Authorization");
         List<ZjPersonLeave> personLeaves = Lists.newArrayList();
         if (parentRoleId != null && !parentRoleId.equals("")) {
             Integer roleId = getRoleIdByRoleType(parentRoleId);

@@ -11,6 +11,7 @@ import com.ruoyi.common.core.domain.entity.ZjConponentProducetime;
 import com.ruoyi.common.core.domain.model.RightData;
 import com.ruoyi.common.core.domain.entity.ZjYcdata;
 import com.ruoyi.common.core.domain.object.ResponseBase;
+import com.ruoyi.common.helper.LoginHelper;
 import com.ruoyi.jianguan.common.domain.dto.CheckCount;
 import com.ruoyi.jianguan.common.domain.dto.ComponentProducetimeDTO;
 import com.ruoyi.jianguan.common.domain.dto.ProgressData;
@@ -102,7 +103,7 @@ public class ProgressService {
     public ResponseBase getStatus(final RightData rightData) {
         PowerData tokenUser = JwtUtil.getTokenUser();
 
-        Integer userId = JwtUtil.getTokenUser().getId();
+        Integer userId = LoginHelper.getUserId().intValue();
         List<String> projects = Lists.newArrayList();
         if (ObjectUtils.isEmpty(rightData.getProjectids())) {
             projects = ssFUserGroupDAO.getGroupProjectsByUserId(userId);
@@ -145,7 +146,7 @@ public class ProgressService {
             return new ResponseBase(200, "该项目id无数据!");
         }
         //获取用户所拥有的单位工程code
-        Integer userId = JwtUtil.getTokenUser().getId();
+        Integer userId = LoginHelper.getUserId().intValue();
         List<String> projects = ssFUserGroupDAO.getProjectsByUserId(userId);
         //获取前端传的项目id, 获取该项目id下面所有单位工程的code
         List<String> proChildCode = projectsDAO.getChildCode(projectId);
@@ -172,7 +173,7 @@ public class ProgressService {
     }
 
     public ResponseBase projectSelect() {
-        Integer userId = JwtUtil.getTokenUser().getId();
+        Integer userId = LoginHelper.getUserId().intValue();
         List<String> projects = ssFUserGroupDAO.getGroupProjectsByUserId(userId);
         //获取了项目编号
         //项目对应的groups id 查询
@@ -200,7 +201,7 @@ public class ProgressService {
         //获取前端传的项目id, 获取该项目id下面所有单位工程的code
         List<String> proChildCode = projectsDAO.getChildCode(projectId);
 
-        Integer userId = JwtUtil.getTokenUser().getId();
+        Integer userId = LoginHelper.getUserId().intValue();
         List<String> projects = ssFUserGroupDAO.getGroupProjectsByUserId(userId);
 
         List<ComponentProducetimeDTO> progressData = Lists.newArrayList();

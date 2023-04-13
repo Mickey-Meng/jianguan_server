@@ -32,6 +32,7 @@ import com.ruoyi.common.helper.LoginHelper;
 import com.ruoyi.common.utils.JwtUtil;
 import com.ruoyi.common.utils.MessageUtils;
 import com.ruoyi.common.utils.ServletUtils;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.jianguan.common.dao.SsFUserOnlineDAO;
 import com.ruoyi.jianguan.common.dao.SsFUserRoleDAO;
 import com.ruoyi.jianguan.common.domain.dto.*;
@@ -109,8 +110,33 @@ public class UserService {
 
     public volatile int a = 0;
 
-
+    /**
+     * 前端用户登录
+     * @param loginBody
+     * @return
+     */
     public ResponseBase login(LoginBody loginBody) {
+        LoginUser loginUser = loginService.loginForUser(loginBody);
+        if (StringUtils.isEmpty(loginUser.getRoleIds())) {
+            return new ResponseBase(201, "该角色没有配置角色权限,请到运维系统进行配置! ");
+        }
+        /*if (ssFUserGroups.size() == 0) {
+            return new ResponseBase(201, "该角色没有配置工区, 请到管理员账号下进行配置! ");
+        }*/
+        Map<String, Object> ajaxDataMap = new HashMap<>();
+        ajaxDataMap.put(Constants.LOGIN_USER_INFO, loginUser);
+
+        PowerData powerData = PowerData.builder()
+            .id(loginUser.getUserId().intValue())
+            .roleIds(loginUser.getRoleIds())
+            .build();
+        //转token
+        String jwtToken = JwtUtil.sign(powerData, JwtUtil.SSO_TIME);
+        ajaxDataMap.put("jwtToken", jwtToken);
+        return new ResponseBase(200, "登录成功", ajaxDataMap);
+    }
+
+    public ResponseBase login_1(LoginBody loginBody) {
         // 生成令牌
         String authToken = loginService.login(loginBody.getUsername(), loginBody.getPassword(), loginBody.getCode(),
             loginBody.getUuid());
@@ -118,7 +144,7 @@ public class UserService {
         LoginUser currentUser = LoginHelper.getLoginUser();
         PowerData powerData = PowerData.builder()
             .id(currentUser.getUserId().intValue())
-            .roles(currentUser.getRoles().stream().map(role -> role.getRoleId().intValue()).collect(Collectors.toList()))
+            .roleIds(currentUser.getRoleIds())
             .build();
         //转token
         String jwtToken = JwtUtil.sign(powerData, JwtUtil.SSO_TIME);
@@ -273,7 +299,8 @@ public class UserService {
 
     public ResponseBase userAddGroups(UserAddGroupsDTO addGroupsDTO) {
         //先获得配置用户工区权限的账号是否有权限进行配置
-        Integer userId = JwtUtil.getTokenUser().getId();
+        Integer userId = LoginHelper.getUserId().intValue();
+        LoginHelper.getUserId().intValue();
         Integer roleId = ssFUsersDAO.getRoleById(userId);
         //当该用户的roleid不是2-管理员,不允许添加
         if (roleId != 2) {
@@ -316,7 +343,7 @@ public class UserService {
 
     public ResponseBase updatePwd(SsFUsers user) {
         //根据 用户名与密码进行匹配
-        Integer id = JwtUtil.getTokenUser().getId();
+        Integer id = LoginHelper.getUserId().intValue();
         SsFUsers findUser = ssFUsersDAO.checkLoginById(id);
         LoginData loginData = new LoginData();
         //检查是否存在
@@ -335,8 +362,8 @@ public class UserService {
     @CheckRepeatCommit
     public ResponseBase updateOnline(String cid, String lon, String lat) {
         //通过token获取用户的id
-        Integer userid = JwtUtil.getTokenUser().getId();
-        Integer roleId = JwtUtil.getTokenUser().getRole();
+        Integer userid = LoginHelper.getUserId().intValue();
+        Integer roleId = LoginHelper.getLoginUser().getRoleId().intValue();
 
         SsFUsers users = ssFUsersDAO.selectByPrimaryKey(userid);
         Map<String, String> maps = Maps.newHashMap();

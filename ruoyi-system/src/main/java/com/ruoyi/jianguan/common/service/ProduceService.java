@@ -17,6 +17,7 @@ import com.ruoyi.common.core.domain.entity.*;
 import com.ruoyi.common.core.domain.model.Head;
 import com.ruoyi.common.core.domain.model.SsFUserRole;
 import com.ruoyi.common.core.domain.object.ResponseBase;
+import com.ruoyi.common.helper.LoginHelper;
 import com.ruoyi.common.utils.JwtUtil;
 import com.ruoyi.jianguan.common.dao.*;
 import com.ruoyi.jianguan.common.domain.dto.*;
@@ -121,7 +122,7 @@ public class ProduceService {
         //根据前端传的 项目标段id查询对应单位工程的code
         List<String> proChildCode = projectsDAO.getChildCode(recodeQueryData.getProjectId());
 
-        Integer userId = JwtUtil.getTokenUser().getId();
+        Integer userId = LoginHelper.getUserId().intValue();
         List<Integer> groups = ssFUserGroupDAO.getGroupsOfProjectByUserId(userId);
         PowerData tokenUser = JwtUtil.getTokenUser();
         String type = recodeQueryData.getType();
@@ -248,7 +249,7 @@ public class ProduceService {
 
     public ResponseBase getType() {
 
-        Integer userId = JwtUtil.getTokenUser().getId();
+        Integer userId = LoginHelper.getUserId().intValue();
         List<String> projects = ssFUserGroupDAO.getGroupProjectsByUserId(userId);
 
         NodeTree nodeTree = new NodeTree();
@@ -406,7 +407,7 @@ public class ProduceService {
             zjConponentProducetimeDAO.updateByPrimaryKeySelective(zjConponentProducetime);
         }
 
-        Integer userId = JwtUtil.getTokenUser().getId();
+        Integer userId = LoginHelper.getUserId().intValue();
 
 
         //往recode表查一个数据
@@ -495,7 +496,7 @@ public class ProduceService {
                         new Date():recodeData.getUploadtime());
         zjConponentProducetimeDAO.updateByPrimaryKeySelective(zjConponentProducetime);
         // 从token中获取上传填报记录人的id
-        Integer userId = JwtUtil.getTokenUser().getId();
+        Integer userId = LoginHelper.getUserId().intValue();
         //往recode表查一个数据
         Recode recode = new Recode();
         recode.setCreatetime(new Date());
@@ -579,7 +580,7 @@ public class ProduceService {
     }
 
     public ResponseBase getPorjectItem() {
-        Integer userId = JwtUtil.getTokenUser().getId();
+        Integer userId = LoginHelper.getUserId().intValue();
         List<String> projects = ssFUserGroupDAO.getGroupProjectsByUserId(userId);
         //根据项目获取项目名字
         List<ZjFGroupsProjects> zjFGroupsProjectsList =zjFGroupsProjectsDAO.getDeatail(projects);
@@ -610,7 +611,7 @@ public class ProduceService {
         if (count1 <= 0){
             return new ResponseBase(200, "该项目id无数据!");
         }
-        Integer id = JwtUtil.getTokenUser().getId();
+        Integer id = LoginHelper.getUserId().intValue();
         //根据 用户id 查询代办
         List<Produceandrecode> produceandrecodeList = produceandrecodeDAO.getAgencyByUserid(id, projectId);
         return new ResponseBase(200,"查询成功", produceandrecodeList);
@@ -725,7 +726,7 @@ public class ProduceService {
         if (count1 <= 0){
             return new ResponseBase(200, "该项目id无数据!");
         }
-        Integer userid = JwtUtil.getTokenUser().getId();
+        Integer userid = LoginHelper.getUserId().intValue();
         //如果是1，查询报检数据
         List<Produceandrecode> produceandrecodeList =Lists.newArrayList();
         if(type==1){
@@ -746,7 +747,7 @@ public class ProduceService {
     }
 
     public ResponseBase getTypeDetail(String type) {
-        Integer userId = JwtUtil.getTokenUser().getId();
+        Integer userId = LoginHelper.getUserId().intValue();
         List<String> projects = ssFUserGroupDAO.getGroupProjectsByUserId(userId);
         List<Conponent> add =Lists.newArrayList();
         projects.stream().forEach((projectid)->{
@@ -1020,7 +1021,7 @@ public class ProduceService {
     @Transactional(propagation = Propagation.SUPPORTS)
     public ResponseBase deleteProcess(Integer conponentid, Integer recodeid){
         //先判断操作的用户groupid是否为顶级或者总部(1,2),否则没有该权限
-        Integer userId = JwtUtil.getTokenUser().getId();
+        Integer userId = LoginHelper.getUserId().intValue();
         SsFUserRole userRole = userRoleDAO.getByUserid(userId);
         if (userRole.getRoleid() != 1 && userRole.getRoleid() !=2){
             return new ResponseBase(500, "该操作用户没有删除权限", null);
@@ -1141,7 +1142,7 @@ public class ProduceService {
         if (count1 <= 0){
             return new ResponseBase(200, "该项目id无数据!");
         }
-        Integer userId = JwtUtil.getTokenUser().getId();
+        Integer userId = LoginHelper.getUserId().intValue();
         List<ProduceAndRecodeDTO> produces = Lists.newArrayList();
         if (workAreaId == null && unitProjectCode.equals("")
                 && startTime.equals("") && endTime.equals("")){

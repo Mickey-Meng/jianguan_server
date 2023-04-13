@@ -5,6 +5,7 @@ import com.mongodb.client.gridfs.GridFSFindIterable;
 import com.mongodb.client.gridfs.model.GridFSFile;
 import com.ruoyi.common.constant.Constant;
 import com.ruoyi.common.core.domain.object.ResponseBase;
+import com.ruoyi.common.helper.LoginHelper;
 import com.ruoyi.common.utils.JwtUtil;
 import com.ruoyi.jianguan.common.dao.FileMapper;
 import com.ruoyi.jianguan.common.dao.ProjectsDAO;
@@ -130,7 +131,7 @@ public class MongController {
         if (count1 <= 0){
             return new ResponseBase(200, "该项目id无数据!");
         }
-        Integer userid = JwtUtil.getTokenUser().getId();
+        Integer userid = LoginHelper.getUserId().intValue();
         zjFile.setUploadid(userid);
         zjFile.setUploadtime(new Date());
         Integer integer = fileService.storZjFile(zjFile);
@@ -155,7 +156,7 @@ public class MongController {
             return new ResponseBase(200, "该项目id无数据!");
         }
 
-        Integer userid = JwtUtil.getTokenUser().getId();
+        Integer userid = LoginHelper.getUserId().intValue();
         zjFile.setUploadid(userid);
         zjFile.setUploadtime(new Date());
 
@@ -172,7 +173,7 @@ public class MongController {
     @ApiOperation("文件管理")
     public ResponseBase modifyFile(@RequestBody ZjFile zjFile) {
 
-        Integer userid = JwtUtil.getTokenUser().getId();
+        Integer userid = LoginHelper.getUserId().intValue();
         zjFile.setUploadid(userid);
         Integer integer = fileService.modifyFile(zjFile);
 

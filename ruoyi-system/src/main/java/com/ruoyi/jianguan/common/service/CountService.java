@@ -12,6 +12,7 @@ import com.ruoyi.common.core.domain.entity.*;
 import com.ruoyi.common.core.domain.model.SafePerData;
 import com.ruoyi.common.core.domain.model.ZjPersonLeave;
 import com.ruoyi.common.core.domain.object.ResponseBase;
+import com.ruoyi.common.helper.LoginHelper;
 import com.ruoyi.common.utils.JwtUtil;
 import com.ruoyi.jianguan.common.dao.*;
 import com.ruoyi.jianguan.common.domain.dto.*;
@@ -103,7 +104,7 @@ public class CountService {
     }
 
     public ResponseBase getPerMonthSafeData(SafePerData safePerData) throws ParseException {
-        Integer userId = JwtUtil.getTokenUser().getId();
+        Integer userId = LoginHelper.getUserId().intValue();
         List<Integer> gongqus = ssFUserGroupDAO.getGroupsOfProjectByUserId(userId);
 
         //设置safePerData 的开始与结束时间
@@ -170,7 +171,7 @@ public class CountService {
 
     public ResponseBase getPerSafeData(String askTime, int size) throws ParseException {
         WeekAndMonthCount weekAndMonthCount = new WeekAndMonthCount();
-        Integer userId = JwtUtil.getTokenUser().getId();
+        Integer userId = LoginHelper.getUserId().intValue();
         List<Integer> gongqus = ssFUserGroupDAO.getGroupsOfProjectByUserId(userId);
         //固定返回4个数据
         List<SafePerData> list = DateUtils.getFourDateByType(askTime, size);
@@ -219,7 +220,7 @@ public class CountService {
     }
 
     public ResponseBase getDayData(String askTime) throws ParseException {
-        Integer userId = JwtUtil.getTokenUser().getId();
+        Integer userId = LoginHelper.getUserId().intValue();
         List<Integer> gongqus = ssFUserGroupDAO.getGroupsOfProjectByUserId(userId);
         //获取当前日期最早事件
         Date stTime = DateUtils.getEarlyDate(askTime);
@@ -234,7 +235,7 @@ public class CountService {
 
     public ResponseBase getByFirstType() {
         List<SafeCountByType> safeCountByTypes = Lists.newArrayList();
-        Integer userId = JwtUtil.getTokenUser().getId();
+        Integer userId = LoginHelper.getUserId().intValue();
         List<Integer> gongqus = ssFUserGroupDAO.getGroupsOfProjectByUserId(userId);
 //        List<ZjSafeEvent> zjSafeEventList =zjSafeEventDAO.getDataByProjectId(gongqus);
 
@@ -291,7 +292,7 @@ public class CountService {
         Map<String, CountData> map = Maps.newHashMap();
         if (safePerData.getProjectId() == 3) {
             //获取当前用户的项目权限
-            Integer userId = JwtUtil.getTokenUser().getId();
+            Integer userId = LoginHelper.getUserId().intValue();
             List<String> projects = ssFUserGroupDAO.getGroupProjectsByUserId(userId);
             //截止到今天所有实际完成 今天的时间
             List<ZjConponentProducetime> actureData = Lists.newArrayList();
@@ -460,7 +461,7 @@ public class CountService {
         //获取前端传的项目id
         List<String> proChildCode = projectsDAO.getChildCode(census.getProjectId());
         //获取用户所拥有的单位工程权限
-        Integer userId = JwtUtil.getTokenUser().getId();
+        Integer userId = LoginHelper.getUserId().intValue();
         List<String> projects = ssFUserGroupDAO.getGroupProjectsByUserId(userId);
         //取到两个集合的交集
         List<String> intersectionList =
@@ -599,7 +600,7 @@ public class CountService {
 
     public ResponseBase getOperationData() {
         //根据用户查项目
-        Integer userId = JwtUtil.getTokenUser().getId();
+        Integer userId = LoginHelper.getUserId().intValue();
         List<String> projects = ssFUserGroupDAO.getGroupProjectsByUserId(userId);
         List<OperationDataOffer> data = Lists.newArrayList();
         //查每个项目项目工作面
@@ -639,7 +640,7 @@ public class CountService {
         List<String> proChildCode = projectsDAO.getChildCode(projectId);
 
         PowerData tokenUser = JwtUtil.getTokenUser();
-        Integer userId = JwtUtil.getTokenUser().getId();
+        Integer userId = LoginHelper.getUserId().intValue();
         List<String> projects = ssFUserGroupDAO.getGroupProjectsByUserId(userId);
         if (projects.size() == 0 || projects == null) {
             return new ResponseBase(500, "该用户没有组织权限！");
@@ -732,7 +733,7 @@ public class CountService {
         }
         //查询该项目下的子级的单位工程
         List<Integer> allGroups = ssFUserGroupDAO.getAllGroupsByProjectId(projectId);
-        Integer userId = JwtUtil.getTokenUser().getId();
+        Integer userId = LoginHelper.getUserId().intValue();
         List<Integer> gongqus = ssFUserGroupDAO.getGroupsOfProjectByUserId(userId);
         if (!gongqus.contains(group) && group != null) {
             return new ResponseBase(503, "查询失败，该用户没有该单位工程的工区的权限！");
@@ -767,7 +768,7 @@ public class CountService {
 
         Map<String, List<NewProjectConType>> res = Maps.newHashMap();
 
-        Integer userId = JwtUtil.getTokenUser().getId();
+        Integer userId = LoginHelper.getUserId().intValue();
         List<Integer> gongqus = ssFUserGroupDAO.getGroupsOfProjectByUserId(userId);
 
         List<NewProjectConType> list = Lists.newArrayList();
@@ -815,7 +816,7 @@ public class CountService {
         if (count1 <= 0) {
             return new ResponseBase(200, "该项目id无数据!");
         }
-        Integer userId = JwtUtil.getTokenUser().getId();
+        Integer userId = LoginHelper.getUserId().intValue();
         List<Integer> gongqus = ssFUserGroupDAO.getGroupsOfProjectByUserId(userId);
         List<Integer> singleProjectId = ssFUserGroupDAO.getAllGroupsByProjectId(projectId);
         // 用户只能查当前项目下的工区

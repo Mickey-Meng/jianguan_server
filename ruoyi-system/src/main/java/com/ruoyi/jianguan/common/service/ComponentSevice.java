@@ -8,6 +8,7 @@ import com.ruoyi.common.core.dao.jianguan.ZjFGroupsProjectsDAO;
 import com.ruoyi.common.core.domain.BaseTree;
 import com.ruoyi.common.core.domain.entity.*;
 import com.ruoyi.common.core.domain.object.ResponseBase;
+import com.ruoyi.common.helper.LoginHelper;
 import com.ruoyi.common.utils.JwtUtil;
 import com.ruoyi.jianguan.common.dao.*;
 import com.ruoyi.jianguan.common.domain.dto.*;
@@ -312,7 +313,7 @@ public class ComponentSevice {
         } else if (projectLevel == 3) {
             proChildId = projectsDAO.getProjectsChild(projectId);
         }
-        Integer userId = JwtUtil.getTokenUser().getId();
+        Integer userId = LoginHelper.getUserId().intValue();
         //该人员的单位工程权限id
 //        Integer userId = 14;
         List<Integer> gongqus = ssFUserGroupDAO.getGroupsOfProjectByUserId(userId);

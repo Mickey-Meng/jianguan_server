@@ -16,6 +16,7 @@ import com.ruoyi.common.core.domain.entity.SsFProjects;
 import com.ruoyi.common.core.domain.model.SafePerData;
 import com.ruoyi.common.core.domain.model.SsFUserRole;
 import com.ruoyi.common.core.domain.object.ResponseBase;
+import com.ruoyi.common.helper.LoginHelper;
 import com.ruoyi.jianguan.common.dao.*;
 import com.ruoyi.jianguan.common.domain.dto.*;
 import com.ruoyi.jianguan.common.domain.entity.SafeGongQugroup;
@@ -170,7 +171,7 @@ public class QualityService {
         if (count1 <= 0){
             return new ResponseBase(200, "该项目id无数据!");
         }
-        Integer userid = JwtUtil.getTokenUser().getId();
+        Integer userid = LoginHelper.getUserId().intValue();
         Map<String,Object> map = new HashMap<>();
         Integer role = zjQualityEventDAO.getRole(userid);
 //        if(role == 7 || role == 70){
@@ -268,7 +269,7 @@ public class QualityService {
         if (count1 <= 0){
             return new ResponseBase(200, "该项目id无数据!");
         }
-        Integer userid = JwtUtil.getTokenUser().getId();
+        Integer userid = LoginHelper.getUserId().intValue();
         List<ZjQualityEvent> zjSafeEventList = zjQualityEventDAO.getDelaySafeEventByModify(userid, projectId);
         if(zjSafeEventList.size()==0){
             return new ResponseBase(300,"暂无数据");
@@ -373,7 +374,7 @@ public class QualityService {
         if (count1 <= 0){
             return new ResponseBase(200, "该项目id无数据!");
         }
-        Integer userid = JwtUtil.getTokenUser().getId();
+        Integer userid = LoginHelper.getUserId().intValue();
         List<ZjQualityEvent> zjSafeEventList = zjQualityEventDAO.getNotDoneSafeEvent(userid, projectId);
         if(zjSafeEventList.size()==0){
             return new ResponseBase(300,"暂无数据");
@@ -452,7 +453,7 @@ public class QualityService {
     }
 
     public ResponseBase getDoneSafeEvent() {
-        Integer userid = JwtUtil.getTokenUser().getId();
+        Integer userid = LoginHelper.getUserId().intValue();
         List<ZjQualityEvent> zjSafeEventList = zjQualityEventDAO.getDoneSafeEventByModify(userid);
         if(zjSafeEventList.size()==0){
             return new ResponseBase(300,"暂无数据");
@@ -477,7 +478,7 @@ public class QualityService {
 //        }
         /*List<ZjQualityEvent> zjSafeEventList = Lists.newArrayList();
 
-        Integer userId = JwtUtil.getTokenUser().getId();
+        Integer userId = LoginHelper.getUserId().intValue();
 
         if (projectId == 3){
             List<Integer> gongqus = ssFUserGroupDAO.getGroupsByUserId(userId);
@@ -515,7 +516,7 @@ public class QualityService {
             return new ResponseBase(200,"查询成功", zjQualityEventList);
         }
 
-        Integer userId = JwtUtil.getTokenUser().getId();
+        Integer userId = LoginHelper.getUserId().intValue();
         List<Integer> gongqus = ssFUserGroupDAO.getGroupsOfProjectByUserId(userId);
         //根据工区维度获取数据
         List<ZjQualityEvent> zjSafeEventList = Lists.newArrayList();
@@ -654,7 +655,7 @@ public class QualityService {
         safePerData = DateUtils.getDay(count);
 
         //获取到用户所拥有的工区权限
-        Integer id = JwtUtil.getTokenUser().getId();
+        Integer id = LoginHelper.getUserId().intValue();
         List<Integer> gongqus = ssFUserGroupDAO.getGroupsOfProjectByUserId(id);
         if (gongqus.size() == 0){
             return new ResponseBase(200, "该用户暂时没有绑定单位工程!");
@@ -767,7 +768,7 @@ public class QualityService {
         }
         List<GqDataAll> resb = Lists.newArrayList();
 
-        Integer id = JwtUtil.getTokenUser().getId();
+        Integer id = LoginHelper.getUserId().intValue();
         // 根据用户ID，查询用户所属的工具集合
         List<Integer> gongqus = ssFUserGroupDAO.getGroupsOfProjectByUserId(id);
         if (gongqus.size() == 0){
@@ -837,7 +838,7 @@ public class QualityService {
             return new ResponseBase(200, "该项目id无数据!");
         }
         List<GqDataAll> resb = Lists.newArrayList();
-        Integer id = JwtUtil.getTokenUser().getId();
+        Integer id = LoginHelper.getUserId().intValue();
         //获取当前用户的工区清单
         List<Integer> groups = ssFUserGroupDAO.getGroupsOfProjectByUserId(id);
         if (groups.size() == 0){
@@ -960,7 +961,7 @@ public class QualityService {
 
     public ResponseBase deleteEvent(List<Integer> gids){
         //先判断操作的用户groupid是否为顶级或者总部(1,2),否则没有该权限
-        Integer userId = JwtUtil.getTokenUser().getId();
+        Integer userId = LoginHelper.getUserId().intValue();
         SsFUserRole userRole = userRoleDAO.getByUserid(userId);
         if (userRole.getRoleid() != 1 && userRole.getRoleid() !=2){
             return new ResponseBase(500, "该操作用户没有删除权限", null);

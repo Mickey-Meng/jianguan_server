@@ -194,7 +194,7 @@ public class JwtUtil {
      * @return
      */
     public static PowerData getTokenUser() {
-        String token = getRequest().getHeader("token");// 从 http 请求头中取出 token
+        String token = getRequest().getHeader("Authorization");// 从 http 请求头中取出 token
         String userJson = JWT.decode(token).getClaim("user").asString();
         PowerData user = JSON.parseObject(userJson, PowerData.class);
         return user;
@@ -208,7 +208,7 @@ public class JwtUtil {
      */
     public static String getUserNameByToken() {
         // 从 http 请求头中取出 token
-        String token = getRequest().getHeader("token");
+        String token = getRequest().getHeader("Authorization");
         System.out.println("token=" + token);
         String userJson = JWT.decode(token).getClaim("user").asString();
         PowerData user = JSON.parseObject(userJson, PowerData.class);
@@ -237,7 +237,7 @@ public class JwtUtil {
      */
     public static SsFUsers getUserToken() {
         // 从 http 请求头中取出 token
-        String token = getRequest().getHeader("token");
+        String token = getRequest().getHeader("Authorization");
         String userJson = JWT.decode(token).getClaim("user").asString();
         PowerData user = JSON.parseObject(userJson, PowerData.class);
         if (Objects.nonNull(user)) {
