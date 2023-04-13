@@ -41,8 +41,8 @@ public class LoginController {
     @AuthIgnore
     @Anonymous
     @ApiOperation(value = "登录，支持单个用户对应多个组织机构（2022-03-08）")
-    public ResponseBase login(@Validated @RequestBody LoginBody loginBody){
-        return userService.login(loginBody);
+    public ResponseBase login(@RequestBody SsFUsers user){
+        return userService.login_old(user);
     }
 
     @PostMapping("/viewToken")
