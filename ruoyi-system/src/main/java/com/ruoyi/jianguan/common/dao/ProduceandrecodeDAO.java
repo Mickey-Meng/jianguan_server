@@ -43,11 +43,11 @@ public interface ProduceandrecodeDAO {
     @Select("select * from produceandrecode where recodeid =#{recondid}")
     Produceandrecode getProduceandReconde(@Param("recondid") Integer recondid);
 
-    @Select("select * from produceandrecode where checkuser = #{userid} and projectId = #{projectId} group by updatetime desc")
+    @Select("select * from produceandrecode where checkuser = #{userid} and projectId = #{projectId} order by updatetime desc")
     List<Produceandrecode> getRecodeModelByCheckUser(@Param("userid") Integer userid,
                                                      @Param("projectId")Integer projectId);
 
-    @Select("select * from produceandrecode  where updateuser = #{userid} and projectId = #{projectId} group by updatetime desc")
+    @Select("select * from produceandrecode  where updateuser = #{userid} and projectId = #{projectId} order by updatetime desc")
     List<Produceandrecode> getRecodeModelByUpdateUser(@Param("userid")Integer userid,
                                                       @Param("projectId")Integer projectId);
 

@@ -769,7 +769,7 @@ public class CountService {
         Map<String, List<NewProjectConType>> res = Maps.newHashMap();
 
         Integer userId = LoginHelper.getUserId().intValue();
-        List<Integer> gongqus = ssFUserGroupDAO.getGroupsOfProjectByUserId(userId);
+        List<Integer> gongqus = ssFUserGroupDAO.getGroupsByUserId(userId);
 
         List<NewProjectConType> list = Lists.newArrayList();
         List<NewProjectConType> list1 = Lists.newArrayList();
@@ -785,7 +785,7 @@ public class CountService {
         if (gongqus.size() > 0) {
             //得到用户拥有权限与传的项目id下面项目工程的交集
             List<Integer> intersectionList =
-                    (List<Integer>) CollectionUtils.intersection(proChildId, gongqus);
+                (List<Integer>) CollectionUtils.intersection(proChildId, gongqus);
             StringBuilder sb = new StringBuilder();
             if (intersectionList.size() > 0) {
                 for (Integer i : intersectionList) {
@@ -794,15 +794,24 @@ public class CountService {
                 String abc = sb.substring(0, sb.toString().length() - 1);
 
                 list = zjConponentProducetimeDao.getallNew(abc);
-                res.put("桥梁工程", list);
                 list1 = zjConponentProducetimeDao.getallNewSD(abc);
-                res.put("隧道工程", list1);
+
+                if (!list.isEmpty()) {
+                    res.put("桥梁工程", list);
+                }
+                if (!list1.isEmpty()) {
+                    res.put("隧道工程", list1);
+                }
                 list2 = zjConponentProducetimeDao.getallNewDL(abc);
-                res.put("道路工程", list2);
+                res.put("房建工程", list2);
             } else {
-                res.put("桥梁工程", list);
-                res.put("隧道工程", list1);
-                res.put("道路工程", list2);
+                if (!list.isEmpty()) {
+                    res.put("桥梁工程", list);
+                }
+                if (!list1.isEmpty()) {
+                    res.put("隧道工程", list1);
+                }
+                res.put("房建工程", list2);
             }
         }
         return new ResponseBase(200, "查询工序成功！", res);

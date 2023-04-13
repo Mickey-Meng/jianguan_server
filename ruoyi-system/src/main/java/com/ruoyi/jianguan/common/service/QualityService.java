@@ -194,6 +194,14 @@ public class QualityService {
             map.put("data", new ArrayList<>());
             return new ResponseBase(200,"暂无数据", map);
         }
+
+        // 填充项目名称喝工区名称
+        List<Integer> projectIds = zjSafeEventList.stream().map(ZjQualityEvent::getProjectId).collect(Collectors.toList());
+        List<Integer> gongquIds = zjSafeEventList.stream().map(ZjQualityEvent::getGongquid).collect(Collectors.toList());
+        projectIds.addAll(gongquIds);
+        List<SsFProjects> result = ssFGroupsDAO.getProjectByIds(projectIds);
+        Map<Integer, String> id2name = result.stream().collect(Collectors.toMap(SsFProjects::getId, SsFProjects::getName));
+
         //增加超期时间字段和是否超期字段
         Calendar ca = Calendar.getInstance();
         Date systemtime = new Date();
@@ -211,6 +219,8 @@ public class QualityService {
             eventInfo.setZjQualityEvent(zjQualityEvent);
             eventInfo.setOverdueTime(addTime);
             eventInfo.setIsOverdue(isOverdue);
+            eventInfo.setGongquname(id2name.get(zjQualityEvent.getGongquid()));
+            eventInfo.setProjectname(id2name.get(zjQualityEvent.getProjectId()));
 
             boolean flag = addTime.before(systemtime);
             if (flag){
