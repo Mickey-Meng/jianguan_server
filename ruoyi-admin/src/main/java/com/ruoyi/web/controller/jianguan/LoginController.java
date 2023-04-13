@@ -36,13 +36,32 @@ public class LoginController {
     private UserService userService;
 
 
+    /**
+     * 定稿版本：登录 Edit By mengzhengbin
+     * @param loginBody
+     * @return
+     */
+    @PostMapping("/doLogin")
+    @ResponseBody
+    @AuthIgnore
+    @Anonymous
+    @ApiOperation(value = "登录，支持单个用户对应多个组织机构（2022-03-08）")
+    public ResponseBase doLogin(@Validated @RequestBody LoginBody loginBody){
+        return userService.login(loginBody);
+    }
+
+    /**
+     * 兼容原逻辑登录
+     * @param ssFUsers
+     * @return
+     */
     @PostMapping("/login")
     @ResponseBody
     @AuthIgnore
     @Anonymous
     @ApiOperation(value = "登录，支持单个用户对应多个组织机构（2022-03-08）")
-    public ResponseBase login(@Validated @RequestBody LoginBody loginBody){
-        return userService.login(loginBody);
+    public ResponseBase login(@RequestBody SsFUsers ssFUsers){
+        return userService.login_old(ssFUsers);
     }
 
     @PostMapping("/viewToken")
