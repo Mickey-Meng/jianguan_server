@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class MongConfig {
 
-    @Value("${spring.mongodb.database}")
+    @Value("${spring.data.mongodb.database}")
     private String db;
 
     @Bean

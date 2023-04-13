@@ -126,11 +126,16 @@ spring.datasource.druid:
 
 --- # redis 单机配置(单机与集群只能开启一个另一个需要注释掉)
 spring:
+  data:
+    # mongodb配置
+    mongodb:
+      uri: mongodb://150.158.139.18:8886
+      database: admin
   redis:
     # 地址
     host: 150.158.139.18
     # 端口，默认为6379
-    port: 26379
+    port: 8899
     # 数据库索引
     database: 0
     # 密码(如没有密码请注释掉)
@@ -139,10 +144,6 @@ spring:
     timeout: 10s
     # 是否开启ssl
     ssl: false
-  # mongodb配置
-  mongodb:
-    uri: mongodb://150.158.139.18:27017
-    database: admin
 redisson:
   # redis key前缀
   keyPrefix:

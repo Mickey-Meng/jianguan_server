@@ -1,6 +1,3 @@
---- # 临时文件存储位置 避免临时文件被系统清理报错
-spring.servlet.multipart.location: /ruoyi/server/temp
-
 --- # 监控中心配置
 spring.boot.admin.client:
   # 增加客户端开关
@@ -51,9 +48,9 @@ spring:
           driverClassName: com.mysql.cj.jdbc.Driver
           # jdbc 所有参数配置参考 https://lionli.blog.csdn.net/article/details/122018562
           # rewriteBatchedStatements=true 批处理优化 大幅提升批量插入更新删除性能(对数据库有性能损耗 使用批量操作应考虑性能问题)
-          url: jdbc:mysql://rm-bp1prys6a748qt2rwvo.mysql.rds.aliyuncs.com:3306/ry-flowable-plus?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8&autoReconnect=true&rewriteBatchedStatements=true&nullCatalogMeansCurrent=true
-          username: yangaogao
-          password: YAN!@#gao
+          url: jdbc:mysql://150.158.139.18:8306/jian_guan?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8&autoReconnect=true&rewriteBatchedStatements=true&nullCatalogMeansCurrent=true
+          username: root
+          password: 123456
         # 从库数据源
         slave:
           lazy: true
@@ -128,6 +125,11 @@ spring.datasource.druid:
 
 --- # redis 单机配置(单机与集群只能开启一个另一个需要注释掉)
 spring:
+  data:
+    # mongodb配置
+    mongodb:
+      uri: mongodb://150.158.139.18:8886
+      database: admin
   redis:
     # 地址
     host: 150.158.139.18
@@ -141,11 +143,6 @@ spring:
     timeout: 10s
     # 是否开启ssl
     ssl: false
- # mongodb配置
-  mongodb:
-    uri: mongodb://localhost:27017
-    database: admin
-
 redisson:
   # redis key前缀
   keyPrefix:
