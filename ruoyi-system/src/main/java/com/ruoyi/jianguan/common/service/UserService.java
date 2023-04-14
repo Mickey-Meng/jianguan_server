@@ -106,68 +106,9 @@ public class UserService {
     @Qualifier("zjFGroupsProjectsDAO")
     private ZjFGroupsProjectsDAO zjFGroupsProjectsDAO;
 
-    private final SysLoginService loginService;
-
     public volatile int a = 0;
 
-    /**
-     * 前端用户登录
-     * @param loginBody
-     * @return
-     */
-    public ResponseBase login(LoginBody loginBody) {
-        LoginUser loginUser = loginService.loginForUser(loginBody);
-        if (StringUtils.isEmpty(loginUser.getRoleIds())) {
-            return new ResponseBase(201, "该角色没有配置角色权限,请到运维系统进行配置! ");
-        }
-        /*if (ssFUserGroups.size() == 0) {
-            return new ResponseBase(201, "该角色没有配置工区, 请到管理员账号下进行配置! ");
-        }*/
-        Map<String, Object> ajaxDataMap = new HashMap<>();
-        ajaxDataMap.put(Constants.LOGIN_USER_INFO, loginUser);
-
-        PowerData powerData = PowerData.builder()
-            .id(loginUser.getUserId().intValue())
-            .roleIds(loginUser.getRoleIds())
-            .build();
-        //转token
-        String jwtToken = JwtUtil.sign(powerData, JwtUtil.SSO_TIME);
-        ajaxDataMap.put("jwtToken", jwtToken);
-        return new ResponseBase(200, "登录成功", ajaxDataMap);
-    }
-
-    public ResponseBase login_1(LoginBody loginBody) {
-        // 生成令牌
-        String authToken = loginService.login(loginBody.getUsername(), loginBody.getPassword(), loginBody.getCode(),
-            loginBody.getUuid());
-
-        LoginUser currentUser = LoginHelper.getLoginUser();
-        PowerData powerData = PowerData.builder()
-            .id(currentUser.getUserId().intValue())
-            .roleIds(currentUser.getRoleIds())
-            .build();
-        //转token
-        String jwtToken = JwtUtil.sign(powerData, JwtUtil.SSO_TIME);
-
-        LoginData loginData = new LoginData();
-        loginData.setToken(jwtToken);
-        loginData.setAuthToken(authToken);
-        loginData.setId(currentUser.getUserId().intValue());
-        loginData.setName(currentUser.getNickName());
-
-        LoginDataDTO dataDTO = new LoginDataDTO();
-        if (currentUser.getRoles().isEmpty() && currentUser.getRoleId() == null) {
-            return new ResponseBase(201, "该角色没有配置角色权限,请到运维系统进行配置! ");
-        }
-        /*if (ssFUserGroups.size() == 0) {
-            return new ResponseBase(201, "该角色没有配置工区, 请到管理员账号下进行配置! ");
-        }*/
-        dataDTO.setLoginData(loginData);
-        dataDTO.setGroupid(currentUser.getDeptId().intValue());
-        return new ResponseBase(200, "登录成功", dataDTO);
-    }
-
-    public ResponseBase login_old(SsFUsers user) {
+    public ResponseBase login(SsFUsers user) {
         //根据 用户名与密码进行匹配
 //        SsFUsers findUser = ssFUsersDAO.checkLogin(user.getUsername());
         SsFUsers findUser = ssFUsersDAO.userLogin(user.getUsername());

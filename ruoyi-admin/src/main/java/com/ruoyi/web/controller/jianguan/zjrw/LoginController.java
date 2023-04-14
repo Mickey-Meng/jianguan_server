@@ -1,4 +1,4 @@
-package com.ruoyi.web.controller.jianguan;
+package com.ruoyi.web.controller.jianguan.zjrw;
 
 import com.ruoyi.common.annotation.Anonymous;
 import com.ruoyi.common.annotation.AuthIgnore;
@@ -30,25 +30,9 @@ import javax.servlet.http.HttpServletResponse;
 @Api(value="登陆管理")
 public class LoginController {
 
-
     @Autowired
     @Qualifier("loginUserService")
     private UserService userService;
-
-
-    /**
-     * 定稿版本：登录 Edit By mengzhengbin
-     * @param loginBody
-     * @return
-     */
-    @PostMapping("/doLogin")
-    @ResponseBody
-    @AuthIgnore
-    @Anonymous
-    @ApiOperation(value = "登录，支持单个用户对应多个组织机构（2022-03-08）")
-    public ResponseBase doLogin(@Validated @RequestBody LoginBody loginBody){
-        return userService.login(loginBody);
-    }
 
     /**
      * 兼容原逻辑登录
@@ -61,7 +45,7 @@ public class LoginController {
     @Anonymous
     @ApiOperation(value = "登录，支持单个用户对应多个组织机构（2022-03-08）")
     public ResponseBase login(@RequestBody SsFUsers ssFUsers){
-        return userService.login_old(ssFUsers);
+        return userService.login(ssFUsers);
     }
 
     @PostMapping("/viewToken")
