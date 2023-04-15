@@ -50,4 +50,5 @@ public interface IMapServerConfigService {
 
     int updateServerStatus(MapServerConfigBo bo);
 
+    List<MapServerConfigVo> queryListVoByTypes(String serverType);
 }

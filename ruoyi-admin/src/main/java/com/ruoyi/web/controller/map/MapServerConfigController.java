@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit;
 
 import cn.hutool.core.convert.Convert;
 import com.ruoyi.common.core.domain.entity.SysUser;
+import com.ruoyi.common.core.domain.object.ResponseBase;
 import com.ruoyi.generator.domain.GenTable;
 import com.ruoyi.map.domain.MapServerConfig;
 import com.ruoyi.map.domain.bo.MapServerConfigBo;
@@ -132,6 +133,23 @@ public class MapServerConfigController extends BaseController {
     public R<Void> remove(@NotEmpty(message = "主键不能为空")
                           @PathVariable Long[] ids) {
         return toAjax(mapServerConfigService.deleteWithValidByIds(Arrays.asList(ids), true) ? 1 : 0);
+    }
+
+    /********************************************************************************************************/
+    /**
+     * /STSfmzj/mapConfig/getMyMap?type=2,3&userid=${ID}&groupId=${GROUPID}&rolesId=${r}
+     * @param
+     * @return
+     */
+    @SaCheckPermission("map:mapServerConfig:query")
+    @GetMapping("/getMyMap")
+    public ResponseBase getMyMap(@RequestParam("serverType") String serverType,
+                                         @RequestParam("userId") Long userId,
+                                         @RequestParam("groupId") String groupId,
+                                         @RequestParam("roleIds") String roleIds) {
+        // TODO 待完善
+        List<MapServerConfigVo> mapServerConfigVoList = mapServerConfigService.queryListVoByTypes(serverType);
+        return ResponseBase.success(mapServerConfigVoList);
     }
 
 }

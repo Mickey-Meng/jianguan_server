@@ -15,6 +15,7 @@ import com.ruoyi.map.service.IMapServerConfigService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Collection;
@@ -64,7 +65,8 @@ public class MapServerConfigServiceImpl implements IMapServerConfigService {
         lqw.like(StringUtils.isNotBlank(bo.getServerName()), MapServerConfig::getServerName, bo.getServerName());
         lqw.eq(StringUtils.isNotBlank(bo.getServerCode()), MapServerConfig::getServerCode, bo.getServerCode());
         lqw.eq(StringUtils.isNotBlank(bo.getServerUrl()), MapServerConfig::getServerUrl, bo.getServerUrl());
-        lqw.eq(StringUtils.isNotBlank(bo.getServerType()), MapServerConfig::getServerType, bo.getServerType());
+        lqw.in(StringUtils.isNotBlank(bo.getServerType()), MapServerConfig::getServerType,
+            Arrays.asList(StringUtils.isNotBlank(bo.getServerType()) ? bo.getServerType().split(",") : new String[0]));
         lqw.eq(bo.getVisiable() != null, MapServerConfig::getVisiable, bo.getVisiable());
         lqw.eq(StringUtils.isNotBlank(bo.getStatus()), MapServerConfig::getStatus, bo.getStatus());
         lqw.eq(StringUtils.isNotBlank(bo.getAttrbuites()), MapServerConfig::getAttrbuites, bo.getAttrbuites());
@@ -125,6 +127,14 @@ public class MapServerConfigServiceImpl implements IMapServerConfigService {
         MapServerConfig update = BeanUtil.toBean(bo, MapServerConfig.class);
         validEntityBeforeSave(update);
         return baseMapper.updateById(update) ;
+    }
+
+    @Override
+    public List<MapServerConfigVo> queryListVoByTypes(String serverType) {
+        MapServerConfigBo bo =new MapServerConfigBo();
+        bo.setServerType(serverType);
+        LambdaQueryWrapper<MapServerConfig> lqw = buildQueryWrapper(bo);
+        return baseMapper.selectVoList(lqw, MapServerConfigVo.class);
     }
 
 }

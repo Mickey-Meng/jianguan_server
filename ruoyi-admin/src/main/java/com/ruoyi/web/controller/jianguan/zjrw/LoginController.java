@@ -39,6 +39,7 @@ public class LoginController {
      * @param ssFUsers
      * @return
      */
+    @Deprecated
     @PostMapping("/login")
     @ResponseBody
     @AuthIgnore
@@ -87,6 +88,7 @@ public class LoginController {
         return userService.updatePwd(user);
     }
 
+    @Deprecated
     @ResponseBody
     @PostMapping("/updateOnline")
     @ApiOperation(value = "更新在线状态")

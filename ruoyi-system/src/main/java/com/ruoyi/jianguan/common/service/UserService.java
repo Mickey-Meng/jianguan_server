@@ -108,6 +108,7 @@ public class UserService {
 
     public volatile int a = 0;
 
+    @Deprecated
     public ResponseBase login(SsFUsers user) {
         //根据 用户名与密码进行匹配
 //        SsFUsers findUser = ssFUsersDAO.checkLogin(user.getUsername());
@@ -300,6 +301,7 @@ public class UserService {
         return new ResponseBase(200, "修改密码失败!");
     }
 
+    @Deprecated
     @CheckRepeatCommit
     public ResponseBase updateOnline(String cid, String lon, String lat) {
         //通过token获取用户的id
