@@ -32,7 +32,7 @@ public interface SsFUserGroupDAO {
 
     Integer deleteByUserIds(@Param("list") List<Integer> list);
 
-    @Select("select groupid from ss_f_user_group where userid = #{id} and ststate = 1")
+    @Select("select groupid from ss_f_user_project where userid = #{id} and ststate = 1")
     List<Integer> getGroupsByUserId(@Param("id") Integer id);
 
     @Select("select * from ss_f_user_group where groupid = #{groupid}")
