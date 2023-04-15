@@ -161,6 +161,7 @@ security:
     - /actuator/**
     - /mong/preview
     - /mong/upload
+    - /mong/newUpload
 
 # MyBatisPlus配置
 # https://baomidou.com/config/
