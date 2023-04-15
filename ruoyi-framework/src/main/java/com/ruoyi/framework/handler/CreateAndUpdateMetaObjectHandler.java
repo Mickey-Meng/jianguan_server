@@ -72,6 +72,13 @@ public class CreateAndUpdateMetaObjectHandler implements MetaObjectHandler {
                 if (StringUtils.isNotBlank(username)) {
                     baseEntity.setUpdateBy(username);
                 }
+            }else if (ObjectUtil.isNotNull(metaObject) && metaObject.getOriginalObject() instanceof NewBaseEntity) {
+                if (metaObject.hasGetter("updateUserId")) {
+                    this.setFieldValByName("updateUserId", Objects.requireNonNull(getLoginUserId()).intValue(), metaObject);
+                }
+                if (metaObject.hasGetter("updateTime")) {
+                    this.setFieldValByName("updateTime", new Date(), metaObject);
+                }
             }
         } catch (Exception e) {
             throw new ServiceException("自动注入异常 => " + e.getMessage(), HttpStatus.HTTP_UNAUTHORIZED);
