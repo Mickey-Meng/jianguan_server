@@ -6,19 +6,19 @@ import cn.hutool.poi.excel.ExcelWriter;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.ruoyi.common.core.dao.SsFUsersDAO;
+import com.ruoyi.common.core.domain.dto.PageDTO;
+import com.ruoyi.common.core.domain.entity.FileModel;
 import com.ruoyi.common.core.domain.entity.SsFUsers;
 import com.ruoyi.common.core.sequence.util.IdUtil;
 import com.ruoyi.jianguan.quality.domain.dto.ManageTargetSaveDTO;
-import com.ruoyi.common.core.domain.dto.PageDTO;
-import com.ruoyi.common.core.domain.entity.FileModel;
 import com.ruoyi.jianguan.quality.domain.entity.ManageTarget;
-import com.ruoyi.jianguan.quality.mapper.ManageTargetMapper;
-import com.ruoyi.jianguan.quality.service.ManageTargetService;
 import com.ruoyi.jianguan.quality.domain.vo.ManageTargetDetailVo;
 import com.ruoyi.jianguan.quality.domain.vo.ManageTargetPageVo;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
+import com.ruoyi.jianguan.quality.mapper.ManageTargetMapper;
+import com.ruoyi.jianguan.quality.service.ManageTargetService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.List;
 import java.util.Objects;
 
@@ -117,7 +118,7 @@ public class ManageTargetServiceImpl extends ServiceImpl<ManageTargetMapper, Man
      * @param response
      */
     @Override
-    public void export(PageDTO pageDto, HttpServletResponse response) {
+    public void export(PageDTO pageDto, HttpServletResponse response)  {
         //分页查询  页数暂定为5000
         pageDto.setPageSize(5000);
         PageInfo<ManageTargetPageVo> pageInfo = this.getPageInfo(pageDto);
@@ -130,7 +131,8 @@ public class ManageTargetServiceImpl extends ServiceImpl<ManageTargetMapper, Man
         writer.write(pageInfo.getList(), true);
         writer.merge(3, "管理目标");
         response.setContentType("application/vnd.ms-excel;charset=utf-8");
-        String name = ("管理目标");
+
+        String name = URLEncoder.encode("管理目标");
         response.setHeader("Content-Disposition", "attachment;filename=" + name + ".xls");
         ServletOutputStream out = null;
         try {
