@@ -162,6 +162,7 @@ security:
     - /mong/preview
     - /mong/upload
     - /mong/newUpload
+    - /mong/download
 
 # MyBatisPlus配置
 # https://baomidou.com/config/
