@@ -4,6 +4,7 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.http.HttpStatus;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.ruoyi.common.core.domain.BaseEntity;
+import com.ruoyi.common.core.domain.NewBaseEntity;
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.helper.LoginHelper;
@@ -12,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.reflection.MetaObject;
 
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * MP注入处理器
@@ -37,6 +39,20 @@ public class CreateAndUpdateMetaObjectHandler implements MetaObjectHandler {
                 baseEntity.setCreateBy(username);
                 // 当前已登录 且 更新人为空 则填充
                 baseEntity.setUpdateBy(username);
+            } else if (ObjectUtil.isNotNull(metaObject) && metaObject.getOriginalObject() instanceof NewBaseEntity) {
+                //根据属性名字设置要填充的值
+                if (metaObject.hasGetter("createTime")) {
+                    this.setFieldValByName("createTime", new Date(), metaObject);
+                }
+                if (metaObject.hasGetter("createUserId")) {
+                    this.setFieldValByName("createUserId", Objects.requireNonNull(getLoginUserId()).intValue(), metaObject);
+                }
+                if (metaObject.hasGetter("updateUserId")) {
+                    this.setFieldValByName("updateUserId", Objects.requireNonNull(getLoginUserId()).intValue(), metaObject);
+                }
+                if (metaObject.hasGetter("updateTime")) {
+                    this.setFieldValByName("updateTime", new Date(), metaObject);
+                }
             }
         } catch (Exception e) {
             throw new ServiceException("自动注入异常 => " + e.getMessage(), HttpStatus.HTTP_UNAUTHORIZED);
@@ -74,6 +90,20 @@ public class CreateAndUpdateMetaObjectHandler implements MetaObjectHandler {
             return null;
         }
         return loginUser.getUsername();
+    }
+
+    /**
+     * 获取登录用户名
+     */
+    private Long getLoginUserId() {
+        LoginUser loginUser;
+        try {
+            loginUser = LoginHelper.getLoginUser();
+        } catch (Exception e) {
+            log.warn("自动注入警告 => 用户未登录");
+            return null;
+        }
+        return loginUser.getUserId();
     }
 
 }
