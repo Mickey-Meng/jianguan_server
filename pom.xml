@@ -423,6 +423,11 @@
                             <version>${spring-boot.version}</version>
                         </path>
                     </annotationProcessorPaths>
+                    <!-- 下面两个配置二选一，第一个配置要求插件版本3.6.2起-->
+                    <!--<parameters>true</parameters>-->
+                    <compilerArgs>
+                        <arg>-parameters</arg>
+                    </compilerArgs>
                 </configuration>
             </plugin>
         </plugins>
