@@ -639,7 +639,7 @@ public class CountService {
         //获取前端传的项目id, 获取该项目id下面所有单位工程的code
         List<String> proChildCode = projectsDAO.getChildCode(projectId);
 
-        PowerData tokenUser = JwtUtil.getTokenUser();
+//        PowerData tokenUser = JwtUtil.getTokenUser();
         Integer userId = LoginHelper.getUserId().intValue();
         List<String> projects = ssFUserGroupDAO.getGroupProjectsByUserId(userId);
         if (projects.size() == 0 || projects == null) {
