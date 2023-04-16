@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ruoyi.web.controller.jianguan.zlsk.strestservice.mapper.UserloghistoryMapper">
+
+    <select id="select" resultType="Map" parameterType="Map">
+        select * from ss_f_userloghistory as t1
+        left join ss_f_users as t2 on t1.USERID = t2.ID
+        where 1 = 1
+        <if test="sttime != null and sttime != ''">
+            and date_format(t1.sttime, '%Y-%m-%d') between #{stime} and #{etime}
+        </if>
+        order by t1.STTIME desc
+    </select>
+
+    <delete id="delete" parameterType="Map">
+        delete from ss_f_userloghistory where 1 = 1
+        <if test="ids != null and ids != ''">and ID in (${ids})</if>
+    </delete>
+
+    <insert id="insert" parameterType="Map">
+        insert into ss_f_userloghistory
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                ID,
+            </if>
+            <if test="userid != null">
+                USERID,
+            </if>
+            <if test="address != null">
+                ADDRESS,
+            </if>
+            <if test="ip != null">
+                IP,
+            </if>
+            <if test="logtype != null">
+                LOGTYPE,
+            </if>
+            <if test="sttime != null">
+                STTIME,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="userid != null">
+                #{userid,jdbcType=INTEGER},
+            </if>
+            <if test="address != null">
+                #{address,jdbcType=VARCHAR},
+            </if>
+            <if test="ip != null">
+                #{ip,jdbcType=VARCHAR},
+            </if>
+            <if test="logtype != null">
+                #{logtype,jdbcType=INTEGER},
+            </if>
+            <if test="sttime != null">
+                #{sttime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+</mapper>

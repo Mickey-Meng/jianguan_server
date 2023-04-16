@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ruoyi.web.controller.jianguan.zlsk.strestservice.mapper.DpEngineeringMapper" >
+    <resultMap id="BaseResultMap" type="com.ruoyi.web.controller.jianguan.zlsk.strestservice.model.DpEngineering">
+        <id column="id" property="id" />
+        <result column="engineering_name" property="engineeringName" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="site" property="site" />
+        <result column="remark" property="remark" />
+    </resultMap>
+
+    <sql id="BaseSql">
+        id,engineering_name,create_time,update_time,site,remark
+    </sql>
+
+    <select id="selectById" resultMap="BaseResultMap">
+        SELECT
+            <include refid="BaseSql" />
+        FROM
+            dp_engineering
+        WHERE id=#{id}
+    </select>
+
+    <insert id="insert" parameterType="com.ruoyi.web.controller.jianguan.zlsk.strestservice.model.DpEngineering" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO dp_engineering VALUES(null,#{engineeringName},NOW(),null,#{site},#{remark})
+    </insert>
+
+    <delete id="deleteById" parameterType="java.lang.Integer">
+        DELETE FROM dp_engineering WHERE id=#{id}
+    </delete>
+
+    <update id="updateById" parameterType="com.ruoyi.web.controller.jianguan.zlsk.strestservice.model.DpEngineering" useGeneratedKeys="true" keyProperty="id">
+        UPDATE
+            dp_engineering
+        <set>
+            <if test="engineeringName!=null">
+                engineering_name=#{engineeringName},
+            </if>
+            <if test="site!=null">
+                site=#{site},
+            </if>
+            <if test="remark!=null">
+                remark=#{remark},
+            </if>
+            update_time=NOW()
+        </set>
+        WHERE
+            id=#{id}
+    </update>
+
+    <select id="selectList" resultMap="BaseResultMap">
+        SELECT
+            <include refid="BaseSql"></include>
+        FROM
+        dp_engineering
+    </select>
+
+
+    <select id="selectCiCost" resultType="java.lang.Double">
+        SELECT
+            SUM(IFNULL(cesw.project_cost,0))
+                +SUM(IFNULL(crw.project_cost,0))
+                +SUM(IFNULL(cbw.project_cost,0))
+                +SUM(IFNULL(clgw.project_cost,0))
+                +SUM(IFNULL(cpsf.project_cost,0))
+                +SUM(IFNULL(crr.project_cost,0))
+                +SUM(IFNULL(cphb.project_cost,0))
+        FROM
+            dp_engineering d
+        LEFT JOIN ci_earth_stone_work cesw on d.id=cesw.engineering_id
+        LEFT JOIN ci_road_work crw ON crw.engineering_id=d.id
+        LEFT JOIN ci_bridge_work cbw ON d.id=cbw.engineering_id
+        LEFT JOIN ci_landscape_greening_work clgw on d.id = clgw.engineering_id
+        LEFT JOIN ci_public_supporting_facilities cpsf on d.id = cpsf.engineering_id
+        LEFT JOIN ci_river_regulation crr on d.id = crr.engineering_id
+        LEFT JOIN ci_placement_house_building cphb on d.id = cphb.engineering_id
+        WHERE
+            d.id = #{engineeringId}
+    </select>
+
+    <select id="selectSite" resultType="java.lang.String">
+        SELECT site FROM dp_engineering WHERE id=#{id}
+    </select>
+
+
+</mapper>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.web.controller.jianguan.zlsk.strestservice.mapper.CiBridgeWorkMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ruoyi.web.controller.jianguan.zlsk.strestservice.model.CiBridgeWork">
+        <id column="id" property="id" />
+        <result column="project_name" property="projectName" />
+        <result column="bridge_grade" property="bridgeGrade" />
+        <result column="bridge_area" property="bridgeArea" />
+        <result column="unit_price" property="unitPrice" />
+        <result column="project_cost" property="projectCost" />
+        <result column="engineering_id" property="engineeringId" />
+    </resultMap>
+
+    <sql id="BaseResultSql">
+        id,project_name,bridge_grade,bridge_area,unit_price,project_cost,engineering_id
+    </sql>
+
+    <select id="selectByEngineeringId" resultMap="BaseResultMap">
+        SELECT
+        <include refid="BaseResultSql" />
+        FROM
+            ci_bridge_work
+        WHERE
+        engineering_id=#{engineeringId}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO ci_bridge_work VALUES (null,#{projectName},#{bridgeGrade},#{bridgeArea},#{unitPrice},
+                                         #{projectCost},#{engineeringId})
+    </insert>
+
+    <update id="updateById" useGeneratedKeys="true" keyProperty="id">
+        UPDATE
+            ci_bridge_work
+        SET
+        <if test="projectName!=null">
+            project_name=#{projectName},
+        </if>
+        <if test="bridgeGrade!=null">
+            bridge_grade=#{bridgeGrade},
+        </if>
+        <if test="bridgeArea!=null">
+            bridge_area=#{bridgeArea},
+        </if>
+        <if test="unitPrice!=null">
+            unit_price=#{unitPrice},
+        </if>
+        <if test="projectCost!=null">
+            project_cost=#{projectCost}
+        </if>
+        WHERE
+        id=#{id}
+        and
+        engineering_id=#{engineeringId}
+    </update>
+
+
+    <delete id="deleteByIds">
+        DELETE FROM
+            ci_bridge_work
+        WHERE
+            id IN
+        <foreach collection="ids" separator="," item="item" open="(" close=")">
+            #{item}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ruoyi.web.controller.jianguan.zlsk.strestservice.mapper.ServiceMapper">
+
+    <select id="select" resultType="Map" parameterType="Map">
+        select * from ss_c_service where STSTATE = 1
+        <if test="id != null and id != ''">and ID = #{id}</if>
+    </select>
+
+    <insert id="insert" parameterType="Map">
+        insert into ss_c_service
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                ID,
+            </if>
+            <if test="name != null">
+                NAME,
+            </if>
+            <if test="url != null">
+                URL,
+            </if>
+            <if test="sttime != null">
+                STTIME,
+            </if>
+            <if test="ststate != null">
+                STSTATE,
+            </if>
+            <if test="storder != null">
+                STORDER,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="url != null">
+                #{url,jdbcType=VARCHAR},
+            </if>
+            <if test="sttime != null">
+                #{sttime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="ststate != null">
+                #{ststate,jdbcType=INTEGER},
+            </if>
+            <if test="storder != null">
+                #{storder,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+
+    <delete id="delete" parameterType="Integer">
+        delete from ss_c_service
+        where ID = #{id}
+    </delete>
+</mapper>

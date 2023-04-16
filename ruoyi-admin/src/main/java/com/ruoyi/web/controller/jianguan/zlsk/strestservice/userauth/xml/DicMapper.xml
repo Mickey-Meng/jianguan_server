@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ruoyi.web.controller.jianguan.zlsk.strestservice.mapper.DicMapper">
+
+    <select id="select" parameterType="Map" resultType="Map">
+        select * from ss_c_dic where ststate = 1
+        <if test="id != null">and `id` = #{id}</if>
+        <if test="name != null">and `name` = #{name}</if>
+        <if test="parentid != null">and `parentid` = #{parentid}</if>
+        <if test="key != null">and `key` like CONCAT('%', #{key},'%')</if>
+    </select>
+
+    <select id="selectByKey" parameterType="Map" resultType="Map">
+        select p.* from ss_c_dic p
+        left join ss_c_dic s on s.id = p.parentid
+        where p.ststate = 1 and s.key = #{parentkey}
+        <if test="value != null"> and p.value like CONCAT('%', #{value},'%')</if>
+        <if test="key != null"> and p.key like CONCAT('%', #{key},'%')</if>
+    </select>
+
+    <delete id="delete" parameterType="java.lang.Integer">
+        delete from ss_c_dic where id = #{id}
+    </delete>
+
+    <insert id="insert" parameterType="Map">
+        insert into ss_c_dic
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="name != null">
+                `name`,
+            </if>
+            <if test="parentid != null">
+                parentid,
+            </if>
+            <if test="key != null">
+                `key`,
+            </if>
+            <if test="value != null">
+                `value`,
+            </if>
+            <if test="sttime != null">
+                sttime,
+            </if>
+            <if test="ststate != null">
+                ststate,
+            </if>
+            <if test="storder != null">
+                storder,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="parentid != null">
+                #{parentid,jdbcType=INTEGER},
+            </if>
+            <if test="key != null">
+                #{key,jdbcType=VARCHAR},
+            </if>
+            <if test="value != null">
+                #{value,jdbcType=VARCHAR},
+            </if>
+            <if test="sttime != null">
+                #{sttime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="ststate != null">
+                #{ststate,jdbcType=INTEGER},
+            </if>
+            <if test="storder != null">
+                #{storder,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="update" parameterType="Map">
+        update ss_c_dic
+        <set>
+            <if test="name != null">
+                `name` = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="parentid != null">
+                parentid = #{parentid,jdbcType=INTEGER},
+            </if>
+            <if test="key != null">
+                `key` = #{key,jdbcType=VARCHAR},
+            </if>
+            <if test="value != null">
+                `value` = #{value,jdbcType=VARCHAR},
+            </if>
+            <if test="sttime != null">
+                sttime = #{sttime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="ststate != null">
+                ststate = #{ststate,jdbcType=INTEGER},
+            </if>
+            <if test="storder != null">
+                storder = #{storder,jdbcType=INTEGER},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+</mapper>

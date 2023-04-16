@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ruoyi.web.controller.jianguan.zlsk.strestservice.mapper.LadCostDictionaryMapper" >
+    <resultMap id="BaseResultMap" type="com.ruoyi.web.controller.jianguan.zlsk.strestservice.model.LadCostDictionary">
+        <id column="id" property="id" />
+        <result column="lad_name" property="ladName" />
+        <result column="unit_amount" property="unitAmount" />
+        <result column="unit_price_per_unit" property="unitPricePerUnit" />
+        <result column="remark" property="remark" />
+    </resultMap>
+
+    <select id="selectIdList" resultMap="BaseResultMap">
+        SELECT id,lad_name,unit_amount,unit_price_per_unit FROM lad_cost_dictionary
+    </select>
+
+
+</mapper>

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.web.controller.jianguan.zlsk.strestservice.mapper.DpEngineeringCostMapper">
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ruoyi.web.controller.jianguan.zlsk.strestservice.model.DpEngineeringCost">
+        <id column="engineering_id" property="engineeringId" />
+        <result column="construction_installation_cost" property="constructionInstallationCost" />
+        <result column="other_fee" property="otherFee" />
+        <result column="budget_reserve" property="budgetReserve" />
+        <result column="lad_fee" property="ladFee" />
+        <result column="administrative_expense" property="administrativeExpense" />
+        <result column="static_investment" property="staticInvestment" />
+        <result column="financial_expense" property="financialExpense" />
+        <result column="total_investment" property="totalInvestment" />
+        <result column="other_fee_rate" property="otherFeeRate" />
+        <result column="budget_reserve_rate" property="budgetReserveRate" />
+        <result column="administrative_expense_rate" property="administrativeExpenseRate" />
+        <result column="financial_expense_rate" property="financialExpenseRate" />
+        <result column="lad_unforeseen_rate" property="ladUnforeseenRate" />
+    </resultMap>
+
+    <sql id="BaseResultSql">
+        engineering_id,construction_installation_cost,other_fee,budget_reserve,lad_fee,administrative_expense,
+        static_investment,financial_expense,total_investment,other_fee_rate,budget_reserve_rate,administrative_expense_rate,
+        financial_expense_rate,lad_unforeseen_rate
+    </sql>
+
+    <select id="selectByEngineeringId" resultMap="BaseResultMap">
+        SELECT
+            <include refid="BaseResultSql" />
+        FROM
+            dp_engineering_cost
+        WHERE
+            engineering_id=#{engineeringId}
+    </select>
+
+    <insert id="insertInfo" useGeneratedKeys="true" keyProperty="engineeringId">
+        INSERT INTO dp_engineering_cost
+        VALUES (#{engineeringId},#{constructionInstallationCost},#{otherFee},#{budgetReserve},#{ladFee},#{administrativeExpense},#{staticInvestment},
+                #{financialExpense},#{totalInvestment},#{otherFeeRate},#{budgetReserveRate},#{administrativeExpenseRate},#{financialExpenseRate},#{ladUnforeseenRate})
+    </insert>
+
+
+    <update id="updateInfo">
+        UPDATE
+            dp_engineering_cost
+        <set>
+        <if test="constructionInstallationCost!=null">
+            construction_installation_cost = #{constructionInstallationCost},
+        </if>
+        <if test="otherFee!=null">
+            other_fee = #{otherFee},
+        </if>
+        <if test="budgetReserve!=null">
+            budget_reserve = #{budgetReserve},
+        </if>
+        <if test="ladFee!=null">
+            lad_fee = #{ladFee},
+        </if>
+        <if test="administrativeExpense!=null">
+            administrative_expense = #{administrativeExpense},
+        </if>
+        <if test="staticInvestment!=null">
+            static_investment = #{staticInvestment},
+        </if>
+
+        <if test="financialExpense!=null">
+            financial_expense = #{financialExpense},
+        </if>
+        <if test="totalInvestment!=null">
+            total_investment = #{totalInvestment},
+        </if>
+        <if test="otherFeeRate!=null">
+            other_fee_rate = #{otherFeeRate},
+        </if>
+        <if test="budgetReserveRate!=null">
+            budget_reserve_rate = #{budgetReserveRate},
+        </if>
+        <if test="administrativeExpenseRate!=null">
+            administrative_expense_rate = #{administrativeExpenseRate},
+        </if>
+        <if test="financialExpenseRate!=null">
+            financial_expense_rate = #{financialExpenseRate},
+        </if>
+        <if test="ladUnforeseenRate!=null">
+            lad_unforeseen_rate = #{ladUnforeseenRate}
+        </if>
+        </set>
+        WHERE
+            engineering_id=#{engineeringId}
+    </update>
+
+    <update id="insertLadRate">
+        UPDATE dp_engineering_cost SET lad_unforeseen_rate=#{ladUnforeseenRate} WHERE engineering_id=#{engineeringId}
+    </update>
+
+    <update id="insertLadTotal">
+        UPDATE dp_engineering_cost SET lad_fee=#{totalCost} WHERE engineering_id=#{engineeringId}
+    </update>
+</mapper>

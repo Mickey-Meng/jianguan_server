@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ruoyi.web.controller.jianguan.zlsk.strestservice.mapper.UserRoleMapper">
+
+    <select id="select" parameterType="Map" resultType="Map">
+        select * from ss_f_user_role where STSTATE = 1
+        <if test="roleid != null and roleid != ''">and ROLEID = #{roleid}</if>
+        <if test="userid != null and userid != ''">and USERID = #{userid}</if>
+    </select>
+
+    <select id="selectRoleByUser" parameterType="Map" resultType="Map">
+        select
+            t1.*
+        from
+            ss_f_roles t1
+        LEFT JOIN ss_f_user_role t2 ON t1.id = t2.ROLEID
+        where
+        <if test="userid != null and userid != ''">t2.USERID = #{userid}</if>
+    </select>
+
+    <insert id="insert" parameterType="Map">
+        insert into ss_f_user_role
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userid != null">
+                USERID,
+            </if>
+            <if test="roleid != null">
+                ROLEID,
+            </if>
+            <if test="sttime != null">
+                STTIME,
+            </if>
+            <if test="ststate != null">
+                STSTATE,
+            </if>
+            <if test="storder != null">
+                STORDER,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userid != null">
+                #{userid,jdbcType=INTEGER},
+            </if>
+            <if test="roleid != null">
+                #{roleid,jdbcType=INTEGER},
+            </if>
+            <if test="sttime != null">
+                #{sttime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="ststate != null">
+                #{ststate,jdbcType=INTEGER},
+            </if>
+            <if test="storder != null">
+                #{storder,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+
+    <delete id="delete" parameterType="Integer">
+        delete from ss_f_user_role where USERID = #{userId}
+    </delete>
+</mapper>
