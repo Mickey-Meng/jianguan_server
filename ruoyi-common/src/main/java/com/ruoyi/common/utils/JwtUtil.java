@@ -208,6 +208,9 @@ public class JwtUtil {
      * @return
      */
     public static String getUserNameByToken() {
+        if (Objects.isNull(ssFUsersDAO)){
+            ssFUsersDAO = ApplicationContextHolder.getBean(SsFUsersDAO.class);
+        }
 //        // 从 http 请求头中取出 token
 //        String token = getRequest().getHeader("Authorization");
 //        System.out.println("token=" + token);
