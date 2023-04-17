@@ -4,68 +4,68 @@ import java.util.*;
 
 public class EntityList<T>
 {
-    private int a;
-    private int b;
-    private int c;
-    private int d;
-    private String e;
-    private List<T> f;
+    private int meow;
+    private int pageSize;
+    private int pageNum;
+    private int total;
+    private String msg;
+    private List<T> getMe;
 
     public EntityList() {
-        this.a = -1;
-        this.b = 0;
-        this.c = -1;
-        this.d = 0;
-        this.e = "";
-        this.f = null;
-        this.f = new ArrayList<T>();
+        this.meow = -1;
+        this.pageSize = 0;
+        this.pageNum = -1;
+        this.total = 0;
+        this.msg = "";
+        this.getMe = null;
+        this.getMe = new ArrayList<T>();
     }
 
     public int getMeow() {
-        return this.a;
+        return this.meow;
     }
 
     public void setMeow(final int a) {
-        this.a = a;
+        this.meow = a;
     }
 
     public int getPageSize() {
-        return this.b;
+        return this.pageSize;
     }
 
     public void setPageSize(final int b) {
-        this.b = b;
+        this.pageSize = b;
     }
 
     public int getPageNum() {
-        return this.c;
+        return this.pageNum;
     }
 
     public void setPageNum(final int c) {
-        this.c = c;
+        this.pageNum = c;
     }
 
     public int getTotal() {
-        return this.d;
+        return this.total;
     }
 
     public void setTotal(final int d) {
-        this.d = d;
+        this.total = d;
     }
 
     public String getMsg() {
-        return this.e;
+        return this.msg;
     }
 
     public void setMsg(final String e) {
-        this.e = e;
+        this.msg = e;
     }
 
     public List<T> getGetMe() {
-        return this.f;
+        return this.getMe;
     }
 
     public void setGetMe(final List<T> f) {
-        this.f = f;
+        this.getMe = f;
     }
 }

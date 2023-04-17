@@ -53,8 +53,8 @@ public class SysDeptServiceImpl implements ISysDeptService {
             .eq(ObjectUtil.isNotNull(dept.getParentId()), SysDept::getParentId, dept.getParentId())
             .like(StringUtils.isNotBlank(dept.getDeptName()), SysDept::getDeptName, dept.getDeptName())
             .eq(StringUtils.isNotBlank(dept.getStatus()), SysDept::getStatus, dept.getStatus())
-            .orderByAsc(SysDept::getParentId)
-            .orderByAsc(SysDept::getOrderNum);
+            .orderByAsc(ObjectUtil.isNotNull(dept.getParentId()), SysDept::getParentId)
+            .orderByAsc(ObjectUtil.isNotNull(dept.getOrderNum()), SysDept::getOrderNum);
         return baseMapper.selectDeptList(lqw);
     }
 

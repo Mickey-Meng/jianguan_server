@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.flowable.mapper.FlowTaskExtMapper">
+    <resultMap id="BaseResultMap" type="com.ruoyi.flowable.model.FlowTaskExt">
+        <result column="process_definition_id" jdbcType="VARCHAR" property="processDefinitionId"/>
+        <result column="task_id" jdbcType="VARCHAR" property="taskId"/>
+        <result column="operation_list_json" jdbcType="LONGVARCHAR" property="operationListJson"/>
+        <result column="variable_list_json" jdbcType="LONGVARCHAR" property="variableListJson"/>
+        <result column="assignee_list_json" jdbcType="LONGVARCHAR" property="assigneeListJson"/>
+        <result column="group_type" jdbcType="VARCHAR" property="groupType"/>
+        <result column="dept_post_list_json" jdbcType="VARCHAR" property="deptPostListJson"/>
+        <result column="role_ids" jdbcType="VARCHAR" property="roleIds"/>
+        <result column="dept_ids" jdbcType="VARCHAR" property="deptIds"/>
+        <result column="candidate_usernames" jdbcType="VARCHAR" property="candidateUsernames"/>
+        <result column="copy_list_json" jdbcType="VARCHAR" property="copyListJson"/>
+    </resultMap>
+
+    <insert id="insertList">
+        INSERT INTO zz_flow_task_ext VALUES
+        <foreach collection="list" index="index" item="item" separator=",">
+            (#{item.processDefinitionId},
+            #{item.taskId},
+            #{item.operationListJson},
+            #{item.variableListJson},
+            #{item.assigneeListJson},
+            #{item.groupType},
+            #{item.deptPostListJson},
+            #{item.roleIds},
+            #{item.deptIds},
+            #{item.candidateUsernames},
+            #{item.copyListJson},
+            #{item.propertyListJson})
+        </foreach>
+    </insert>
+
+
+    <select id="getEntryExtByFlowKey" resultMap="BaseResultMap" parameterType="string">
+        SELECT
+	        t.*
+        FROM
+	  zz_flow_entry e
+	LEFT JOIN zz_flow_entry_publish p ON e.main_entry_publish_id = p.entry_publish_id
+	LEFT JOIN zz_flow_task_ext t ON p.process_definition_id = t.process_definition_id
+        WHERE
+	e.process_definition_key = #{flowKey}
+    </select>
+</mapper>

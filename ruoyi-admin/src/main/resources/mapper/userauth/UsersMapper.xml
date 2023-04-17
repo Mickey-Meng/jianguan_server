@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ruoyi.web.controller.jianguan.zlsk.strestservice.userauth.mapper.UsersMapper">
+
+    <select id="select" parameterType="Map" resultType="Map">
+        SELECT DISTINCT t4.`NAME` as GROUPNAME, t4.`CODE` as GROUPCODE, t4.GROUPLEVEL, t4.ID as GROUPID, t1.*, t2.*,t5.positionName
+        ,t6.userGroupName,t6.userGroupCode,t9.ROLENAME as NEWPOST,t9.ROLENAME FROM ss_f_users AS t1
+        LEFT JOIN (select * from ss_f_userinfo where STSTATE &lt;> - 1) AS t2 ON t1.ID = t2.USERID
+        LEFT JOIN (select * from zlsk_position where ststate &lt;> - 1) AS t5 ON t2.POST = t5.positionCode
+        LEFT JOIN (select * from ss_f_user_group where STSTATE = 1) AS t3 ON t1.ID = t3.USERID
+        LEFT JOIN (select * from ss_f_groups where STSTATE = 1) AS t4 ON t3.GROUPID = t4.ID
+        LEFT JOIN (select * from zlsk_userorganize where ststate = 1) AS t6 ON t6.id = t1.ugid
+        LEFT JOIN ( SELECT USERID,CONCAT_WS(',',t8.NAME) ROLENAME FROM ss_f_user_role t7 LEFT JOIN ss_f_roles t8 on t8.ID = t7.ROLEID GROUP BY USERID  ) t9 on t9.USERID = t1.ID
+        where t1.STSTATE &lt;> -1
+        <if test="id != null and id != ''">and t1.ID = #{id}</if>
+        <if test="username != null and username != ''">and USERNAME = #{username}</if>
+        <if test="pwd != null and pwd != ''">and PWD = #{pwd}</if>
+        <if test="name1 != null and name1 != ''">and t1.USERNAME like CONCAT('%',#{name1},'%')</if>
+        <if test="groupid != null and groupid != ''">and t4.ID = #{groupid}</if>
+        order by t1.STTIME desc
+        <if test="pageSize != null and pageNumber != null">
+            limit ${pageSize} offset ${(pageNumber-1)*pageSize}
+        </if>
+    </select>
+
+    <select id="selectByUserids"  resultType="Map">
+        SELECT DISTINCT t4.`NAME` as GROUPNAME, t4.`CODE` as GROUPCODE, t4.GROUPLEVEL, t4.ID as GROUPID, t1.*, t2.*,t5.positionName
+        ,t6.userGroupName,t6.userGroupCode FROM ss_f_users AS t1
+        LEFT JOIN (select * from ss_f_userinfo where STSTATE &lt;> - 1) AS t2 ON t1.ID = t2.USERID
+        LEFT JOIN (select * from zlsk_position where ststate &lt;> - 1) AS t5 ON t2.POST = t5.positionCode
+        LEFT JOIN (select * from ss_f_user_group where STSTATE = 1) AS t3 ON t1.ID = t3.USERID
+        LEFT JOIN (select * from ss_f_groups where STSTATE = 1) AS t4 ON t3.GROUPID = t4.ID
+        LEFT JOIN (select * from zlsk_userorganize where ststate = 1) AS t6 ON t6.id = t1.ugid
+        where t1.STSTATE &lt;> -1 and t1.ID in
+        <foreach collection="list" item="entity" open="(" close=")" separator=",">
+            #{entity}
+        </foreach>
+    </select>
+
+    <select id="getUserid" resultType="int">
+        SELECT MAX(ID) FROM ss_f_users
+    </select>
+
+    <select id="codeLogin" parameterType="Map" resultType="Map">
+        SELECT DISTINCT g.`NAME` as GROUPNAME, g.`CODE` as GROUPCODE, g.GROUPLEVEL, g.ID as GROUPID, u.*, ui.*
+        FROM ss_f_users AS u
+        LEFT JOIN ss_f_userinfo AS ui ON u.ID = ui.USERID
+        LEFT JOIN ss_f_user_group AS ug ON u.ID = ug.USERID
+        LEFT JOIN ss_f_groups AS g ON ug.GROUPID = g.ID
+        where u.STSTATE = 1 and u.ID = #{id}
+    </select>
+
+    <select id="login" parameterType="Map" resultType="Map">
+        SELECT DISTINCT g.`NAME` as GROUPNAME, g.`CODE` as GROUPCODE, g.GROUPLEVEL, g.ID as GROUPID, u.*, ui.*
+        FROM ss_f_users AS u
+        LEFT JOIN ss_f_userinfo AS ui ON u.ID = ui.USERID
+        LEFT JOIN ss_f_user_group AS ug ON u.ID = ug.USERID
+        LEFT JOIN ss_f_groups AS g ON ug.GROUPID = g.ID
+        where u.STSTATE = 1 and PWD = #{pwd}
+        <if test="phone != null and phone != ''">and ui.PHONE = #{phone}</if>
+        <if test="username != null and username != ''">and USERNAME = #{username}</if>
+    </select>
+
+    <insert id="insert" parameterType="Map">
+        insert into ss_f_users
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                ID,
+            </if>
+            <if test="username != null">
+                USERNAME,
+            </if>
+            <if test="pwd != null">
+                PWD,
+            </if>
+            <if test="name1 != null">
+                NAME,
+            </if>
+            <if test="usercode != null">
+                USERCODE,
+            </if>
+            <if test="sttime != null">
+                STTIME,
+            </if>
+            <if test="ststate != null">
+                STSTATE,
+            </if>
+            <if test="storder != null">
+                STORDER,
+            </if>
+              <if test="ugid != null">
+                ugid,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="username != null">
+                #{username,jdbcType=VARCHAR},
+            </if>
+            <if test="pwd != null">
+                #{pwd,jdbcType=VARCHAR},
+            </if>
+            <if test="name1 != null">
+                #{name1,jdbcType=VARCHAR},
+            </if>
+            <if test="usercode != null">
+                #{usercode,jdbcType=VARCHAR},
+            </if>
+            <if test="sttime != null">
+                #{sttime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="ststate != null">
+                #{ststate,jdbcType=INTEGER},
+            </if>
+            <if test="storder != null">
+                #{storder,jdbcType=INTEGER},
+            </if>
+              <if test="ugid != null">
+                #{ugid,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="update" parameterType="Map">
+        UPDATE ss_f_userinfo as i left join ss_f_users as u on i.USERID = u.ID
+        <set>
+            <if test="username != null">
+                USERNAME = #{username,jdbcType=VARCHAR},
+            </if>
+            <if test="pwd != null">
+                PWD = #{pwd,jdbcType=VARCHAR},
+            </if>
+            <if test="name1 != null">
+                NAME = #{name1,jdbcType=VARCHAR},
+            </if>
+            <if test="usercode != null">
+                USERCODE = #{usercode,jdbcType=VARCHAR},
+            </if>
+            <if test="post != null">
+                POST = #{post,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null">
+                PHONE = #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="email != null">
+                EMAIL = #{email,jdbcType=VARCHAR},
+            </if>
+            <if test="userimage != null">
+                USERIMAGE = #{userimage,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                REMARK = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="ststate != null">
+                u.STSTATE = #{ststate,jdbcType=INTEGER},
+                i.STSTATE = #{ststate,jdbcType=INTEGER},
+            </if>
+            <if test="storder != null">
+                STORDER = #{storder,jdbcType=INTEGER},
+            </if>
+            <if test="ugid != null">
+                ugid = #{ugid,jdbcType=INTEGER},
+            </if>
+            <if test="updatetime != null">
+                u.updatetime = #{updatetime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where ID = #{id,jdbcType=INTEGER}
+    </update>
+
+    <insert id="addPosition" parameterType="Map">
+        insert into ss_f_position
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userid != null">
+                userid,
+            </if>
+            <if test="position != null">
+                `position`,
+            </if>
+            <if test="userstate != null">
+                userstate,
+            </if>
+            <if test="sbsj != null">
+                sttime,
+            </if>
+            <if test="ststate != null">
+                ststate,
+            </if>
+            <if test="storder != null">
+                storder,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userid != null">
+                #{userid,jdbcType=INTEGER},
+            </if>
+            <if test="position != null">
+                #{position,jdbcType=VARCHAR},
+            </if>
+            <if test="userstate != null">
+                #{userstate,jdbcType=INTEGER},
+            </if>
+            <if test="sbsj != null">
+                #{sbsj,jdbcType=VARCHAR},
+            </if>
+            <if test="ststate != null">
+                #{ststate,jdbcType=INTEGER},
+            </if>
+            <if test="storder != null">
+                #{storder,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+
+    <select id="getLonlat" resultType="Map" parameterType="Map">
+        select * from ss_f_position where 1 = 1
+        <if test="userid != null and userid != ''">USERID in (${ids})</if>
+    </select>
+
+    <select id="selectUserPosition" parameterType="int" resultType="Map">
+        select count(*) as total from ss_f_position where userid = #{userid,jdbcType=INTEGER}
+    </select>
+
+    <update id="updateLonlat" parameterType="Map">
+        update ss_f_position set
+        `POSITION` = #{position,jdbcType=VARCHAR},
+        STTIME = #{sbsj,jdbcType=VARCHAR}
+        where USERID = #{userid,jdbcType=INTEGER}
+    </update>
+
+    <insert id="addMobileType">
+        insert into ss_nl_mobiletype
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userid != null">
+                userid,
+            </if>
+            <if test="mobile != null">
+                mobile,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userid != null">
+                #{userid,jdbcType=INTEGER},
+            </if>
+            <if test="mobile != null">
+                #{mobile,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+
+    <select id="selectMobileType" parameterType="int" resultType="Map">
+        select count(*) as total from ss_nl_mobiletype where userid = #{userid,jdbcType=INTEGER}
+    </select>
+
+    <update id="updateMobile">
+        UPDATE ss_nl_mobiletype set mobile = #{mobile,jdbcType=INTEGER} where userid = #{userid,jdbcType=INTEGER}
+    </update>
+
+    <select id="selectPWDById" resultType="java.lang.String">
+        select PWD from ss_f_users where ID = #{id}
+    </select>
+</mapper>

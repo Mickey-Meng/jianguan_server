@@ -372,7 +372,7 @@ public class Job {
         maps.put("grant_type",zhuJiOfferConfig.getGrantType());
         String returnToken = httpsUtils.httpsPostZhuJi(zhuJiOfferConfig.getLoginurl(), maps);
         //处理token 将json转为对象
-        TokenData tokenData = JSONObject.parseObject(returnToken,TokenData.class);
+        TokenData tokenData = JSONObject.parseObject(JSONObject.toJSONString(returnToken),TokenData.class);
 
         //在进行请求
         PostData postData = new PostData(zhuJiOfferConfig.getProjectid());

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.web.controller.jianguan.zlsk.strestservice.dp.mapper.LadAcreageMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ruoyi.web.controller.jianguan.zlsk.strestservice.dp.model.LadAcreage">
+        <id column="engineering_id" property="engineeringId" />
+        <result column="total_area" property="totalArea" />
+        <result column="collective_land_area" property="collectiveLandArea" />
+        <result column="construction_land_area" property="constructionLandArea" />
+        <result column="capite_land_area" property="capiteLandArea" />
+        <result column="capite_compensated_area" property="capiteCompensatedArea" />
+        <result column="plot_ratio" property="plotRatio" />
+        <result column="cultivated_area" property="cultivatedArea" />
+        <result column="farmland_area" property="farmlandArea" />
+        <result column="Industrial_plant_area" property="industrialPlantArea" />
+        <result column="publiczno_land_area" property="publicznoLandArea" />
+    </resultMap>
+
+    <sql id="BaseResultSql">
+        engineering_id,total_area,collective_land_area,construction_land_area,capite_land_area,
+        capite_compensated_area,plot_ratio,cultivated_area,farmland_area,Industrial_plant_area,publiczno_land_area
+    </sql>
+
+    <insert id="insertDefaultValue">
+        INSERT INTO lad_acreage(engineering_id,capite_compensated_area,plot_ratio) VALUES(#{engineeringId},#{ccArea},#{plotRatio})
+    </insert>
+
+
+    <select id="selectByEngineeringId" resultMap="BaseResultMap">
+        SELECT
+            <include refid="BaseResultSql" />
+        FROM
+            lad_acreage
+        WHERE
+            engineering_id = #{engineeringId}
+    </select>
+
+
+    <update id="updateInfo">
+        UPDATE
+            lad_acreage
+        <set>
+            <if test="totalArea!=null">
+                total_area=#{totalArea},
+            </if>
+            <if test="collectiveLandArea!=null">
+                collective_land_area=#{collectiveLandArea},
+            </if>
+            <if test="constructionLandArea!=null">
+                construction_land_area=#{constructionLandArea},
+            </if>
+            <if test="capiteLandArea!=null">
+                capite_land_area=#{capiteLandArea},
+            </if>
+            <if test="capiteCompensatedArea!=null">
+                capite_compensated_area=#{capiteCompensatedArea},
+            </if>
+            <if test="plotRatio!=null">
+                plot_ratio=#{plotRatio},
+            </if>
+            <if test="cultivatedArea!=null">
+                cultivated_area=#{cultivatedArea},
+            </if>
+            <if test="farmlandArea!=null">
+                farmland_area=#{farmlandArea},
+            </if>
+            <if test="industrialPlantArea!=null">
+                Industrial_plant_area=#{industrialPlantArea},
+            </if>
+            <if test="publicznoLandArea!=null">
+                publiczno_land_area=#{publicznoLandArea}
+            </if>
+        </set>
+        WHERE
+            engineering_id = #{engineeringId}
+    </update>
+
+</mapper>

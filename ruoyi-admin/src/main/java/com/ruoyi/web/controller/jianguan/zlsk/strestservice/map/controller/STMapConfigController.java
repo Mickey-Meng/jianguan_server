@@ -22,7 +22,7 @@ public class STMapConfigController extends StControllerBase
     private MapConfigService mcrService;
     @Autowired
     private MapPermissionService mperService;
-    @Autowired
+    // @Autowired
    // private MapPsService mapPsService;
 
     @RequestMapping(value = { "/queryMapPlans" }, method = { RequestMethod.GET })

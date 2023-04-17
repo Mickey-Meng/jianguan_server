@@ -310,6 +310,7 @@ public class SysLoginService {
             .userType(user.getUserType())
             .menuPermission(sysMenuService.selectMenuList(user.getUserId()).stream().map(SysMenu::getMenuCode).collect(Collectors.toSet()))
             .rolePermission(permissionService.getRolePermission(user))
+            .roles(BeanUtil.copyToList(user.getRoles(), RoleDTO.class))
             .roleIds(roleIds.stream().map(roleId -> String.valueOf(roleId)).collect(Collectors.joining(",")))
             .roleId(roleIds.size() > 0 ? roleIds.get(0) : null)
             .build();

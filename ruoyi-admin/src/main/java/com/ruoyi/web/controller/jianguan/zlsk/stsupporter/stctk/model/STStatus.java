@@ -2,56 +2,56 @@ package com.ruoyi.web.controller.jianguan.zlsk.stsupporter.stctk.model;
 
 public class STStatus
 {
-    private int a;
-    private String b;
-    private String c;
-    private String d;
+    private int meow;
+    private String msg;
+    private String token;
+    private String time;
 
     public STStatus() {
-        this.a = 0;
-        this.b = null;
+        this.meow = 0;
+        this.msg = null;
     }
 
     public STStatus(final int a) {
-        this.a = a;
-        this.b = null;
+        this.meow = a;
+        this.msg = null;
     }
 
     public STStatus(final int a, final String b) {
-        this.a = a;
-        this.b = b;
+        this.meow = a;
+        this.msg = b;
     }
 
     public int getMeow() {
-        return this.a;
+        return this.meow;
     }
 
     public void setMeow(final int a) {
-        this.a = a;
+        this.meow = a;
     }
 
     public String getMsg() {
-        return this.b;
+        return this.msg;
     }
 
     public void setMsg(final String b) {
-        this.b = b;
+        this.msg = b;
     }
 
     public String getToken() {
-        return this.c;
+        return this.token;
     }
 
     public void setToken(final String c) {
-        this.c = c;
+        this.token = c;
     }
 
     public String getTime() {
-        return this.d;
+        return this.time;
     }
 
     public void setTime(final String d) {
-        this.d = d;
+        this.time = d;
     }
 
     public void setStatus(final STStatus stStatus) {

@@ -133,7 +133,8 @@ public class FlowTaskHandle {
 
     @Mapper
     public interface FlowTaskHandleModelMapper extends BaseModelMapper<FlowTaskHandleVo, FlowTaskHandle> {
+        public static final FlowTaskHandleModelMapper INSTANCE = Mappers.getMapper(FlowTaskHandleModelMapper.class);
     }
-    public static final FlowTaskHandleModelMapper INSTANCE = Mappers.getMapper(FlowTaskHandleModelMapper.class);
+
 
 }

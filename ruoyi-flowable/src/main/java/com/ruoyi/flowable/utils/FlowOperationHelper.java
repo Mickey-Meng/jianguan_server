@@ -10,6 +10,7 @@ import com.ruoyi.common.core.domain.object.CallResult;
 import com.ruoyi.common.core.domain.object.ResponseResult;
 import com.ruoyi.common.core.domain.object.TokenData;
 import com.ruoyi.common.enums.ErrorCodeEnum;
+import com.ruoyi.common.helper.LoginHelper;
 import com.ruoyi.common.utils.MyModelUtil;
 import com.ruoyi.common.utils.JwtUtil;
 import com.ruoyi.flowable.common.constant.FlowApprovalType;
@@ -227,7 +228,7 @@ public class FlowOperationHelper {
         TaskInfoVo taskInfo = JSON.parseObject(flowEntryPublish.getInitTaskInfo(), TaskInfoVo.class);
         if (checkStarter) {
 //            String loginName = TokenData.takeFromRequest().getLoginName();
-            if (!StrUtil.equalsAny(taskInfo.getAssignee(), JwtUtil.getUserNameByToken(), FlowConstant.START_USER_NAME_VAR)) {
+            if (!StrUtil.equalsAny(taskInfo.getAssignee(), LoginHelper.getUsername(), FlowConstant.START_USER_NAME_VAR)) {
                 errorMessage = "数据验证失败，该工作流第一个用户任务的指派人并非当前用户，不能执行该操作！";
                 return ResponseResult.error(ErrorCodeEnum.DATA_VALIDATED_FAILED, errorMessage);
             }

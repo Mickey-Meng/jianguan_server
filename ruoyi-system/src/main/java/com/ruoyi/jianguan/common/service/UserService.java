@@ -3,6 +3,7 @@ package com.ruoyi.jianguan.common.service;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.http.HttpStatus;
 import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
@@ -240,16 +241,12 @@ public class UserService {
     }
 
     public ResponseBase userAddGroups(UserAddGroupsDTO addGroupsDTO) {
-        //先获得配置用户工区权限的账号是否有权限进行配置
-        Integer userId = LoginHelper.getUserId().intValue();
-        LoginHelper.getUserId().intValue();
-        Integer roleId = ssFUsersDAO.getRoleById(userId);
         //当该用户的roleid不是2-管理员,不允许添加
-        if (roleId != 2) {
-            return new ResponseBase(500, "用户添加组织机构失败,该用户没有权限配置组织机构!");
+        if (!LoginHelper.getLoginUser().getRolePermission().contains("admin")) {
+            return new ResponseBase(HttpStatus.HTTP_INTERNAL_ERROR, "用户添加组织机构失败,该用户没有权限配置组织机构!");
         }
         SsFUserGroup userGroup = new SsFUserGroup();
-        userGroup.setStstate(1);
+        userGroup.setStstate(0);
         userGroup.setStorder(0);
 
         //先删除用户对应的项目下所有权限
@@ -265,10 +262,9 @@ public class UserService {
                 userGroup.setUserid(id);
                 userGroup.setGroupid(groupsId);
                 ssFUserGroupDAO.insert(userGroup);
-
             }
         }
-        return new ResponseBase(200, "用户添加组织机构权限成功!");
+        return new ResponseBase(HttpStatus.HTTP_OK, "用户添加组织机构权限成功!");
     }
 
     public ResponseBase getGroups(Integer userId) {

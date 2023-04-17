@@ -2,17 +2,17 @@ package com.ruoyi.web.controller.jianguan.zlsk.stsupporter.stctk.model;
 
 public class EntityListEx<T, E> extends EntityList<T>
 {
-    private E a;
+    private E info;
 
     public EntityListEx() {
-        this.a = null;
+        this.info = null;
     }
 
     public E getInfo() {
-        return this.a;
+        return this.info;
     }
 
     public void setInfo(final E a) {
-        this.a = a;
+        this.info = a;
     }
 }

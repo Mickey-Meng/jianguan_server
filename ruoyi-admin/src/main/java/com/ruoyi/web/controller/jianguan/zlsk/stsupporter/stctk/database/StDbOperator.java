@@ -239,6 +239,6 @@ public class StDbOperator extends StSupporterBase
     }
 
     private void a() {
-        this.commonMapper = SpringContextUtil.getBean(ICommonMapper.class);
+        // this.commonMapper = SpringContextUtil.getBean(ICommonMapper.class);
     }
 }

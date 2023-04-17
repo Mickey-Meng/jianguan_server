@@ -14,6 +14,7 @@ import com.ruoyi.common.core.domain.object.ResponseResult;
 import com.ruoyi.common.core.domain.object.TokenData;
 import com.ruoyi.common.core.sequence.wrapper.IdGeneratorWrapper;
 import com.ruoyi.common.enums.ErrorCodeEnum;
+import com.ruoyi.common.helper.LoginHelper;
 import com.ruoyi.common.utils.JwtUtil;
 import com.ruoyi.flowable.common.constant.FlowApprovalType;
 import com.ruoyi.flowable.common.constant.FlowConstant;
@@ -284,7 +285,7 @@ public class FlowStaticPageServiceImpl implements FlowStaticPageService {
     public ProcessInstance startProcess(String processKey, String businessKey, Long userId, Map<String, Object> variableMap) throws Exception{
 
 //        String loginName = TokenData.takeFromRequest().getLoginName();
-        String loginName = JwtUtil.getUserNameByToken();
+        String loginName = LoginHelper.getUsername();
         variableMap.put("functionalType", processKey);
         variableMap.put("businessKey", businessKey);
         variableMap.put(FlowConstant.PROC_INSTANCE_INITIATOR_VAR, loginName);
@@ -331,7 +332,7 @@ public class FlowStaticPageServiceImpl implements FlowStaticPageService {
             String processKey, String businessKey,   FlowTaskComment flowTaskComment, JSONObject taskVariableData) {
 
 //        String loginName = TokenData.takeFromRequest().getLoginName();
-        String loginName =JwtUtil.getUserNameByToken();
+        String loginName =LoginHelper.getUsername();
         Map<String, Object> variableMap =new HashMap<>();
         variableMap.put("functionalType", processKey);
         variableMap.put("businessKey", businessKey);
@@ -467,7 +468,7 @@ public class FlowStaticPageServiceImpl implements FlowStaticPageService {
     public Map<String, Object> initAndGetProcessInstanceVariables(String processDefinitionId) {
         TokenData tokenData = TokenData.takeFromRequest();
 //        String loginName = tokenData.getLoginName();
-        String loginName = JwtUtil.getUserNameByToken();
+        String loginName = LoginHelper.getUsername();
         // 设置流程变量。
         Map<String, Object> variableMap = new HashMap<>(4);
         variableMap.put(FlowConstant.PROC_INSTANCE_INITIATOR_VAR, loginName);

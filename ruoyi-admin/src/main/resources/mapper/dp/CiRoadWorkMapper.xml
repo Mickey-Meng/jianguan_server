@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.web.controller.jianguan.zlsk.strestservice.dp.mapper.CiRoadWorkMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ruoyi.web.controller.jianguan.zlsk.strestservice.dp.model.CiRoadWork">
+        <id column="id" property="id" />
+        <result column="project_name" property="projectName" />
+        <result column="road_grade" property="roadGrade" />
+        <result column="road_length" property="roadLength" />
+        <result column="road_width" property="roadWidth" />
+        <result column="road_area" property="roadArea" />
+        <result column="unit_price" property="unitPrice" />
+        <result column="project_cost" property="projectCost" />
+        <result column="engineering_id" property="engineeringId" />
+    </resultMap>
+    <sql id="BaseResultSql">
+        id,project_name,road_grade,road_length,road_width,road_area,unit_price,project_cost,engineering_id
+    </sql>
+
+    <select id="selectByEngineeringId" resultMap="BaseResultMap">
+        SELECT
+            <include refid="BaseResultSql" />
+        FROM
+            ci_road_work
+        WHERE
+            engineering_id=#{engineeringId}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO ci_road_work VALUES (null,#{projectName},#{roadGrade},#{roadLength},#{roadWidth},
+                                         #{roadArea},#{unitPrice},#{projectCost},#{engineeringId})
+    </insert>
+
+    <update id="updateById" useGeneratedKeys="true" keyProperty="id">
+        UPDATE
+            ci_road_work
+        <set>
+            <if test="projectName!=null">
+                project_name=#{projectName},
+            </if>
+            <if test="roadGrade!=null">
+                road_grade=#{roadGrade},
+            </if>
+            <if test="roadLength!=null">
+                road_length=#{roadLength},
+            </if>
+            <if test="roadWidth!=null">
+                road_width=#{roadWidth},
+            </if>
+            <if test="roadArea!=null">
+                road_area=#{roadArea},
+            </if>
+            <if test="unitPrice!=null">
+                unit_price=#{unitPrice},
+            </if>
+            <if test="projectCost!=null">
+                project_cost=#{projectCost}
+            </if>
+        </set>
+        WHERE
+            id=#{id}
+            and
+            engineering_id=#{engineeringId}
+    </update>
+
+    <delete id="deleteByIds">
+        DELETE FROM
+            ci_road_work
+        WHERE
+            id IN
+        <foreach collection="ids" separator="," item="item" open="(" close=")">
+            #{item}
+        </foreach>
+    </delete>
+</mapper>

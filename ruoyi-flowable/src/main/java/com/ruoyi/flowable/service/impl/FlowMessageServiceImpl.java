@@ -15,6 +15,7 @@ import com.ruoyi.common.core.domain.object.MyPageParam;
 import com.ruoyi.common.core.mapper.BaseDaoMapper;
 import com.ruoyi.common.core.sequence.wrapper.IdGeneratorWrapper;
 import com.ruoyi.common.core.service.BaseService;
+import com.ruoyi.common.helper.LoginHelper;
 import com.ruoyi.common.utils.JwtUtil;
 import com.ruoyi.flowable.common.constant.FlowConstant;
 import com.ruoyi.flowable.common.constant.FlowMessageOperationType;
@@ -197,7 +198,7 @@ public class FlowMessageServiceImpl extends BaseService<FlowMessage, Long> imple
     @Override
     public List<FlowMessage> getRemindingMessageListByUser() {
         return flowMessageMapper.getRemindingMessageListByUser(
-                JwtUtil.getUserNameByToken(), buildGroupIdSet());
+                LoginHelper.getUsername(), buildGroupIdSet());
     }
 
     @Override
@@ -205,7 +206,7 @@ public class FlowMessageServiceImpl extends BaseService<FlowMessage, Long> imple
         //分页查询
         PageHelper.startPage(pageParam.getPageNum(),pageParam.getPageSize());
         List<FlowMessage> copyMessageListByUser = flowMessageMapper.getCopyMessageListByUser(
-                JwtUtil.getUserNameByToken(), buildGroupIdSet(), read);
+                LoginHelper.getUsername(), buildGroupIdSet(), read);
         return new PageInfo<FlowMessage>(copyMessageListByUser);
     }
 
@@ -224,7 +225,7 @@ public class FlowMessageServiceImpl extends BaseService<FlowMessage, Long> imple
         operation.setId(idGenerator.nextLongId());
         operation.setMessageId(messageId);
 //        TokenData.takeFromRequest().getLoginName()
-        operation.setLoginName(JwtUtil.getUserNameByToken());
+        operation.setLoginName(LoginHelper.getUsername());
         operation.setOperationType(FlowMessageOperationType.READ_FINISHED);
         operation.setOperationTime(new Date());
         flowMessageIdentityOperationMapper.insert(operation);
@@ -234,14 +235,14 @@ public class FlowMessageServiceImpl extends BaseService<FlowMessage, Long> imple
     public int countRemindingMessageListByUser() {
 //        TokenData.takeFromRequest().getLoginName()
         return flowMessageMapper.countRemindingMessageListByUser(
-                JwtUtil.getUserNameByToken(), buildGroupIdSet());
+                LoginHelper.getUsername(), buildGroupIdSet());
     }
 
     @Override
     public int countCopyMessageByUser() {
 //        TokenData.takeFromRequest().getLoginName()
         return flowMessageMapper.countCopyMessageListByUser(
-                JwtUtil.getUserNameByToken(), buildGroupIdSet());
+                LoginHelper.getUsername(), buildGroupIdSet());
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -258,7 +259,7 @@ public class FlowMessageServiceImpl extends BaseService<FlowMessage, Long> imple
 //        TokenData tokenData = TokenData.takeFromRequest();
         Set<String> groupIdSet = new HashSet<>(1);
 //        tokenData.getLoginName()
-        groupIdSet.add(JwtUtil.getUserNameByToken());
+        groupIdSet.add(LoginHelper.getUsername());
 //        this.parseAndAddIdArray(groupIdSet, tokenData.getRoleIds());
 //        this.parseAndAddIdArray(groupIdSet, tokenData.getDeptPostIds());
 //        this.parseAndAddIdArray(groupIdSet, tokenData.getPostIds());
