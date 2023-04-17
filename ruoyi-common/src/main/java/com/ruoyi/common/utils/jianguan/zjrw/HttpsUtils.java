@@ -8,6 +8,7 @@ package com.ruoyi.common.utils.jianguan.zjrw;
  * @description:
  **/
 
+import com.ruoyi.common.utils.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -69,7 +70,9 @@ public class HttpsUtils {
 
     public String httpsPostZhuJi(String url, Map<String, String> mapdata) {
         CloseableHttpResponse response = null;
-
+        if (StringUtils.isEmpty(url)) {
+            return "URL为空，请检查!";
+        }
         // 创建httppost
         HttpPost httpPost = new HttpPost(url);
         try {

@@ -57,7 +57,7 @@ public class FlowTaskCommentServiceImpl extends BaseService<FlowTaskComment, Lon
     public FlowTaskComment saveNew(FlowTaskComment flowTaskComment) {
         flowTaskComment.setId(idGenerator.nextLongId());
 //        TokenData tokenData = TokenData.takeFromRequest();
-        String name = JwtUtil.getUserNameByToken();
+        String name = LoginHelper.getUsername();
         Integer id = LoginHelper.getUserId().intValue();
         flowTaskComment.setCreateUserId(id.longValue());
         flowTaskComment.setCreateLoginName(name);

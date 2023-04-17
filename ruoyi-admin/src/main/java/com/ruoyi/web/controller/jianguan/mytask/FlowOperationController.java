@@ -11,6 +11,7 @@ import com.ruoyi.common.annotation.MyRequestBody;
 import com.ruoyi.common.core.domain.entity.SsFUsers;
 import com.ruoyi.common.core.domain.object.*;
 import com.ruoyi.common.enums.ErrorCodeEnum;
+import com.ruoyi.common.helper.LoginHelper;
 import com.ruoyi.common.utils.JwtUtil;
 import com.ruoyi.common.utils.MyPageUtil;
 import com.ruoyi.flowable.common.constant.*;
@@ -128,7 +129,7 @@ public class FlowOperationController {
         if (taskInfo != null) {
 //            String loginName = TokenData.takeFromRequest().getLoginName();
             taskInfo.setAssignedMe(StrUtil.equalsAny(
-                    taskInfo.getAssignee(), JwtUtil.getUserNameByToken(), FlowConstant.START_USER_NAME_VAR));
+                    taskInfo.getAssignee(), LoginHelper.getUsername(), FlowConstant.START_USER_NAME_VAR));
         }
         return ResponseResult.success(taskInfo);
     }
@@ -410,7 +411,7 @@ public class FlowOperationController {
             @MyRequestBody String taskName,
             @MyRequestBody(required = true) MyPageParam pageParam) {
 //        String username = TokenData.takeFromRequest().getLoginName();
-        String username = JwtUtil.getUserNameByToken();
+        String username = LoginHelper.getUsername();
         log.info("name=" + username);
         PageInfo<Task> pageData = flowApiService.getTaskListByUserName(
                 username, processDefinitionKey, processDefinitionName, taskName, pageParam);
@@ -699,7 +700,7 @@ public class FlowOperationController {
             @MyRequestBody String endDate,
             @MyRequestBody(required = true) MyPageParam pageParam) throws ParseException {
 //        String loginName = TokenData.takeFromRequest().getLoginName();
-        String loginName = JwtUtil.getUserNameByToken();
+        String loginName = LoginHelper.getUsername();
         MyPageData<HistoricProcessInstance> pageData = flowApiService.getHistoricProcessInstanceList(
                 null, processDefinitionName, loginName, beginDate, endDate, pageParam, true);
         List<Map<String, Object>> resultList = new LinkedList<>();
@@ -859,7 +860,7 @@ public class FlowOperationController {
             @MyRequestBody Integer taskHandleStatus,
             @MyRequestBody(required = true) MyPageParam pageParam) {
 //        String username = TokenData.takeFromRequest().getLoginName();
-        String username = JwtUtil.getUserNameByToken();
+        String username = LoginHelper.getUsername();
         // 重写了一个方法来获取在办和待办
         MyPageData<Task> pageData = flowTaskHandleService.getTaskListByUserName(
                 username, processDefinitionKey, processDefinitionName, taskName, taskHandleStatus, pageParam);

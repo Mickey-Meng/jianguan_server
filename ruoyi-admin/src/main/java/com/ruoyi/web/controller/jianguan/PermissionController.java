@@ -1,9 +1,16 @@
 package com.ruoyi.web.controller.jianguan;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.hutool.core.lang.tree.Tree;
 import com.ruoyi.common.core.controller.BaseController;
+import com.ruoyi.common.core.domain.PageQuery;
+import com.ruoyi.common.core.domain.entity.SysDept;
+import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.core.domain.object.ResponseBase;
+import com.ruoyi.common.core.page.TableDataInfo;
+import com.ruoyi.system.service.ISysDeptService;
 import com.ruoyi.system.service.ISysMenuService;
+import com.ruoyi.system.service.ISysUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,10 +27,12 @@ import java.util.Map;
 @Validated
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/index")
-public class IndexController extends BaseController {
+@RequestMapping("/sysManage/permission")
+public class PermissionController extends BaseController {
 
     private final ISysMenuService sysMenuService;
+    private final ISysDeptService sysDeptService;
+    private final ISysUserService userService;
 
     /**
      * 加载首页地图数据
@@ -44,5 +53,19 @@ public class IndexController extends BaseController {
         dataMap.put("menuTree", menuTree);
         dataMap.put("userInfo" ,getLoginUser());
         return ResponseBase.success(dataMap);
+    }
+
+    @GetMapping("/deptTree")
+    public ResponseBase getDeptTree(SysDept sysDept) {
+        List<Tree<Long>> deptTreeList = sysDeptService.selectDeptTreeList(new SysDept());
+        return ResponseBase.success(deptTreeList);
+    }
+
+    /**
+     * 获取用户列表
+     */
+    @GetMapping("/getUserListByDeptId")
+    public TableDataInfo<SysUser> getUserListByDeptId(SysUser user, PageQuery pageQuery) {
+        return userService.selectPageUserList(user, pageQuery);
     }
 }

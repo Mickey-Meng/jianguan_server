@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.web.controller.jianguan.zlsk.strestservice.dp.mapper.DpExcelTemplateMapper">
+
+    <resultMap id="BaseMap" type="com.ruoyi.web.controller.jianguan.zlsk.strestservice.dp.model.DpExcelTemplate">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="type" property="type" />
+        <result column="parent_id" property="parentId" />
+        <result column="remark" property="remark" />
+        <result column="enumName" property="enumName" />
+    </resultMap>
+
+    <sql id="BaseSql">
+        id,name,type,parent_id,remark,enum_name
+    </sql>
+
+    <select id="selectInfo" resultMap="BaseMap">
+        SELECT
+            <include refid="BaseSql" />
+        FROM
+            dp_excel_template
+        WHERE
+            type=#{typeId} AND parent_id=#{parentId}
+    </select>
+
+</mapper>
