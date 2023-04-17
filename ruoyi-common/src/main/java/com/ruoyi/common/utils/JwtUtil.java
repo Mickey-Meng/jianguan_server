@@ -11,6 +11,7 @@ import com.ruoyi.common.constant.BimRedisKey;
 import com.ruoyi.common.core.dao.SsFUsersDAO;
 import com.ruoyi.common.core.domain.entity.PowerData;
 import com.ruoyi.common.core.domain.entity.SsFUsers;
+import com.ruoyi.common.helper.LoginHelper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -207,14 +208,18 @@ public class JwtUtil {
      * @return
      */
     public static String getUserNameByToken() {
-        // 从 http 请求头中取出 token
-        String token = getRequest().getHeader("Authorization");
-        System.out.println("token=" + token);
-        String userJson = JWT.decode(token).getClaim("user").asString();
-        PowerData user = JSON.parseObject(userJson, PowerData.class);
-        if (Objects.nonNull(user)) {
-            Integer userId = user.getId();
-            if (Objects.nonNull(userId)) {
+        if (Objects.isNull(ssFUsersDAO)){
+            ssFUsersDAO = ApplicationContextHolder.getBean(SsFUsersDAO.class);
+        }
+//        // 从 http 请求头中取出 token
+//        String token = getRequest().getHeader("Authorization");
+//        System.out.println("token=" + token);
+//        String userJson = JWT.decode(getRequest().getHeader("token")).getClaim("user").asString();
+//        PowerData user = JSON.parseObject(userJson, PowerData.class);
+//        LoginHelper.getLoginUser();
+//        if (Objects.nonNull(user)) {
+            Long userId = LoginHelper.getLoginUser().getUserId();
+//            if (Objects.nonNull(userId)) {
                 Object cacheObject = RedisUtils.getCacheObject(BimRedisKey.USERINFO_KEY + userId);
                 if (Objects.nonNull(cacheObject)) {
                     SsFUsers ssFUsers = (SsFUsers) cacheObject;
@@ -225,9 +230,9 @@ public class JwtUtil {
                     RedisUtils.setCacheObject(BimRedisKey.USERINFO_KEY + userId, ssFUsers);
                     return ssFUsers.getUsername();
                 }
-            }
-        }
-        return null;
+//            }
+//        }
+//        return null;
     }
 
     /**

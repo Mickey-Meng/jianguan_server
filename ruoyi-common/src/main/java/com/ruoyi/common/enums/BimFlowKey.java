@@ -10,7 +10,6 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * @mm
  * bim 流程枚举类
  *
  * @author qiaoxulin
@@ -101,7 +100,7 @@ public enum BimFlowKey {
     /**
      * 计量审批
      */
-    计量审批("计量审批", "jiliangshenpi");
+    metrology("计量审批", "jiliangshenpiv3");
 
     private String key;
     private String name;
