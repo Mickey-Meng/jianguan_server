@@ -81,9 +81,10 @@ public class FlowEntryVariable {
     @TableField(value = "create_time")
     private Date createTime;
 
-    @Mapper
-    public interface FlowEntryVariableModelMapper extends BaseModelMapper<FlowEntryVariableVo, FlowEntryVariable> {
-        public static final FlowEntryVariableModelMapper INSTANCE = Mappers.getMapper(FlowEntryVariableModelMapper.class);
-    }
+    // TODO: 2023/4/18 临时解决内部类问题
+//    @Mapper
+//    public interface FlowEntryVariableModelMapper extends BaseModelMapper<FlowEntryVariableVo, FlowEntryVariable> {
+//        public static final FlowEntryVariableModelMapper INSTANCE = Mappers.getMapper(FlowEntryVariableModelMapper.class);
+//    }
 
 }
