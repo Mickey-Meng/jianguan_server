@@ -22,6 +22,7 @@ import com.ruoyi.flowable.factory.FlowCustomExtFactory;
 import com.ruoyi.flowable.model.*;
 import com.ruoyi.flowable.service.*;
 import com.ruoyi.flowable.utils.FlowOperationHelper;
+import com.ruoyi.workflow.plugin.FlowablePluginExecutor;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.flowable.bpmn.converter.BpmnXMLConverter;
@@ -85,6 +86,8 @@ public class FlowOperationController {
     private RuntimeService runtimeService;
     @Autowired
     private HistoryService historyService;
+    @Autowired
+    private FlowablePluginExecutor flowablePluginExecutor;
 
     /**
      * 根据指定流程的主版本，发起一个流程实例。
@@ -811,6 +814,8 @@ public class FlowOperationController {
     public ResponseResult<Void> stopProcessInstance(
             @MyRequestBody(required = true) String processInstanceId,
             @MyRequestBody(required = true) String stopReason) {
+        // 先处理业务逻辑
+        flowablePluginExecutor.executeStop(processInstanceId);
         CallResult result = flowApiService.stopProcessInstance(processInstanceId, stopReason, false);
         if (!result.isSuccess()) {
             return ResponseResult.errorFrom(result);
