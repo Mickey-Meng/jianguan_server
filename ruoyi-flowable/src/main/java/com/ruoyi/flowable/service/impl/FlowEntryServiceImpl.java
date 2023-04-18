@@ -7,11 +7,13 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.github.pagehelper.Page;
 import com.ruoyi.common.core.domain.entity.PowerData;
+import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.core.domain.object.CallResult;
 import com.ruoyi.common.core.domain.object.MyRelationParam;
 import com.ruoyi.common.core.mapper.BaseDaoMapper;
 import com.ruoyi.common.core.sequence.wrapper.IdGeneratorWrapper;
 import com.ruoyi.common.core.service.BaseService;
+import com.ruoyi.common.helper.LoginHelper;
 import com.ruoyi.common.utils.JwtUtil;
 import com.ruoyi.common.utils.MyModelUtil;
 import com.ruoyi.flowable.common.constant.FlowConstant;
@@ -100,9 +102,9 @@ public class FlowEntryServiceImpl extends BaseService<FlowEntry, Long> implement
     public FlowEntry saveNew(FlowEntry flowEntry) {
         flowEntry.setEntryId(idGenerator.nextLongId());
         flowEntry.setStatus(FlowEntryStatus.UNPUBLISHED);
-        PowerData tokenUser = JwtUtil.getTokenUser();
-        flowEntry.setUpdateUserId(tokenUser.getId().longValue());
-        flowEntry.setCreateUserId(tokenUser.getId().longValue());
+        LoginUser loginUser = LoginHelper.getLoginUser();
+        flowEntry.setUpdateUserId(loginUser.getUserId());
+        flowEntry.setCreateUserId(loginUser.getUserId());
         Date now = new Date();
         flowEntry.setUpdateTime(now);
         flowEntry.setCreateTime(now);
@@ -207,8 +209,8 @@ public class FlowEntryServiceImpl extends BaseService<FlowEntry, Long> implement
     @Transactional(rollbackFor = Exception.class)
     @Override
     public boolean update(FlowEntry flowEntry, FlowEntry originalFlowEntry) {
-        PowerData tokenUser = JwtUtil.getTokenUser();
-        flowEntry.setUpdateUserId(tokenUser.getId().longValue());
+        LoginUser loginUser = LoginHelper.getLoginUser();
+        flowEntry.setUpdateUserId(loginUser.getUserId());
         flowEntry.setCreateUserId(originalFlowEntry.getCreateUserId());
         flowEntry.setUpdateTime(new Date());
         flowEntry.setCreateTime(originalFlowEntry.getCreateTime());

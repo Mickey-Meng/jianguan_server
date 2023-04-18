@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.flowable.mapper.FlowAuditEntryMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ruoyi.flowable.domain.entity.FlowAuditEntry">
+        <id column="id" property="id" />
+        <result column="create_user_id" property="createUserId" />
+        <result column="create_time" property="createTime" />
+        <result column="update_user_id" property="updateUserId" />
+        <result column="update_time" property="updateTime" />
+        <result column="project_id" property="projectId" />
+        <result column="flow_key" property="flowKey" />
+        <result column="entry_key" property="entryKey" />
+        <result column="entry_user_variable" property="entryUserVariable" />
+        <result column="sort" property="sort" />
+        <result column="user_id" property="userId" />
+        <result column="user_name" property="userName" />
+        <result column="deleted_flag" property="deletedFlag" />
+        <result column="copy_user" property="copyUser" />
+        <result column="is_sign" property="isSign" />
+        <result column="type_id" property="typeId" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        create_user_id,
+        create_time,
+        update_user_id,
+        update_time,
+        id, project_id, flow_key, entry_key, entry_user_variable, sort, user_id, user_name, deleted_flag
+    </sql>
+
+    <select id="getPageInfo" parameterType="com.ruoyi.flowable.domain.dto.FlowAuditEntryPageDTO" resultType="com.ruoyi.flowable.domain.entity.FlowAuditEntry">
+        select a.* from  zz_flow_audit_entry a
+        where a.project_id = #{pageDto.projectId} and a.build_section = #{pageDto.buildSection}
+        <if test="pageDto.flowKey != null and pageDto.flowKey != ''">
+            and a.flow_key  like concat('%',#{pageDto.flowKey},'%')
+        </if>
+        <if test="pageDto.entryKey != null and pageDto.entryKey != ''">
+            and a.entry_key like concat('%',#{pageDto.entryKey},'%')
+        </if>
+        <if test="pageDto.entryName != null and pageDto.entryName != ''">
+            and a.entry_name like concat('%',#{pageDto.entryName},'%')
+        </if>
+        order by a.create_time desc
+    </select>
+
+
+    <select id="getAuditEntryByFlowKey" resultType="com.ruoyi.flowable.domain.vo.FlowAuditEntryDetailVo">
+        select a.flow_name as typeName,b.*  from zz_flow_type a right join zz_flow_audit_entry b on a.id = b.type_id
+        where b.project_id = #{projectId} and b.build_section = #{buildSection} and b.flow_key = #{flowKey}
+            order by b.sort
+    </select>
+
+</mapper>
