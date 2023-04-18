@@ -51,6 +51,7 @@ import java.util.Objects;
 public class MetrologyServiceImpl extends ServiceImpl<MetrologyMapper, Metrology> implements MetrologyService {
 
 
+
     @Autowired
     private UserService userService;
 
@@ -98,6 +99,14 @@ public class MetrologyServiceImpl extends ServiceImpl<MetrologyMapper, Metrology
                 flowTaskComment.setApprovalType("save");
                 flowTaskComment.setComment("计量审批");
                 JSONObject taskVariableData = new JSONObject(auditUser);
+                // processDefinitionKey 流程key
+                // flowTaskComment 审批意见
+                // taskVariableData 流程审批用户
+                // masterData
+                // slaveData
+                // copyData 抄送用户
+                // businessKey 业务主键
+                // startAndTakeUserTask 自己封装的接口
                 flowStaticPageService.startAndTakeUserTask(processDefinitionKey, flowTaskComment, taskVariableData, null, null, saveDto.getCopyData(), businessKey);
             } catch (Exception e) {
                 log.error("流程启动失败！e=" + e.getMessage());
@@ -193,7 +202,7 @@ public class MetrologyServiceImpl extends ServiceImpl<MetrologyMapper, Metrology
      *
      * @param metroLogyExports
      */
-    private void convertAuditStatus(List<MetroLogyExport> metroLogyExports){
+    private void convertAuditStatus(List<MetroLogyExport> metroLogyExports)  {
         for (MetroLogyExport metrology : metroLogyExports) {
             metrology.setAuditStatus(AuditStatusEnum.getDesc(metrology.getAuditStatus()));
         }

@@ -1,5 +1,7 @@
 package com.ruoyi.web.controller.jianguan.mytask;
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.map.MapUtil;
 import com.github.pagehelper.page.PageMethod;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.ruoyi.common.annotation.MyRequestBody;
@@ -126,7 +128,10 @@ public class FlowEntryVariableController {
         String orderBy = MyOrderParam.buildOrderBy(orderParam, FlowEntryVariable.class);
         List<FlowEntryVariable> flowEntryVariableList =
                 flowEntryVariableService.getFlowEntryVariableListWithRelation(flowEntryVariableFilter, orderBy);
-        return ResponseResult.success(MyPageUtil.makeResponseData(flowEntryVariableList, FlowEntryVariable.FlowEntryVariableModelMapper.INSTANCE));
+        // TODO: 2023/4/18 临时解决内部类问题
+        List<FlowEntryVariableVo> flowEntryVariableVos = BeanUtil.copyToList(flowEntryVariableList, FlowEntryVariableVo.class);
+        MyPageData<FlowEntryVariableVo> flowEntryVariableVoMyPageData = MyPageUtil.makeResponseData(flowEntryVariableVos, Long.parseLong(String.valueOf(flowEntryVariableList.size())));
+        return ResponseResult.success(flowEntryVariableVoMyPageData);
     }
 
     /**
@@ -144,8 +149,10 @@ public class FlowEntryVariableController {
         if (flowEntryVariable == null) {
             return ResponseResult.error(ErrorCodeEnum.DATA_NOT_EXIST);
         }
-        FlowEntryVariableVo flowEntryVariableVo = FlowEntryVariable.FlowEntryVariableModelMapper.INSTANCE.fromModel(flowEntryVariable);
-        return ResponseResult.success(flowEntryVariableVo);
+        // TODO: 2023/4/18 临时解决内部类问题
+//        FlowEntryVariableVo flowEntryVariableVo = FlowEntryVariable.FlowEntryVariableModelMapper.INSTANCE.fromModel(flowEntryVariable);
+//        return ResponseResult.success(flowEntryVariableVo);
+        return null;
     }
 
 

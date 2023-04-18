@@ -1,5 +1,6 @@
 package com.ruoyi.web.controller.jianguan.mytask;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.ObjectUtil;
@@ -219,7 +220,11 @@ public class FlowEntryController {
         FlowEntry flowEntryFilter = MyModelUtil.copyTo(flowEntryDtoFilter, FlowEntry.class);
         String orderBy = MyOrderParam.buildOrderBy(orderParam, FlowEntry.class);
         List<FlowEntry> flowEntryList = flowEntryService.getFlowEntryListWithRelation(flowEntryFilter, orderBy);
-        return ResponseResult.success(MyPageUtil.makeResponseData(flowEntryList, FlowEntry.FlowEntryModelMapper.INSTANCE));
+        // TODO: 2023/4/18 临时解决内部类问题
+        List<FlowEntryVo> flowEntryVos = BeanUtil.copyToList(flowEntryList, FlowEntryVo.class);
+        MyPageData<FlowEntryVo> flowEntryVoMyPageData = MyPageUtil.makeResponseData(flowEntryVos, Long.parseLong(String.valueOf(flowEntryVos.size())));
+        return ResponseResult.success(flowEntryVoMyPageData);
+//        return ResponseResult.success(MyPageUtil.makeResponseData(flowEntryList, FlowEntry.FlowEntryModelMapper.INSTANCE));
     }
 
     /**
@@ -237,7 +242,10 @@ public class FlowEntryController {
         if (flowEntry == null) {
             return ResponseResult.error(ErrorCodeEnum.DATA_NOT_EXIST);
         }
-        FlowEntryVo flowEntryVo = FlowEntry.FlowEntryModelMapper.INSTANCE.fromModel(flowEntry);
+        // TODO: 2023/4/18 临时解决内部类问题
+        FlowEntryVo flowEntryVo = new FlowEntryVo();
+        BeanUtil.copyProperties(flowEntry, flowEntryVo, false);
+//        FlowEntryVo flowEntryVo = FlowEntry.FlowEntryModelMapper.INSTANCE.fromModel(flowEntry);
         return ResponseResult.success(flowEntryVo);
     }
 

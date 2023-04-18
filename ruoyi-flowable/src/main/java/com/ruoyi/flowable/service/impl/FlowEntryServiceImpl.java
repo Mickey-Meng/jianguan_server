@@ -174,8 +174,8 @@ public class FlowEntryServiceImpl extends BaseService<FlowEntry, Long> implement
         flowEntryPublish.setPublishVersion(processDefinition.getVersion());
         flowEntryPublish.setActiveStatus(true);
         flowEntryPublish.setMainVersion(flowEntry.getStatus().equals(FlowEntryStatus.UNPUBLISHED));
-        PowerData tokenUser = JwtUtil.getTokenUser();
-        flowEntryPublish.setCreateUserId(tokenUser.getId().longValue());
+        Long userId = LoginHelper.getLoginUser().getUserId();
+        flowEntryPublish.setCreateUserId(userId);
         flowEntryPublish.setPublishTime(new Date());
         flowEntryPublish.setInitTaskInfo(initTaskInfo);
         flowEntryPublishMapper.insert(flowEntryPublish);
