@@ -41,7 +41,7 @@ public class MongController {
     private ProjectsDAO projectsDAO;
 
     @ApiOperation(value = "上传文件", notes = "上传文件")
-    @PostMapping(value = "upload")
+    @PostMapping(value = "/upload")
     @ResponseBody
     public ResponseBase upload(MultipartHttpServletRequest request) {
         if (null != request) {
@@ -67,7 +67,7 @@ public class MongController {
     }
 
     @ApiOperation(value = "下载文件", notes = "下载文件")
-    @GetMapping(value = "download")
+    @GetMapping(value = "/download")
     @ResponseBody
     public ResponseBase download(@RequestParam(name = "fileid") String fileId, HttpServletResponse response, HttpServletRequest request) {
         if (!StringUtils.hasLength(fileId)) {
@@ -96,7 +96,7 @@ public class MongController {
     }
 
     @ApiOperation(value = "预览文件", notes = "预览文件")
-    @GetMapping(value = "preview")
+    @GetMapping(value = "/preview")
     @ResponseBody
     public ResponseBase preview(@RequestParam(name = "fileid") String fileId, HttpServletResponse response, HttpServletRequest request) {
         if (fileId != null && !"null".equalsIgnoreCase(fileId)) {
@@ -110,7 +110,7 @@ public class MongController {
     }
 
     @ResponseBody
-    @GetMapping(value = "previewVideo")
+    @GetMapping(value = "/previewVideo")
     @ApiOperation(value = "预览视频/音频")
     @ApiImplicitParam(name = "url", value = "文件地址")
     public ResponseBase previewVideo(String url, HttpServletRequest request, HttpServletResponse response){

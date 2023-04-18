@@ -1,21 +1,26 @@
 package com.ruoyi.web.controller.jianguan;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.lang.tree.Tree;
+import cn.hutool.http.HttpStatus;
+import com.google.common.collect.Lists;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.PageQuery;
 import com.ruoyi.common.core.domain.entity.SysDept;
 import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.core.domain.object.ResponseBase;
 import com.ruoyi.common.core.page.TableDataInfo;
+import com.ruoyi.common.helper.LoginHelper;
+import com.ruoyi.jianguan.userauth.domain.dto.UserProjectDto;
+import com.ruoyi.jianguan.userauth.domain.entity.UserProject;
+import com.ruoyi.jianguan.userauth.service.IUserProjectService;
 import com.ruoyi.system.service.ISysDeptService;
 import com.ruoyi.system.service.ISysMenuService;
 import com.ruoyi.system.service.ISysUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -33,6 +38,7 @@ public class PermissionController extends BaseController {
     private final ISysMenuService sysMenuService;
     private final ISysDeptService sysDeptService;
     private final ISysUserService userService;
+    private final IUserProjectService userProjectService;
 
     /**
      * 加载首页地图数据
@@ -67,5 +73,49 @@ public class PermissionController extends BaseController {
     @GetMapping("/getUserListByDeptId")
     public TableDataInfo<SysUser> getUserListByDeptId(SysUser user, PageQuery pageQuery) {
         return userService.selectPageUserList(user, pageQuery);
+    }
+
+    /**
+     * 添加工区权限
+     * @param userProjectDto
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/addWorkArea")
+    public ResponseBase addWorkArea(@RequestBody UserProjectDto userProjectDto) {
+        //当该用户的roleid不是2-管理员,不允许添加
+        if (!LoginHelper.getLoginUser().getRolePermission().contains("admin")) {
+            return new ResponseBase(HttpStatus.HTTP_INTERNAL_ERROR, "用户添加组织机构失败,该用户没有权限配置组织机构!");
+        }
+        boolean isSuccess = true;
+        if (CollectionUtil.isNotEmpty(userProjectDto.getUserIds())) {
+            List<UserProject> userProjectList = Lists.newArrayList();
+            userProjectDto.getUserIds().stream().forEach(userId -> {
+                userProjectDto.getWorkAreaIds().stream().forEach(workAreaId -> {
+                    userProjectList.add(
+                        UserProject.builder()
+                            .userId(userId)
+                            .workAreaId(workAreaId)
+                            .build()
+                    );
+                });
+            });
+            // 先删除用户对应的项目下所有权限
+            userProjectService.deleteWorkAreaByUserIds(userProjectDto.getUserIds(), userProjectDto.getProjectId());
+            //再添加相应权限
+            isSuccess = userProjectService.batchAddWorkArea(userProjectList);
+        }
+        return new ResponseBase(isSuccess ? HttpStatus.HTTP_OK : HttpStatus.HTTP_INTERNAL_ERROR,
+            "添加用户工区权限" + (isSuccess ? "成功!" : "失败!"));
+    }
+
+    /**
+     * 根据用户ID查询其关联的工区信息
+     * @param userId
+     * @return
+     */
+    @GetMapping("/getWorkAreaByUserId/{userId}")
+    public ResponseBase getWorkAreaByUserId(@PathVariable("userId") Integer userId) {
+        return ResponseBase.success(userProjectService.getWorkAreaByUserId(userId));
     }
 }
