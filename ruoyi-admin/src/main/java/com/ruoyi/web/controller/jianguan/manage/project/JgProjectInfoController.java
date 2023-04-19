@@ -36,7 +36,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
 @Validated
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/system/project")
+@RequestMapping("/system/jg/project")
 public class JgProjectInfoController extends BaseController {
 
     private final IJgProjectInfoService iJgProjectInfoService;
@@ -44,7 +44,7 @@ public class JgProjectInfoController extends BaseController {
 /**
  * 查询项目信息列表
  */
-@SaCheckPermission("system:projectInfo:list")
+@SaCheckPermission("jg:project:list")
 @GetMapping("/list")
     public TableDataInfo<JgProjectInfoVo> list(JgProjectInfoBo bo, PageQuery pageQuery) {
         return iJgProjectInfoService.queryPageList(bo, pageQuery);
@@ -53,7 +53,7 @@ public class JgProjectInfoController extends BaseController {
     /**
      * 分页查询项目信息列表
      */
-    @SaCheckPermission("system:projectInfo:list")
+    @SaCheckPermission("jg:project:list")
     @GetMapping("/page")
 
     public TableDataInfo<JgProjectInfoVo> page(JgProjectInfoBo bo, PageQuery pageQuery) {
@@ -64,7 +64,7 @@ public class JgProjectInfoController extends BaseController {
     /**
      * 导出项目信息列表
      */
-    @SaCheckPermission("system:projectInfo:export")
+    @SaCheckPermission("jg:project:export")
     @Log(title = "项目信息" , businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(JgProjectInfoBo bo, HttpServletResponse response) {
@@ -77,7 +77,7 @@ public class JgProjectInfoController extends BaseController {
      *
      * @param id 主键
      */
-    @SaCheckPermission("system:projectInfo:query")
+    @SaCheckPermission("jg:project:query")
     @GetMapping("/{id}")
     public R<JgProjectInfoVo> getInfo(@NotNull(message = "主键不能为空")
                                      @PathVariable Long id) {
@@ -87,7 +87,7 @@ public class JgProjectInfoController extends BaseController {
     /**
      * 新增项目信息
      */
-    @SaCheckPermission("system:projectInfo:add")
+    @SaCheckPermission("jg:project:add")
     @Log(title = "项目信息" , businessType = BusinessType.INSERT)
     @RepeatSubmit()
     @PostMapping()
@@ -98,7 +98,7 @@ public class JgProjectInfoController extends BaseController {
     /**
      * 修改项目信息
      */
-    @SaCheckPermission("system:projectInfo:edit")
+    @SaCheckPermission("jg:project:edit")
     @Log(title = "项目信息" , businessType = BusinessType.UPDATE)
     @RepeatSubmit()
     @PutMapping()
@@ -111,7 +111,7 @@ public class JgProjectInfoController extends BaseController {
      *
      * @param ids 主键串
      */
-    @SaCheckPermission("system:projectInfo:remove")
+    @SaCheckPermission("jg:project:remove")
     @Log(title = "项目信息" , businessType = BusinessType.DELETE)
     @DeleteMapping("/{ids}")
     public R<Void> remove(@NotEmpty(message = "主键不能为空")

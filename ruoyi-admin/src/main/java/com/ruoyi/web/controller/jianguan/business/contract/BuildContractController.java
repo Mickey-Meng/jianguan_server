@@ -1,4 +1,4 @@
-package com.ruoyi.web.controller.jianguan.business.contract;
+    package com.ruoyi.web.controller.jianguan.business.contract;
 
 import com.github.pagehelper.PageInfo;
 import com.ruoyi.common.core.domain.object.ResponseBase;

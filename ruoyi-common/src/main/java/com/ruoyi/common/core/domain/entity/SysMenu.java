@@ -38,7 +38,6 @@ public class SysMenu extends TreeEntity<SysMenu> {
     /**
      * 菜单编码
      */
-    @NotBlank(message = "菜单编码不能为空")
     @Size(min = 0, max = 50, message = "菜单编码长度不能超过50个字符")
     private String menuCode;
 

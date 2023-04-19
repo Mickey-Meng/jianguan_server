@@ -6,25 +6,25 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <resultMap type="com.ruoyi.jianguan.manage.project.domain.entity.JgProjectInfo" id="JgProjectInfoResult">
         <result property="id" column="id"/>
-        <result property="projectName" column="project_name"/>
-        <result property="projectCode" column="project_code"/>
-        <result property="parentId" column="parent_id"/>
-        <result property="projectArea" column="project_area"/>
-        <result property="groupLevel" column="group_level"/>
-        <result property="status" column="status"/>
-        <result property="visible" column="visible"/>
-        <result property="orderNum" column="order_num"/>
-        <result property="groupId" column="group_id"/>
-        <result property="isAuto" column="is_auto"/>
-        <result property="projectPic" column="project_pic"/>
-        <result property="contractNum" column="contract_num"/>
-        <result property="coordinate" column="coordinate"/>
-        <result property="investment" column="investment"/>
-        <result property="projectType" column="project_type"/>
-        <result property="projectPoint" column="project_point"/>
-        <result property="projectLine" column="project_line"/>
-        <result property="projectSurface" column="project_surface"/>
-        <result property="introduction" column="introduction"/>
+        <result property="projectName" column="`NAME`"/>
+        <result property="projectCode" column="`CODE`"/>
+        <result property="parentId" column="PARENTID"/>
+        <result property="projectArea" column="TYPE"/>
+        <result property="groupLevel" column="GROUPLEVEL"/>
+        <result property="status" column="STSTATE"/>
+        <result property="visible" column="VISIBLE"/>
+        <result property="orderNum" column="STORDER"/>
+        <result property="groupId" column="GROUPID"/>
+        <result property="isAuto" column="ISAUTO"/>
+        <result property="projectPic" column="PROJECTPIC"/>
+        <result property="contractNum" column="CONTRACTNUM"/>
+        <result property="coordinate" column="COORDINATE"/>
+        <result property="investment" column="INVESTMENT"/>
+        <result property="projectType" column="PROJECTTYPE"/>
+        <result property="projectPoint" column="PROJECTPOINT"/>
+        <result property="projectLine" column="PROJECTLINE"/>
+        <result property="projectSurface" column="PROJECTSURFACE"/>
+        <result property="introduction" column="INTRODUCTION"/>
         <result property="createBy" column="create_by"/>
         <result property="createTime" column="create_time"/>
         <result property="updateBy" column="update_by"/>
