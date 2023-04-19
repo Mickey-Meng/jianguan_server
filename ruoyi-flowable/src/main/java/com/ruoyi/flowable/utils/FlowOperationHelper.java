@@ -227,7 +227,7 @@ public class FlowOperationHelper {
         }
         TaskInfoVo taskInfo = JSON.parseObject(flowEntryPublish.getInitTaskInfo(), TaskInfoVo.class);
         if (checkStarter) {
-            // TODO: 2023/4/18 临时解决不是第一个节点用户提交，工作流无法生成问题 
+            // TODO: 2023/4/18 临时解决不是第一个节点用户提交，工作流无法生成问题
 //            String loginName = TokenData.takeFromRequest().getLoginName();
 //            if (!StrUtil.equalsAny(taskInfo.getAssignee(), LoginHelper.getUsername(), FlowConstant.START_USER_NAME_VAR)) {
 //                errorMessage = "数据验证失败，该工作流第一个用户任务的指派人并非当前用户，不能执行该操作！";

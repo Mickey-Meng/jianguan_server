@@ -1,5 +1,6 @@
 package com.ruoyi.web.controller.jianguan.mytask;
 
+import cn.hutool.core.collection.CollUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.ruoyi.common.annotation.DisableDataFilter;
 import com.ruoyi.common.annotation.MyRequestBody;
@@ -23,10 +24,7 @@ import org.flowable.task.api.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * @Author: lpeng
@@ -234,9 +232,12 @@ public class FlowStaticPageController {
             }
         }
         //否则查询历史，说明流程已经完成
-        HistoricProcessInstance historicProcessInstance = historyService.createHistoricProcessInstanceQuery()
-                .processInstanceBusinessKey(businessKey).singleResult();
-        if (Objects.nonNull(historicProcessInstance)){
+        List<HistoricProcessInstance> historicProcessInstances = historyService.createHistoricProcessInstanceQuery()
+            .processInstanceBusinessKey(businessKey).list();
+        if (CollUtil.isNotEmpty(historicProcessInstances)){
+//            #109 审批完成后，工作流审批记录显示不正确问题
+            historicProcessInstances.sort(Comparator.comparing(HistoricProcessInstance::getEndTime).reversed());
+            HistoricProcessInstance historicProcessInstance = historicProcessInstances.get(0);
             vo.setProcessDefinitionId(historicProcessInstance.getProcessDefinitionId());
             vo.setTaskId("");
             vo.setProcessInstanceId(historicProcessInstance.getId());

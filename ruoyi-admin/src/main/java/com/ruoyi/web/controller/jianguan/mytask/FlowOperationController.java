@@ -9,6 +9,7 @@ import com.github.pagehelper.PageInfo;
 import com.ruoyi.common.annotation.DisableDataFilter;
 import com.ruoyi.common.annotation.MyRequestBody;
 import com.ruoyi.common.core.domain.entity.SsFUsers;
+import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.core.domain.object.*;
 import com.ruoyi.common.enums.ErrorCodeEnum;
 import com.ruoyi.common.helper.LoginHelper;
@@ -198,10 +199,10 @@ public class FlowOperationController {
         flowTaskHandle.setProcessInstanceId(processInstanceId);
         flowTaskHandle.setTaskHandleStatus(FlowTaskHandleStatus.HANDLEING);
 //        TokenData tokenData = TokenData.takeFromRequest();
-        SsFUsers user = JwtUtil.getUserToken();
-        flowTaskHandle.setTaskHandleUserId(user.getId().longValue());
-        flowTaskHandle.setTaskHandleUserLoginName(user.getUsername());
-        flowTaskHandle.setTaskHandleUserName(user.getName());
+        LoginUser loginUser = LoginHelper.getLoginUser();
+        flowTaskHandle.setTaskHandleUserId(loginUser.getUserId());
+        flowTaskHandle.setTaskHandleUserLoginName(loginUser.getUsername());
+        flowTaskHandle.setTaskHandleUserName(loginUser.getNickName());
         flowTaskHandle.setProcessDefinitionKey(processInstance.getProcessDefinitionKey());
         flowTaskHandle.setProcessDefinitionName(processInstance.getProcessDefinitionName());
         flowTaskHandleService.saveUnHandleNew(flowTaskHandle);
@@ -561,8 +562,10 @@ public class FlowOperationController {
     public ResponseResult<List<FlowTaskCommentVo>> listFlowTaskComment(@RequestParam String processInstanceId) {
         List<FlowTaskComment> flowTaskCommentList =
                 flowTaskCommentService.getFlowTaskCommentList(processInstanceId);
-        List<FlowTaskCommentVo> resultList = FlowTaskComment.FlowTaskCommentModelMapper.INSTANCE.fromModelList(flowTaskCommentList);
-        return ResponseResult.success(resultList);
+        List<FlowTaskCommentVo> flowTaskCommentVos = BeanUtil.copyToList(flowTaskCommentList, FlowTaskCommentVo.class);
+        // TODO: 2023/4/19 临时解决内部类问题
+//        List<FlowTaskCommentVo> resultList = FlowTaskComment.FlowTaskCommentModelMapper.INSTANCE.fromModelList(flowTaskCommentList);
+        return ResponseResult.success(flowTaskCommentVos);
     }
 
     /**

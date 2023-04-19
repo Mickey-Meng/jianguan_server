@@ -6,11 +6,13 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ruoyi.common.core.domain.entity.SsFUsers;
+import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.core.domain.object.MyPageData;
 import com.ruoyi.common.core.domain.object.MyPageParam;
 import com.ruoyi.common.core.mapper.BaseDaoMapper;
 import com.ruoyi.common.core.sequence.wrapper.IdGeneratorWrapper;
 import com.ruoyi.common.core.service.BaseService;
+import com.ruoyi.common.helper.LoginHelper;
 import com.ruoyi.common.utils.JwtUtil;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.flowable.common.constant.FlowTaskHandleStatus;
@@ -101,11 +103,10 @@ public class FlowTaskHandleServiceImpl extends BaseService<FlowTaskHandle, Long>
                     //设置描述
                     flowTaskHandle.setTaskHandleStatusStr(FlowTaskHandleStatus.getName(flowTaskHandle.getTaskHandleStatus()));
                 }
-//                TokenData tokenData = TokenData.takeFromRequest();
-                SsFUsers user = JwtUtil.getUserToken();
-                flowTaskHandle.setCreateUserId(user.getId().longValue());
-                flowTaskHandle.setCreateLoginName(user.getUsername());
-                flowTaskHandle.setCreateUsername(user.getName());
+                LoginUser loginUser = LoginHelper.getLoginUser();
+                flowTaskHandle.setCreateUserId(loginUser.getUserId());
+                flowTaskHandle.setCreateLoginName(loginUser.getUsername());
+                flowTaskHandle.setCreateUsername(loginUser.getNickName());
                 flowTaskHandle.setCreateTime(new Date());
                 flowTaskHandleMapper.insert(flowTaskHandle);
                 return flowTaskHandle;

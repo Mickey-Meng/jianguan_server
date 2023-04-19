@@ -11,6 +11,7 @@ import com.ruoyi.common.core.domain.object.TokenData;
 import com.ruoyi.common.core.mapper.BaseDaoMapper;
 import com.ruoyi.common.core.sequence.wrapper.IdGeneratorWrapper;
 import com.ruoyi.common.core.service.BaseService;
+import com.ruoyi.common.helper.LoginHelper;
 import com.ruoyi.common.utils.JwtUtil;
 import com.ruoyi.flowable.common.constant.FlowTaskStatus;
 import com.ruoyi.flowable.domain.vo.FlowWorkOrderVo;
@@ -154,7 +155,7 @@ public class FlowWorkOrderServiceImpl extends BaseService<FlowWorkOrder, Long> i
         flowWorkOrder.setFlowStatus(flowStatus);
         if (FlowTaskStatus.FINISHED != flowStatus) {
             flowWorkOrder.setUpdateTime(new Date());
-            flowWorkOrder.setUpdateUserId(JwtUtil.getTokenUser().getId().longValue());
+            flowWorkOrder.setUpdateUserId(LoginHelper.getUserId());
         }
         LambdaQueryWrapper<FlowWorkOrder> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(FlowWorkOrder::getProcessInstanceId, processInstanceId);
