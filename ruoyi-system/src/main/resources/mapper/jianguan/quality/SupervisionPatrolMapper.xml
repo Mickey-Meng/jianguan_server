@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ruoyi.jianguan.quality.mapper.SupervisionPatrolMapper">
+<mapper namespace="com.ruoyi.jianguan.business.quality.mapper.SupervisionPatrolMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.ruoyi.jianguan.quality.domain.entity.SupervisionPatrol">
+    <resultMap id="BaseResultMap" type="com.ruoyi.jianguan.business.quality.domain.entity.SupervisionPatrol">
         <id column="id" property="id" />
         <result column="create_user_id" property="createUserId" />
         <result column="create_time" property="createTime" />
@@ -34,8 +34,8 @@
         id, project_id, build_section, address, start_date, patrol_place, build_condition, quality_condition, problem_deal_condition, patrol_photo_attachment, video, other_attachment_info, status, draft_flag, deleted_flag
     </sql>
 
-    <select id="getPageInfo" resultType="com.ruoyi.jianguan.quality.domain.vo.SupervisionPatrolPageVo"
-            parameterType="com.ruoyi.jianguan.quality.domain.dto.SupervisionPatrolPageDTO">
+    <select id="getPageInfo" resultType="com.ruoyi.jianguan.business.quality.domain.vo.SupervisionPatrolPageVo"
+            parameterType="com.ruoyi.jianguan.business.quality.domain.dto.SupervisionPatrolPageDTO">
         select a.*,p.name as buildSectionName,u.name as createName,u.NAME as createUserName from
            zz_supervision_patrol a
         left join ss_f_projects p on p.ID = a.build_section and p.GROUPLEVEL = 3

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ruoyi.jianguan.contract.mapper.ComeGoMoneyMapper">
+<mapper namespace="com.ruoyi.jianguan.business.contract.mapper.ComeGoMoneyMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.ruoyi.jianguan.contract.domain.entity.ComeGoMoney">
+    <resultMap id="BaseResultMap" type="com.ruoyi.jianguan.business.contract.domain.entity.ComeGoMoney">
         <id column="id" property="id" />
         <result column="create_user_id" property="createUserId" />
         <result column="create_time" property="createTime" />
@@ -33,7 +33,7 @@
     </sql>
 
 
-    <select id="getPageInfo" parameterType="com.ruoyi.jianguan.contract.domain.dto.ComeGoMoneyPageDTO" resultType="com.ruoyi.jianguan.contract.domain.vo.ComeGoMoneyPageVo">
+    <select id="getPageInfo" parameterType="com.ruoyi.jianguan.business.contract.domain.dto.ComeGoMoneyPageDTO" resultType="com.ruoyi.jianguan.business.contract.domain.vo.ComeGoMoneyPageVo">
         select a.*,p.NAME as projectName,s.NAME as buildSectionName,u.NAME as createUserName from zz_come_go_money a
         left join ss_f_projects p on a.project_id = p.ID and p.GROUPLEVEL = 2
         left join ss_f_projects s on a.build_section = s.ID and s.GROUPLEVEL = 3

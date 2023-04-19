@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ruoyi.jianguan.contract.mapper.EnterExitUserMapper">
+<mapper namespace="com.ruoyi.jianguan.business.contract.mapper.EnterExitUserMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.ruoyi.jianguan.contract.domain.entity.EnterExitUser">
+    <resultMap id="BaseResultMap" type="com.ruoyi.jianguan.business.contract.domain.entity.EnterExitUser">
         <id column="id" property="id" />
         <result column="enter_exit_id" property="enterExitId" />
         <result column="type" property="type" />
@@ -30,7 +30,7 @@
     </sql>
 
 
-    <select id="getPageInfo" parameterType="com.ruoyi.jianguan.contract.domain.dto.EnterExitUserPageDTO" resultMap="BaseResultMap">
+    <select id="getPageInfo" parameterType="com.ruoyi.jianguan.business.contract.domain.dto.EnterExitUserPageDTO" resultMap="BaseResultMap">
         select distinct a.*  from zz_enter_exit_user a
         left join zz_enter_exit b on a.enter_exit_id = b.id
         left join ss_f_projects s on b.build_section = s.ID and s.GROUPLEVEL = 3

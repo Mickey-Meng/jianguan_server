@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ruoyi.jianguan.contract.mapper.LaborContractMapper">
+<mapper namespace="com.ruoyi.jianguan.business.contract.mapper.LaborContractMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.ruoyi.jianguan.contract.domain.entity.LaborContract">
+    <resultMap id="BaseResultMap" type="com.ruoyi.jianguan.business.contract.domain.entity.LaborContract">
         <id column="id" property="id" />
         <result column="create_user_id" property="createUserId" />
         <result column="create_time" property="createTime" />
@@ -33,7 +33,7 @@
     </sql>
 
 
-    <select id="getPageInfo" parameterType="com.ruoyi.jianguan.contract.domain.dto.LaborContractPageDTO" resultType="com.ruoyi.jianguan.contract.domain.vo.LaborContractPageVo">
+    <select id="getPageInfo" parameterType="com.ruoyi.jianguan.business.contract.domain.dto.LaborContractPageDTO" resultType="com.ruoyi.jianguan.business.contract.domain.vo.LaborContractPageVo">
         select a.*,p.NAME as buildSectionName
         ,u.NAME as createUserName
         from zz_labor_contract a

@@ -22,7 +22,7 @@ import com.ruoyi.common.utils.jianguan.zjrw.httputils.HttpHeader;
 import com.ruoyi.common.utils.jianguan.zjrw.httputils.HttpParamers;
 import com.ruoyi.common.utils.jianguan.zjrw.httputils.HttpService;
 import com.ruoyi.common.utils.jianguan.zjrw.httputils.HttpUtils;
-import com.ruoyi.jianguan.contract.dao.PersonDAO;
+import com.ruoyi.jianguan.business.contract.dao.PersonDAO;
 import org.apache.commons.collections4.CollectionUtils;
 import org.bson.BsonObjectId;
 import org.bson.BsonValue;

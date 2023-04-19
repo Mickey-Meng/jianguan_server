@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ruoyi.jianguan.contract.dao.PersonDAO">
+<mapper namespace="com.ruoyi.jianguan.business.contract.dao.PersonDAO">
 
   <resultMap id="ssFGroupsMap" type="com.ruoyi.common.core.domain.entity.SsFGroups">
     <id column="id" jdbcType="INTEGER" property="id" />

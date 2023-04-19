@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.ruoyi.web.controller.jianguan.zlsk.strestservice.userauth.mapper.SubSystemMapper">
+<mapper namespace="com.ruoyi.web.controller.jianguan.other.zlsk.strestservice.userauth.mapper.SubSystemMapper">
 
     <select id="select" resultType="Map" parameterType="Map">
         SELECT t1.sysName,t1.sysCode,t1.ststate,t1.createtime,t1.ID,t2.`value` type from  subsystem t1 LEFT JOIN (SELECT t2.* from (select id from ss_c_dic where `key`

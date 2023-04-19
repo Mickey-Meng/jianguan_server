@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ruoyi.jianguan.quality.mapper.HiddenProjectAcceptMapper">
+<mapper namespace="com.ruoyi.jianguan.business.quality.mapper.HiddenProjectAcceptMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.ruoyi.jianguan.quality.domain.entity.HiddenProjectAccept">
+    <resultMap id="BaseResultMap" type="com.ruoyi.jianguan.business.quality.domain.entity.HiddenProjectAccept">
         <id column="id" property="id"/>
         <result column="create_user_id" property="createUserId"/>
         <result column="create_time" property="createTime"/>
@@ -37,7 +37,7 @@
     </sql>
 
     <!-- 分页查询隐蔽工程验收记录数据 -->
-    <select id="getPageInfo" parameterType="com.ruoyi.jianguan.quality.domain.dto.HiddenProjectAcceptPageDTO" resultType="com.ruoyi.jianguan.quality.domain.vo.HiddenProjectAcceptPageVo">
+    <select id="getPageInfo" parameterType="com.ruoyi.jianguan.business.quality.domain.dto.HiddenProjectAcceptPageDTO" resultType="com.ruoyi.jianguan.business.quality.domain.vo.HiddenProjectAcceptPageVo">
         select p.name as projectName,pb.`NAME` as buildSectionName,
              a.*,pb.CONTRACTNUM as contractCode,u.NAME as createUserName
           from zz_hidden_project_accept a

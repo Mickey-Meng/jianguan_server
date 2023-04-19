@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.ruoyi.web.controller.jianguan.zlsk.strestservice.dp.mapper.DpEngineeringMapper" >
-    <resultMap id="BaseResultMap" type="com.ruoyi.web.controller.jianguan.zlsk.strestservice.dp.model.DpEngineering">
+<mapper namespace="com.ruoyi.web.controller.jianguan.other.zlsk.strestservice.dp.mapper.DpEngineeringMapper" >
+    <resultMap id="BaseResultMap" type="com.ruoyi.web.controller.jianguan.other.zlsk.strestservice.dp.model.DpEngineering">
         <id column="id" property="id" />
         <result column="engineering_name" property="engineeringName" />
         <result column="create_time" property="createTime" />
@@ -22,7 +22,7 @@
         WHERE id=#{id}
     </select>
 
-    <insert id="insert" parameterType="com.ruoyi.web.controller.jianguan.zlsk.strestservice.dp.model.DpEngineering" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insert" parameterType="com.ruoyi.web.controller.jianguan.other.zlsk.strestservice.dp.model.DpEngineering" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO dp_engineering VALUES(null,#{engineeringName},NOW(),null,#{site},#{remark})
     </insert>
 
@@ -30,7 +30,7 @@
         DELETE FROM dp_engineering WHERE id=#{id}
     </delete>
 
-    <update id="updateById" parameterType="com.ruoyi.web.controller.jianguan.zlsk.strestservice.dp.model.DpEngineering" useGeneratedKeys="true" keyProperty="id">
+    <update id="updateById" parameterType="com.ruoyi.web.controller.jianguan.other.zlsk.strestservice.dp.model.DpEngineering" useGeneratedKeys="true" keyProperty="id">
         UPDATE
             dp_engineering
         <set>

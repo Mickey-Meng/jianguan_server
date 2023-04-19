@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.ruoyi.web.controller.jianguan.zlsk.strestservice.userauth.mapper.NoticeMapper">
+<mapper namespace="com.ruoyi.web.controller.jianguan.other.zlsk.strestservice.userauth.mapper.NoticeMapper">
 
     <select id="select" resultType="Map" parameterType="Map">
         select t1.*,t2.NAME createName from (SELECT *  FROM zlsk_notice  where ststate = 1)t1

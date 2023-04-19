@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ruoyi.jianguan.quality.mapper.SupervisionOrderMapper">
+<mapper namespace="com.ruoyi.jianguan.business.quality.mapper.SupervisionOrderMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.ruoyi.jianguan.quality.domain.entity.SupervisionOrder">
+    <resultMap id="BaseResultMap" type="com.ruoyi.jianguan.business.quality.domain.entity.SupervisionOrder">
         <id column="id" property="id"/>
         <result column="create_user_id" property="createUserId"/>
         <result column="create_time" property="createTime"/>
@@ -43,8 +43,8 @@
         id, project_id, address, build_section, copy, order_code, order_title, order_date, project_part, serious_level, order_content, problem_photo_attachment, other_attachment, reply_code, reply_date, reply_content, reply_photo_attachment, reply_other_attachment, review_supervision, review_director, status, draft_flag, deleted_flag
     </sql>
 
-    <select id="getPageInfo" parameterType="com.ruoyi.jianguan.quality.domain.dto.SupervisionOrderPageDTO"
-            resultType="com.ruoyi.jianguan.quality.domain.vo.SupervisionOrderPageVo">
+    <select id="getPageInfo" parameterType="com.ruoyi.jianguan.business.quality.domain.dto.SupervisionOrderPageDTO"
+            resultType="com.ruoyi.jianguan.business.quality.domain.vo.SupervisionOrderPageVo">
         select a.*,p.name as buildSectionName,u.name as createUserName,f.name as projectName from
         zz_supervision_order a
         left join ss_f_projects p on p.ID = a.build_section and p.GROUPLEVEL = 3

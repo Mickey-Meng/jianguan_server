@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ruoyi.map.mapper.MapPlanMapper">
+<mapper namespace="com.ruoyi.jianguan.manage.map.mapper.MapPlanMapper">
 
-    <resultMap type="com.ruoyi.map.domain.MapPlan" id="MapPlanResult">
+    <resultMap type="com.ruoyi.jianguan.manage.map.domain.MapPlan" id="MapPlanResult">
         <result property="id" column="id"/>
         <result property="planName" column="plan_name"/>
         <result property="parentId" column="parent_id"/>

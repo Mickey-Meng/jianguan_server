@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.ruoyi.web.controller.jianguan.zlsk.strestservice.map.mapper.MapConfigRecordMapper">
+<mapper namespace="com.ruoyi.web.controller.jianguan.other.zlsk.strestservice.map.mapper.MapConfigRecordMapper">
   <select id="selectMapConfigs" parameterType="java.util.Map" resultType="java.util.Map">
     select  t1.ID,t1.serverName,t1.url,t1.description,t1.visiable,t1.attrbuites,t1.createtime,t1.ststate,t1.img,t2.`value` type,t1.type tkey from  map_config_record t1 LEFT JOIN (SELECT t2.* from (select id from ss_c_dic where `key`
 = 'mapType') t1 LEFT JOIN ss_c_dic t2 on t1.id = t2.parentid)

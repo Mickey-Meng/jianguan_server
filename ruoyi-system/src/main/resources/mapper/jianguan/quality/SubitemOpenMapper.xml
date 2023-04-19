@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ruoyi.jianguan.quality.mapper.SubitemOpenMapper">
+<mapper namespace="com.ruoyi.jianguan.business.quality.mapper.SubitemOpenMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.ruoyi.jianguan.quality.domain.entity.SubitemOpen">
+    <resultMap id="BaseResultMap" type="com.ruoyi.jianguan.business.quality.domain.entity.SubitemOpen">
         <id column="id" property="id"/>
         <result column="create_user_id" property="createUserId"/>
         <result column="create_time" property="createTime"/>
@@ -57,8 +57,8 @@
     </sql>
 
 
-    <select id="getPageInfo" parameterType="com.ruoyi.jianguan.quality.domain.dto.SubitemOpenPageDTO"
-            resultType="com.ruoyi.jianguan.quality.domain.vo.SubitemOpenPageVo">
+    <select id="getPageInfo" parameterType="com.ruoyi.jianguan.business.quality.domain.dto.SubitemOpenPageDTO"
+            resultType="com.ruoyi.jianguan.business.quality.domain.vo.SubitemOpenPageVo">
         select a.*,p.name as projectName,u.name as liveUserName,e.name as buildUserName ,r.name as checkUserName
         ,x.NAME as createUserName from
         zz_subitem_open a

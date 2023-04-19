@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ruoyi.jianguan.contract.mapper.EquipmentInfoMapper">
+<mapper namespace="com.ruoyi.jianguan.business.contract.mapper.EquipmentInfoMapper">
 
     <!-- 通用查询映射结果 -->
-        <resultMap id="BaseResultMap" type="com.ruoyi.jianguan.contract.domain.entity.EquipmentInfo">
+        <resultMap id="BaseResultMap" type="com.ruoyi.jianguan.business.contract.domain.entity.EquipmentInfo">
         <id column="id" property="id" />
         <result column="enter_id" property="enterId" />
         <result column="equipment_type" property="equipmentType" />
@@ -23,7 +23,7 @@
         id, enter_id, equipment_type, equipment_name, specification, num, enter_date, tech_condition, use_where, remark, exit_date, exit_reason
     </sql>
 
-    <select id="getPageInfo" resultMap="BaseResultMap" parameterType="com.ruoyi.jianguan.contract.domain.dto.EquipmentInfoPageDTO">
+    <select id="getPageInfo" resultMap="BaseResultMap" parameterType="com.ruoyi.jianguan.business.contract.domain.dto.EquipmentInfoPageDTO">
         select a.* from zz_equipment_info a
         left join zz_equipment_enter p on a.enter_id = p.id
         where p.project_id = #{pageDto.projectId} and p.build_section = #{pageDto.buildSection}

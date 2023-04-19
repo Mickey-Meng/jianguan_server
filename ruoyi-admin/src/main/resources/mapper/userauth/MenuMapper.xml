@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.ruoyi.web.controller.jianguan.zlsk.strestservice.userauth.mapper.MenuMapper">
+<mapper namespace="com.ruoyi.web.controller.jianguan.other.zlsk.strestservice.userauth.mapper.MenuMapper">
 
     <select id="select" resultType="Map" parameterType="Map">
      SELECT t1.*,t2.sid,t3.sysName  FROM
@@ -58,7 +58,7 @@
         <if test="utype != null and utype != ''">and u.UTYPE = #{utype}</if>
     </select>
 
-    <insert id="insert" parameterType="com.ruoyi.web.controller.jianguan.zlsk.strestservice.userauth.model.Menu" useGeneratedKeys="true"  keyProperty="id" >
+    <insert id="insert" parameterType="com.ruoyi.web.controller.jianguan.other.zlsk.strestservice.userauth.model.Menu" useGeneratedKeys="true" keyProperty="id" >
         insert into ss_c_menu
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">

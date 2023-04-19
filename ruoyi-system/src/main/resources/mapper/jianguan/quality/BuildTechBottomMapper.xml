@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ruoyi.jianguan.quality.mapper.BuildTechBottomMapper">
+<mapper namespace="com.ruoyi.jianguan.business.quality.mapper.BuildTechBottomMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.ruoyi.jianguan.quality.domain.entity.BuildTechBottom">
+    <resultMap id="BaseResultMap" type="com.ruoyi.jianguan.business.quality.domain.entity.BuildTechBottom">
         <id column="id" property="id"/>
         <result column="create_user_id" property="createUserId"/>
         <result column="create_time" property="createTime"/>
@@ -31,8 +31,8 @@
     </sql>
 
 
-    <select id="getPageInfo" parameterType="com.ruoyi.jianguan.quality.domain.dto.BuildTechBottomPageDTO"
-            resultType="com.ruoyi.jianguan.quality.domain.vo.BuildTechBottomPageVo">
+    <select id="getPageInfo" parameterType="com.ruoyi.jianguan.business.quality.domain.dto.BuildTechBottomPageDTO"
+            resultType="com.ruoyi.jianguan.business.quality.domain.vo.BuildTechBottomPageVo">
         select a.*,s.NAME as buildSectionName,u.NAME as createName,u.NAME as createUserName from zz_build_tech_bottom a
         left join ss_f_projects s on a.build_section = s.ID and s.GROUPLEVEL = 3
         left join ss_f_users u on a.create_user_id = u.ID

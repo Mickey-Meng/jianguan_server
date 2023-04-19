@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ruoyi.jianguan.contract.mapper.EquipmentExitMapper">
+<mapper namespace="com.ruoyi.jianguan.business.contract.mapper.EquipmentExitMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.ruoyi.jianguan.contract.domain.entity.EquipmentExit">
+    <resultMap id="BaseResultMap" type="com.ruoyi.jianguan.business.contract.domain.entity.EquipmentExit">
         <id column="id" property="id" />
         <result column="create_user_id" property="createUserId" />
         <result column="create_time" property="createTime" />
@@ -27,7 +27,7 @@
         id, project_id, project_code, supervision_ban, equipment_info, status, draft_flag, deleted_flag
     </sql>
 
-    <select id="getPageInfo" parameterType="com.ruoyi.jianguan.contract.domain.dto.EquipmentExitPageDTO" resultType="com.ruoyi.jianguan.contract.domain.vo.EquipmentExitPageVo">
+    <select id="getPageInfo" parameterType="com.ruoyi.jianguan.business.contract.domain.dto.EquipmentExitPageDTO" resultType="com.ruoyi.jianguan.business.contract.domain.vo.EquipmentExitPageVo">
         select a.*,p.NAME as projectName,u.NAME as createUserName from zz_equipment_exit a
         left join ss_f_projects p on a.project_id = p.ID and p.GROUPLEVEL = 2
         left join ss_f_users u on a.create_user_id = u.ID

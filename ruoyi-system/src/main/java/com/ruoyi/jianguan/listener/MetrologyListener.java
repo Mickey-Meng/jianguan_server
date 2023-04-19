@@ -2,8 +2,8 @@ package com.ruoyi.jianguan.listener;
 
 import com.ruoyi.common.constant.AuditStatusEnum;
 import com.ruoyi.common.utils.ApplicationContextHolder;
-import com.ruoyi.jianguan.metrology.domain.entity.Metrology;
-import com.ruoyi.jianguan.metrology.service.MetrologyService;
+import com.ruoyi.jianguan.business.metrology.domain.entity.Metrology;
+import com.ruoyi.jianguan.business.metrology.service.MetrologyService;
 import lombok.extern.slf4j.Slf4j;
 import org.flowable.engine.delegate.DelegateExecution;
 import org.flowable.engine.delegate.ExecutionListener;

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ruoyi.jianguan.quality.mapper.BuildPlanMapper">
+<mapper namespace="com.ruoyi.jianguan.business.quality.mapper.BuildPlanMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.ruoyi.jianguan.quality.domain.entity.BuildPlan">
+    <resultMap id="BaseResultMap" type="com.ruoyi.jianguan.business.quality.domain.entity.BuildPlan">
         <id column="id" property="id" />
         <result column="create_user_id" property="createUserId" />
         <result column="create_time" property="createTime" />
@@ -33,7 +33,7 @@
         id, project_id, project_code, build_plan_name, attachment_list, build_plan_attachment, expert_meeting_attachment, expert_argument, expert_opinion, expert_opinion_implement, reply_attachment, draft_flag, deleted_flag
     </sql>
 
-    <select id="getPageInfo" parameterType="com.ruoyi.jianguan.quality.domain.dto.BuildPlanPageDTO" resultType="com.ruoyi.jianguan.quality.domain.vo.BuildPlanPageVo">
+    <select id="getPageInfo" parameterType="com.ruoyi.jianguan.business.quality.domain.dto.BuildPlanPageDTO" resultType="com.ruoyi.jianguan.business.quality.domain.vo.BuildPlanPageVo">
         select a.*,p.name as projectName,s.name as buildSectionName,u.NAME as createUserName  from zz_build_plan a
         left join ss_f_projects p on a.project_id = p.ID and p.GROUPLEVEL = 2
         left join ss_f_projects s on a.project_id = s.PARENTID and s.GROUPLEVEL = 3

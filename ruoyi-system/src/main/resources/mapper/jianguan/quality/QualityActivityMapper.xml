@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ruoyi.jianguan.quality.mapper.QualityActivityMapper">
+<mapper namespace="com.ruoyi.jianguan.business.quality.mapper.QualityActivityMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.ruoyi.jianguan.quality.domain.entity.QualityActivity">
+    <resultMap id="BaseResultMap" type="com.ruoyi.jianguan.business.quality.domain.entity.QualityActivity">
         <id column="id" property="id" />
         <result column="create_user_id" property="createUserId" />
         <result column="create_time" property="createTime" />
@@ -28,7 +28,7 @@
         id, project_id, build_section, activity_info, remark, attachment, status, draft_flag, deleted_flag
     </sql>
 
-    <select id="getPageInfo" parameterType="com.ruoyi.jianguan.quality.domain.dto.QualityActivityPageDTO" resultType="com.ruoyi.jianguan.quality.domain.vo.QualityActivityPageVo">
+    <select id="getPageInfo" parameterType="com.ruoyi.jianguan.business.quality.domain.dto.QualityActivityPageDTO" resultType="com.ruoyi.jianguan.business.quality.domain.vo.QualityActivityPageVo">
         select a.*,p.NAME as buildSectionName,u.name as createName,u.NAME as createUserName
         from zz_quality_activity a
         left join ss_f_projects p on a.build_section = p.id and p.GROUPLEVEL = 3

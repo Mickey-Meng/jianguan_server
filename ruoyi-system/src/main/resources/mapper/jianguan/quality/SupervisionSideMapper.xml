@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ruoyi.jianguan.quality.mapper.SupervisionSideMapper">
+<mapper namespace="com.ruoyi.jianguan.business.quality.mapper.SupervisionSideMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.ruoyi.jianguan.quality.domain.entity.SupervisionSide">
+    <resultMap id="BaseResultMap" type="com.ruoyi.jianguan.business.quality.domain.entity.SupervisionSide">
         <id column="id" property="id" />
         <result column="create_user_id" property="createUserId" />
         <result column="create_time" property="createTime" />
@@ -38,8 +38,8 @@
     </sql>
 
 
-    <select id="getPageInfo" parameterType="com.ruoyi.jianguan.quality.domain.dto.SupervisionSidePageDTO"
-            resultType="com.ruoyi.jianguan.quality.domain.vo.SupervisionSidePageVo">
+    <select id="getPageInfo" parameterType="com.ruoyi.jianguan.business.quality.domain.dto.SupervisionSidePageDTO"
+            resultType="com.ruoyi.jianguan.business.quality.domain.vo.SupervisionSidePageVo">
         select a.*,p.name as projectName,u.name as createName,u.NAME as createUserName from
            zz_supervision_side a
         left join ss_f_projects p on p.ID = a.project_id and p.GROUPLEVEL = 2
