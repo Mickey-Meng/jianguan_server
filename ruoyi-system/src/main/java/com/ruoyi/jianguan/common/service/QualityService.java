@@ -520,7 +520,6 @@ public class QualityService {
         if (count1 <= 0){
             return new ResponseBase(200, "该项目id无数据!");
         }
-        PowerData tokenUser = JwtUtil.getTokenUser();
         if(!ObjectUtils.isEmpty(singleProjectId) || singleProjectId != 0){
             List<ZjQualityEvent> zjQualityEventList = zjQualityEventDAO.getAllStatusSafeByProjectcode(singleProjectId, projectId);
             return new ResponseBase(200,"查询成功", zjQualityEventList);

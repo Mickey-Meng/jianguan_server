@@ -1,5 +1,6 @@
 package com.ruoyi.jianguan.common.service;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
@@ -80,7 +81,7 @@ public class PersonService {
     public ResponseBase addDepartment(List<SsFPersonGroups> ssFGroups) {
         Integer role = null;
         try {
-            role = JwtUtil.getTokenUser().getRole();
+            role = LoginHelper.getLoginUser().getRoleId().intValue();
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseBase(200, "请验证token的有效性!");
@@ -106,7 +107,7 @@ public class PersonService {
     public ResponseBase updateDepartment(SsFPersonGroups ssFGroup) {
         Integer role = null;
         try {
-            role = JwtUtil.getTokenUser().getRole();
+            role = LoginHelper.getLoginUser().getRoleId().intValue();
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseBase(200, "请验证token的有效性!");
@@ -145,7 +146,7 @@ public class PersonService {
     }
 
     public ResponseBase deleteDepartment(Integer id) {
-        Integer role = JwtUtil.getTokenUser().getRole();
+        Integer role = LoginHelper.getLoginUser().getRoleId().intValue();
         if (role != 2) {
             return new ResponseBase(200, "该用户没有删除部门组织的权限!");
         }
@@ -619,7 +620,7 @@ public class PersonService {
         }
         //调用流程接口发起流程
         String token = getRequest().getHeader("Authorization");// 从 http 请求头中取出 token
-        long userid = JwtUtil.getTokenUser().getId().longValue();
+        long userid = LoginHelper.getUserId();
         //流程定义的key
         String processKey = subDTO.getProcessKey();
         String businessKey = UUID.randomUUID().toString();
@@ -706,7 +707,7 @@ public class PersonService {
         }
         //调用流程接口发起流程
         String token = getRequest().getHeader("Authorization");// 从 http 请求头中取出 token
-        long userid = JwtUtil.getTokenUser().getId().longValue();
+        long userid = LoginHelper.getUserId();
         //流程定义的key
         String processKey = personChange.getProcessDefinitionKey();
         String businessKey = UUID.randomUUID().toString();
@@ -1139,7 +1140,7 @@ public class PersonService {
             String processKey = personLeave.getProcessDefinitionKey();
             String businessKey = UUID.randomUUID().toString();
             String token = getRequest().getHeader("Authorization");// 从 http 请求头中取出 token
-            long userid = JwtUtil.getTokenUser().getId().longValue();
+            long userid = LoginHelper.getUserId();
 
             HttpHeader header = new HttpHeader();
             header.addParam("token", token);
@@ -1835,6 +1836,9 @@ public class PersonService {
 
         String response = HttpUtils.sendGet(url, maps, token);
         JSONObject jsonObject = JSONObject.parseObject(response);
+        if (ObjectUtil.isEmpty(jsonObject)){
+            return null;
+        }
         String isSuccess = jsonObject.getString("success");
         if (!isSuccess.equals("true")){
             return null;

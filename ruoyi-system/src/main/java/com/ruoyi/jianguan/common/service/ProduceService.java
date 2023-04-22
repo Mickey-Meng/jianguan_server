@@ -124,7 +124,6 @@ public class ProduceService {
 
         Integer userId = LoginHelper.getUserId().intValue();
         List<Integer> groups = ssFUserGroupDAO.getGroupsOfProjectByUserId(userId);
-        PowerData tokenUser = JwtUtil.getTokenUser();
         String type = recodeQueryData.getType();
         //获取用户所拥有的单位工程code
         List<String> projects = ssFUserGroupDAO.getGroupProjectsByUserId(userId);

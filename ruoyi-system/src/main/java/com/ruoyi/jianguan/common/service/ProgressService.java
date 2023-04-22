@@ -59,7 +59,7 @@ public class ProgressService {
     private ProjectsDAO projectsDAO;
 
     public ResponseBase uploadProgress(ProgressData progressData) {
-        Integer role = JwtUtil.getTokenUser().getRole();
+        Integer role = LoginHelper.getLoginUser().getRoleId().intValue();
         //当用户所属权限不为管理员时，不准传入实际开始时间和实际结束时间
         if (role != 2){
             if (progressData.getActulsttime() != null || progressData.getActulendtime() != null){
@@ -101,7 +101,6 @@ public class ProgressService {
     }
 
     public ResponseBase getStatus(final RightData rightData) {
-        PowerData tokenUser = JwtUtil.getTokenUser();
 
         Integer userId = LoginHelper.getUserId().intValue();
         List<String> projects = Lists.newArrayList();

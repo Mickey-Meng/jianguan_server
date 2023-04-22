@@ -1,5 +1,6 @@
 package com.ruoyi.jianguan.manage.project.service;
 
+import cn.hutool.core.lang.tree.Tree;
 import com.ruoyi.jianguan.manage.project.domain.bo.JgProjectInfoBo;
 import com.ruoyi.jianguan.manage.project.domain.vo.JgProjectInfoVo;
 import com.ruoyi.common.core.page.TableDataInfo;
@@ -45,4 +46,11 @@ public interface IJgProjectInfoService {
      * 校验并批量删除项目信息信息
      */
     Boolean deleteWithValidByIds(Collection<Long> ids, Boolean isValid);
+
+    /**
+     * 项目机构树
+     * @param bo
+     * @return
+     */
+    List<Tree<Long>> getProjectTree(JgProjectInfoBo bo);
 }

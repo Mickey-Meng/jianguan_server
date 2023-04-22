@@ -10,7 +10,6 @@ package com.ruoyi.common.utils.jianguan.zjrw;
 
 import com.auth0.jwt.JWT;
 import com.google.common.collect.Maps;
-import com.ruoyi.common.utils.JwtUtil;
 
 import java.security.MessageDigest;
 import java.util.Map;
@@ -66,39 +65,5 @@ public class MD5Util {
         return s;
 
     }
-
-    // 测试主函数
-    public static void main(String args[]) {
-        String s = "123456";
-        System.out.println("原始：" + s);
-        System.out.println("MD5后：" + string2MD5(s));
-        System.out.println("加密的：" + convertMD5(s));
-        System.out.println("解密的：" + convertMD5(convertMD5(s)));
-
-        System.out.println(UUID.randomUUID().toString());
-
-        Long userId = JwtUtil.getTokenUser("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9" +
-                ".eyJleHAiOjE2NTMzMDEyODAsInVzZXIiOiJ7XCJnb25ncXVzXCI6W10sXCJpZFwiO" +
-                "jEsXCJwcm9qZWN0c1wiOltdLFwicm9sZVwiOjJ9In0.4aGSU-" +
-                "nCf-oK6dfNn22JJAr8VdDYsszKNJ3UR33AbKg").getId().longValue();
-        System.out.println(userId);
-
-        Map<String, Object> map = Maps.newHashMap();
-        map.put("variables", "sgjl");
-        System.out.println(map);
-
-
-        String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJle" +
-                "HAiOjE2NTMyMjcyNDUsInVzZXIiOiJ7XCJnb25ncXVzXCI6W10" +
-                "sXCJpZFwiOjEzNyxcInByb2plY3RzXCI6W10sXCJyb2xl" +
-                "XCI6Mn0ifQ.aCiXmoOVqoZayqhl94qGTF-UatpiO_uExSSSaS3xxs8";
-
-        String json = JWT.decode(token).getClaim("user").asString();
-
-        System.out.println(json);
-
-    }
-
-
 
 }

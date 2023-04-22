@@ -134,7 +134,6 @@ public class MapServerConfigController extends BaseController {
      * @param
      * @return
      */
-    @SaCheckPermission("map:mapServerConfig:query")
     @GetMapping("/getMyMap")
     public ResponseBase getMyMap(@RequestParam("serverType") String serverType,
                                          @RequestParam("userId") Long userId,

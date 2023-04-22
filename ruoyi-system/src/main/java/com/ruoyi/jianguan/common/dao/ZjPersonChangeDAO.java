@@ -43,7 +43,8 @@ public interface ZjPersonChangeDAO {
     @Select("select * from zj_person_change_file where gid = #{gid}")
     ZjPersonChangeFile getFileByGid(@Param("gid")Integer gid);
 
-    @Select("select * from zj_person_change where recordId = #{id} and status = 1 group by subDate desc")
+    //todo group by subDate desc
+    @Select("select * from zj_person_change where recordId = #{id} and status = 1 ")
     List<ZjPersonChange> getChangeByUserId(@Param("id")Integer id);
 
     @Select("select * from zj_person_change where projectChildId = #{projectId} order by subDate desc")
@@ -55,7 +56,8 @@ public interface ZjPersonChangeDAO {
                                                       @Param("pageNum")Integer pageNum,
                                                       @Param("pageSize")Integer pageSize);
 
-    @Select("select * from zj_person_change_file where gid = #{gid} group by uploadTime desc")
+    //todo group by uploadTime desc
+    @Select("select * from zj_person_change_file where gid = #{gid} ")
     List<ZjPersonChangeFile> getFileIdsByGid(@Param("gid")Integer gid);
 
     @Select("select count(1) from zj_person_change where processInstanceId = #{processId}")
@@ -71,7 +73,8 @@ public interface ZjPersonChangeDAO {
             "and ASSIGNEE_ = '15158278032' and END_TIME_ is not null")
     Integer getCountActHiActinstByProcessId(@Param("processId")String processInstanceId);
 
-    @Select("select * from zj_person_change where status = 2 group by subDate desc")
+    //todo group by subDate desc
+    @Select("select * from zj_person_change where status = 2 ")
     List<ZjPersonChange> getAllFisishChanges();
 
     @Select("select a.* from zj_person_change a " +

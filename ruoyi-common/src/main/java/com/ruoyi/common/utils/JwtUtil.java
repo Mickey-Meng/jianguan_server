@@ -129,8 +129,6 @@ public class JwtUtil {
     /**
      * 过期时间
      */
-    public static final long APP_TIME = 1000 * 60 * 60 * 24 * 3;
-    public static final long PC_TIME = 60 * 60 * 1000 * 24;
     public static final long SSO_TIME = 1000000 * 60 * 1000;
 
     /**
@@ -189,51 +187,7 @@ public class JwtUtil {
     }
 
 
-    /**
-     * 获取accountId
-     *
-     * @return
-     */
-    public static PowerData getTokenUser() {
-        String token = getRequest().getHeader("Authorization");// 从 http 请求头中取出 token
-        String userJson = JWT.decode(token).getClaim("user").asString();
-        PowerData user = JSON.parseObject(userJson, PowerData.class);
-        return user;
-    }
 
-
-    /**
-     * 获取当前登录用户的登录名
-     *
-     * @return
-     */
-    public static String getUserNameByToken() {
-        if (Objects.isNull(ssFUsersDAO)){
-            ssFUsersDAO = ApplicationContextHolder.getBean(SsFUsersDAO.class);
-        }
-//        // 从 http 请求头中取出 token
-//        String token = getRequest().getHeader("Authorization");
-//        System.out.println("token=" + token);
-//        String userJson = JWT.decode(getRequest().getHeader("token")).getClaim("user").asString();
-//        PowerData user = JSON.parseObject(userJson, PowerData.class);
-//        LoginHelper.getLoginUser();
-//        if (Objects.nonNull(user)) {
-            Long userId = LoginHelper.getLoginUser().getUserId();
-//            if (Objects.nonNull(userId)) {
-                Object cacheObject = RedisUtils.getCacheObject(BimRedisKey.USERINFO_KEY + userId);
-                if (Objects.nonNull(cacheObject)) {
-                    SsFUsers ssFUsers = (SsFUsers) cacheObject;
-                    System.out.println("ssFUsers=" + ssFUsers);
-                    return ssFUsers.getUsername();
-                } else {
-                    SsFUsers ssFUsers = ssFUsersDAO.selectById(userId);
-                    RedisUtils.setCacheObject(BimRedisKey.USERINFO_KEY + userId, ssFUsers);
-                    return ssFUsers.getUsername();
-                }
-//            }
-//        }
-//        return null;
-    }
 
     /**
      * 获取当前登录用户的登录信息

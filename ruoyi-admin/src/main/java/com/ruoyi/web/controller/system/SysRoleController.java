@@ -55,6 +55,15 @@ public class SysRoleController extends BaseController {
     }
 
     /**
+     * 获取角色信息列表
+     */
+    @SaCheckPermission("system:role:list")
+    @GetMapping("/allList")
+    public R<List<SysRole>> allList() {
+        return R.ok(roleService.selectRoleAll());
+    }
+
+    /**
      * 导出角色信息列表
      */
     @Log(title = "角色管理", businessType = BusinessType.EXPORT)

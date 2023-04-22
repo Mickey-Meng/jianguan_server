@@ -51,7 +51,7 @@ public class JgProjectInfo extends BaseEntity {
      * 级别
      */
     @TableField("GROUPLEVEL")
-    private Long groupLevel;
+    private Integer groupLevel;
     /**
      * 状态（0正常 1停用）|-1: 删除, 0: 冻结, 1: 正常
      */

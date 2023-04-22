@@ -65,7 +65,7 @@ public class JgProjectInfoVo {
      */
     @ExcelProperty(value = "级别")
     @ApiModelProperty(value = "级别", required = true)
-    private Long groupLevel;
+    private Integer groupLevel;
 
     /**
      * 状态（0正常 1停用）|-1: 删除, 0: 冻结, 1: 正常

@@ -8,6 +8,8 @@
         <id property="roleId" column="role_id"/>
         <result property="roleName" column="role_name"/>
         <result property="roleKey" column="role_key"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="roleLevel" column="role_level"/>
         <result property="roleSort" column="role_sort"/>
         <result property="dataScope" column="data_scope"/>
         <result property="menuCheckStrictly" column="menu_check_strictly"/>
@@ -25,6 +27,8 @@
         select distinct r.role_id,
                         r.role_name,
                         r.role_key,
+                        r.parent_id,
+                        r.role_level,
                         r.role_sort,
                         r.data_scope,
                         r.menu_check_strictly,

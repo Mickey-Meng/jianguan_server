@@ -129,7 +129,7 @@ spring:
   data:
     # mongodb配置
     mongodb:
-      uri: mongodb://150.158.139.18:8886
+      uri: mongodb://127.0.0.1:27017
       database: admin
   redis:
     # 地址

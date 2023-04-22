@@ -8,6 +8,7 @@ import com.ruoyi.common.core.domain.object.TokenData;
 import com.ruoyi.common.core.mapper.BaseDaoMapper;
 import com.ruoyi.common.core.sequence.wrapper.IdGeneratorWrapper;
 import com.ruoyi.common.core.service.BaseService;
+import com.ruoyi.common.helper.LoginHelper;
 import com.ruoyi.common.utils.JwtUtil;
 import com.ruoyi.flowable.mapper.FlowCategoryMapper;
 import com.ruoyi.flowable.model.FlowCategory;
@@ -55,9 +56,8 @@ public class FlowCategoryServiceImpl extends BaseService<FlowCategory, Long> imp
     @Override
     public FlowCategory saveNew(FlowCategory flowCategory) {
         flowCategory.setCategoryId(idGenerator.nextLongId());
-        PowerData tokenUser = JwtUtil.getTokenUser();
-        flowCategory.setUpdateUserId(tokenUser.getId().longValue());
-        flowCategory.setCreateUserId(tokenUser.getId().longValue());
+        flowCategory.setUpdateUserId(LoginHelper.getUserId());
+        flowCategory.setCreateUserId(LoginHelper.getUserId());
         Date now = new Date();
         flowCategory.setUpdateTime(now);
         flowCategory.setCreateTime(now);

@@ -2,6 +2,7 @@ package com.ruoyi.jianguan.common.service;
 
 import com.google.common.collect.Lists;
 import com.ruoyi.common.core.domain.object.ResponseBase;
+import com.ruoyi.common.helper.LoginHelper;
 import com.ruoyi.jianguan.common.domain.dto.PostDTO;
 import com.ruoyi.jianguan.common.dao.ProjectsDAO;
 import com.ruoyi.jianguan.business.contract.dao.ZjPersonFenceDAO;
@@ -240,7 +241,7 @@ public class FenceService {
         if (count1 <= 0){
             return new ResponseBase(200, "该项目id无数据!");
         }
-        Integer roleId = JwtUtil.getTokenUser().getRole();
+        Integer roleId = LoginHelper.getLoginUser().getRoleId().intValue();
         List<ZjPersonFenceTime> fenceTimes = fenceDAO.getFenceTimeByPostId(roleId);
 
         for (ZjPersonFenceTime fenceTime : fenceTimes) {

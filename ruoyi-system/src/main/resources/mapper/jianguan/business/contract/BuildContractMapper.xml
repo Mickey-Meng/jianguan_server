@@ -49,7 +49,7 @@
         <if test="pageDto.draftFlag != null">
             and a.draft_flag = #{pageDto.draftFlag}
         </if>
-        order by create_time desc
+        order by a.create_time desc
     </select>
 
 </mapper>

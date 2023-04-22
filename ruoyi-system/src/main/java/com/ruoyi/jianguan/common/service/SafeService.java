@@ -1106,7 +1106,7 @@ public class SafeService {
         List<Integer> groupIds = ssFGroupsDAO.getGroupsById(projectId);
         if (groupIds.contains(group)){
             //通过groupid 查询对应的有多少用户
-            List<SsFUserGroup> userGroups = ssFUserGroupDAO.getAllOfProjectByGroupId(group);
+            List<SsFUserGroup> userGroups = ssFUserGroupDAO.getAllByGroupId(group);
             List<Integer> userIds = Lists.newArrayList();
             for (SsFUserGroup userGroup : userGroups) {
                 userIds.add(userGroup.getUserid());

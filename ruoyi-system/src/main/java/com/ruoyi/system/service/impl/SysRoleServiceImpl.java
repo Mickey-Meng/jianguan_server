@@ -227,6 +227,9 @@ public class SysRoleServiceImpl implements ISysRoleService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int insertRole(SysRole role) {
+        SysRole parentRole = baseMapper.selectVoById(role.getParentId());
+        Integer currentLevel = Objects.isNull(parentRole)? 1 : parentRole.getRoleLevel() + 1;
+        role.setRoleLevel(currentLevel);
         // 新增角色信息
         baseMapper.insert(role);
         return insertRoleMenu(role);
@@ -241,6 +244,9 @@ public class SysRoleServiceImpl implements ISysRoleService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int updateRole(SysRole role) {
+        SysRole parentRole = baseMapper.selectVoById(role.getParentId());
+        Integer currentLevel = Objects.isNull(parentRole)? 1 : parentRole.getRoleLevel() + 1;
+        role.setRoleLevel(currentLevel);
         // 修改角色信息
         baseMapper.updateById(role);
         // 删除角色与菜单关联

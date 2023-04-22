@@ -24,10 +24,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.ClassUtils;
 
+import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.KeyStore;
 
 /**
@@ -119,7 +121,6 @@ public class HttpClientConfig {
         this.keyStorepass = keyStorepass;
     }
 
-    @Bean(name = "sslcontext")
     public SSLContext getSslcontext() {
         SSLContext sc = null;
         FileInputStream instream = null;
@@ -139,7 +140,9 @@ public class HttpClientConfig {
             e.printStackTrace();
         } finally {
             try {
-                instream.close();
+                if(instream!=null){
+                    instream.close();
+                }
             } catch (IOException e) {
             }
         }
@@ -152,11 +155,11 @@ public class HttpClientConfig {
      * @return
      */
     @Bean(name = "httpClientConnectionManager")
-    public PoolingHttpClientConnectionManager getHttpClientConnectionManager(@Qualifier("sslcontext") SSLContext sslcontext) {
+    public PoolingHttpClientConnectionManager getHttpClientConnectionManager() {
         // 设置协议http和https对应的处理socket链接工厂的对象
         Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory>create()
                 .register("http", PlainConnectionSocketFactory.INSTANCE)
-                .register("https", new SSLConnectionSocketFactory(sslcontext))
+//                .register("https", new SSLConnectionSocketFactory(sslcontext))
                 .build();
         PoolingHttpClientConnectionManager httpClientConnectionManager =
                 new PoolingHttpClientConnectionManager(socketFactoryRegistry);

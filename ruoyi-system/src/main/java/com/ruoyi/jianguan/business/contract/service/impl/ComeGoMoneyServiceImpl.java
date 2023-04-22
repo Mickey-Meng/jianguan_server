@@ -15,6 +15,7 @@ import com.ruoyi.common.core.domain.entity.FileModel;
 import com.ruoyi.common.core.domain.object.ResponseBase;
 import com.ruoyi.common.core.sequence.util.IdUtil;
 import com.ruoyi.common.enums.BimFlowKey;
+import com.ruoyi.common.helper.LoginHelper;
 import com.ruoyi.common.utils.JwtUtil;
 import com.ruoyi.jianguan.business.contract.domain.dto.ComeGoMoneyPageDTO;
 import com.ruoyi.jianguan.business.contract.domain.dto.ComeGoMoneySaveDTO;
@@ -76,7 +77,7 @@ ComeGoMoneyServiceImpl extends ServiceImpl<ComeGoMoneyMapper, ComeGoMoney> imple
         boolean isStartFlow = false;
         if (Objects.isNull(saveDto.getId())) {
             comeGoMoney.setId(IdUtil.nextLongId());
-            comeGoMoney.setCreateUserId(JwtUtil.getTokenUser().getId());
+            comeGoMoney.setCreateUserId(LoginHelper.getUserId().intValue());
             comeGoMoney.setCreateTime(new Date());
             //判断是否是草稿
             if (saveDto.getDraftFlag() == 1) {
@@ -89,7 +90,7 @@ ComeGoMoneyServiceImpl extends ServiceImpl<ComeGoMoneyMapper, ComeGoMoney> imple
                 isStartFlow = true;
             }
         }
-        comeGoMoney.setUpdateUserId(JwtUtil.getTokenUser().getId());
+        comeGoMoney.setUpdateUserId(LoginHelper.getUserId().intValue());
         comeGoMoney.setUpdateTime(new Date());
         //保存
         boolean saveOrUpdate = this.saveOrUpdate(comeGoMoney);

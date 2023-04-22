@@ -1,12 +1,18 @@
 package com.ruoyi.jianguan.manage.project.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.lang.tree.Tree;
+import cn.hutool.core.util.ObjectUtil;
+import com.ruoyi.common.core.domain.entity.SysRole;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.core.domain.PageQuery;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.ruoyi.common.utils.TreeBuildUtils;
+import com.ruoyi.jianguan.manage.map.domain.MapPlan;
 import com.ruoyi.jianguan.manage.project.domain.bo.JgProjectInfoBo;
 import com.ruoyi.jianguan.manage.project.domain.entity.JgProjectInfo;
 import com.ruoyi.jianguan.manage.project.domain.vo.JgProjectInfoVo;
@@ -18,6 +24,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 import java.util.Collection;
+import java.util.Objects;
 
 /**
  * 项目信息Service业务层处理
@@ -90,6 +97,10 @@ public class JgProjectInfoServiceImpl implements IJgProjectInfoService {
     public Boolean insertByBo(JgProjectInfoBo bo) {
         JgProjectInfo add = BeanUtil.toBean(bo, JgProjectInfo.class);
         validEntityBeforeSave(add);
+
+        JgProjectInfoVo projectInfoVo = baseMapper.selectVoById(bo.getParentId());
+        Integer currentLevel = Objects.isNull(projectInfoVo)? 1 : projectInfoVo.getGroupLevel() + 1;
+        add.setGroupLevel(currentLevel);
         boolean flag = baseMapper.insert(add) > 0;
         if (flag) {
             bo.setId(add.getId());
@@ -104,6 +115,9 @@ public class JgProjectInfoServiceImpl implements IJgProjectInfoService {
     public Boolean updateByBo(JgProjectInfoBo bo) {
         JgProjectInfo update = BeanUtil.toBean(bo, JgProjectInfo.class);
         validEntityBeforeSave(update);
+        JgProjectInfoVo projectInfoVo = baseMapper.selectVoById(bo.getParentId());
+        Integer currentLevel = Objects.isNull(projectInfoVo)? 1 : projectInfoVo.getGroupLevel() + 1;
+        update.setGroupLevel(currentLevel);
         return baseMapper.updateById(update) > 0;
     }
 
@@ -123,5 +137,27 @@ public class JgProjectInfoServiceImpl implements IJgProjectInfoService {
             //TODO 做一些业务上的校验,判断是否需要校验
         }
         return baseMapper.deleteBatchIds(ids) > 0;
+    }
+
+    /**
+     * 项目机构树
+     * @param bo
+     * @return
+     */
+    @Override
+    public List<Tree<Long>> getProjectTree(JgProjectInfoBo bo) {
+        LambdaQueryWrapper<JgProjectInfo> lqw = new LambdaQueryWrapper<>();
+        lqw.eq(ObjectUtil.isNotNull(bo.getId()), JgProjectInfo::getId, bo.getId())
+                .eq(ObjectUtil.isNotNull(bo.getParentId()), JgProjectInfo::getParentId, bo.getParentId())
+                .like(StringUtils.isNotBlank(bo.getProjectName()), JgProjectInfo::getProjectName, bo.getProjectName())
+                .eq(ObjectUtil.isNotEmpty(bo.getStatus()), JgProjectInfo::getStatus, bo.getStatus())
+                .orderByAsc(JgProjectInfo::getParentId)
+                .orderByAsc(JgProjectInfo::getOrderNum);
+        List<JgProjectInfo> jgProjectInfoList = baseMapper.selectList(lqw);
+        return TreeBuildUtils.build(jgProjectInfoList, (jgProjectInfo, tree) ->
+                tree.setId(jgProjectInfo.getId())
+                        .setParentId(jgProjectInfo.getParentId())
+                        .setName(jgProjectInfo.getProjectName())
+                        .setWeight(jgProjectInfo.getOrderNum()));
     }
 }

@@ -176,7 +176,6 @@ public class RedisService {
 
 
     public ResponseBase getTree() {
-        PowerData tokenUser = JwtUtil.getTokenUser();
         Integer userId = LoginHelper.getUserId().intValue();
         List<Integer> gongqus = ssFUserGroupDAO.getGroupsOfProjectByUserId(userId);
         NodeTree nodeTree1 =new NodeTree();

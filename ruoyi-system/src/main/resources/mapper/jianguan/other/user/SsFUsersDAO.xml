@@ -169,16 +169,17 @@
 
     <select id="getInfoById" parameterType="java.util.ArrayList" resultMap="SafeCheck">
         select
-        a.id ,a.username,a.name
+        a.id, a.username, a.name
         from
         ss_f_users a
         left join ss_f_user_role b ON a.id = b.userid
         left join ss_f_roles c ON c.id = b.roleid
+        left join ss_f_roles d on c.parentid = d.id
         where a.id in
         <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
             #{item}
         </foreach>
-        and c.code = 'sg'
+        and (c.code = 'sg' or c.code = 'sgy' or c.code = 'aqy')
     </select>
 
 

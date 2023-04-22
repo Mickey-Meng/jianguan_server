@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
+import cn.hutool.core.lang.tree.Tree;
+import com.ruoyi.common.core.domain.entity.SysDept;
+import com.ruoyi.jianguan.manage.map.domain.bo.MapPlanBo;
 import com.ruoyi.jianguan.manage.project.domain.bo.JgProjectInfoBo;
 import com.ruoyi.jianguan.manage.project.domain.vo.JgProjectInfoVo;
 import com.ruoyi.jianguan.manage.project.service.IJgProjectInfoService;
@@ -44,10 +47,10 @@ public class JgProjectInfoController extends BaseController {
 /**
  * 查询项目信息列表
  */
-@SaCheckPermission("jg:project:list")
-@GetMapping("/list")
-    public TableDataInfo<JgProjectInfoVo> list(JgProjectInfoBo bo, PageQuery pageQuery) {
-        return iJgProjectInfoService.queryPageList(bo, pageQuery);
+    @SaCheckPermission("jg:project:list")
+    @GetMapping("/list")
+    public R<List<JgProjectInfoVo>> list(JgProjectInfoBo bo) {
+        return R.ok(iJgProjectInfoService.queryList(bo));
     }
 
     /**
@@ -117,5 +120,16 @@ public class JgProjectInfoController extends BaseController {
     public R<Void> remove(@NotEmpty(message = "主键不能为空")
                           @PathVariable Long[] ids) {
         return toAjax(iJgProjectInfoService.deleteWithValidByIds(Arrays.asList(ids), true) ? 1 : 0);
+    }
+
+    /**
+     * 查询项目机构树
+     * @param bo
+     * @return
+     */
+    @SaCheckPermission("jg:project:list")
+    @GetMapping("/getProjectTree")
+    public R<List<Tree<Long>>> getProjectTree(JgProjectInfoBo bo) {
+        return R.ok(iJgProjectInfoService.getProjectTree(bo));
     }
 }

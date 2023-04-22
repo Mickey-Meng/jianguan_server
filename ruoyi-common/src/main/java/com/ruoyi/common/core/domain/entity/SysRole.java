@@ -55,6 +55,13 @@ public class SysRole extends BaseEntity {
     @Size(min = 0, max = 100, message = "权限字符长度不能超过100个字符")
     private String roleKey;
 
+    @ExcelProperty(value = "父级ID")
+    @NotNull(message = "父级角色不能为空")
+    private Long parentId;
+
+    @ExcelProperty(value = "角色级别")
+    private Integer roleLevel;
+
     /**
      * 角色排序
      */
