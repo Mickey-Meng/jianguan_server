@@ -168,6 +168,25 @@
     </resultMap>
 
     <select id="getInfoById" parameterType="java.util.ArrayList" resultMap="SafeCheck">
+        SELECT
+        a.user_id AS id,
+        a.user_name AS username,
+        a.nick_name AS NAME
+        FROM
+        sys_user a
+        LEFT JOIN sys_user_role b ON a.user_id = b.user_id
+        LEFT JOIN sys_role c ON c.role_id = b.role_id
+        WHERE
+        a.user_id IN
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        AND  c.role_key IN ('sg', 'sgy' ,'aqy' )
+    </select>
+
+<!--
+
+    <select id="getInfoById" parameterType="java.util.ArrayList" resultMap="SafeCheck">
         select
         a.id, a.username, a.name
         from
@@ -182,7 +201,28 @@
         and (c.code = 'sg' or c.code = 'sgy' or c.code = 'aqy')
     </select>
 
+-->
 
+    <select id="getUserNamesByIds" resultMap="BaseResultMap" parameterType="java.util.ArrayList">
+        SELECT
+        su.user_id as id,
+        su.user_name AS USERNAME,
+        su.`password` AS PWD,
+        su.nick_name AS NAME,
+        su.user_name AS USERCODE,
+        su.create_time AS STTIME,
+        su.STATUS as STSTATE,
+        null as STORDER,
+        null as ugid,
+        su.update_time as UPDATETIME
+        FROM
+        sys_user su   where user_id in
+        <foreach collection="userIds" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+<!--  modify by yangaogao  20230421  修改为ruoyi的系统表
     <select id="getUserNamesByIds" resultMap="BaseResultMap" parameterType="java.util.ArrayList">
         select
         *
@@ -192,7 +232,26 @@
             #{item}
         </foreach>
     </select>
+-->
 
+    <select id="getNamesByUserName" parameterType="java.util.ArrayList" resultType="com.ruoyi.common.core.domain.entity.SsFUsers">
+        SELECT
+        su.user_id AS id,
+        su.user_name AS username,
+        su.`password` AS pwd,
+        su.nick_name AS NAME,
+        su.create_time AS sttime,
+        su.`status` AS ststate
+        FROM
+        sys_user su
+        WHERE
+        su.user_name IN
+        <foreach collection="userNames" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+ <!--
     <select id="getNamesByUserName" parameterType="java.util.ArrayList" resultType="com.ruoyi.common.core.domain.entity.SsFUsers">
         select
         *
@@ -202,4 +261,6 @@
             #{item}
         </foreach>
     </select>
+    -->
+
 </mapper>

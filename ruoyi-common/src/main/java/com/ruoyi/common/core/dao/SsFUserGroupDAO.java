@@ -25,6 +25,7 @@ public interface SsFUserGroupDAO {
     @Select("select * from ss_f_user_group where userid =  #{userid} and ststate = 1" )
     List<SsFUserGroup> getGroups(@Param("userid") Integer id);
 
+    // yangaogao ,排查没有地方用到这个方法
     @Select("select * from ss_f_groups where grouplevel = 3")
     List<SsFGroups> getall();
     @Select("select * from ss_f_groups where grouplevel = 4 and parentid = #{id}")
@@ -32,10 +33,14 @@ public interface SsFUserGroupDAO {
 
     Integer deleteByUserIds(@Param("list") List<Integer> list);
 
-    @Select("select groupid from ss_f_user_project where userid = #{id} and ststate = 1")
+    @Select("select su.dept_id from sys_user su where su.user_id = #{id} and su.`status` = 1")
     List<Integer> getGroupsByUserId(@Param("id") Integer id);
 
-    @Select("select * from ss_f_user_project where groupid = #{groupid}")
+/*
+    @Select("select groupid from ss_f_user_project where userid = #{id} and ststate = 1")
+    List<Integer> getGroupsByUserId(@Param("id") Integer id);
+    */
+    @Select("select su.user_id,su.dept_id  from sys_user su where  su.`status`=1  and su.dept_id  = #{groupid}")
     List<SsFUserGroup> getAllByGroupId(@Param("groupid")Integer groupid);
 
     @Select("select groupid from ss_f_user_group where userid = #{id}")
@@ -74,7 +79,7 @@ public interface SsFUserGroupDAO {
     /**
      * getGroupIdByUserId -> getGroupIdByUserId
      */
-    @Select("select groupid from ss_f_user_group where userid = #{id} and ststate = 1")
+    @Select("select su.dept_id from sys_user su where su.`status`=1 and su.user_id = #{id} ")
     Integer getGroupIdByUserId(@Param("id") Integer id);
     /**
      * getAllByGroupId -> getAllOfProjectByGroupId
@@ -102,14 +107,30 @@ public interface SsFUserGroupDAO {
     /**
      *  -> getAllOfProjectByGroupId
      */
-    @Select("select a.id,a.username,a.name,a.usercode,a.sttime,a.ststate,a.storder " +
-        " from ss_f_user_group b left join ss_f_users a on a.id = b.userid " +
-        " where b.groupid = #{id}")
+    @Select("SELECT" +
+            "su.user_id AS id," +
+            "su.user_name AS username," +
+            "su.`password` AS pwd," +
+            "su.nick_name AS NAME," +
+            "su.create_time AS sttime," +
+            "su.`status` AS ststate " +
+            "FROM " +
+            "sys_user su " +
+            "WHERE " +
+            "su.dept_id =  #{id}")
     List<SsFUsers> getUserByGroupsId(@Param("id") Integer id);
+/*
+
+    @Select("select a.id,a.username,a.name,a.usercode,a.sttime,a.ststate,a.storder " +
+            " from ss_f_user_group b left join ss_f_users a on a.id = b.userid " +
+            " where b.groupid = #{id}")
+    List<SsFUsers> getUserByGroupsId(@Param("id") Integer id);
+*/
+
     /**
      *  -> getAllOfProjectByGroupId
      */
-    @Select("select userid from ss_f_user_group where groupid = #{id}")
+    @Select("select su.user_id from sys_user su where  su.`status`=1  and su.dept_id = #{id}")
     List<Integer> getUserIdsByGroupsIds(@Param("id") Integer id);
     /**
      *  -> getAllOfProjectByGroupId
@@ -121,6 +142,19 @@ public interface SsFUserGroupDAO {
         "where a.USERID = #{userid} and d.PROJECTTYPE is NOT NULL")
     List<String> getProjectsByUserId(@Param("userid")Integer userid);
 
+    @Select("SELECT a.user_id as id, a.user_name as username, a.nick_name as NAME, a.user_id as usercode,  " +
+            " null as ugid, b.role_id AS roleid, b.role_name AS rolename, b.role_key AS rolecode,  " +
+            " b.PARENT_ID as parentid, 1 as type, b.role_level as rolelevel, b.STATUS as visible   " +
+            "FROM sys_user a  " +
+            " LEFT JOIN sys_user_role c ON a.user_id = c.user_id  " +
+            " LEFT JOIN sys_role b ON c.role_id = b.role_id   " +
+            "WHERE  " +
+            " a.user_id IN (  " +
+            " SELECT  user_id  FROM  sys_user  WHERE  dept_id = (  " +
+            "  SELECT s.dept_id FROM  sys_user s  WHERE user_id =  #{userid}))")
+    List<UserRolesDTO> getUsersByUserid(@Param("userid")Integer userid);
+/*
+
     @Select("select " +
         "  a.id, a.username, a.name, a.usercode, a.ugid, " +
         "  b.id as roleid, b.name as rolename, b.code as rolecode, " +
@@ -131,6 +165,7 @@ public interface SsFUserGroupDAO {
         " where a.id in (select userid from ss_f_user_group where groupid = " +
         " (select groupid from ss_f_user_group where userid = #{userid}))")
     List<UserRolesDTO> getUsersByUserid(@Param("userid")Integer userid);
+*/
 
     @Select("select id from ss_f_projects where PARENTID = #{id}")
     List<Integer> getChildIdByProjectId(Integer projectId);
@@ -145,6 +180,15 @@ public interface SsFUserGroupDAO {
         " where userid = #{userid}) group by a.PROJECTID")
     List<String> getGroupProjectsByUserId(@Param("userid")Integer userid);
 
+    @Select("select su.user_id as id,su.user_name as username,su.nick_name as name,   " +
+            "  su.create_time as sttime,  su.`status` as ststate  from sys_user su    " +
+            "  LEFT JOIN sys_user_role sur   on su.user_id = sur.user_id   " +
+            "  LEFT JOIN sys_role sr1 on sur.role_id = sr1.role_id   " +
+            "  LEFT JOIN sys_role sr2 on sr1.parent_id = sr2.role_id   " +
+            "where sr2.role_key = 'quanzijihe' ")
+    List<SsFUsers> getQZUsers();
+/*
+
     @Select("select a.id,a.username,a.name,a.sttime,a.ststate,a.storder " +
         " from ss_f_users a " +
         " left join ss_f_user_role b on a.id = b.userid " +
@@ -152,14 +196,23 @@ public interface SsFUserGroupDAO {
         " left join ss_f_roles d on c.PARENTID = d.id " +
         " where d.code = 'quanzijihe' ")
     List<SsFUsers> getQZUsers();
+*/
 
+    @Select("select su.user_id as id,su.user_name as username,su.nick_name as name,   " +
+            "  su.create_time as sttime,  su.`status` as ststate  from sys_user su    " +
+            "  LEFT JOIN sys_user_role sur   on su.user_id = sur.user_id   " +
+            "  LEFT JOIN sys_role sr1 on sur.role_id = sr1.role_id   " +
+            "  LEFT JOIN sys_role sr2 on sr1.parent_id = sr2.role_id   " +
+            "where sr2.role_key =  'jiashedanweijihe' ")
+    List<SsFUsers> getJSDWUsers();
+    /*
     @Select("select a.id,a.username,a.name,a.sttime,a.ststate,a.storder " +
         " from ss_f_users a " +
         " left join ss_f_user_role b on a.id = b.userid " +
         " left join ss_f_roles c on b.roleid = c.id " +
         " left join ss_f_roles d on c.PARENTID = d.id " +
         " where d.code = 'jiashedanweijihe' ")
-    List<SsFUsers> getJSDWUsers();
+    List<SsFUsers> getJSDWUsers();*/
 
     @Select("select count(a.id) from ss_f_users a " +
         " left join ss_f_user_group b on a.id = b.userid " +

@@ -169,6 +169,27 @@
 
     <select id="getCheckByGongQi" resultType="com.ruoyi.common.core.domain.entity.SsFUsers">
         select
+            b.user_id as id, b.user_name as username, b.nick_name as name, b.user_id as usercode, b.create_time as sttime, b.`status` as ststate, 0 as storder, null as ugid
+        from
+            ss_f_user_project a
+                left join sys_user b on a.USERID = b.user_id
+                left join sys_user_role c on c.user_id = b.user_id
+                left join sys_role d on c.role_id = d.role_id
+                left join sys_role e on d.parent_id = e.role_id
+                left join ss_f_projects f on a.groupid = f.id
+                left join ss_f_projects g on f.parentid = g.id
+        where
+            g.id = #{projectId}
+          and
+            (d.role_key in ('jl' , 'jianliyuan'  ) or e.role_key = 'jianlijihe')
+        group by
+            b.user_name
+    </select>
+
+<!--
+modify by yangaogao  20230421  修改为ruoyi的系统表
+    <select id="getCheckByGongQi" resultType="com.ruoyi.common.core.domain.entity.SsFUsers">
+        select
             b.id, b.username, b.name, b.usercode, b.sttime, b.ststate, b.storder, b.ugid
         from
             ss_f_user_project a
@@ -184,7 +205,7 @@
             (d.code = 'jl' or d.code = 'jianliyuan' or e.code = 'jianlijihe')
         group by
             b.username, b.name
-    </select>
+    </select>-->
     <select id="getProjectByIds" resultType="com.ruoyi.common.core.domain.entity.SsFProjects">
         select * from ss_f_projects where id in
         <foreach collection="ids" item="id" open="(" separator="," close=")">

@@ -171,9 +171,16 @@ public class QualityService {
         if (count1 <= 0){
             return new ResponseBase(200, "该项目id无数据!");
         }
+      /*
+        yangaogao 20230421 直接获取token中的当前登录用户对应的角色信息 S
         Integer userid = LoginHelper.getUserId().intValue();
-        Map<String,Object> map = new HashMap<>();
+
         Integer role = zjQualityEventDAO.getRole(userid);
+        yangaogao 20230421 E
+        */
+        Map<String,Object> map = new HashMap<>();
+        Integer role =  LoginHelper.getLoginUser().getRoleId().intValue();
+
 //        if(role == 7 || role == 70){
 //            map.put("role",1);
 //        }else{
@@ -189,7 +196,7 @@ public class QualityService {
             map.put("role", 0);
         }
         // 获取用户id 根据用户id 查询代办事件
-        List<ZjQualityEvent> zjSafeEventList = zjQualityEventDAO.getSafeEventByModify(userid, projectId);
+        List<ZjQualityEvent> zjSafeEventList = zjQualityEventDAO.getSafeEventByModify(LoginHelper.getUserId().intValue(), projectId);
         if(zjSafeEventList.size()==0){
             map.put("data", new ArrayList<>());
             return new ResponseBase(200,"暂无数据", map);
