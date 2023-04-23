@@ -72,8 +72,7 @@ public class SysUserServiceImpl implements ISysUserService {
     private Wrapper<SysUser> buildQueryWrapper(SysUser user) {
         Map<String, Object> params = user.getParams();
         QueryWrapper<SysUser> wrapper = Wrappers.query();
-        wrapper.eq("u.del_flag", UserConstants.USER_NORMAL)
-            .eq(ObjectUtil.isNotNull(user.getUserId()), "u.user_id", user.getUserId())
+        wrapper.eq(ObjectUtil.isNotNull(user.getUserId()), "u.user_id", user.getUserId())
             .like(StringUtils.isNotBlank(user.getUserName()), "u.user_name", user.getUserName())
             .eq(StringUtils.isNotBlank(user.getStatus()), "u.status", user.getStatus())
             .like(StringUtils.isNotBlank(user.getPhonenumber()), "u.phonenumber", user.getPhonenumber())
@@ -99,8 +98,8 @@ public class SysUserServiceImpl implements ISysUserService {
     @Override
     public TableDataInfo<SysUser> selectAllocatedList(SysUser user, PageQuery pageQuery) {
         QueryWrapper<SysUser> wrapper = Wrappers.query();
-        wrapper.eq("u.del_flag", UserConstants.USER_NORMAL)
-            .eq(ObjectUtil.isNotNull(user.getRoleId()), "r.role_id", user.getRoleId())
+        //wrapper.eq("u.del_flag", UserConstants.USER_NORMAL)
+        wrapper.eq(ObjectUtil.isNotNull(user.getRoleId()), "r.role_id", user.getRoleId())
             .like(StringUtils.isNotBlank(user.getUserName()), "u.user_name", user.getUserName())
             .eq(StringUtils.isNotBlank(user.getStatus()), "u.status", user.getStatus())
             .like(StringUtils.isNotBlank(user.getPhonenumber()), "u.phonenumber", user.getPhonenumber());
@@ -118,11 +117,11 @@ public class SysUserServiceImpl implements ISysUserService {
     public TableDataInfo<SysUser> selectUnallocatedList(SysUser user, PageQuery pageQuery) {
         List<Long> userIds = userRoleMapper.selectUserIdsByRoleId(user.getRoleId());
         QueryWrapper<SysUser> wrapper = Wrappers.query();
-        wrapper.eq("u.del_flag", UserConstants.USER_NORMAL)
-            .and(w -> w.ne("r.role_id", user.getRoleId()).or().isNull("r.role_id"))
-            .notIn(CollUtil.isNotEmpty(userIds), "u.user_id", userIds)
-            .like(StringUtils.isNotBlank(user.getUserName()), "u.user_name", user.getUserName())
-            .like(StringUtils.isNotBlank(user.getPhonenumber()), "u.phonenumber", user.getPhonenumber());
+        //wrapper.eq("u.del_flag", UserConstants.USER_NORMAL)
+        wrapper.like(StringUtils.isNotBlank(user.getUserName()), "u.user_name", user.getUserName())
+                .like(StringUtils.isNotBlank(user.getPhonenumber()), "u.phonenumber", user.getPhonenumber())
+                .and(w -> w.ne("r.role_id", user.getRoleId()).or().isNull("r.role_id"))
+                .notIn(CollUtil.isNotEmpty(userIds), "u.user_id", userIds);
         Page<SysUser> page = baseMapper.selectUnallocatedList(pageQuery.build(), wrapper);
         return TableDataInfo.build(page);
     }

@@ -40,7 +40,7 @@ public interface SsFUserGroupDAO {
     @Select("select groupid from ss_f_user_project where userid = #{id} and ststate = 1")
     List<Integer> getGroupsByUserId(@Param("id") Integer id);
     */
-    @Select("select su.user_id,su.dept_id  from sys_user su where  su.`status`=1  and su.dept_id  = #{groupid}")
+    @Select("select * from ss_f_user_project where groupid = #{groupid}")
     List<SsFUserGroup> getAllByGroupId(@Param("groupid")Integer groupid);
 
     @Select("select groupid from ss_f_user_group where userid = #{id}")

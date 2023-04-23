@@ -3,7 +3,6 @@
 # 源目录和目标目录
 source_dir="/root/.jenkins/workspace/jianguan_server/ruoyi-admin/target/ruoyi-admin.jar"
 target_dir="/opt/jianguan/server/ruoyi-admin.jar"
-target_log="/opt/jianguan/server/ruoyi-admin.log"
 backup_dir="/opt/jianguan/server/backup"
 
 
@@ -26,6 +25,5 @@ else
     echo "$source_dir is empty"
 fi
 
-nohup java -jar $target_dir > $target_log 2>&1 &
-
-jps -ml
+cd /opt/jianguan/server/
+nohup java -jar $target_dir &
