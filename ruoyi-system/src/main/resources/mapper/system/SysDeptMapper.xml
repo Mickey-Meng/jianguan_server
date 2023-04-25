@@ -8,6 +8,7 @@
         <id property="deptId" column="dept_id"/>
         <result property="parentId" column="parent_id"/>
         <result property="ancestors" column="ancestors"/>
+        <result property="deptLevel" column="dept_level"/>
         <result property="deptName" column="dept_name"/>
         <result property="orderNum" column="order_num"/>
         <result property="leader" column="leader"/>

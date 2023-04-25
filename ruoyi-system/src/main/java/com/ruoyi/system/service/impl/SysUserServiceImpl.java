@@ -72,9 +72,10 @@ public class SysUserServiceImpl implements ISysUserService {
     private Wrapper<SysUser> buildQueryWrapper(SysUser user) {
         Map<String, Object> params = user.getParams();
         QueryWrapper<SysUser> wrapper = Wrappers.query();
-        wrapper.eq(ObjectUtil.isNotNull(user.getUserId()), "u.user_id", user.getUserId())
+            wrapper.eq(ObjectUtil.isNotNull(user.getUserId()), "u.user_id", user.getUserId())
             .like(StringUtils.isNotBlank(user.getUserName()), "u.user_name", user.getUserName())
             .eq(StringUtils.isNotBlank(user.getStatus()), "u.status", user.getStatus())
+            .eq("u.del_flag", UserConstants.USER_NORMAL)
             .like(StringUtils.isNotBlank(user.getPhonenumber()), "u.phonenumber", user.getPhonenumber())
             .between(params.get("beginTime") != null && params.get("endTime") != null,
                 "u.create_time", params.get("beginTime"), params.get("endTime"))
@@ -98,7 +99,7 @@ public class SysUserServiceImpl implements ISysUserService {
     @Override
     public TableDataInfo<SysUser> selectAllocatedList(SysUser user, PageQuery pageQuery) {
         QueryWrapper<SysUser> wrapper = Wrappers.query();
-        //wrapper.eq("u.del_flag", UserConstants.USER_NORMAL)
+        wrapper.eq("u.del_flag", UserConstants.USER_NORMAL);
         wrapper.eq(ObjectUtil.isNotNull(user.getRoleId()), "r.role_id", user.getRoleId())
             .like(StringUtils.isNotBlank(user.getUserName()), "u.user_name", user.getUserName())
             .eq(StringUtils.isNotBlank(user.getStatus()), "u.status", user.getStatus())
@@ -117,7 +118,7 @@ public class SysUserServiceImpl implements ISysUserService {
     public TableDataInfo<SysUser> selectUnallocatedList(SysUser user, PageQuery pageQuery) {
         List<Long> userIds = userRoleMapper.selectUserIdsByRoleId(user.getRoleId());
         QueryWrapper<SysUser> wrapper = Wrappers.query();
-        //wrapper.eq("u.del_flag", UserConstants.USER_NORMAL)
+        wrapper.eq("u.del_flag", UserConstants.USER_NORMAL);
         wrapper.like(StringUtils.isNotBlank(user.getUserName()), "u.user_name", user.getUserName())
                 .like(StringUtils.isNotBlank(user.getPhonenumber()), "u.phonenumber", user.getPhonenumber())
                 .and(w -> w.ne("r.role_id", user.getRoleId()).or().isNull("r.role_id"))

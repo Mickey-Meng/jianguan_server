@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 部门管理 服务实现
@@ -201,6 +202,9 @@ public class SysDeptServiceImpl implements ISysDeptService {
             throw new ServiceException("部门停用，不允许新增");
         }
         dept.setAncestors(info.getAncestors() + "," + dept.getParentId());
+        SysDept parentDept = baseMapper.selectVoById(dept.getParentId());
+        Integer currentLevel = Objects.isNull(parentDept)? 1 : parentDept.getDeptLevel() + 1;
+        dept.setDeptLevel(currentLevel);
         return baseMapper.insert(dept);
     }
 

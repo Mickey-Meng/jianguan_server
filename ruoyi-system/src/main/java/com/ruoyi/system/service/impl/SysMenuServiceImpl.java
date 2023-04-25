@@ -24,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 菜单 业务层处理
@@ -295,6 +296,56 @@ public class SysMenuServiceImpl implements ISysMenuService {
             return UserConstants.NOT_UNIQUE;
         }
         return UserConstants.UNIQUE;
+    }
+
+    /**
+     * 重置菜单表
+     * @return
+     */
+    @Override
+    public boolean resetMenuTable() {
+        // 查询原菜单表数据
+        List<SysMenu> originalMenuList = baseMapper.selectOriginalMenuList();
+        // 封装Map<父级菜单,子级菜单集合>
+        Map<SysMenu, List<SysMenu>> levelSysMenuMap = originalMenuList.stream().map(parentMenu -> {
+            HashMap<SysMenu, List<SysMenu>> sysMenuMap = new HashMap<>();
+            List<SysMenu> childList = getChildList(originalMenuList, parentMenu);
+            if (CollUtil.isNotEmpty(childList)) {
+                sysMenuMap.put(parentMenu, childList);
+                return sysMenuMap;
+            }
+            return null;
+        }).distinct()
+        .filter(Objects::nonNull)
+        .flatMap(map -> map.entrySet().stream())
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (k, v) -> v));
+        // 将原菜单数据保存至菜单表
+        levelSysMenuMap.forEach((parentMenu, childMenuList) -> {
+            // 查询当前父级菜单是否已插入数据库
+            SysMenu dbCurrentParentMenu = baseMapper.selectVoOne(new LambdaQueryWrapper<SysMenu>()
+                            .eq(StringUtils.isNotBlank(parentMenu.getMenuName()), SysMenu::getMenuName, parentMenu.getMenuName())
+                            .eq(StringUtils.isNotBlank(parentMenu.getMenuCode()), SysMenu::getMenuCode, parentMenu.getMenuCode())
+                            .eq(StringUtils.isNotBlank(parentMenu.getPath()), SysMenu::getPath, parentMenu.getPath())
+                            .eq(StringUtils.isNotBlank(parentMenu.getComponent()), SysMenu::getComponent, parentMenu.getComponent())
+                            .eq(StringUtils.isNotBlank(parentMenu.getMenuType()), SysMenu::getMenuType, parentMenu.getMenuType())
+                            .eq(StringUtils.isNotBlank(parentMenu.getIcon()), SysMenu::getIcon, parentMenu.getIcon())
+                            .eq(StringUtils.isNotBlank(parentMenu.getPerms()), SysMenu::getPerms, parentMenu.getPerms())
+                            .eq(StringUtils.isNotBlank(parentMenu.getIsFrame()), SysMenu::getIsFrame, parentMenu.getIsFrame())
+                            .eq(StringUtils.isNotBlank(parentMenu.getVisible()), SysMenu::getVisible, parentMenu.getVisible())
+                            .eq(StringUtils.isNotBlank(parentMenu.getStatus()), SysMenu::getStatus, parentMenu.getStatus()),
+                    SysMenu.class);
+            if (Objects.isNull(dbCurrentParentMenu)) {
+                parentMenu.setMenuId(null);
+                baseMapper.insert(parentMenu);
+            }
+            Long currentParentId = (Objects.isNull(dbCurrentParentMenu)) ? parentMenu.getMenuId() : dbCurrentParentMenu.getParentId();
+            childMenuList.forEach(childMenu -> {
+                childMenu.setMenuId(null);
+                childMenu.setParentId(currentParentId);
+            });
+            baseMapper.insertBatch(childMenuList);
+        });
+        return true;
     }
 
     /**

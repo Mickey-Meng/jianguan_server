@@ -3,6 +3,21 @@
 <mapper namespace="com.ruoyi.web.controller.jianguan.other.zlsk.strestservice.userauth.mapper.GroupsMapper">
 
     <select id="select" resultType="Map" parameterType="Map">
+        SELECT sd.dept_id as id ,sd.dept_name as name,sd.dept_code as code ,sd.parent_id as PARENTID ,sd.dept_level as grouplevel,
+        sd.create_time as sttime,sd.order_num as STORDER
+        FROM SYS_DEPT sd where sd.del_flag=0 and sd.`status`=0
+        <if test="id != null and id != ''">and sd.dept_id = #{id}</if>
+        <if test="name != null and name != ''">and dept_name = #{name}</if>
+--         <if test="type != null and type != ''">and TYPE = #{type}</if>
+        <if test="code != null and code != ''">and dept_code like '${code}-%' OR CODE = #{code}</if>
+        <if test="parentid != null and parentid != ''">and parent_id = #{parentid}</if>
+--         <if test="visible != null and visible != ''">and VISIBLE = #{visible}</if>
+        <if test="grouplevel != null and grouplevel != ''">and dept_level = #{grouplevel}</if>
+        order by STORDER;
+    </select>
+<!--
+
+    <select id="select" resultType="Map" parameterType="Map">
         select * from ss_f_groups where STSTATE &lt;> -1
         <if test="id != null and id != ''">and ID = #{id}</if>
         <if test="name != null and name != ''">and NAME = #{name}</if>
@@ -13,12 +28,21 @@
         <if test="grouplevel != null and grouplevel != ''">and GROUPLEVEL = #{grouplevel}</if>
         order by STORDER;
     </select>
+-->
+
+    <select id="getGroupCode" parameterType="Map" resultType="Map">
+        select dept_code from sys_dept where 1 = 1
+        <if test="id != null and id != ''">and dept_id = #{id}</if>
+        <if test="parentid != null and parentid != ''">and parent_id = #{parentid}</if>
+    </select>
+<!--
 
     <select id="getGroupCode" parameterType="Map" resultType="Map">
         select CODE from ss_f_groups where 1 = 1
         <if test="id != null and id != ''">and ID = #{id}</if>
         <if test="parentid != null and parentid != ''">and PARENTID = #{parentid}</if>
     </select>
+-->
 
     <insert id="insert" parameterType="Map">
         insert into ss_f_groups

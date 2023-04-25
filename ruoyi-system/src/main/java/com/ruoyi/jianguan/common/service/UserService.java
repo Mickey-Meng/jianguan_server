@@ -242,7 +242,8 @@ public class UserService {
 
     public ResponseBase userAddGroups(UserAddGroupsDTO addGroupsDTO) {
         //当该用户的roleid不是2-管理员,不允许添加
-        if (!LoginHelper.getLoginUser().getRolePermission().contains("admin")) {
+        //TODO #8 ,yangaogao 20230425 当前判断逻辑为判定拥有的角色中是否有admin，但实际上真正可以做添加工区的可能不止admin，还有其他角色。因此需要完善其他角色。。
+        if (!LoginHelper.getLoginUser().getRolePermission().contains("admin") && !LoginHelper.getLoginUser().getRolePermission().contains("gly") ) {
             return new ResponseBase(HttpStatus.HTTP_INTERNAL_ERROR, "用户添加组织机构失败,该用户没有权限配置组织机构!");
         }
         SsFUserGroup userGroup = new SsFUserGroup();

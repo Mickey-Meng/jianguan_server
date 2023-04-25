@@ -104,4 +104,8 @@
         where m.status = '0' and rm.role_id = #{roleId}
     </select>
 
+    <select id="selectOriginalMenuList" resultMap="SysMenuResult">
+        SELECT * FROM sys_menu_original ORDER BY menu_id
+    </select>
+
 </mapper>

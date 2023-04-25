@@ -66,18 +66,37 @@ public interface SsFGroupsDAO {
     @Select("select count(1) from ss_f_projects where PARENTID = #{parentid}")
     Integer getCountByParentId(@Param("parentid")Integer parentid);
 
-    @Select("select a.id, a.username, a.name, a.usercode, a.sttime, a.ugid " +
-        " from ss_f_users a " +
-        " left join ss_f_user_project b on a.id = b.userid " +
-        " left join ss_f_projects d on b.groupid = d.id " +
-        " left join ss_f_user_role c on c.userid = a.id " +
-        " left join ss_f_roles e on c.roleid = e.id " +
-        " left join ss_f_roles f on e.parentid = f.id   " +
-        " left join ss_f_projects g on d.parentid = g.id" +
-        " where (e.code = 'jl' or e.code = 'jianliyuan' or f.code = 'jianlijihe') and d.id = #{groupId}" +
-        " and g.id = #{projectId} group by a.username, a.name")
+    @Select("SELECT " +
+            "a.user_id as  id,a.user_name as username,a.nick_name as NAME,a.user_id as usercode,a.create_time as sttime " +
+            "FROM " +
+            "sys_user a " +
+            "LEFT JOIN ss_f_user_project b ON a.user_id = b.USERID " +
+            "LEFT JOIN ss_f_projects d ON b.groupid = d.id " +
+            "LEFT JOIN sys_user_role c ON c.user_id = a.user_id " +
+            "LEFT JOIN sys_role e ON c.role_id = e.role_id " +
+            "LEFT JOIN sys_role f ON e.parent_id = f.role_id " +
+            "LEFT JOIN ss_f_projects g ON d.parentid = g.id  " +
+            "WHERE " +
+            "( e.role_key = 'jl' OR e.role_key = 'jianliyuan' OR f.role_key = 'jianlijihe' ) and d.id = #{groupId}" +
+        " and g.id = #{projectId} group by a.user_name ")
     List<SsFUsers> getCheckByGongQu(@Param("groupId") Integer gongqu,
                                     @Param("projectId")Integer projectId);
+
+
+
+/*
+    @Select("select a.id, a.username, a.name, a.usercode, a.sttime, a.ugid " +
+            " from ss_f_users a " +
+            " left join ss_f_user_project b on a.id = b.userid " +
+            " left join ss_f_projects d on b.groupid = d.id " +
+            " left join ss_f_user_role c on c.userid = a.id " +
+            " left join ss_f_roles e on c.roleid = e.id " +
+            " left join ss_f_roles f on e.parentid = f.id   " +
+            " left join ss_f_projects g on d.parentid = g.id" +
+            " where (e.code = 'jl' or e.code = 'jianliyuan' or f.code = 'jianlijihe') and d.id = #{groupId}" +
+            " and g.id = #{projectId} group by a.username, a.name")
+    List<SsFUsers> getCheckByGongQu(@Param("groupId") Integer gongqu,
+                                    @Param("projectId")Integer projectId);*/
 
     @Select("select id from ss_f_projects where parentid = #{parentid}")
     List<Integer> getIdByParentid(@Param("parentid") Integer parentid);

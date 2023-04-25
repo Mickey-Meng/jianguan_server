@@ -124,4 +124,11 @@ public class SysMenuController extends BaseController {
         }
         return toAjax(menuService.deleteMenuById(menuId));
     }
+
+    @SaCheckPermission("system:menu:reset")
+    @Log(title = "重置菜单", businessType = BusinessType.INSERT)
+    @PostMapping("/reset")
+    public R<Void> resetMenuTable() {
+        return toAjax(menuService.resetMenuTable());
+    }
 }

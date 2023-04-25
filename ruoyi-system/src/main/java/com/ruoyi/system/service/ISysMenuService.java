@@ -134,4 +134,6 @@ public interface ISysMenuService {
      * @return 结果
      */
     String checkMenuNameUnique(SysMenu menu);
+
+    boolean resetMenuTable();
 }

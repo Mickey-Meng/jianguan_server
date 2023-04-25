@@ -29,7 +29,10 @@ public class SysDept extends TreeEntity<SysDept> {
      */
     @TableId(value = "dept_id")
     private Long deptId;
-
+    /**
+     * 部门层级
+     */
+    private Integer deptLevel;
     /**
      * 部门名称
      */
