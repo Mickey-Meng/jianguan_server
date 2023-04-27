@@ -41,6 +41,14 @@
             <artifactId>spring-web</artifactId>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-collections4 -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>4.1</version>
+        </dependency>
+
+
         <!--加密-->
         <dependency>
             <groupId>org.springframework.security</groupId>
@@ -217,6 +225,12 @@
             <groupId>cn.jimmyshi</groupId>
             <artifactId>bean-query</artifactId>
             <version>${beanquery.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>commons-collections4</artifactId>
+                    <groupId>org.apache.commons</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/cn.hutool/hutool-all -->

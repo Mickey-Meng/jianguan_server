@@ -90,8 +90,16 @@ public interface ProjectsDAO {
     @Select("select * from ss_f_projects where ststate = 1 and GROUPLEVEL = 5")
     List<SsFProjects> getAllSingleProjects();
 
+    @Select("select dept_id from sys_project_dept where project_id = #{id}")
+    List<Integer>  getGroupIdsById(@Param("id")Integer id);
+
+
+    /*
+     yangaogao #23 20230426
     @Select("select groupid from ss_f_projects where ststate = 1 and id = #{id}")
     String getGroupIdsById(@Param("id")Integer id);
+    */
+
 
     List<SsFGroups> getGroupInfosByIds(@Param("list") List<Integer> ids);
 

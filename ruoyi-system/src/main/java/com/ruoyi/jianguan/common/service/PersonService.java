@@ -220,14 +220,14 @@ public class PersonService {
             return new ResponseBase(200, "当前角色id无效!");
         }
         //获取该项目id下的所有部门id
-        String groups = projectsDAO.getGroupIdsById(projectId);
+        List groups = projectsDAO.getGroupIdsById(projectId);
         List<SsFUsers> users = Lists.newArrayList();
 
         if (groups != null || !groups.equals("")) {
-            List<Integer> groupIds = Arrays.stream(groups.split(","))
+           /* List<Integer> groupIds = Arrays.stream(groups.split(","))
                     .map(Integer::parseInt)
-                    .collect(Collectors.toList());
-            users = personDAO.getByRoleId(roleid, groupIds);
+                    .collect(Collectors.toList());*/
+            users = personDAO.getByRoleId(roleid, groups);
         }
 
 

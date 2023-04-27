@@ -28,10 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.ruoyi.common.constant.Constant.zjYcdataMap;
@@ -59,9 +56,10 @@ public class ProgressService {
     private ProjectsDAO projectsDAO;
 
     public ResponseBase uploadProgress(ProgressData progressData) {
-        Integer role = LoginHelper.getLoginUser().getRoleId().intValue();
+//       Integer role = LoginHelper.getLoginUser().getRoleId().intValue();
+        Set<String> roleKey = LoginHelper.getLoginUser().getRolePermission();
         //当用户所属权限不为管理员时，不准传入实际开始时间和实际结束时间
-        if (role != 2){
+        if (!roleKey.contains("gly") && !roleKey.contains("admin")){
             if (progressData.getActulsttime() != null || progressData.getActulendtime() != null){
                 return new ResponseBase(500, "计划填报失败！",
                         "该用户权限不够，不允许输入实际开始时间和实际结束时间！");

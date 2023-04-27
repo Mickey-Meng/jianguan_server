@@ -93,14 +93,14 @@ public interface ZjConponentProducetimeDAO {
     @Select("select * from zj_conponent_producetime where conponenttypename is null")
     List<ZjConponentProducetime> getAllsByConponentTypeName();
 
-    @Select("\n" +
-            "select c.* from zj_f_groups_projects a \n" +
-            "left join \n" +
-            "ss_f_projects b\n" +
-            "on a.groupid = b.id\n" +
-            "left join ss_f_projects c\n" +
-            "on c.id=b.parentid\n" +
-            "where\n" +
+    @Select(" " +
+            "select c.* from zj_f_groups_projects a  " +
+            "left join  " +
+            "ss_f_projects b " +
+            "on a.groupid = b.id " +
+            "left join ss_f_projects c " +
+            "on c.id=b.parentid " +
+            "where " +
             "a.projectid = #{projectcode}")
     SsFGroups getByGroup(@Param("projectcode") String projectcode);
 

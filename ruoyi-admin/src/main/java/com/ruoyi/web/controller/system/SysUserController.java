@@ -135,6 +135,7 @@ public class SysUserController extends BaseController {
             ajax.put("user", sysUser);
             ajax.put("postIds", postService.selectPostListByUserId(userId));
             ajax.put("roleIds", StreamUtils.toList(sysUser.getRoles(), SysRole::getRoleId));
+            ajax.put("roleNames", StreamUtils.toList(sysUser.getRoles(), SysRole::getRoleName));
         }
         return R.ok(ajax);
     }

@@ -33,13 +33,9 @@ public interface SsFUserGroupDAO {
 
     Integer deleteByUserIds(@Param("list") List<Integer> list);
 
-    @Select("select su.dept_id from sys_user su where su.user_id = #{id} and su.`status` = 1")
-    List<Integer> getGroupsByUserId(@Param("id") Integer id);
 
-/*
     @Select("select groupid from ss_f_user_project where userid = #{id} and ststate = 1")
     List<Integer> getGroupsByUserId(@Param("id") Integer id);
-    */
     @Select("select * from ss_f_user_project where groupid = #{groupid}")
     List<SsFUserGroup> getAllByGroupId(@Param("groupid")Integer groupid);
 

@@ -107,4 +107,9 @@ public class SysMenu extends TreeEntity<SysMenu> {
      */
     private String remark;
 
+    /**
+     * 资源类型,0-运维;1-Web菜单;2-App菜单
+     */
+    private String sourceType;
+
 }

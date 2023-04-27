@@ -35,10 +35,10 @@
 
     <select id="getPageInfo" parameterType="com.ruoyi.jianguan.business.contract.domain.dto.LaborContractPageDTO" resultType="com.ruoyi.jianguan.business.contract.domain.vo.LaborContractPageVo">
         select a.*,p.NAME as buildSectionName
-        ,u.NAME as createUserName
+        ,u.nick_name as createUserName
         from zz_labor_contract a
         left join ss_f_projects p on a.build_section = p.id and p.GROUPLEVEL = 3
-        left join ss_f_users u on a.create_user_id = u.ID
+        left join sys_user u ON a.create_user_id = u.user_id
         where a.project_id = #{pageDto.projectId} and a.build_section = #{pageDto.buildSection}
         <if test="pageDto.buildSectionName != null and pageDto.buildSectionName != ''">
             and p.NAME like concat('%',#{pageDto.buildSectionName},'%')

@@ -221,15 +221,34 @@
   </update>
 
   <select id="getByRoleId" resultType="com.ruoyi.common.core.domain.entity.SsFUsers">
+    SELECT
+    su.user_id as  id,
+    su.user_name as username,
+    su.nick_name as NAME,
+    su.user_id as usercode,
+    su.create_time as sttime,
+    su.`status` as ststate
+    FROM
+    sys_user su
+    LEFT JOIN sys_user_role  sur ON su.user_id = sur.user_id
+    WHERE
+    su.del_flag = 0 and su.`status`= 0 and
+    sur.role_id =  #{roleid} and su.dept_id  in
+    <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+        #{item}
+    </foreach>
+  </select>
+<!--
+  <select id="getByRoleId" resultType="com.ruoyi.common.core.domain.entity.SsFUsers">
     select
-        a.id, a.username, a.name,a.usercode,
-        a.sttime, a.ststate, a.storder, a.ugid
+    a.id, a.username, a.name,a.usercode,
+    a.sttime, a.ststate, a.storder, a.ugid
     from ss_f_users a
     left join ss_f_user_role b on a.id = b.userid
     left join ss_f_user_group c on b.userid = c.userid
     where b.roleid = #{roleid} and c.groupid in
     <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
-        #{item}
+      #{item}
     </foreach>
-  </select>
+  </select>-->
 </mapper>

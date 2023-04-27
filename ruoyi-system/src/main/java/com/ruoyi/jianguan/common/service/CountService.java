@@ -874,8 +874,10 @@ public class CountService {
             newCheckData.setProjectid(null);
         }
         newCheckData.setProjectCodes(proChildCode);
-
-        List<ZjConponentProducetime> list = zjConponentProducetimeDao.getbyTypeData(newCheckData);
+        List<ZjConponentProducetime> list = null;
+        if (!proChildCode.isEmpty()) {
+            list = zjConponentProducetimeDao.getbyTypeData(newCheckData);
+        }
         return new ResponseBase(200, "", list);
     }
 
@@ -900,12 +902,15 @@ public class CountService {
         list.forEach(censusData -> {
             tempMap.put(censusData.getSort(), censusData);
         });
-        for (int i = 6; i > 1; i--) {
-            Integer number = tempMap.get(i).getNumber();
-            Integer next = tempMap.get(i - 1).getNumber();
-            tempMap.get(i - 1).setNumber(number + next);
-            //设置前面一个
-        }
+        // todo 看不懂为什么要这样 目前这样导致 池州职业技术学院实验实训综合提升项目（二期）F+EPC 进度管理->进度总览内的统计图和表格图数据不对,
+        // todo 目前发现的 区别在于急救中新存在一个工区,无子单位工程 二期存在多个工区,且存在子单位工程
+
+//        for (int i = 6; i > 1; i--) {
+//            Integer number = tempMap.get(i).getNumber();
+//            Integer next = tempMap.get(i - 1).getNumber();
+//            tempMap.get(i - 1).setNumber(number + next);
+//            //设置前面一个
+//        }
         List<CensusData> listTar = Lists.newArrayList();
         tempMap.forEach((key, censuse) -> {
             listTar.add(censuse);
@@ -914,6 +919,7 @@ public class CountService {
 
         return map;
     }
+
 
 
     public ResponseBase getTodayWeather() {

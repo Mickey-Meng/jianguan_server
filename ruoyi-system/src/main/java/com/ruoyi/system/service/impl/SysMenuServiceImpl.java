@@ -63,6 +63,7 @@ public class SysMenuServiceImpl implements ISysMenuService {
         if (LoginHelper.isAdmin(userId)) {
             menuList = baseMapper.selectList(new LambdaQueryWrapper<SysMenu>()
                 .like(StringUtils.isNotBlank(menu.getMenuName()), SysMenu::getMenuName, menu.getMenuName())
+                .eq(StringUtils.isNotBlank(menu.getSourceType()), SysMenu::getSourceType, menu.getSourceType())
                 .eq(StringUtils.isNotBlank(menu.getVisible()), SysMenu::getVisible, menu.getVisible())
                 .eq(StringUtils.isNotBlank(menu.getStatus()), SysMenu::getStatus, menu.getStatus())
                 .orderByAsc(SysMenu::getParentId)
@@ -71,6 +72,7 @@ public class SysMenuServiceImpl implements ISysMenuService {
             QueryWrapper<SysMenu> wrapper = Wrappers.query();
             wrapper.eq("sur.user_id", userId)
                 .like(StringUtils.isNotBlank(menu.getMenuName()), "m.menu_name", menu.getMenuName())
+                    .eq(StringUtils.isNotBlank(menu.getSourceType()), "m.source_type", menu.getSourceType())
                 .eq(StringUtils.isNotBlank(menu.getVisible()), "m.visible", menu.getVisible())
                 .eq(StringUtils.isNotBlank(menu.getStatus()), "m.status", menu.getStatus())
                 .orderByAsc("m.parent_id")

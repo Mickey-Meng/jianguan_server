@@ -127,7 +127,7 @@ public class ProduceController {
     public ResponseBase getAllcheckData(@RequestParam(value ="type",required = false) Integer type,
                                         @RequestParam(value = "projectId", required = false) Integer projectId){
         if (projectId == null || projectId.equals("")){
-            projectId = 3;
+            return new ResponseBase(200, "请输入有效的项目id!");
         }
         // 工序id  ， 是哪个记录 自检 ，专检  还是 报告 ，
         return produceService.getAllcheckData(type, projectId);

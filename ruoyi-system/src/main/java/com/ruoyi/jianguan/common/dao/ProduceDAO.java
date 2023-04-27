@@ -39,6 +39,6 @@ public interface ProduceDAO {
     @Select("select * from produce where type = #{type}")
     Produce getByType(String conponenttype);
 
-    @Select("select id from produce where type = #{type} group by id desc")
+    @Select("select id from produce where type = #{type} order by id desc")
     List<Integer> getIdByTypeDesc(@Param("type") String type);
 }

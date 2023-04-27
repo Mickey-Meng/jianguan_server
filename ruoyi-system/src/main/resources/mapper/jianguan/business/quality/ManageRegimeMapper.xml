@@ -29,9 +29,9 @@
 
 
     <select id="getPageInfo" resultType="com.ruoyi.jianguan.business.quality.domain.vo.ManageRegimePageVo" parameterType="com.ruoyi.common.core.domain.dto.PageDTO">
-        select a.*,p.name as projectName,u.NAME as createUserName from zz_manage_regime a
+        select a.*,p.name as projectName,u.nick_name as createUserName from zz_manage_regime a
         left join ss_f_projects p on p.ID = a.project_id and p.GROUPLEVEL = 2
-        left join ss_f_users u on a.create_user_id = u.ID
+        left join sys_user u on a.create_user_id = u.user_id
         where a.project_id = #{pageDto.projectId} and a.build_section = #{pageDto.buildSection}
         <if test="pageDto.draftFlag != null">
             and a.draft_flag = #{pageDto.draftFlag}

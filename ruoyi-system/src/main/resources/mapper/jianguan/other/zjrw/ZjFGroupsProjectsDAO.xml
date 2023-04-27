@@ -110,18 +110,18 @@
 
   <select id="getByGonquId" parameterType="integer" resultType="string">
     select c.projectid from zj_f_groups_projects c
-    right join
-    (
-        select
-            b.id,b.name
-        from ss_f_groups a left join ss_f_groups b
-        on b.parentid = a.id
-        where a.id = #{gongquid}
+                              right join
+                            (
+                              select
+                                b.dept_id as id ,b.dept_name as name
+                              from sys_dept a left join sys_dept b
+                                                        on b.parent_id = a.dept_id
+                              where a.dept_id = #{gongquid}
 
-    ) d
-     on c.groupid = d.id
-     and PROJECTID is not null
-     and PROJECTTYPE is not null
+                            ) d
+                            on c.groupid = d.id
+                              and PROJECTID is not null
+                              and PROJECTTYPE is not null;
   </select>
 
 </mapper>

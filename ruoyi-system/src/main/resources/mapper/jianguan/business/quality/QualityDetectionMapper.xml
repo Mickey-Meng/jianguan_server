@@ -24,10 +24,10 @@
 
 
     <select id="getPageInfo" parameterType="com.ruoyi.jianguan.business.quality.domain.dto.QualityDetectionPageDTO" resultType="com.ruoyi.jianguan.business.quality.domain.vo.QualityDetectionPageVo">
-        select p.NAME as buildSectionName,a.*,u.NAME as createUserName
+        select p.NAME as buildSectionName,a.*,u.nick_name as createUserName
             from zz_quality_detection a
             left join ss_f_projects p on a.build_section = p.id and p.GROUPLEVEL = 3
-        left join ss_f_users u on a.create_user_id = u.ID
+        left join sys_user u on a.create_user_id = u.user_id
          where a.project_id = #{pageDto.projectId} and a.build_section = #{pageDto.buildSection}
         <if test="pageDto.buildSection != null">
            and build_section = #{pageDto.buildSection}

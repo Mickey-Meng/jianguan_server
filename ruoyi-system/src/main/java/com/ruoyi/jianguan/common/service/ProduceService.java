@@ -331,11 +331,14 @@ public class ProduceService {
             produceData.setProduceid(list.getId());
             Produceandrecode produceandrecode = produceandrecodeDAO.getByIdAndProduceId(conponentId,list.getId());
             if(!ObjectUtils.isEmpty(produceandrecode)){
-//                produceData.setFinish(produceandrecode.getUpdatetime());
+                produceData.setFinish(produceandrecode.getUpdatetime());
                 //2022.3.17  这里finish 修改为sttime, 工序完成时间使用
-                produceData.setFinish(produceandrecode.getStime());
+//                produceData.setFinish(produceandrecode.getStime());
                 produceData.setRecordid(produceandrecode.getRecodeid());
-                produceData.setStatus(produceandrecode.getCheckresult());
+                //  #106  modify yangaogao 20230403 增加Status的返回，按照数据库实例对象。 S
+                // 之前将 checkresult 转为status返回了，不知道用意何在。而且checkresult的值，和数据库中定义的字典不匹配，3不知道是什么。因此统一改为用status，让前台也修改。
+                //可能因为ProduceData 中status的定义是int, new对象后，默认是0，而和数据库中status=0其实是有业务含义的，冲突了。因此新加了checkresult字段，用于代替“提交未审核”状态。
+                produceData.setStatus(produceandrecode.getStatus());
             }
             res.add(produceData);
 
@@ -421,7 +424,8 @@ public class ProduceService {
         recodeDAO.insert(recode);
 
         Produceandrecode produceandrecode = new Produceandrecode();
-        produceandrecode.setUpdatetime(new Date());
+        //审核通过后才设置完成时间
+//        produceandrecode.setUpdatetime(new Date());
         produceandrecode.setConponentcode(zjConponentProducetime1.getConponentcode());
         //2022.3.17  sttime字段当作   该条提交工序完成时间
         produceandrecode.setStime(recodeData.getUploadtime());
@@ -619,7 +623,7 @@ public class ProduceService {
     public ResponseBase check(RecondSubmitData recondSubmitData) {
 
         Integer recondid = recondSubmitData.getRecondid();
-        Integer produceId = recondSubmitData.getProduceid();
+        Integer produceId = recondSubmitData.getProduceId();
         Integer result = recondSubmitData.getResult();
         //先获取对应的checkid
         Integer checkId = produceandrecodeDAO.getCheckuserByRecodeid(recondid, produceId);
@@ -643,7 +647,7 @@ public class ProduceService {
                 //当工序不止一步时，通过工序查询
                 List<Integer> produces = produceDAO.getIdByTypeDesc(conponenttype);
                 if (produceId != null && !produceId.equals("")){
-                    if (produces.get(0) == produceId){
+                    if (produces.get(0).equals(produceId)){
                         String conponentcode = produceandrecodeDAO.getConpontentCodeByRecodeId(recondid, produceId);
                         zjConponentProducetimeDAO.updateFinishTime(conponentcode, new Date());
                     }
@@ -1022,7 +1026,9 @@ public class ProduceService {
         //先判断操作的用户groupid是否为顶级或者总部(1,2),否则没有该权限
         Integer userId = LoginHelper.getUserId().intValue();
         SsFUserRole userRole = userRoleDAO.getByUserid(userId);
-        if (userRole.getRoleid() != 1 && userRole.getRoleid() !=2){
+        Set<String> roleKey = LoginHelper.getLoginUser().getRolePermission();
+        //当用户所属权限不为管理员时，不准传入实际开始时间和实际结束时间
+        if (!roleKey.contains("gly") && !roleKey.contains("admin")){
             return new ResponseBase(500, "该操作用户没有删除权限", null);
         }
         //删除之前须到数据库查询需要删除的数据是否存在

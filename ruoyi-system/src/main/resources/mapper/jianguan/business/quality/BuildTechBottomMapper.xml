@@ -33,15 +33,15 @@
 
     <select id="getPageInfo" parameterType="com.ruoyi.jianguan.business.quality.domain.dto.BuildTechBottomPageDTO"
             resultType="com.ruoyi.jianguan.business.quality.domain.vo.BuildTechBottomPageVo">
-        select a.*,s.NAME as buildSectionName,u.NAME as createName,u.NAME as createUserName from zz_build_tech_bottom a
+        select a.*,s.NAME as buildSectionName,u.nick_name as createName,u.nick_name as createUserName from zz_build_tech_bottom a
         left join ss_f_projects s on a.build_section = s.ID and s.GROUPLEVEL = 3
-        left join ss_f_users u on a.create_user_id = u.ID
+        left join sys_user u on a.create_user_id = u.user_id
         where a.project_id = #{pageDto.projectId} and a.build_section = #{pageDto.buildSection}
         <if test="pageDto.buildSectionName != null and pageDto.buildSectionName != ''">
             and s.NAME like concat('%',#{pageDto.buildSectionName},'%')
         </if>
         <if test="pageDto.createName != null and pageDto.createName != ''">
-            and u.`name` like concat('%',#{pageDto.createName},'%')
+            and u.`nick_name` like concat('%',#{pageDto.createName},'%')
         </if>
         <if test="pageDto.startCheckDate != null and pageDto.startCheckDate != ''">
             and a.check_date >= #{pageDto.startCheckDate}

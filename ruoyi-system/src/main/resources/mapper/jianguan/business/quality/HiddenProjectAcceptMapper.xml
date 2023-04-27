@@ -39,11 +39,11 @@
     <!-- 分页查询隐蔽工程验收记录数据 -->
     <select id="getPageInfo" parameterType="com.ruoyi.jianguan.business.quality.domain.dto.HiddenProjectAcceptPageDTO" resultType="com.ruoyi.jianguan.business.quality.domain.vo.HiddenProjectAcceptPageVo">
         select p.name as projectName,pb.`NAME` as buildSectionName,
-             a.*,pb.CONTRACTNUM as contractCode,u.NAME as createUserName
+             a.*,pb.CONTRACTNUM as contractCode,u.nick_name as createUserName
           from zz_hidden_project_accept a
         left join ss_f_projects p on p.ID = a.project_id and p.GROUPLEVEL = 2
         left join ss_f_projects pb on pb.id = a.build_section and pb.GROUPLEVEL = 3
-        left join ss_f_users u on a.create_user_id = u.ID
+        left join sys_user u on a.create_user_id = u.user_id
          where a.project_id = #{pageDto.projectId} and a.build_section = #{pageDto.buildSection}
         <if test="pageDto.projectCode != null and pageDto.projectCode != ''">
             and a.project_code like concat('%',#{pageDto.projectCode},'%')

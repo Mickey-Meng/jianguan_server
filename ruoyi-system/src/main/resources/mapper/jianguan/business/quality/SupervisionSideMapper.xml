@@ -40,10 +40,10 @@
 
     <select id="getPageInfo" parameterType="com.ruoyi.jianguan.business.quality.domain.dto.SupervisionSidePageDTO"
             resultType="com.ruoyi.jianguan.business.quality.domain.vo.SupervisionSidePageVo">
-        select a.*,p.name as projectName,u.name as createName,u.NAME as createUserName from
+        select a.*,p.name as projectName,u.nick_name as createName,u.nick_name as createUserName from
            zz_supervision_side a
         left join ss_f_projects p on p.ID = a.project_id and p.GROUPLEVEL = 2
-        left join ss_f_users u on u.id = a.create_user_id
+        left join sys_user u on a.create_user_id = u.user_id
         where a.project_id = #{pageDto.projectId}  and a.build_section = #{pageDto.buildSection}
         <if test="pageDto.sideDateStart != null and pageDto.sideDateStart != ''">
             and a.side_date >= #{pageDto.sideDateStart}
@@ -52,7 +52,7 @@
             and a.side_date &lt;= #{pageDto.sideDateEnd}
         </if>
         <if test="pageDto.createName != null and pageDto.createName != ''">
-            and u.name like concat('%',#{pageDto.createName},'%')
+            and u.nick_name like concat('%',#{pageDto.createName},'%')
         </if>
         <if test="pageDto.projectPartDesc != null and pageDto.projectPartDesc != ''">
             and a.project_part_desc like concat('%',#{pageDto.projectPartDesc},'%')

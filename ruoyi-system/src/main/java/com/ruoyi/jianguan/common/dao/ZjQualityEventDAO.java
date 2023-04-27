@@ -69,11 +69,16 @@ public interface ZjQualityEventDAO {
 
     List<ZjQualityEvent> getByGQ(@Param("gqid") Integer gqid, @Param("sttime") Date sttime, @Param("endtime") Date endtime);
 
-    @Select("select a.id from ss_f_roles a \n" +
-            "left join ss_f_user_role b \n" +
-            "on a.id = b.ROLEID\n" +
-            "where b.userid = #{userid}")
+    @Select("select role_id  from sys_user_role where user_id = #{userid}")
     Integer getRole(@Param("userid") Integer userid);
+
+/*
+
+    @Select("select a.id from ss_f_roles a   " +
+            "left join ss_f_user_role b   " +
+            "on a.id = b.ROLEID  " +
+            "where b.userid = #{userid}")
+    Integer getRole(@Param("userid") Integer userid);*/
 
     @Select("select * from zj_quality_event where projectid = #{projectdoce}")
     List<ZjQualityEvent> getAllStatusQualityByProjectcode(@Param("projectdoce") Integer projectdoce);

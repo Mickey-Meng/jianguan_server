@@ -96,7 +96,7 @@ public interface SsFUserRoleDAO {
             " where a.code = 'shigongjihe'")
     List<Integer> getShiGongRoleIds();*/
 
-    @Select("select id from ry_ss_f_roles where code = 'sg' or 'sgy'")
+    @Select(" select role_id as id from sys_role where role_key in('sg','sgy')  ")
     List<Integer> getOldShiGongRoleIds();
 
  /*

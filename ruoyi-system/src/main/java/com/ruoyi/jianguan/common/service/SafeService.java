@@ -202,6 +202,14 @@ public class SafeService {
             return new ResponseBase(300,"暂无数据", map);
         }
 
+        // 填充项目名称h和工区名称
+        List<Integer> projectIds = zjSafeEventList.stream().map(ZjSafeEvent::getProjectId).collect(Collectors.toList());
+        List<Integer> gongquIds = zjSafeEventList.stream().map(ZjSafeEvent::getGongquid).collect(Collectors.toList());
+        projectIds.addAll(gongquIds);
+        List<SsFProjects> result = ssFGroupsDAO.getProjectByIds(projectIds);
+        Map<Integer, String> id2name = result.stream().collect(Collectors.toMap(SsFProjects::getId, SsFProjects::getName));
+
+
         //增加超期时间和是否超期两字段
         Calendar ca = Calendar.getInstance();
         Date systemtime = new Date();
@@ -220,6 +228,9 @@ public class SafeService {
             eventInfo.setZjSafeEvent(zjSafeEvent);
             eventInfo.setOverdueTime(addTime);
             eventInfo.setIsOverdue(isOverdue);
+            eventInfo.setGongquname(id2name.get(zjSafeEvent.getGongquid()));
+            eventInfo.setProjectname(id2name.get(zjSafeEvent.getProjectId()));
+
 
             boolean flag = addTime.before(systemtime);
             if (flag){
@@ -967,7 +978,12 @@ public class SafeService {
         //先判断操作的用户groupid是否为顶级或者总部(1,2),否则没有该权限
         Integer userId = LoginHelper.getUserId().intValue();
         SsFUserRole userRole = userRoleDAO.getByUserid(userId);
-        if (userRole.getRoleid() != 1 && userRole.getRoleid() !=2){
+        /*if (userRole.getRoleid() != 1 && userRole.getRoleid() !=2){
+            return new ResponseBase(500, "该操作用户没有删除权限", null);
+        }*/
+        Set<String> roleKey = LoginHelper.getLoginUser().getRolePermission();
+
+        if (!roleKey.contains("gly") && !roleKey.contains("admin")){
             return new ResponseBase(500, "该操作用户没有删除权限", null);
         }
 

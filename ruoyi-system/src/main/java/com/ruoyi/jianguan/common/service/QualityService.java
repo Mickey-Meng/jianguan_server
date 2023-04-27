@@ -979,7 +979,10 @@ public class QualityService {
         //先判断操作的用户groupid是否为顶级或者总部(1,2),否则没有该权限
         Integer userId = LoginHelper.getUserId().intValue();
         SsFUserRole userRole = userRoleDAO.getByUserid(userId);
-        if (userRole.getRoleid() != 1 && userRole.getRoleid() !=2){
+        // yangaogao 20230427 获取当前登录用户的权限改为如下方法
+        Set<String> roleKey = LoginHelper.getLoginUser().getRolePermission();
+        //当用户所属权限不为管理员时，不准传入实际开始时间和实际结束时间
+        if (!roleKey.contains("gly") && !roleKey.contains("admin")){
             return new ResponseBase(500, "该操作用户没有删除权限", null);
         }
 

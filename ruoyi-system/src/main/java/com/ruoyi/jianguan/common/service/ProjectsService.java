@@ -252,16 +252,16 @@ public class ProjectsService {
         if (count <= 0){
             return new ResponseBase(500, "没有查询到数据!");
         }
-        String groupids = projectsDAO.getGroupIdsById(projectId);
+        List groupids = projectsDAO.getGroupIdsById(projectId);
         List<SsFGroups> groupInfos = Lists.newArrayList();
         List<SsFUsers> userInfos = Lists.newArrayList();
         if (!groupids.equals("") || groupids != null){
             //把关联的单位字符串转成integer的集合  例:  "1,2,3,4"
-            List<Integer> groupIds = Arrays.stream(groupids.split(","))
+           /* List<Integer> groupIds = Arrays.stream(groupids.split(","))
                             .map(Integer::parseInt)
-                            .collect(Collectors.toList());
-            groupInfos = projectsDAO.getGroupInfosByIds(groupIds);
-            userInfos = projectsDAO.getUserInfosByGroupsIds(groupIds);
+                            .collect(Collectors.toList());*/
+            groupInfos = projectsDAO.getGroupInfosByIds(groupids);
+            userInfos = projectsDAO.getUserInfosByGroupsIds(groupids);
         }
 
         maps.put("groupInfos", groupInfos);
@@ -516,12 +516,12 @@ public class ProjectsService {
             return new ResponseBase(200, "该项目id无数据!");
         }
         //获取该项目id下的所有部门id
-        String groups = projectsDAO.getGroupIdsById(projectId);
+        List groupIds = projectsDAO.getGroupIdsById(projectId);
         List<SsFRoles> roles = Lists.newArrayList();
-        if (groups != null || !groups.equals("")){
-            List<Integer> groupIds = Arrays.stream(groups.split(","))
+        if (groupIds != null || !groupIds.equals("")){
+            /*List<Integer> groupIds = Arrays.stream(groups.split(","))
                     .map(Integer::parseInt)
-                    .collect(Collectors.toList());
+                    .collect(Collectors.toList());*/
             roles = ssFUserRoleDAO.getRolesByGroupIds(groupIds);
         }
 

@@ -198,7 +198,7 @@
     update
         produceandrecode
     set
-        checkresult = #{result}, status = #{result}, copyUsers = #{copyUsers}
+        checkresult = #{result}, status = #{result},updatetime= now(), copyUsers = #{copyUsers}
     where  recodeid =#{recondid}
     <if test="produceid != null">
       and produceid = #{produceid}
