@@ -141,5 +141,4 @@ public class JgProjectInfoBo extends BaseEntity {
      */
     private String remark;
 
-
 }

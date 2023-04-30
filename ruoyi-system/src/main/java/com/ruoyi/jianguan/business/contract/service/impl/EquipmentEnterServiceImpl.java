@@ -92,7 +92,10 @@ public class EquipmentEnterServiceImpl extends ServiceImpl<EquipmentEnterMapper,
             }
             //新增设备信息
             if (Objects.nonNull(equipmentInfo) && equipmentInfo.size() > 0){
-                equipmentInfo.forEach(equipment -> equipment.setEnterId(longId));
+                equipmentInfo.forEach(equipment -> {
+                    equipment.setId(IdUtil.nextLongId());
+                    equipment.setEnterId(longId);
+                });
                 equipmentInfoService.saveBatch(equipmentInfo);
             }
         } else {

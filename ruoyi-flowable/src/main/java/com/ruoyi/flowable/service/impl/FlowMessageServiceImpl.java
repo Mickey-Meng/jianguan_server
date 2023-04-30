@@ -11,6 +11,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.ruoyi.common.core.domain.entity.SsFUsers;
+import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.core.domain.object.MyPageParam;
 import com.ruoyi.common.core.mapper.BaseDaoMapper;
 import com.ruoyi.common.core.sequence.wrapper.IdGeneratorWrapper;
@@ -79,12 +80,11 @@ public class FlowMessageServiceImpl extends BaseService<FlowMessage, Long> imple
     @Override
     public FlowMessage saveNew(FlowMessage flowMessage) {
         flowMessage.setMessageId(idGenerator.nextLongId());
-//        TokenData tokenData = TokenData.takeFromRequest();
-        SsFUsers ssFUsers = JwtUtil.getUserToken();
-        flowMessage.setCreateUserId(ssFUsers.getId().longValue());
-        flowMessage.setCreateUsername(ssFUsers.getName());
+        LoginUser loginUser = LoginHelper.getLoginUser();
+        flowMessage.setCreateUserId(loginUser.getUserId());
+        flowMessage.setCreateUsername(loginUser.getNickName());
         flowMessage.setCreateTime(new Date());
-        flowMessage.setUpdateUserId(ssFUsers.getId().longValue());
+        flowMessage.setUpdateUserId(loginUser.getUserId());
         flowMessage.setUpdateTime(flowMessage.getCreateTime());
         flowMessageMapper.insert(flowMessage);
         return flowMessage;

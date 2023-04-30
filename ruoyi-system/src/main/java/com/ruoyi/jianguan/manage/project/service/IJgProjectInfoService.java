@@ -1,6 +1,7 @@
 package com.ruoyi.jianguan.manage.project.service;
 
 import cn.hutool.core.lang.tree.Tree;
+import com.ruoyi.jianguan.manage.project.domain.bo.JgProjectDeptBo;
 import com.ruoyi.jianguan.manage.project.domain.bo.JgProjectInfoBo;
 import com.ruoyi.jianguan.manage.project.domain.vo.JgProjectInfoVo;
 import com.ruoyi.common.core.page.TableDataInfo;
@@ -53,4 +54,6 @@ public interface IJgProjectInfoService {
      * @return
      */
     List<Tree<Long>> getProjectTree(JgProjectInfoBo bo);
+
+    Boolean relatedDept(JgProjectDeptBo bo);
 }

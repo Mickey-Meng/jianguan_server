@@ -2,6 +2,7 @@ package com.ruoyi.jianguan.manage.project.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.util.ObjectUtil;
 import com.ruoyi.common.core.domain.entity.SysRole;
@@ -13,18 +14,20 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.ruoyi.common.utils.TreeBuildUtils;
 import com.ruoyi.jianguan.manage.map.domain.MapPlan;
+import com.ruoyi.jianguan.manage.map.domain.MapPlanServer;
+import com.ruoyi.jianguan.manage.project.domain.bo.JgProjectDeptBo;
 import com.ruoyi.jianguan.manage.project.domain.bo.JgProjectInfoBo;
+import com.ruoyi.jianguan.manage.project.domain.entity.JgProjectDept;
 import com.ruoyi.jianguan.manage.project.domain.entity.JgProjectInfo;
 import com.ruoyi.jianguan.manage.project.domain.vo.JgProjectInfoVo;
+import com.ruoyi.jianguan.manage.project.mapper.JgProjectDeptMapper;
 import com.ruoyi.jianguan.manage.project.mapper.JgProjectInfoMapper;
 import com.ruoyi.jianguan.manage.project.service.IJgProjectInfoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Collection;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 项目信息Service业务层处理
@@ -37,6 +40,7 @@ import java.util.Objects;
 public class JgProjectInfoServiceImpl implements IJgProjectInfoService {
 
     private final JgProjectInfoMapper baseMapper;
+    private final JgProjectDeptMapper projectDeptMapper;
 
     /**
      * 查询项目信息
@@ -159,5 +163,14 @@ public class JgProjectInfoServiceImpl implements IJgProjectInfoService {
                         .setParentId(jgProjectInfo.getParentId())
                         .setName(jgProjectInfo.getProjectName())
                         .setWeight(jgProjectInfo.getOrderNum()));
+    }
+
+    @Override
+    public Boolean relatedDept(JgProjectDeptBo bo) {
+        // 组装方案服务数据
+       List<JgProjectDept> projectDeptList = Arrays.stream(Convert.toStrArray(bo.getDeptIds())).map(deptId -> {
+            return new JgProjectDept(Long.valueOf(bo.getProjectId()), Long.valueOf(deptId));
+        }).collect(Collectors.toList());
+        return projectDeptMapper.insertBatch(projectDeptList);
     }
 }

@@ -7,6 +7,8 @@ import java.util.concurrent.TimeUnit;
 import cn.hutool.core.lang.tree.Tree;
 import com.ruoyi.common.core.domain.entity.SysDept;
 import com.ruoyi.jianguan.manage.map.domain.bo.MapPlanBo;
+import com.ruoyi.jianguan.manage.map.domain.bo.MapPlanServerBo;
+import com.ruoyi.jianguan.manage.project.domain.bo.JgProjectDeptBo;
 import com.ruoyi.jianguan.manage.project.domain.bo.JgProjectInfoBo;
 import com.ruoyi.jianguan.manage.project.domain.vo.JgProjectInfoVo;
 import com.ruoyi.jianguan.manage.project.service.IJgProjectInfoService;
@@ -132,4 +134,13 @@ public class JgProjectInfoController extends BaseController {
     public R<List<Tree<Long>>> getProjectTree(JgProjectInfoBo bo) {
         return R.ok(iJgProjectInfoService.getProjectTree(bo));
     }
+
+    @SaCheckPermission("jg:project:related")
+    @Log(title = "部门关联" , businessType = BusinessType.IMPORT)
+    @RepeatSubmit()
+    @PostMapping("/relatedDept")
+    public R<Void> relatedDept(@Validated(AddGroup.class) @RequestBody JgProjectDeptBo bo) {
+        return toAjax(iJgProjectInfoService.relatedDept(bo));
+    }
+
 }
