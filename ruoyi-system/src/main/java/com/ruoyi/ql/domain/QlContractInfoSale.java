@@ -91,5 +91,24 @@ public class QlContractInfoSale extends BaseEntity {
      * 部门ID
      */
     private Long deptId;
-
+    /**
+     * 供应商联系人
+     */
+    private String contactPerson;
+    /**
+     * 供应商联系方式
+     */
+    private String mobilePhone;
+    /**
+     * 采购人员
+     */
+    private String purchaser;
+    /**
+     * 开始时间
+     */
+    private Date startDate;
+    /**
+     * 结束时间
+     */
+    private Date endDate;
 }

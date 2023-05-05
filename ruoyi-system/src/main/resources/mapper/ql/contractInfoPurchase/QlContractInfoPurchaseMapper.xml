@@ -10,8 +10,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="contractName" column="contract_name"/>
         <result property="supplierName" column="supplier_name"/>
         <result property="supplierId" column="supplier_id"/>
+        <result property="contactPerson" column="contact_person"/>
+        <result property="mobilePhone" column="mobile_phone"/>
+        <result property="purchaser" column="purchaser"/>
         <result property="amount" column="amount"/>
         <result property="contactDate" column="contact_date"/>
+        <result property="startDate" column="start_date"/>
+        <result property="endDate" column="end_date"/>
         <result property="rate" column="rate"/>
         <result property="contractStatus" column="contract_status"/>
         <result property="fj" column="fj"/>

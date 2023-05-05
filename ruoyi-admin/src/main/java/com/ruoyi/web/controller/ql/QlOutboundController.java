@@ -5,8 +5,10 @@ import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 import lombok.RequiredArgsConstructor;
+
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.*;
+
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.annotation.Validated;
@@ -29,34 +31,45 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * 出库管理
  *
  * @author ruoyi
- * @date 2022-12-11
+ * @date 2023-05-05
  */
 @Validated
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/outbound/outbound")
+@RequestMapping("/ql/outbound")
 public class QlOutboundController extends BaseController {
 
     private final IQlOutboundService iQlOutboundService;
 
-    /**
-     * 查询出库管理列表
-     */
-    @SaCheckPermission("outbound:outbound:list")
-    @GetMapping("/list")
+/**
+ * 查询出库管理列表
+ */
+@SaCheckPermission("ql:outbound:list")
+@GetMapping("/list")
     public TableDataInfo<QlOutboundVo> list(QlOutboundBo bo, PageQuery pageQuery) {
         return iQlOutboundService.queryPageList(bo, pageQuery);
     }
 
     /**
+     * 分页查询出库管理列表
+     */
+    @SaCheckPermission("ql:outbound:list")
+    @GetMapping("/page")
+
+    public TableDataInfo<QlOutboundVo> page(QlOutboundBo bo, PageQuery pageQuery) {
+        return iQlOutboundService.queryPageList(bo, pageQuery);
+    }
+
+
+    /**
      * 导出出库管理列表
      */
-    @SaCheckPermission("outbound:outbound:export")
-    @Log(title = "出库管理", businessType = BusinessType.EXPORT)
+    @SaCheckPermission("ql:outbound:export")
+    @Log(title = "出库管理" , businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(QlOutboundBo bo, HttpServletResponse response) {
         List<QlOutboundVo> list = iQlOutboundService.queryList(bo);
-        ExcelUtil.exportExcel(list, "出库管理", QlOutboundVo.class, response);
+        ExcelUtil.exportExcel(list, "出库管理" , QlOutboundVo.class, response);
     }
 
     /**
@@ -64,7 +77,7 @@ public class QlOutboundController extends BaseController {
      *
      * @param id 主键
      */
-    @SaCheckPermission("outbound:outbound:query")
+    @SaCheckPermission("ql:outbound:query")
     @GetMapping("/{id}")
     public R<QlOutboundVo> getInfo(@NotNull(message = "主键不能为空")
                                      @PathVariable Long id) {
@@ -74,8 +87,8 @@ public class QlOutboundController extends BaseController {
     /**
      * 新增出库管理
      */
-    @SaCheckPermission("outbound:outbound:add")
-    @Log(title = "出库管理", businessType = BusinessType.INSERT)
+    @SaCheckPermission("ql:outbound:add")
+    @Log(title = "出库管理" , businessType = BusinessType.INSERT)
     @RepeatSubmit()
     @PostMapping()
     public R<Void> add(@Validated(AddGroup.class) @RequestBody QlOutboundBo bo) {
@@ -85,8 +98,8 @@ public class QlOutboundController extends BaseController {
     /**
      * 修改出库管理
      */
-    @SaCheckPermission("outbound:outbound:edit")
-    @Log(title = "出库管理", businessType = BusinessType.UPDATE)
+    @SaCheckPermission("ql:outbound:edit")
+    @Log(title = "出库管理" , businessType = BusinessType.UPDATE)
     @RepeatSubmit()
     @PutMapping()
     public R<Void> edit(@Validated(EditGroup.class) @RequestBody QlOutboundBo bo) {
@@ -98,8 +111,8 @@ public class QlOutboundController extends BaseController {
      *
      * @param ids 主键串
      */
-    @SaCheckPermission("outbound:outbound:remove")
-    @Log(title = "出库管理", businessType = BusinessType.DELETE)
+    @SaCheckPermission("ql:outbound:remove")
+    @Log(title = "出库管理" , businessType = BusinessType.DELETE)
     @DeleteMapping("/{ids}")
     public R<Void> remove(@NotEmpty(message = "主键不能为空")
                           @PathVariable Long[] ids) {

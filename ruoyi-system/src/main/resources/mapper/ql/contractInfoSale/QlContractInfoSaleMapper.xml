@@ -25,6 +25,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updateTime" column="update_time"/>
         <result property="remark" column="remark"/>
         <result property="deptId" column="dept_id"/>
+        <result property="contactPerson" column="contact_person"/>
+        <result property="mobilePhone" column="mobile_phone"/>
+        <result property="purchaser" column="purchaser"/>
+        <result property="startDate" column="start_date"/>
+        <result property="endDate" column="end_date"/>
     </resultMap>
     <select id="ContractExpireScheduled" resultMap="QlContractInfoSaleResult">
 

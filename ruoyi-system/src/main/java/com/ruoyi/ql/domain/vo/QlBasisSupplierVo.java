@@ -8,7 +8,7 @@ import com.ruoyi.common.convert.ExcelDictConvert;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import java.util.Date;
-
+import java.util.List;
 
 
 /**
@@ -96,4 +96,8 @@ public class QlBasisSupplierVo {
     @ExcelProperty(value = "欠发票金额")
     @ApiModelProperty(value = "欠发票金额", required = true)
     private BigDecimal uninvoiceAmount;
+
+    @ApiModelProperty(value = "采购合同编号", required = true)
+    private List<String> contractPurchaseList;
+
 }

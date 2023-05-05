@@ -136,4 +136,9 @@ public class QlShopGoodsBo extends BaseEntity {
      * 实时库存
      */
     private Long stockNumber;
+
+    /**
+     * 商品品牌
+     */
+    private String goodsBrand;
 }

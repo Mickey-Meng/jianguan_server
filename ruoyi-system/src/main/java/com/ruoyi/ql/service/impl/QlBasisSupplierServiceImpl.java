@@ -1,12 +1,15 @@
 package com.ruoyi.ql.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.core.domain.PageQuery;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.ruoyi.ql.domain.QlContractInfoPurchase;
+import com.ruoyi.ql.mapper.QlContractInfoPurchaseMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import com.ruoyi.ql.domain.bo.QlBasisSupplierBo;
@@ -30,13 +33,21 @@ import java.util.Collection;
 public class QlBasisSupplierServiceImpl implements IQlBasisSupplierService {
 
     private final QlBasisSupplierMapper baseMapper;
+    // 采购合同mapper
+    private final QlContractInfoPurchaseMapper qlContractInfoPurchaseMapper;
 
     /**
      * 查询供应商管理
      */
     @Override
     public QlBasisSupplierVo queryById(Long id){
-        return baseMapper.selectVoById(id);
+        QlBasisSupplierVo qlBasisSupplierVo = baseMapper.selectVoById(id);
+
+        QueryWrapper<QlContractInfoPurchase> lqw = new QueryWrapper<>();
+        lqw.eq("supplier_id" , id.toString());
+        List qlContractInfoPurchaseVos = qlContractInfoPurchaseMapper.selectVoList(lqw);
+        qlBasisSupplierVo.setContractPurchaseList(qlContractInfoPurchaseVos);
+        return qlBasisSupplierVo;
     }
 
     /**

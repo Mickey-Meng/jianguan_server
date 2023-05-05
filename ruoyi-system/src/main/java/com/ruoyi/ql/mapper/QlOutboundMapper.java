@@ -8,7 +8,7 @@ import com.ruoyi.common.core.mapper.BaseMapperPlus;
  * 出库管理Mapper接口
  *
  * @author ruoyi
- * @date 2022-12-11
+ * @date 2023-05-05
  */
 public interface QlOutboundMapper extends BaseMapperPlus<QlOutboundMapper, QlOutbound, QlOutboundVo> {
 

@@ -48,6 +48,7 @@ public class QlShopGoods extends BaseEntity {
      * 商品名称
      */
     private String goodsName;
+
     /**
      * 商品条码
      */
@@ -114,5 +115,8 @@ public class QlShopGoods extends BaseEntity {
      * 部门ID
      */
     private Long deptId;
-
+    /**
+     * 商品品牌
+     */
+    private String goodsBrand;
 }

@@ -76,6 +76,7 @@ public class QlShopGoodsServiceImpl implements IQlShopGoodsService {
         lqw.like(StringUtils.isNotBlank(bo.getSupplierName()), QlShopGoods::getSupplierName, bo.getSupplierName());
         lqw.eq(bo.getGoodsTypeId() != null, QlShopGoods::getGoodsTypeId, bo.getGoodsTypeId());
         lqw.eq(StringUtils.isNotBlank(bo.getGoodsCode()), QlShopGoods::getGoodsCode, bo.getGoodsCode());
+        lqw.eq(StringUtils.isNotBlank(bo.getGoodsBrand()), QlShopGoods::getGoodsBrand, bo.getGoodsBrand());
         lqw.like(StringUtils.isNotBlank(bo.getGoodsName()), QlShopGoods::getGoodsName, bo.getGoodsName());
         lqw.eq(StringUtils.isNotBlank(bo.getGoodsSearchstandard()), QlShopGoods::getGoodsSearchstandard, bo.getGoodsSearchstandard());
         lqw.eq(StringUtils.isNotBlank(bo.getGoodsUnit()), QlShopGoods::getGoodsUnit, bo.getGoodsUnit());

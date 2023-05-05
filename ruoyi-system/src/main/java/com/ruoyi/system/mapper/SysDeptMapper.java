@@ -37,4 +37,10 @@ public interface SysDeptMapper extends BaseMapperPlus<SysDeptMapper, SysDept, Sy
      */
     List<Long> selectDeptListByRoleId(@Param("roleId") Long roleId, @Param("deptCheckStrictly") boolean deptCheckStrictly);
 
+    /**
+     * 根据项目ID查询项目关联的部门数据
+     * @param projectId
+     * @return
+     */
+    List<SysDept> selectDeptListByProjectId(@Param("projectId")Long projectId);
 }

@@ -8,6 +8,7 @@ import com.alibaba.excel.annotation.ExcelProperty;
 import com.ruoyi.common.annotation.ExcelDictFormat;
 import com.ruoyi.common.convert.ExcelDictConvert;
 import com.ruoyi.ql.domain.bo.QlWarehousingBo;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import java.util.Date;
 import java.util.List;
@@ -49,18 +50,62 @@ public class QlContractInfoPurchaseVo {
      */
     @ExcelProperty(value = "供应商名称")
     private String supplierName;
+    /**
+     * 供应商id
+     */
+    @ExcelProperty(value = "供应商id")
+    @ApiModelProperty(value = "供应商id", required = true)
     private String supplierId;
+
+    /**
+     * 供应商联系人
+     */
+    @ExcelProperty(value = "供应商联系人")
+    @ApiModelProperty(value = "供应商联系人", required = true)
+    private String contactPerson;
+
+    /**
+     * 供应商联系方式
+     */
+    @ExcelProperty(value = "供应商联系方式")
+    @ApiModelProperty(value = "供应商联系方式" )
+    private String mobilePhone;
+
+    /**
+     * 采购人员
+     */
+    @ExcelProperty(value = "采购人员")
+    @ApiModelProperty(value = "采购人员" )
+    private String purchaser;
+
     /**
      * 总金额
      */
     @ExcelProperty(value = "总金额")
+    @ApiModelProperty(value = "总金额", required = true)
     private BigDecimal amount;
 
     /**
      * 合同签订时间
      */
     @ExcelProperty(value = "合同签订时间")
+    @ApiModelProperty(value = "合同签订时间" )
     private Date contactDate;
+
+    /**
+     * 开始时间
+     */
+    @ExcelProperty(value = "开始时间")
+    @ApiModelProperty(value = "开始时间" )
+    private Date startDate;
+
+    /**
+     * 结束时间
+     */
+    @ExcelProperty(value = "结束时间")
+    @ApiModelProperty(value = "结束时间" )
+    private Date endDate;
+
     @ExcelProperty(value = "税率")
     private BigDecimal rate;
 
@@ -68,4 +113,8 @@ public class QlContractInfoPurchaseVo {
     private String contractStatus;
 
     private List<QlWarehousingBo> qlWarehousingBos;
+    /**
+     * 供应商信息
+     */
+    private QlBasisSupplierVo qlBasisSupplierVo;
 }

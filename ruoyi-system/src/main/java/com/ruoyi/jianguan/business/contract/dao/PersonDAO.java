@@ -105,6 +105,10 @@ public interface PersonDAO {
     @Select("select * from ss_f_person_user_group_role where personGroupid = #{personGroupid}")
     List<PersonUserGroupRole> getByGroupId(@Param("personGroupid") Integer personGroupid);
 
+
+    List<SsFUsers> getByRoleIdAndProjectId(@Param("roleId") Integer roleid,
+                               @Param("projectId")Integer projectId);
+
     List<SsFUsers> getByRoleId(@Param("roleid") Integer roleid,
                                @Param("list")List<Integer> groupId);
 

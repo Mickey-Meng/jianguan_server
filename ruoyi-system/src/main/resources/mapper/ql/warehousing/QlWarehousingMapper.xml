@@ -23,6 +23,22 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="remark" column="remark"/>
         <result property="deptId" column="dept_id"/>
         <result property="proudctName" column="proudct_name"/>
+        <result property="arrivalDate" column="arrival_date"/>
+        <result property="buyer" column="buyer"/>
+        <result property="contractId" column="contract_id"/>
+        <result property="contractCode" column="contract_code"/>
+        <result property="supplierName" column="supplier_name"/>
+        <result property="mobilePhone" column="mobile_phone"/>
+        <result property="address" column="address"/>
+        <result property="warehousingReleaseuser" column="warehousing_releaseuser"/>
+        <result property="basePrice" column="base_price"/>
+        <result property="incomePrice" column="income_price"/>
+        <result property="extraPrice" column="extra_price"/>
+        <result property="fj" column="fj"/>
+        <result property="incomeDate" column="income_date"/>
+        <result property="lastPaymentDate" column="last_payment_date"/>
+        <result property="warehousingCode" column="warehousing_code"/>
+
     </resultMap>
 
 

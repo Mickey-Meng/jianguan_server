@@ -113,4 +113,6 @@ public interface ISysDeptService {
      * @return 结果
      */
     int deleteDeptById(Long deptId);
+
+    List<SysDept> getDeptListByProjectId(Long projectId);
 }

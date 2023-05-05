@@ -251,4 +251,28 @@
       #{item}
     </foreach>
   </select>-->
+
+
+  <select id="getByRoleIdAndProjectId" resultType="com.ruoyi.common.core.domain.entity.SsFUsers">
+    SELECT
+      su.user_id AS id,
+      su.user_name AS username,
+      su.nick_name AS NAME,
+      su.user_id AS usercode,
+      su.create_time AS sttime,
+      su.`status` AS ststate
+    FROM
+      sys_user su,
+      sys_user_role sur,
+      ss_f_projects t,
+      ss_f_user_project t1
+    WHERE
+      t.PARENTID = #{projectId}
+      AND su.user_id = sur.user_id
+      AND t.ID = t1.groupid
+      AND t1.userid = su.user_id
+      AND su.del_flag = 0
+      AND su.`status` = 0
+      AND sur.role_id = #{roleId};
+  </select>
 </mapper>

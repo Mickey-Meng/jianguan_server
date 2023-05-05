@@ -34,7 +34,11 @@ public class QlFinPaymentBo extends BaseEntity {
      * 合同id
      */
     private String contractId;
-
+    /**
+     * 合同编号
+     */
+    @NotBlank(message = "合同编号不能为空", groups = { AddGroup.class, EditGroup.class })
+    private String contractCode;
     /**
      * 合同名称
      */
@@ -43,7 +47,6 @@ public class QlFinPaymentBo extends BaseEntity {
     /**
      * 供应商id
      */
-    @NotBlank(message = "供应商id不能为空", groups = { AddGroup.class, EditGroup.class })
     private String supplierId;
     /**
      * 供应商名称
@@ -67,7 +70,6 @@ public class QlFinPaymentBo extends BaseEntity {
     /**
      * 欠付款金额
      */
-    @NotNull(message = "欠付款金额不能为空", groups = { AddGroup.class, EditGroup.class })
     private BigDecimal unpaid;
 
     /**
@@ -86,5 +88,32 @@ public class QlFinPaymentBo extends BaseEntity {
      */
     private Long deptId;
 
+    /**
+     * 付款账号
+     */
+    @NotBlank(message = "付款账号不能为空", groups = { AddGroup.class, EditGroup.class })
+    private String accountNo;
 
+    /**
+     * 开户银行
+     */
+    @NotBlank(message = "开户银行不能为空", groups = { AddGroup.class, EditGroup.class })
+    private String bankName;
+
+    /**
+     * 发票编号
+     */
+    @NotBlank(message = "发票编号不能为空", groups = { AddGroup.class, EditGroup.class })
+    private String invoiceNo;
+
+    /**
+     * 附件
+     */
+    private String fj;
+
+    /**
+     * 入库单号
+     */
+    @NotBlank(message = "入库单号不能为空", groups = { AddGroup.class, EditGroup.class })
+    private String warehousingCode;
 }

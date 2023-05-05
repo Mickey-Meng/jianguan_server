@@ -101,4 +101,86 @@ public class QlWarehousingBo extends BaseEntity {
     private String proudctName;
 
 
+    /**
+     * 到货日期
+     */
+    @NotNull(message = "到货日期不能为空", groups = { AddGroup.class, EditGroup.class })
+    private Date arrivalDate;
+
+    /**
+     * 采购员
+     */
+    @NotBlank(message = "采购员不能为空", groups = { AddGroup.class, EditGroup.class })
+    private String purchaser;
+
+    /**
+     * 采购合同id
+     */
+    @NotBlank(message = "采购合同id不能为空", groups = { AddGroup.class, EditGroup.class })
+    private String contractId;
+
+    /**
+     * 采购合同编码
+     */
+    @NotBlank(message = "采购合同编码不能为空", groups = { AddGroup.class, EditGroup.class })
+    private String contractCode;
+
+    /**
+     * 供应商名称
+     */
+    @NotBlank(message = "供应商名称不能为空", groups = { AddGroup.class, EditGroup.class })
+    private String supplierName;
+
+    /**
+     * 供应商电话
+     */
+    private String mobilePhone;
+
+    /**
+     * 供应商地址
+     */
+    private String address;
+
+
+    /**
+     * 入库复核人
+     */
+    @NotBlank(message = "入库复核人不能为空", groups = { AddGroup.class, EditGroup.class })
+    private String warehousingReleaseuser;
+
+    /**
+     * 基准价
+     */
+    @NotNull(message = "基准价不能为空", groups = { AddGroup.class, EditGroup.class })
+    private BigDecimal basePrice;
+
+    /**
+     * 进货价
+     */
+    @NotNull(message = "进货价不能为空", groups = { AddGroup.class, EditGroup.class })
+    private BigDecimal incomePrice;
+
+    /**
+     * 附加价格
+     */
+    @NotNull(message = "附加价格不能为空", groups = { AddGroup.class, EditGroup.class })
+    private BigDecimal extraPrice;
+
+    /**
+     * 附件--进货基准价截图
+     */
+    @NotBlank(message = "附件--进货基准价截图不能为空", groups = { AddGroup.class, EditGroup.class })
+    private String fj;
+
+    /**
+     * 进货日期，默认系统当天日期
+     */
+    @NotNull(message = "进货日期，默认系统当天日期不能为空", groups = { AddGroup.class, EditGroup.class })
+    private Date incomeDate;
+
+    /**
+     * 最后付款日期
+     */
+    @NotNull(message = "最后付款日期不能为空", groups = { AddGroup.class, EditGroup.class })
+    private Date lastPaymentDate;
 }

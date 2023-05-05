@@ -87,5 +87,61 @@ public class QlWarehousing extends BaseEntity {
      * 产品名称
      */
     private String proudctName;
+    /**
+     * 到货日期
+     */
+    private Date arrivalDate;
+    /**
+     * 采购员
+     */
+    private String purchaser;
+    /**
+     * 采购合同id
+     */
+    private String contractId;
+    /**
+     * 采购合同编码
+     */
+    private String contractCode;
+    /**
+     * 供应商名称
+     */
+    private String supplierName;
+    /**
+     * 供应商电话
+     */
+    private String mobilePhone;
+    /**
+     * 供应商地址
+     */
+    private String address;
 
+    /**
+     * 入库复核人
+     */
+    private String warehousingReleaseuser;
+    /**
+     * 基准价
+     */
+    private BigDecimal basePrice;
+    /**
+     * 进货价
+     */
+    private BigDecimal incomePrice;
+    /**
+     * 附加价格
+     */
+    private BigDecimal extraPrice;
+    /**
+     * 附件--进货基准价截图
+     */
+    private String fj;
+    /**
+     * 进货日期，默认系统当天日期
+     */
+    private Date incomeDate;
+    /**
+     * 最后付款日期
+     */
+    private Date lastPaymentDate;
 }

@@ -69,12 +69,12 @@ public class HttpsUtils {
 
 
     public String httpsPostZhuJi(String url, Map<String, String> mapdata) {
-        CloseableHttpResponse response = null;
         if (StringUtils.isEmpty(url)) {
-            return "URL为空，请检查!";
+            throw new RuntimeException("URL为空，请检查!") ;
         }
         // 创建httppost
         HttpPost httpPost = new HttpPost(url);
+        String content = null;
         try {
             // 设置提交方式
             httpPost.addHeader("Content-type", "application/x-www-form-urlencoded; charset=utf-8");
@@ -92,18 +92,18 @@ public class HttpsUtils {
             }
             httpPost.setEntity( new UrlEncodedFormEntity(nameValuePairs,"UTF-8"));
             // 执行http请求
-            response = closeableHttpClient.execute(httpPost);
+            CloseableHttpResponse response = closeableHttpClient.execute(httpPost);
             // 获得http响应体
             HttpEntity entity = response.getEntity();
             if (entity != null) {
                 // 响应的结果
-                String content = EntityUtils.toString(entity, "UTF-8");
-                return content;
+                content = EntityUtils.toString(entity, "UTF-8");
             }
         } catch (Exception e) {
             e.printStackTrace();
+            throw new RuntimeException("从" + url + "获取数据异常") ;
         }
-        return "获取数据错误";
+        return content;
     }
 
     public String httpsPostData(String url, String a, String token) throws IOException {
@@ -114,7 +114,6 @@ public class HttpsUtils {
         CloseableHttpResponse response = closeableHttpClient.execute(httpPost);
         HttpEntity entity = response.getEntity();
         String content = EntityUtils.toString(entity,"UTF-8");
-
         return content;
     }
 }

@@ -63,6 +63,7 @@ public class QlFinInvoiceServiceImpl implements IQlFinInvoiceService {
         LambdaQueryWrapper<QlFinInvoice> lqw = Wrappers.lambdaQuery();
         lqw.eq(bo.getInvoiceAmount() != null, QlFinInvoice::getInvoiceAmount, bo.getInvoiceAmount());
         lqw.like(StringUtils.isNotBlank(bo.getSupplierName()), QlFinInvoice::getSupplierName, bo.getSupplierName());
+        lqw.eq(StringUtils.isNotBlank(bo.getContractCode()), QlFinInvoice::getContractCode, bo.getContractCode());
         return lqw;
     }
 

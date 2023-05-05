@@ -22,6 +22,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="remark" column="remark"/>
         <result property="deptId" column="dept_id"/>
         <result property="area" column="area"/>
+        <result property="projectType" column="project_type"/>
+        <result property="projectStartDate" column="project_start_date"/>
+        <result property="projectDays" column="project_days"/>
     </resultMap>
 
 

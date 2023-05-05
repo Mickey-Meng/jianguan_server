@@ -34,7 +34,11 @@ public class QlFinInvoiceBo extends BaseEntity {
      * 合同id
      */
     private String contractId;
-
+    /**
+     * 合同编号
+     */
+    @NotBlank(message = "合同编号不能为空", groups = { AddGroup.class, EditGroup.class })
+    private String contractCode;
     /**
      * 合同名称
      */
@@ -55,7 +59,6 @@ public class QlFinInvoiceBo extends BaseEntity {
     /**
      * 欠开票金额
      */
-    @NotNull(message = "欠开票金额不能为空", groups = { AddGroup.class, EditGroup.class })
     private BigDecimal uninvoice;
 
     /**
@@ -79,6 +82,10 @@ public class QlFinInvoiceBo extends BaseEntity {
      */
     @NotBlank(message = "供应商名称不能为空", groups = { AddGroup.class, EditGroup.class })
     private String supplierName;
-
+    /**
+     * 发票编号
+     */
+    @NotBlank(message = "发票编号不能为空", groups = { AddGroup.class, EditGroup.class })
+    private String invoiceNo;
 
 }

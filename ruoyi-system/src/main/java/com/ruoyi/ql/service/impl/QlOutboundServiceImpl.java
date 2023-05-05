@@ -7,8 +7,6 @@ import com.ruoyi.common.core.domain.PageQuery;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.ruoyi.ql.domain.QlShopGoods;
-import com.ruoyi.ql.mapper.QlShopGoodsMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import com.ruoyi.ql.domain.bo.QlOutboundBo;
@@ -16,9 +14,7 @@ import com.ruoyi.ql.domain.vo.QlOutboundVo;
 import com.ruoyi.ql.domain.QlOutbound;
 import com.ruoyi.ql.mapper.QlOutboundMapper;
 import com.ruoyi.ql.service.IQlOutboundService;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Collection;
@@ -27,14 +23,13 @@ import java.util.Collection;
  * 出库管理Service业务层处理
  *
  * @author ruoyi
- * @date 2022-12-11
+ * @date 2023-05-05
  */
 @RequiredArgsConstructor
 @Service
 public class QlOutboundServiceImpl implements IQlOutboundService {
 
     private final QlOutboundMapper baseMapper;
-    private final QlShopGoodsMapper qlShopGoodsMapper;
 
     /**
      * 查询出库管理
@@ -66,9 +61,28 @@ public class QlOutboundServiceImpl implements IQlOutboundService {
     private LambdaQueryWrapper<QlOutbound> buildQueryWrapper(QlOutboundBo bo) {
         Map<String, Object> params = bo.getParams();
         LambdaQueryWrapper<QlOutbound> lqw = Wrappers.lambdaQuery();
-        lqw.like(StringUtils.isNotBlank(bo.getOutboundUsername()), QlOutbound::getOutboundUsername, bo.getOutboundUsername());
+        lqw.eq(StringUtils.isNotBlank(bo.getOutboundCode()), QlOutbound::getOutboundCode, bo.getOutboundCode());
         lqw.eq(bo.getOutboundDate() != null, QlOutbound::getOutboundDate, bo.getOutboundDate());
+        lqw.eq(StringUtils.isNotBlank(bo.getSalesperson()), QlOutbound::getSalesperson, bo.getSalesperson());
+        lqw.eq(StringUtils.isNotBlank(bo.getSaleContractCode()), QlOutbound::getSaleContractCode, bo.getSaleContractCode());
+        lqw.eq(StringUtils.isNotBlank(bo.getPurchaseContractCode()), QlOutbound::getPurchaseContractCode, bo.getPurchaseContractCode());
+        lqw.like(StringUtils.isNotBlank(bo.getCustomerName()), QlOutbound::getCustomerName, bo.getCustomerName());
+        lqw.eq(StringUtils.isNotBlank(bo.getTelephone()), QlOutbound::getTelephone, bo.getTelephone());
+        lqw.eq(StringUtils.isNotBlank(bo.getAddress()), QlOutbound::getAddress, bo.getAddress());
+        lqw.eq(StringUtils.isNotBlank(bo.getProudctId()), QlOutbound::getProudctId, bo.getProudctId());
         lqw.like(StringUtils.isNotBlank(bo.getProudctName()), QlOutbound::getProudctName, bo.getProudctName());
+        lqw.eq(StringUtils.isNotBlank(bo.getGoodsSearchstandard()), QlOutbound::getGoodsSearchstandard, bo.getGoodsSearchstandard());
+        lqw.eq(StringUtils.isNotBlank(bo.getGoodsUnit()), QlOutbound::getGoodsUnit, bo.getGoodsUnit());
+        lqw.eq(bo.getBasePrice() != null, QlOutbound::getBasePrice, bo.getBasePrice());
+        lqw.eq(bo.getIncomePrice() != null, QlOutbound::getIncomePrice, bo.getIncomePrice());
+        lqw.eq(bo.getExtraPrice() != null, QlOutbound::getExtraPrice, bo.getExtraPrice());
+        lqw.eq(StringUtils.isNotBlank(bo.getFj()), QlOutbound::getFj, bo.getFj());
+        lqw.eq(bo.getSaleDate() != null, QlOutbound::getSaleDate, bo.getSaleDate());
+        lqw.eq(bo.getSaleNumber() != null, QlOutbound::getSaleNumber, bo.getSaleNumber());
+        lqw.eq(bo.getSaleAmount() != null, QlOutbound::getSaleAmount, bo.getSaleAmount());
+        lqw.like(StringUtils.isNotBlank(bo.getOutboundUsername()), QlOutbound::getOutboundUsername, bo.getOutboundUsername());
+        lqw.eq(StringUtils.isNotBlank(bo.getOutboundReleaseuser()), QlOutbound::getOutboundReleaseuser, bo.getOutboundReleaseuser());
+        lqw.eq(bo.getOutboundNumber() != null, QlOutbound::getOutboundNumber, bo.getOutboundNumber());
         return lqw;
     }
 
@@ -76,21 +90,9 @@ public class QlOutboundServiceImpl implements IQlOutboundService {
      * 新增出库管理
      */
     @Override
-    @Transactional()
     public Boolean insertByBo(QlOutboundBo bo) {
         QlOutbound add = BeanUtil.toBean(bo, QlOutbound.class);
         validEntityBeforeSave(add);
-        String productId = add.getProudctId();
-        BigDecimal i = add.getOutboundNumber();
-
-        QlShopGoods qlShopGoods  = qlShopGoodsMapper.selectById(productId);
-        BigDecimal seedNumber = qlShopGoods.getStockNumber();
-        if (i.compareTo(seedNumber)>0){
-            return false;
-        }else {
-            qlShopGoods.setStockNumber(seedNumber.subtract(i));
-            qlShopGoodsMapper.updateById(qlShopGoods);
-        }
         boolean flag = baseMapper.insert(add) > 0;
         if (flag) {
             bo.setId(add.getId());

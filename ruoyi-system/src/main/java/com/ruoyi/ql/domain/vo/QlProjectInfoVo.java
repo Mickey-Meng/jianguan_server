@@ -5,6 +5,7 @@ import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.ruoyi.common.annotation.ExcelDictFormat;
 import com.ruoyi.common.convert.ExcelDictConvert;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import java.util.Date;
 
@@ -76,6 +77,25 @@ public class QlProjectInfoVo {
      *
      */
     private String remark;
+    /**
+     * 项目类型
+     */
+    @ExcelProperty(value = "项目类型")
+    @ApiModelProperty(value = "项目类型", required = true)
+    private String projectType;
 
+    /**
+     * 项目开工日期
+     */
+    @ExcelProperty(value = "项目开工日期")
+    @ApiModelProperty(value = "项目开工日期", required = true)
+    private Date projectStartDate;
+
+    /**
+     * 项目工期(天)
+     */
+    @ExcelProperty(value = "项目工期(天)")
+    @ApiModelProperty(value = "项目工期(天)", required = true)
+    private Integer projectDays;
 
 }

@@ -35,6 +35,10 @@ public class QlFinInvoice extends BaseEntity {
      */
     private String contractId;
     /**
+     * 合同编号
+     */
+    private String contractCode;
+    /**
      * 合同名称
      */
     private String contractName;
@@ -71,5 +75,8 @@ public class QlFinInvoice extends BaseEntity {
      * 供应商名称
      */
     private String supplierName;
-
+    /**
+     * 发票编号
+     */
+    private String invoiceNo;
 }

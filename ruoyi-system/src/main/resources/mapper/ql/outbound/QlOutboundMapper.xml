@@ -7,10 +7,27 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <resultMap type="com.ruoyi.ql.domain.QlOutbound" id="QlOutboundResult">
         <result property="id" column="id"/>
         <result property="outboundCode" column="outbound_code"/>
-        <result property="outboundUsername" column="outbound_username"/>
-        <result property="proudctId" column="proudct_id"/>
-        <result property="outboundNumber" column="outbound_number"/>
         <result property="outboundDate" column="outbound_date"/>
+        <result property="salesperson" column="salesperson"/>
+        <result property="saleContractCode" column="sale_contract_code"/>
+        <result property="purchaseContractCode" column="purchase_contract_code"/>
+        <result property="customerName" column="customer_name"/>
+        <result property="telephone" column="telephone"/>
+        <result property="address" column="address"/>
+        <result property="proudctId" column="proudct_id"/>
+        <result property="proudctName" column="proudct_name"/>
+        <result property="goodsSearchstandard" column="goods_searchStandard"/>
+        <result property="goodsUnit" column="goods_unit"/>
+        <result property="basePrice" column="base_price"/>
+        <result property="incomePrice" column="income_price"/>
+        <result property="extraPrice" column="extra_price"/>
+        <result property="fj" column="fj"/>
+        <result property="saleDate" column="sale_date"/>
+        <result property="saleNumber" column="sale_number"/>
+        <result property="saleAmount" column="sale_amount"/>
+        <result property="outboundUsername" column="outbound_username"/>
+        <result property="outboundReleaseuser" column="outbound_releaseuser"/>
+        <result property="outboundNumber" column="outbound_number"/>
         <result property="delFlag" column="del_flag"/>
         <result property="createBy" column="create_by"/>
         <result property="createTime" column="create_time"/>
@@ -18,7 +35,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updateTime" column="update_time"/>
         <result property="remark" column="remark"/>
         <result property="deptId" column="dept_id"/>
-        <result property="proudctName" column="proudct_name"/>
     </resultMap>
 
 

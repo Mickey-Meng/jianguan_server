@@ -1,5 +1,6 @@
 package com.ruoyi.common.core.domain.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -79,5 +80,11 @@ public class SysDept extends TreeEntity<SysDept> {
      * 祖级列表
      */
     private String ancestors;
+
+    /**
+     * 是否关联项目，默认否-null
+     */
+    @TableField(exist = false)
+    private String relatedProject;
 
 }

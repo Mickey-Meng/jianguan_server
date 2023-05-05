@@ -1,6 +1,8 @@
 package com.ruoyi.ql.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.ruoyi.common.core.domain.entity.SysDictData;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.core.domain.PageQuery;
@@ -77,6 +79,12 @@ public class QlFinPaymentServiceImpl implements IQlFinPaymentService {
         lqw.eq(bo.getUnpaid() != null, QlFinPayment::getUnpaid, bo.getUnpaid());
         lqw.eq(bo.getPaymentDate() != null, QlFinPayment::getPaymentDate, bo.getPaymentDate());
         lqw.eq(bo.getDeptId() != null, QlFinPayment::getDeptId, bo.getDeptId());
+        lqw.like(StringUtils.isNotBlank(bo.getAccountNo()), QlFinPayment::getAccountNo, bo.getAccountNo());
+        lqw.like(StringUtils.isNotBlank(bo.getBankName()), QlFinPayment::getBankName, bo.getBankName());
+        lqw.like(StringUtils.isNotBlank(bo.getInvoiceNo()), QlFinPayment::getInvoiceNo, bo.getInvoiceNo());
+        lqw.like(StringUtils.isNotBlank(bo.getContractCode()), QlFinPayment::getContractCode, bo.getContractCode());
+        lqw.like(StringUtils.isNotBlank(bo.getWarehousingCode()), QlFinPayment::getWarehousingCode, bo.getWarehousingCode());
+
         return lqw;
     }
 
@@ -103,10 +111,20 @@ public class QlFinPaymentServiceImpl implements IQlFinPaymentService {
     @Transactional
     public Boolean insertPaymentByBo(QlFinPaymentBo bo) {
         insertByBo(bo);
-        QlBasisSupplierVo qlBasisSupplierVo = qlBasisSupplierMapper.selectVoById(bo.getSupplierId());
-        qlBasisSupplierVo.setPayed(qlBasisSupplierVo.getPayed().add( bo.getPayAmount()));
-        qlBasisSupplierVo.setUnpaid(qlBasisSupplierVo.getUnpaid().subtract( bo.getPayAmount()));
-        QlBasisSupplier qlBasisSupplier = BeanUtil.toBean(qlBasisSupplierVo, QlBasisSupplier.class);
+    /*    QlBasisSupplierVo qlBasisSupplierVo = qlBasisSupplierMapper.selectOne(new LambdaQueryWrapper<SysDictData>()
+                .select(SysDictData::getDictLabel)
+                .eq(SysDictData::getDictType, bo.getSupplierName())
+                .eq(SysDictData::getDictValue, dictValue))*/
+
+        QueryWrapper<QlBasisSupplier> qlBasisSupplierVoQueryWrapper=new QueryWrapper<>();
+        qlBasisSupplierVoQueryWrapper.eq("supplier_name",bo.getSupplierName());
+        qlBasisSupplierVoQueryWrapper.eq("del_flag",0);
+        QlBasisSupplier qlBasisSupplier = qlBasisSupplierMapper.selectOne(qlBasisSupplierVoQueryWrapper);
+
+//        QlBasisSupplierVo qlBasisSupplierVo = qlBasisSupplierMapper.selectVoById(bo.getSupplierId());
+        qlBasisSupplier.setPayed(qlBasisSupplier.getPayed().add( bo.getPayAmount()));
+        qlBasisSupplier.setUnpaid(qlBasisSupplier.getUnpaid().subtract( bo.getPayAmount()));
+//        QlBasisSupplier qlBasisSupplier = BeanUtil.toBean(qlBasisSupplier, QlBasisSupplier.class);
         qlBasisSupplierMapper.updateById(qlBasisSupplier);
         return true;
     }

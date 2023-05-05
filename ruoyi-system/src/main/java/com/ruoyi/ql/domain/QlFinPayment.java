@@ -39,6 +39,10 @@ public class QlFinPayment extends BaseEntity {
      */
     private String contractId;
     /**
+     * 合同编号
+     */
+    private String contractCode;
+    /**
      * 合同名称
      */
     private String contractName;
@@ -78,5 +82,25 @@ public class QlFinPayment extends BaseEntity {
      * 部门ID
      */
     private Long deptId;
+    /**
+     * 付款账号
+     */
+    private String accountNo;
+    /**
+     * 开户银行
+     */
+    private String bankName;
+    /**
+     * 发票编号
+     */
+    private String invoiceNo;
+    /**
+     * 附件
+     */
+    private String fj;
 
+    /**
+     * 入库单号
+     */
+    private String warehousingCode;
 }

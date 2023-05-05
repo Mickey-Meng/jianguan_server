@@ -51,11 +51,27 @@ public class QlContractInfoPurchaseBo extends BaseEntity {
      */
     @NotBlank(message = "供应商名称不能为空", groups = { AddGroup.class, EditGroup.class })
     private String supplierName;
-
     /**
      * 供应商id
      */
+    @NotBlank(message = "供应商id不能为空", groups = { AddGroup.class, EditGroup.class })
     private String supplierId;
+
+    /**
+     * 供应商联系人
+     */
+    @NotBlank(message = "供应商联系人不能为空", groups = { AddGroup.class, EditGroup.class })
+    private String contactPerson;
+
+    /**
+     * 供应商联系方式
+     */
+    private String mobilePhone;
+
+    /**
+     * 采购人员
+     */
+    private String purchaser;
 
     /**
      * 总金额
@@ -67,6 +83,16 @@ public class QlContractInfoPurchaseBo extends BaseEntity {
      * 合同签订时间
      */
     private Date contactDate;
+
+    /**
+     * 开始时间
+     */
+    private Date startDate;
+
+    /**
+     * 结束时间
+     */
+    private Date endDate;
 
     /**
      * 税率

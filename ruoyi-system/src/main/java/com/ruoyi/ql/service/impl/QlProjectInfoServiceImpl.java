@@ -63,6 +63,9 @@ public class QlProjectInfoServiceImpl implements IQlProjectInfoService {
         LambdaQueryWrapper<QlProjectInfo> lqw = Wrappers.lambdaQuery();
         lqw.like(StringUtils.isNotBlank(bo.getCustomerName()), QlProjectInfo::getCustomerName, bo.getCustomerName());
         lqw.like(StringUtils.isNotBlank(bo.getProjectName()), QlProjectInfo::getProjectName, bo.getProjectName());
+        lqw.eq(StringUtils.isNotBlank(bo.getProjectType()), QlProjectInfo::getProjectType, bo.getProjectType());
+        lqw.eq(bo.getProjectStartDate() != null, QlProjectInfo::getProjectStartDate, bo.getProjectStartDate());
+        lqw.eq(bo.getProjectDays() != null, QlProjectInfo::getProjectDays, bo.getProjectDays());
         lqw.eq(bo.getDeptId() != null, QlProjectInfo::getDeptId, bo.getDeptId());
         lqw.eq(StringUtils.isNotBlank(bo.getArea()), QlProjectInfo::getArea, bo.getArea());
         return lqw;

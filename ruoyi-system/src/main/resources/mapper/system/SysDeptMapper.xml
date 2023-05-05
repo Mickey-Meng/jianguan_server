@@ -38,4 +38,12 @@
         order by d.parent_id, d.order_num
     </select>
 
+    <select id="selectDeptListByProjectId" resultMap="SysDeptResult">
+        SELECT
+            d.*,
+            (SELECT 1 FROM sys_project_dept WHERE dept_id = d.dept_id AND project_id = #{projectId}) AS relatedProject
+        FROM sys_dept d
+        WHERE del_flag = '0'
+    </select>
+
 </mapper>

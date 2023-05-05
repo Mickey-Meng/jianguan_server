@@ -220,16 +220,18 @@ public class PersonService {
             return new ResponseBase(200, "当前角色id无效!");
         }
         //获取该项目id下的所有部门id
-        List groups = projectsDAO.getGroupIdsById(projectId);
-        List<SsFUsers> users = Lists.newArrayList();
+//        List groups = projectsDAO.getGroupIdsById(projectId);
+//        List<SsFUsers> users = Lists.newArrayList();
+        // 调整查询逻辑，根据项目查询工工区，根据工区和角色查询用户
+        List<SsFUsers> users = personDAO.getByRoleIdAndProjectId(roleid, projectId);
 
-        if (groups != null || !groups.equals("")) {
-           /* List<Integer> groupIds = Arrays.stream(groups.split(","))
-                    .map(Integer::parseInt)
-                    .collect(Collectors.toList());*/
-            users = personDAO.getByRoleId(roleid, groups);
-        }
-
+//        if (groups != null || !groups.equals("")) {
+//           /* List<Integer> groupIds = Arrays.stream(groups.split(","))
+//                    .map(Integer::parseInt)
+//                    .collect(Collectors.toList());*/
+//
+//            users = personDAO.getByRoleId(roleid, groups);
+//        }
 
         return new ResponseBase(200, "查询成功!", users);
     }

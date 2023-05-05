@@ -93,4 +93,11 @@ public class QlShopGoodsVo {
      */
     @ApiModelProperty(value = "所属库位名称", required = true)
     private String storageName;
+
+    /**
+     * 商品品牌
+     */
+    @ExcelProperty(value = "商品品牌")
+    @ApiModelProperty(value = "商品品牌", required = true)
+    private String goodsBrand;
 }

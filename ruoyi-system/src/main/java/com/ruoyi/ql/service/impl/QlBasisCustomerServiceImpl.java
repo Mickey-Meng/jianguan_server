@@ -1,22 +1,22 @@
 package com.ruoyi.ql.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.core.domain.PageQuery;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.ruoyi.ql.domain.QlBasisCustomerAccinfo;
-import com.ruoyi.ql.domain.QlFinReimbursementItem;
+import com.ruoyi.ql.domain.*;
 import com.ruoyi.ql.domain.vo.QlBasisCustomerAccinfoVo;
 import com.ruoyi.ql.domain.vo.QlFinReimbursementItemVo;
 import com.ruoyi.ql.mapper.QlBasisCustomerAccinfoMapper;
+import com.ruoyi.ql.mapper.QlContractInfoSaleMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import com.ruoyi.ql.domain.bo.QlBasisCustomerBo;
 import com.ruoyi.ql.domain.vo.QlBasisCustomerVo;
-import com.ruoyi.ql.domain.QlBasisCustomer;
 import com.ruoyi.ql.mapper.QlBasisCustomerMapper;
 import com.ruoyi.ql.service.IQlBasisCustomerService;
 
@@ -33,7 +33,7 @@ import java.util.*;
 public class QlBasisCustomerServiceImpl implements IQlBasisCustomerService {
 
     private final QlBasisCustomerMapper baseMapper;
-    private final QlBasisCustomerAccinfoMapper basisCustomerAccinfoMapper;
+    private final QlContractInfoSaleMapper qlContractInfoSaleMapper;
 
     /**
      * 查询客户资料
@@ -41,11 +41,11 @@ public class QlBasisCustomerServiceImpl implements IQlBasisCustomerService {
     @Override
     public QlBasisCustomerVo queryById(Long id) {
         QlBasisCustomerVo qlBasisCustomerVo = baseMapper.selectVoById(id);
-//        LambdaQueryWrapper<QlBasisCustomerAccinfo> accinfoLambdaQueryWrapper = new LambdaQueryWrapper<>();
-//        accinfoLambdaQueryWrapper.eq(QlBasisCustomerAccinfo::getCustomerId, id);
-//        List<QlBasisCustomerAccinfoVo> qlBasisCustomerAccinfoVos = basisCustomerAccinfoMapper.selectVoList(accinfoLambdaQueryWrapper);
-//        qlBasisCustomerVo.setQlBasisCustomerAccinfoVoList(qlBasisCustomerAccinfoVos);
-
+        QlBasisCustomer q=  baseMapper.selectById(id);
+        QueryWrapper<QlContractInfoSale> lqw = new QueryWrapper<>();
+        lqw.eq("customer_id" , id.toString());
+        List qlContractInfoSaleVos = qlContractInfoSaleMapper.selectVoList(lqw);
+        qlBasisCustomerVo.setQlContractInfoSales(qlContractInfoSaleVos);
         return qlBasisCustomerVo;
     }
 

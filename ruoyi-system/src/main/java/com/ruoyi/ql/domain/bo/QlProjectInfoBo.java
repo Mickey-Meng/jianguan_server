@@ -84,5 +84,18 @@ public class QlProjectInfoBo extends BaseEntity {
     @NotBlank(message = "项目所属地区不能为空", groups = { AddGroup.class, EditGroup.class })
     private String area;
 
+    /**
+     * 项目类型
+     */
+    private String projectType;
 
+    /**
+     * 项目开工日期
+     */
+    private Date projectStartDate;
+
+    /**
+     * 项目工期(天)
+     */
+    private Integer projectDays;
 }

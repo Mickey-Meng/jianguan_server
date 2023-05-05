@@ -57,6 +57,10 @@ public class QlContractInfoPurchaseServiceImpl implements IQlContractInfoPurchas
         List<QlWarehousingBo> qlWarehousingBos = new ArrayList<QlWarehousingBo>();
         qlWarehousingBos = BeanCopyUtils.copyList(qlFinReimbursementItemVoList, QlWarehousingBo.class);
         vo.setQlWarehousingBos(qlWarehousingBos);
+
+
+        QlBasisSupplierVo qlBasisSupplierVo = qlBasisSupplierMapper.selectVoById(vo.getSupplierId());
+        vo.setQlBasisSupplierVo(qlBasisSupplierVo);
         return vo;
     }
 
@@ -76,7 +80,8 @@ public class QlContractInfoPurchaseServiceImpl implements IQlContractInfoPurchas
     @Override
     public List<QlContractInfoPurchaseVo> queryList(QlContractInfoPurchaseBo bo) {
         LambdaQueryWrapper<QlContractInfoPurchase> lqw = buildQueryWrapper(bo);
-        return baseMapper.selectVoList(lqw);
+        List<QlContractInfoPurchaseVo> qlContractInfoPurchaseVo = baseMapper.selectVoList(lqw);
+        return qlContractInfoPurchaseVo;
     }
 
     private LambdaQueryWrapper<QlContractInfoPurchase> buildQueryWrapper(QlContractInfoPurchaseBo bo) {
@@ -85,8 +90,12 @@ public class QlContractInfoPurchaseServiceImpl implements IQlContractInfoPurchas
         lqw.eq(StringUtils.isNotBlank(bo.getContractCode()), QlContractInfoPurchase::getContractCode, bo.getContractCode());
         lqw.like(StringUtils.isNotBlank(bo.getContractName()), QlContractInfoPurchase::getContractName, bo.getContractName());
         lqw.like(StringUtils.isNotBlank(bo.getSupplierName()), QlContractInfoPurchase::getSupplierName, bo.getSupplierName());
-        lqw.eq(bo.getAmount() != null, QlContractInfoPurchase::getAmount, bo.getAmount());
+        lqw.eq(StringUtils.isNotBlank(bo.getContactPerson()), QlContractInfoPurchase::getContactPerson, bo.getContactPerson());
+        lqw.eq(StringUtils.isNotBlank(bo.getMobilePhone()), QlContractInfoPurchase::getMobilePhone, bo.getMobilePhone());
+        lqw.eq(StringUtils.isNotBlank(bo.getPurchaser()), QlContractInfoPurchase::getPurchaser, bo.getPurchaser());
         lqw.eq(bo.getContactDate() != null, QlContractInfoPurchase::getContactDate, bo.getContactDate());
+        lqw.eq(bo.getStartDate() != null, QlContractInfoPurchase::getStartDate, bo.getStartDate());
+        lqw.eq(bo.getEndDate() != null, QlContractInfoPurchase::getEndDate, bo.getEndDate());
         return lqw;
     }
 

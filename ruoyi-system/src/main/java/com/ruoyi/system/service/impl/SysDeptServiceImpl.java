@@ -279,4 +279,9 @@ public class SysDeptServiceImpl implements ISysDeptService {
         return baseMapper.deleteById(deptId);
     }
 
+    @Override
+    public List<SysDept> getDeptListByProjectId(Long projectId) {
+        return baseMapper.selectDeptListByProjectId(projectId);
+    }
+
 }

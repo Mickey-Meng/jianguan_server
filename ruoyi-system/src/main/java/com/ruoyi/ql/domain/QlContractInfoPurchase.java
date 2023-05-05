@@ -45,7 +45,18 @@ public class QlContractInfoPurchase extends BaseEntity {
     /**
      * 供应商id
      */
-    private String supplierId;
+    private String supplierId;/**
+     * 供应商联系人
+     */
+    private String contactPerson;
+    /**
+     * 供应商联系方式
+     */
+    private String mobilePhone;
+    /**
+     * 采购人员
+     */
+    private String purchaser;
     /**
      * 总金额
      */
@@ -54,6 +65,14 @@ public class QlContractInfoPurchase extends BaseEntity {
      * 合同签订时间
      */
     private Date contactDate;
+    /**
+     * 开始时间
+     */
+    private Date startDate;
+    /**
+     * 结束时间
+     */
+    private Date endDate;
     /**
      * 税率
      */

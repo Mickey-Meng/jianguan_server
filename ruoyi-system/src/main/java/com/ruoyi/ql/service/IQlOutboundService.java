@@ -13,7 +13,7 @@ import java.util.List;
  * 出库管理Service接口
  *
  * @author ruoyi
- * @date 2022-12-11
+ * @date 2023-05-05
  */
 public interface IQlOutboundService {
 

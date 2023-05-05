@@ -12,6 +12,7 @@ import com.ruoyi.jianguan.manage.project.domain.bo.JgProjectDeptBo;
 import com.ruoyi.jianguan.manage.project.domain.bo.JgProjectInfoBo;
 import com.ruoyi.jianguan.manage.project.domain.vo.JgProjectInfoVo;
 import com.ruoyi.jianguan.manage.project.service.IJgProjectInfoService;
+import com.ruoyi.system.service.ISysDeptService;
 import lombok.RequiredArgsConstructor;
 
 import javax.servlet.http.HttpServletResponse;
@@ -45,6 +46,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
 public class JgProjectInfoController extends BaseController {
 
     private final IJgProjectInfoService iJgProjectInfoService;
+    private final ISysDeptService deptService;
 
 /**
  * 查询项目信息列表
@@ -141,6 +143,18 @@ public class JgProjectInfoController extends BaseController {
     @PostMapping("/relatedDept")
     public R<Void> relatedDept(@Validated(AddGroup.class) @RequestBody JgProjectDeptBo bo) {
         return toAjax(iJgProjectInfoService.relatedDept(bo));
+    }
+
+    /**
+     * 根据项目ID查询项目关联的部门数据
+     * @param projectId
+     * @return
+     */
+    @SaCheckPermission("jg:project:query")
+    @GetMapping(value = "/projectDept/{projectId}")
+    public R<List<SysDept>> getProjectDept(@PathVariable Long projectId) {
+        List<SysDept> deptList = deptService.getDeptListByProjectId(projectId);
+        return R.ok(deptList);
     }
 
 }

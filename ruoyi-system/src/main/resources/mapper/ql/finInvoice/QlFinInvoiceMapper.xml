@@ -7,6 +7,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <resultMap type="com.ruoyi.ql.domain.QlFinInvoice" id="QlFinInvoiceResult">
         <result property="id" column="id"/>
         <result property="contractId" column="contract_id"/>
+        <result property="contractCode" column="contract_code"/>
         <result property="contractName" column="contract_name"/>
         <result property="supplierId" column="supplier_id"/>
         <result property="invoiceAmount" column="invoice_amount"/>
@@ -20,6 +21,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="remark" column="remark"/>
         <result property="deptId" column="dept_id"/>
         <result property="supplierName" column="supplier_name"/>
+        <result property="invoiceNo" column="Invoice_no"/>
     </resultMap>
 
 

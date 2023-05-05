@@ -9,6 +9,7 @@ import com.ruoyi.common.annotation.ExcelDictFormat;
 import com.ruoyi.common.convert.ExcelDictConvert;
 import com.ruoyi.common.core.validate.AddGroup;
 import com.ruoyi.common.core.validate.EditGroup;
+import io.swagger.annotations.ApiModelProperty;
 import liquibase.pro.packaged.S;
 import lombok.Data;
 
@@ -91,4 +92,38 @@ public class QlContractInfoSaleVo {
     @ExcelProperty(value = "")
     private String remark;
 
+    /**
+     * 供应商联系人
+     */
+    @ExcelProperty(value = "供应商联系人")
+    @ApiModelProperty(value = "供应商联系人", required = true)
+    private String contactPerson;
+
+    /**
+     * 供应商联系方式
+     */
+    @ExcelProperty(value = "供应商联系方式")
+    @ApiModelProperty(value = "供应商联系方式", required = true)
+    private String mobilePhone;
+
+    /**
+     * 采购人员
+     */
+    @ExcelProperty(value = "采购人员")
+    @ApiModelProperty(value = "采购人员", required = true)
+    private String purchaser;
+
+    /**
+     * 开始时间
+     */
+    @ExcelProperty(value = "开始时间")
+    @ApiModelProperty(value = "开始时间", required = true)
+    private Date startDate;
+
+    /**
+     * 结束时间
+     */
+    @ExcelProperty(value = "结束时间")
+    @ApiModelProperty(value = "结束时间", required = true)
+    private Date endDate;
 }

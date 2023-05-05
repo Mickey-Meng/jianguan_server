@@ -7,6 +7,7 @@ import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.ruoyi.common.annotation.ExcelDictFormat;
 import com.ruoyi.common.convert.ExcelDictConvert;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import java.util.Date;
 
@@ -35,6 +36,12 @@ public class QlFinInvoiceVo {
      */
     @ExcelProperty(value = "合同id")
     private String contractId;
+    /**
+     * 合同编号
+     */
+    @ExcelProperty(value = "合同编号")
+    @ApiModelProperty(value = "合同编号", required = true)
+    private String contractCode;
 
     /**
      * 合同名称
@@ -72,5 +79,10 @@ public class QlFinInvoiceVo {
     @ExcelProperty(value = "供应商名称")
     private String supplierName;
 
-
+    /**
+     * 发票编号
+     */
+    @ExcelProperty(value = "发票编号")
+    @ApiModelProperty(value = "发票编号", required = true)
+    private String invoiceNo;
 }
