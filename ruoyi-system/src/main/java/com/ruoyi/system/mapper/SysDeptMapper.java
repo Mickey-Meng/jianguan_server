@@ -1,11 +1,14 @@
 package com.ruoyi.system.mapper;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ruoyi.common.annotation.DataColumn;
 import com.ruoyi.common.annotation.DataPermission;
 import com.ruoyi.common.core.domain.entity.SysDept;
 import com.ruoyi.common.core.mapper.BaseMapperPlus;
+import com.ruoyi.jianguan.manage.map.domain.vo.MapPlanServerVo;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -43,4 +46,6 @@ public interface SysDeptMapper extends BaseMapperPlus<SysDeptMapper, SysDept, Sy
      * @return
      */
     List<SysDept> selectDeptListByProjectId(@Param("projectId")Long projectId);
+
+    Page<SysDept> selectDeptPageByProjectId(@Param("projectId")Long projectId, IPage<MapPlanServerVo> page);
 }

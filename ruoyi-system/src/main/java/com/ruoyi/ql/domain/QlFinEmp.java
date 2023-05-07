@@ -82,5 +82,8 @@ public class QlFinEmp extends BaseEntity {
      * 备注
      */
     private String remark;
-
+    /**
+     * 部门描述
+     */
+    private String deptName;
 }

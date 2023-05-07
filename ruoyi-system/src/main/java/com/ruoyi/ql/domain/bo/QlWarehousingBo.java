@@ -70,7 +70,6 @@ public class QlWarehousingBo extends BaseEntity {
     /**
      * 单价
      */
-    @NotNull(message = "单价不能为空", groups = { AddGroup.class, EditGroup.class })
     private BigDecimal price;
 
     /**

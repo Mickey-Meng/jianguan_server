@@ -2,9 +2,13 @@ package com.ruoyi.web.controller.jianguan.manage.project;
 
 import java.util.List;
 import java.util.Arrays;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import cn.hutool.core.lang.tree.Tree;
+import com.google.common.collect.Maps;
 import com.ruoyi.common.core.domain.entity.SysDept;
 import com.ruoyi.jianguan.manage.map.domain.bo.MapPlanBo;
 import com.ruoyi.jianguan.manage.map.domain.bo.MapPlanServerBo;
@@ -152,9 +156,13 @@ public class JgProjectInfoController extends BaseController {
      */
     @SaCheckPermission("jg:project:query")
     @GetMapping(value = "/projectDept/{projectId}")
-    public R<List<SysDept>> getProjectDept(@PathVariable Long projectId) {
-        List<SysDept> deptList = deptService.getDeptListByProjectId(projectId);
-        return R.ok(deptList);
+    public R<Map<String, Object>> getProjectDept(@PathVariable Long projectId, PageQuery pageQuery) {
+//        List<SysDept> deptList = deptService.getDeptListByProjectId(projectId);
+        TableDataInfo<SysDept> deptPageList = deptService.getDeptPageListByProjectId(projectId, pageQuery);
+        Map<String, Object> dataMap = Maps.newHashMap();
+//        dataMap.put("deptList", deptList);
+        dataMap.put("deptPageList", deptPageList);
+//        dataMap.put("relatedDeptList", deptList.stream().filter(sysDept -> Objects.equals(sysDept.getRelatedProject(), "1")).collect(Collectors.toList()));
+        return R.ok(dataMap);
     }
-
 }

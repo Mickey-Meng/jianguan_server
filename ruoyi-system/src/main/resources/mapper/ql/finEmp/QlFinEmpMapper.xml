@@ -17,6 +17,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="emergencyContact" column="emergency_contact"/>
         <result property="emergencyPhone" column="emergency_phone"/>
         <result property="deptId" column="dept_id"/>
+        <result property="deptName" column="dept_name"/>
         <result property="delFlag" column="del_flag"/>
         <result property="createBy" column="create_by"/>
         <result property="createTime" column="create_time"/>

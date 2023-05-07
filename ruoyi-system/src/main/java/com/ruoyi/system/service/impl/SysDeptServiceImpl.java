@@ -6,15 +6,20 @@ import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ruoyi.common.constant.UserConstants;
+import com.ruoyi.common.core.domain.PageQuery;
 import com.ruoyi.common.core.domain.entity.SysDept;
 import com.ruoyi.common.core.domain.entity.SysRole;
 import com.ruoyi.common.core.domain.entity.SysUser;
+import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.helper.DataBaseHelper;
 import com.ruoyi.common.helper.LoginHelper;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.TreeBuildUtils;
+import com.ruoyi.jianguan.manage.project.domain.entity.JgProjectInfo;
+import com.ruoyi.jianguan.manage.project.domain.vo.JgProjectInfoVo;
 import com.ruoyi.system.mapper.SysDeptMapper;
 import com.ruoyi.system.mapper.SysRoleMapper;
 import com.ruoyi.system.mapper.SysUserMapper;
@@ -282,6 +287,12 @@ public class SysDeptServiceImpl implements ISysDeptService {
     @Override
     public List<SysDept> getDeptListByProjectId(Long projectId) {
         return baseMapper.selectDeptListByProjectId(projectId);
+    }
+
+    @Override
+    public TableDataInfo<SysDept> getDeptPageListByProjectId(Long projectId, PageQuery pageQuery) {
+        Page<SysDept> result = baseMapper.selectDeptPageByProjectId(projectId, pageQuery.build());
+        return TableDataInfo.build(result);
     }
 
 }

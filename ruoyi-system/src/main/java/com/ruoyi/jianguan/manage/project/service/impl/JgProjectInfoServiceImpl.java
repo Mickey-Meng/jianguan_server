@@ -167,7 +167,9 @@ public class JgProjectInfoServiceImpl implements IJgProjectInfoService {
 
     @Override
     public Boolean relatedDept(JgProjectDeptBo bo) {
-        // 组装方案服务数据
+        // 1、删除旧关联数据
+        projectDeptMapper.deleteProjectDeptByProjectId(bo.getProjectId());
+        // 2、保存新关联数据
        List<JgProjectDept> projectDeptList = Arrays.stream(Convert.toStrArray(bo.getDeptIds())).map(deptId -> {
             return new JgProjectDept(Long.valueOf(bo.getProjectId()), Long.valueOf(deptId));
         }).collect(Collectors.toList());

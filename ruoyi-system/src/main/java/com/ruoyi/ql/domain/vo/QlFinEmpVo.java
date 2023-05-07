@@ -88,4 +88,11 @@ public class QlFinEmpVo {
     @ExcelProperty(value = "部门")
     @ApiModelProperty(value = "部门", required = true)
     private Long deptId;
+    /**
+     * 部门描述
+     */
+    @ExcelProperty(value = "部门描述")
+    @ApiModelProperty(value = "部门描述", required = true)
+    private String deptName;
+
 }

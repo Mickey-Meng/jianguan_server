@@ -12,4 +12,5 @@ import com.ruoyi.jianguan.manage.project.domain.vo.JgProjectDeptVo;
  */
 public interface JgProjectDeptMapper extends BaseMapperPlus<JgProjectDeptMapper, JgProjectDept, JgProjectDeptVo> {
 
+    void deleteProjectDeptByProjectId(Long projectId);
 }

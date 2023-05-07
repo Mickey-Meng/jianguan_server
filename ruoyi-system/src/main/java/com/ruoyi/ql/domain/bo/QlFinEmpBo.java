@@ -91,6 +91,11 @@ public class QlFinEmpBo extends BaseEntity {
      * 备注
      */
     private String remark;
+    /**
+     * 部门描述
+     */
+    @NotBlank(message = "部门描述不能为空", groups = { AddGroup.class, EditGroup.class })
+    private String deptName;
 
 
 }

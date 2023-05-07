@@ -1,7 +1,10 @@
 package com.ruoyi.system.service;
 
 import cn.hutool.core.lang.tree.Tree;
+import com.ruoyi.common.core.domain.PageQuery;
 import com.ruoyi.common.core.domain.entity.SysDept;
+import com.ruoyi.common.core.page.TableDataInfo;
+import com.ruoyi.jianguan.manage.project.domain.vo.JgProjectInfoVo;
 
 import java.util.List;
 
@@ -115,4 +118,6 @@ public interface ISysDeptService {
     int deleteDeptById(Long deptId);
 
     List<SysDept> getDeptListByProjectId(Long projectId);
+
+    TableDataInfo<SysDept> getDeptPageListByProjectId(Long projectId, PageQuery pageQuery);
 }
