@@ -19,7 +19,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="goodsSearchstandard" column="goods_searchStandard"/>
         <result property="goodsUnit" column="goods_unit"/>
         <result property="basePrice" column="base_price"/>
-        <result property="incomePrice" column="income_price"/>
+        <result property="salePrice" column="sale_price"/>
         <result property="extraPrice" column="extra_price"/>
         <result property="fj" column="fj"/>
         <result property="saleDate" column="sale_date"/>
@@ -35,7 +35,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updateTime" column="update_time"/>
         <result property="remark" column="remark"/>
         <result property="deptId" column="dept_id"/>
+        <result property="projectId" column="project_id"/>
+        <result property="projectName" column="project_name"/>
     </resultMap>
-
 
 </mapper>

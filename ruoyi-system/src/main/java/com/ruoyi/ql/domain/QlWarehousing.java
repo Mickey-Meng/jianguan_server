@@ -144,4 +144,13 @@ public class QlWarehousing extends BaseEntity {
      * 最后付款日期
      */
     private Date lastPaymentDate;
+
+    /**
+     * 规格
+     */
+    private String goodsSearchstandard;
+    /**
+     * 单位
+     */
+    private String goodsUnit;
 }

@@ -14,8 +14,11 @@ import com.ruoyi.jianguan.manage.map.domain.bo.MapPlanBo;
 import com.ruoyi.jianguan.manage.map.domain.bo.MapPlanServerBo;
 import com.ruoyi.jianguan.manage.project.domain.bo.JgProjectDeptBo;
 import com.ruoyi.jianguan.manage.project.domain.bo.JgProjectInfoBo;
+import com.ruoyi.jianguan.manage.project.domain.bo.JgProjectItemBo;
 import com.ruoyi.jianguan.manage.project.domain.vo.JgProjectInfoVo;
+import com.ruoyi.jianguan.manage.project.domain.vo.JgProjectItemVo;
 import com.ruoyi.jianguan.manage.project.service.IJgProjectInfoService;
+import com.ruoyi.jianguan.manage.project.service.IJgProjectItemService;
 import com.ruoyi.system.service.ISysDeptService;
 import lombok.RequiredArgsConstructor;
 
@@ -50,6 +53,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
 public class JgProjectInfoController extends BaseController {
 
     private final IJgProjectInfoService iJgProjectInfoService;
+    private final IJgProjectItemService projectItemService;
     private final ISysDeptService deptService;
 
 /**
@@ -157,12 +161,36 @@ public class JgProjectInfoController extends BaseController {
     @SaCheckPermission("jg:project:query")
     @GetMapping(value = "/projectDept/{projectId}")
     public R<Map<String, Object>> getProjectDept(@PathVariable Long projectId, PageQuery pageQuery) {
-//        List<SysDept> deptList = deptService.getDeptListByProjectId(projectId);
-        TableDataInfo<SysDept> deptPageList = deptService.getDeptPageListByProjectId(projectId, pageQuery);
+        List<SysDept> deptAllList = deptService.getDeptListByProjectId(projectId);
+//        TableDataInfo<SysDept> deptPageList = deptService.getDeptPageListByProjectId(projectId, pageQuery);
         Map<String, Object> dataMap = Maps.newHashMap();
-//        dataMap.put("deptList", deptList);
-        dataMap.put("deptPageList", deptPageList);
-//        dataMap.put("relatedDeptList", deptList.stream().filter(sysDept -> Objects.equals(sysDept.getRelatedProject(), "1")).collect(Collectors.toList()));
+        dataMap.put("deptAllList", deptAllList);
+//        dataMap.put("deptPageList", deptPageList);
+//        dataMap.put("relatedDeptList", deptAllList.stream().filter(sysDept -> Objects.equals(sysDept.getRelatedProject(), "1")).collect(Collectors.toList()));
         return R.ok(dataMap);
+    }
+
+    /**
+     * 查询项目详情
+     * @param projectId
+     * @return
+     */
+    @SaCheckPermission("jg:project:queryItem")
+    @GetMapping("/projectItem/{projectId}")
+    public R<JgProjectItemVo> getProjectItem(@NotNull(message = "项目主键不能为空") @PathVariable Long projectId) {
+        return R.ok(projectItemService.queryById(projectId));
+    }
+
+    /**
+     * 保存项目详情
+     * @param bo
+     * @return
+     */
+    @SaCheckPermission("jg:project:saveItem")
+    @Log(title = "保存项目详情" , businessType = BusinessType.SAVE)
+    @RepeatSubmit()
+    @PostMapping("/saveProjectItem")
+    public R<Void> saveProjectItem(@Validated(EditGroup.class) @RequestBody JgProjectItemBo bo) {
+        return toAjax(projectItemService.saveProjectItem(bo));
     }
 }

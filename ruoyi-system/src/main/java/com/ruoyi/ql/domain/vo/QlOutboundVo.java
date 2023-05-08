@@ -129,9 +129,9 @@ public class QlOutboundVo {
     /**
      * 进货价
      */
-    @ExcelProperty(value = "进货价")
-    @ApiModelProperty(value = "进货价", required = true)
-    private BigDecimal incomePrice;
+    @ExcelProperty(value = "销售价")
+    @ApiModelProperty(value = "销售价", required = true)
+    private BigDecimal salePrice;
 
     /**
      * 附加价格
@@ -203,5 +203,18 @@ public class QlOutboundVo {
     @ApiModelProperty(value = "部门ID", required = true)
     private Long deptId;
 
+    /**
+     * 项目id
+     */
+    @ExcelProperty(value = "项目id")
+    @ApiModelProperty(value = "项目id", required = true)
+    private String projectId;
+
+    /**
+     * 项目名称
+     */
+    @ExcelProperty(value = "项目名称")
+    @ApiModelProperty(value = "项目名称", required = true)
+    private String projectName;
 
 }

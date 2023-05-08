@@ -92,8 +92,10 @@ public class QlWarehousingServiceImpl implements IQlWarehousingService {
         QlShopGoods qlShopGoods  = qlShopGoodsMapper.selectById(productId);
         BigDecimal seedNumber = qlShopGoods.getStockNumber();
 
-        qlShopGoods.setStockNumber(seedNumber.add(i));
-        qlShopGoodsMapper.updateById(qlShopGoods);
+        if ( i != null){
+            qlShopGoods.setStockNumber(seedNumber.add(i));
+            qlShopGoodsMapper.updateById(qlShopGoods);
+        }
 
         boolean flag = baseMapper.insert(add) > 0;
         if (flag) {

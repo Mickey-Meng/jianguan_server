@@ -34,7 +34,6 @@ public class QlProjectInfoBo extends BaseEntity {
     /**
      * 客户名称
      */
-    @NotBlank(message = "客户名称不能为空", groups = { AddGroup.class, EditGroup.class })
     private String customerName;
 
     /**
@@ -81,7 +80,6 @@ public class QlProjectInfoBo extends BaseEntity {
     /**
      * 项目所属地区
      */
-    @NotBlank(message = "项目所属地区不能为空", groups = { AddGroup.class, EditGroup.class })
     private String area;
 
     /**

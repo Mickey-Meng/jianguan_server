@@ -89,8 +89,8 @@ public class QlShopGoodsServiceImpl implements IQlShopGoodsService {
     @Override
     public Boolean insertByBo(QlShopGoodsBo bo) {
         QlShopGoods add = BeanUtil.toBean(bo, QlShopGoods.class);
-        String goodCode = MD5.create().digestHex(add.getSupplierId() + add.getGoodsName() + add.getGoodsSearchstandard());
-        add.setGoodsCode(goodCode);
+      /*  String goodCode = MD5.create().digestHex(add.getSupplierId() + add.getGoodsName() + add.getGoodsSearchstandard());
+        add.setGoodsCode(goodCode);*/
         validEntityBeforeSave(add);
         boolean flag = baseMapper.insert(add) > 0;
         if (flag) {

@@ -85,7 +85,7 @@ public class QlOutbound extends BaseEntity {
     /**
      * 进货价
      */
-    private BigDecimal incomePrice;
+    private BigDecimal salePrice;
     /**
      * 附加价格
      */
@@ -131,5 +131,12 @@ public class QlOutbound extends BaseEntity {
      * 部门ID
      */
     private Long deptId;
-
+    /**
+     * 项目id
+     */
+    private String projectId;
+    /**
+     * 项目名称
+     */
+    private String projectName;
 }

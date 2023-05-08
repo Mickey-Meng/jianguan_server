@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.jianguan.manage.project.mapper.JgProjectItemMapper">
+
+    <resultMap type="com.ruoyi.jianguan.manage.project.domain.entity.JgProjectItem" id="JgProjectItemResult">
+        <result property="id" column="id"/>
+        <result property="projectId" column="project_id"/>
+        <result property="manageDept" column="managedpt"/>
+        <result property="buildDept" column="builddpt"/>
+        <result property="designDept" column="desgindpt"/>
+        <result property="constructDept" column="constructdpt"/>
+        <result property="supervisorDept" column="supervisordpt"/>
+        <result property="projectScale" column="projectscale"/>
+        <result property="projectDuration" column="projectduration"/>
+        <result property="inputsCale" column="inputscale"/>
+        <result property="startTime" column="starttime"/>
+        <result property="projectCode" column="projectcode"/>
+        <result property="auditUnit" column="auditUnit"/>
+        <result property="projectName" column="projectName"/>
+        <result property="investmentProjectOverview" column="investmentProjectOverview"/>
+        <result property="compactionResponsibility" column="compactionResponsibility"/>
+        <result property="implementGuarantee" column="implementGuarantee"/>
+        <result property="graspProgress" column="graspTheProgress"/>
+        <result property="firstQuarter" column="thirdQuarter"/>
+        <result property="secondQuarter" column="secondQuarter"/>
+        <result property="thirdQuarter" column="firstQuarter"/>
+        <result property="fourthQuarter" column="fourthQuarter"/>
+        <result property="firstQuarterActuality" column="first_quarter_actuality"/>
+        <result property="secondQuarterActuality" column="second_quarter_actuality"/>
+        <result property="thirdQuarterActuality" column="third_quarter_actuality"/>
+        <result property="fourthQuarterActuality" column="fourth_quarter_actuality"/>
+        <result property="engineeringLayoutImage" column="engineeringLayoutImageUrl"/>
+    </resultMap>
+
+</mapper>

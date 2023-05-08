@@ -111,8 +111,8 @@ public class QlOutboundBo extends BaseEntity {
     /**
      * 进货价
      */
-    @NotNull(message = "进货价不能为空", groups = { AddGroup.class, EditGroup.class })
-    private BigDecimal incomePrice;
+    @NotNull(message = "销售价不能为空", groups = { AddGroup.class, EditGroup.class })
+    private BigDecimal salePrice;
 
     /**
      * 附加价格
@@ -159,7 +159,6 @@ public class QlOutboundBo extends BaseEntity {
     /**
      * 出库数量
      */
-    @NotNull(message = "出库数量不能为空", groups = { AddGroup.class, EditGroup.class })
     private BigDecimal outboundNumber;
 
     /**
@@ -172,5 +171,15 @@ public class QlOutboundBo extends BaseEntity {
      */
     private Long deptId;
 
+    /**
+     * 项目id
+     */
+    @NotBlank(message = "项目id不能为空", groups = { AddGroup.class, EditGroup.class })
+    private String projectId;
 
+    /**
+     * 项目名称
+     */
+    @NotBlank(message = "项目名称不能为空", groups = { AddGroup.class, EditGroup.class })
+    private String projectName;
 }

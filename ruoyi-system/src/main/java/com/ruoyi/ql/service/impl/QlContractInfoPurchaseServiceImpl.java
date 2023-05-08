@@ -87,7 +87,7 @@ public class QlContractInfoPurchaseServiceImpl implements IQlContractInfoPurchas
     private LambdaQueryWrapper<QlContractInfoPurchase> buildQueryWrapper(QlContractInfoPurchaseBo bo) {
         Map<String, Object> params = bo.getParams();
         LambdaQueryWrapper<QlContractInfoPurchase> lqw = Wrappers.lambdaQuery();
-        lqw.eq(StringUtils.isNotBlank(bo.getContractCode()), QlContractInfoPurchase::getContractCode, bo.getContractCode());
+        lqw.like(StringUtils.isNotBlank(bo.getContractCode()), QlContractInfoPurchase::getContractCode, bo.getContractCode());
         lqw.like(StringUtils.isNotBlank(bo.getContractName()), QlContractInfoPurchase::getContractName, bo.getContractName());
         lqw.like(StringUtils.isNotBlank(bo.getSupplierName()), QlContractInfoPurchase::getSupplierName, bo.getSupplierName());
         lqw.eq(StringUtils.isNotBlank(bo.getContactPerson()), QlContractInfoPurchase::getContactPerson, bo.getContactPerson());

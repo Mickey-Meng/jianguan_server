@@ -20,6 +20,10 @@ public enum BusinessType {
      * 修改
      */
     UPDATE,
+    /**
+     * 保存
+     */
+    SAVE,
 
     /**
      * 删除

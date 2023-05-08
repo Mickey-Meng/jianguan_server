@@ -109,7 +109,6 @@ public class QlFinReceivableBo extends BaseEntity {
     /**
      * 附件
      */
-    @NotBlank(message = "附件不能为空", groups = { AddGroup.class, EditGroup.class })
     private String fj;
 
 

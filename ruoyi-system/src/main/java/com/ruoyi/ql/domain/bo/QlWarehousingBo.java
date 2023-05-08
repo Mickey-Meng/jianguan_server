@@ -65,7 +65,6 @@ public class QlWarehousingBo extends BaseEntity {
     /**
      * 入库状态（1：已入库 0 未入库）
      */
-    @NotBlank(message = "入库状态（1：已入库 0 未入库）不能为空", groups = { AddGroup.class, EditGroup.class })
     private String warehousingStatus;
     /**
      * 单价
@@ -168,7 +167,6 @@ public class QlWarehousingBo extends BaseEntity {
     /**
      * 附件--进货基准价截图
      */
-    @NotBlank(message = "附件--进货基准价截图不能为空", groups = { AddGroup.class, EditGroup.class })
     private String fj;
 
     /**
@@ -182,4 +180,17 @@ public class QlWarehousingBo extends BaseEntity {
      */
     @NotNull(message = "最后付款日期不能为空", groups = { AddGroup.class, EditGroup.class })
     private Date lastPaymentDate;
+
+
+    /**
+     * 规格
+     */
+    @NotBlank(message = "规格不能为空", groups = { AddGroup.class, EditGroup.class })
+    private String goodsSearchstandard;
+
+    /**
+     * 单位
+     */
+    @NotBlank(message = "单位不能为空", groups = { AddGroup.class, EditGroup.class })
+    private String goodsUnit;
 }

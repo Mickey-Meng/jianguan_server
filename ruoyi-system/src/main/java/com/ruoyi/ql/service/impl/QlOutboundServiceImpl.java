@@ -74,7 +74,6 @@ public class QlOutboundServiceImpl implements IQlOutboundService {
         lqw.eq(StringUtils.isNotBlank(bo.getGoodsSearchstandard()), QlOutbound::getGoodsSearchstandard, bo.getGoodsSearchstandard());
         lqw.eq(StringUtils.isNotBlank(bo.getGoodsUnit()), QlOutbound::getGoodsUnit, bo.getGoodsUnit());
         lqw.eq(bo.getBasePrice() != null, QlOutbound::getBasePrice, bo.getBasePrice());
-        lqw.eq(bo.getIncomePrice() != null, QlOutbound::getIncomePrice, bo.getIncomePrice());
         lqw.eq(bo.getExtraPrice() != null, QlOutbound::getExtraPrice, bo.getExtraPrice());
         lqw.eq(StringUtils.isNotBlank(bo.getFj()), QlOutbound::getFj, bo.getFj());
         lqw.eq(bo.getSaleDate() != null, QlOutbound::getSaleDate, bo.getSaleDate());
@@ -83,6 +82,8 @@ public class QlOutboundServiceImpl implements IQlOutboundService {
         lqw.like(StringUtils.isNotBlank(bo.getOutboundUsername()), QlOutbound::getOutboundUsername, bo.getOutboundUsername());
         lqw.eq(StringUtils.isNotBlank(bo.getOutboundReleaseuser()), QlOutbound::getOutboundReleaseuser, bo.getOutboundReleaseuser());
         lqw.eq(bo.getOutboundNumber() != null, QlOutbound::getOutboundNumber, bo.getOutboundNumber());
+        lqw.eq(StringUtils.isNotBlank(bo.getProjectId()), QlOutbound::getProjectId, bo.getProjectId());
+        lqw.like(StringUtils.isNotBlank(bo.getProjectName()), QlOutbound::getProjectName, bo.getProjectName());
         return lqw;
     }
 

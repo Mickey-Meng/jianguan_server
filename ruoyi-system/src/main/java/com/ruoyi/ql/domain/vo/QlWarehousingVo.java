@@ -200,4 +200,17 @@ public class QlWarehousingVo {
     @ExcelProperty(value = "最后付款日期")
     @ApiModelProperty(value = "最后付款日期", required = true)
     private Date lastPaymentDate;
+    /**
+     * 规格
+     */
+    @ExcelProperty(value = "规格")
+    @ApiModelProperty(value = "规格", required = true)
+    private String goodsSearchstandard;
+
+    /**
+     * 单位
+     */
+    @ExcelProperty(value = "单位")
+    @ApiModelProperty(value = "单位", required = true)
+    private String goodsUnit;
 }

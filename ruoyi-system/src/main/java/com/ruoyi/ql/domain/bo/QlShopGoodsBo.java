@@ -43,7 +43,6 @@ public class QlShopGoodsBo extends BaseEntity {
     /**
      * 商品类别ID
      */
-    @NotNull(message = "商品类别ID不能为空", groups = { AddGroup.class, EditGroup.class })
     private Long goodsTypeId;
 
     /**
@@ -83,7 +82,7 @@ public class QlShopGoodsBo extends BaseEntity {
     /**
      * 商品单位【关联字典管理】
      */
-    @NotBlank(message = "商品单位【关联字典管理】不能为空", groups = { AddGroup.class, EditGroup.class })
+    @NotBlank(message = "商品单位不能为空", groups = { AddGroup.class, EditGroup.class })
     private String goodsUnit;
 
     /**
