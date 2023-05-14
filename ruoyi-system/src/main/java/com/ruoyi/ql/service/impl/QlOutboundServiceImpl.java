@@ -1,23 +1,24 @@
 package com.ruoyi.ql.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.common.core.page.TableDataInfo;
-import com.ruoyi.common.core.domain.PageQuery;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.ruoyi.common.core.domain.PageQuery;
+import com.ruoyi.common.core.page.TableDataInfo;
+import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.ql.domain.QlOutbound;
 import com.ruoyi.ql.domain.bo.QlOutboundBo;
 import com.ruoyi.ql.domain.vo.QlOutboundVo;
-import com.ruoyi.ql.domain.QlOutbound;
 import com.ruoyi.ql.mapper.QlOutboundMapper;
+import com.ruoyi.ql.mapstruct.OutboundAndWarehousingMapstruct;
 import com.ruoyi.ql.service.IQlOutboundService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Collection;
 
 /**
  * 出库管理Service业务层处理
@@ -101,6 +102,12 @@ public class QlOutboundServiceImpl implements IQlOutboundService {
         return flag;
     }
 
+    @Override
+    public void batchInsertBo(List<QlOutboundBo> bos) {
+        List<QlOutbound> entity = OutboundAndWarehousingMapstruct.INSTANCES.toEos(bos);
+        baseMapper.insertBatch(entity);
+    }
+
     /**
      * 修改出库管理
      */
@@ -128,4 +135,6 @@ public class QlOutboundServiceImpl implements IQlOutboundService {
         }
         return baseMapper.deleteBatchIds(ids) > 0;
     }
+
+
 }

@@ -55,6 +55,8 @@ public interface ISysMenuService {
      */
     List<SysMenu> selectMenuTreeByUserId(Long userId);
 
+    List<SysMenu> selectWebMenuTreeByUserId(Long userId);
+
     /**
      * 根据角色ID查询菜单树信息
      *

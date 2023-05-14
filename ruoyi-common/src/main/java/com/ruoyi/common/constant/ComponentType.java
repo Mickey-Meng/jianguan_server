@@ -640,7 +640,7 @@ public class ComponentType {
                 produceRecord.setThree(status);
                 produceRecord.setThreeTime(produceandrecodeindex.getStime());
             }
-        }else if("DXL".equals(type)){
+        } else if("DXL".equals(type)){
             Produce produce = collect2.get(produceandrecodeindex.getProduceid()).get(0);
             if(produce.getRange()==1){
                 produceRecord.setOne(status);
@@ -1413,6 +1413,22 @@ public class ComponentType {
             if(produce.getRange()==1){
                 produceRecord.setOne(status);
                 produceRecord.setOneTime(produceandrecodeindex.getStime());
+            }
+        }else{
+            // add yangaogao  20230510 没看懂以上的if有啥作用，理论上无需判断构建类型，但是目前仅支持最多四层工序
+            Produce produce = collect2.get(produceandrecodeindex.getProduceid()).get(0);
+            if(produce.getRange()==1){
+                produceRecord.setOne(status);
+                produceRecord.setOneTime(produceandrecodeindex.getStime());
+            }else if(produce.getRange()==2){
+                produceRecord.setTwo(status);
+                produceRecord.setTwoTime(produceandrecodeindex.getStime());
+            }else if(produce.getRange()==3){
+                produceRecord.setThree(status);
+                produceRecord.setThreeTime(produceandrecodeindex.getStime());
+            }else if(produce.getRange()==4){
+                produceRecord.setThree(status);
+                produceRecord.setThreeTime(produceandrecodeindex.getStime());
             }
         }
     }

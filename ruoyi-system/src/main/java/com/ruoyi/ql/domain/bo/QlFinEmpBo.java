@@ -54,7 +54,6 @@ public class QlFinEmpBo extends BaseEntity {
     /**
      * 基础工资
      */
-    @NotNull(message = "基础工资不能为空", groups = { AddGroup.class, EditGroup.class })
     private Long empBasepay;
 
     /**

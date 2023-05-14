@@ -49,6 +49,7 @@ public class EnterExitPageVo extends NewBaseVo {
      */
     @ApiModelProperty(value = "施工单位")
     private Set<String> buildUnits;
+    private String constructDept;// yangaogao 20230512 这个是施工单位
 
     /**
      * 报审类型 0 进场 1退场

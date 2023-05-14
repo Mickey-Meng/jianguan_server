@@ -739,10 +739,13 @@ public class ProduceService {
         if(type == 2){
             produceandrecodeList = produceandrecodeDAO.getRecodeModelByUpdateUser(userid, projectId);
         }
+
         //排序
-        Comparator<Produceandrecode> comparator =
+/*        Comparator<Produceandrecode> comparator =
                 (t1, t2) -> t1.getUpdatetime().compareTo(t2.getUpdatetime());
-        produceandrecodeList.sort(comparator.reversed());
+        produceandrecodeList.sort(comparator.reversed());*/
+
+
         if(produceandrecodeList.size()==0){
             return  new ResponseBase(200,"没查询到数据");
         }
@@ -985,6 +988,7 @@ public class ProduceService {
                     List<Date> times = Lists.newArrayList();
                     if (l.getOneTime() != null && !l.getOneTime().equals("")){
                         times.add(l.getOneTime());
+
                     }
                     if (l.getTwoTime() != null && !l.getTwoTime().equals("")){
                         times.add(l.getTwoTime());
@@ -1007,7 +1011,7 @@ public class ProduceService {
 
                 //最后对maxTime进行倒叙排列
                 listss.sort(Comparator.comparing(ProduceRecord::getMaxTime, Comparator.reverseOrder()));
-
+//
                 List<Head> tohead = tohead(type);
                 Collections.sort(tohead);
                 Map<String,Object> data = new HashMap<>();

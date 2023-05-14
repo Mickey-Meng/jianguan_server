@@ -24,6 +24,8 @@ import com.ruoyi.common.core.domain.object.ResponseBase;
 import com.ruoyi.flowable.domain.dto.FlowTaskCommentDto;
 import com.ruoyi.flowable.service.FlowStaticPageService;
 import com.ruoyi.common.core.sequence.util.IdUtil;
+import com.ruoyi.jianguan.manage.project.domain.vo.JgProjectItemVo;
+import com.ruoyi.jianguan.manage.project.service.IJgProjectItemService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -53,7 +55,7 @@ public class SubitemOpenServiceImpl extends ServiceImpl<SubitemOpenMapper, Subit
     private ZjFGroupsProjectsService projectsService;
     @Autowired
     private FlowStaticPageService flowStaticPageService;
-
+    private IJgProjectItemService jgProjectItemService;
     /**
      * 新增或者更新分项开工申请数据
      *
@@ -183,13 +185,17 @@ public class SubitemOpenServiceImpl extends ServiceImpl<SubitemOpenMapper, Subit
         PageHelper.startPage(pageDto.getPageNum(), pageDto.getPageSize());
         List<SubitemOpenPageVo> pageVoList = subitemOpenMapper.getPageInfo(pageDto);
         //非空
+        JgProjectItemVo jgProjectItemVo = jgProjectItemService.queryById(pageDto.getProjectId().longValue()) ;
+        String constructDept = jgProjectItemVo.getConstructDept();
         if (Objects.nonNull(pageVoList) && !pageVoList.isEmpty()) {
-            CompanyInfo companyInfo = projectsService.getCompanyInfoByProjectId(pageDto.getProjectId());
+//            CompanyInfo companyInfo = projectsService.getCompanyInfoByProjectId(pageDto.getProjectId());
             //施工单位
-            Set<String> sgdws = companyInfo.getSgdws();
+//            Set<String> sgdws = companyInfo.getSgdws();
             pageVoList.forEach(pageVo -> {
+
                 //施工单位
-                pageVo.setBuildUnits(sgdws);
+//                pageVo.setBuildUnits(constructDept);
+                pageVo.setConstructdpts(constructDept);
                 //状态
                 pageVo.setStatusStr(pageVo.getStatus() == 0 ? "进行中" : "已完成");
             });

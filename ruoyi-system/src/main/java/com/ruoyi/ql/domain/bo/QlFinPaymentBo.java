@@ -1,17 +1,17 @@
 package com.ruoyi.ql.domain.bo;
 
+import com.ruoyi.common.core.domain.BaseEntity;
 import com.ruoyi.common.core.validate.AddGroup;
 import com.ruoyi.common.core.validate.EditGroup;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import javax.validation.constraints.*;
 
-import java.util.Date;
-
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.Date;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.ruoyi.common.core.domain.BaseEntity;
+import java.util.List;
 
 /**
  * 供应商付款业务对象 ql_fin_payment
@@ -37,8 +37,8 @@ public class QlFinPaymentBo extends BaseEntity {
     /**
      * 合同编号
      */
-    @NotBlank(message = "合同编号不能为空", groups = { AddGroup.class, EditGroup.class })
-    private String contractCode;
+//    @NotBlank(message = "合同编号不能为空", groups = { AddGroup.class, EditGroup.class })
+//    private String contractCode;
     /**
      * 合同名称
      */
@@ -47,18 +47,18 @@ public class QlFinPaymentBo extends BaseEntity {
     /**
      * 供应商id
      */
-    private String supplierId;
+//    private String supplierId;
     /**
      * 供应商名称
      */
-    @NotBlank(message = "供应商名称不能为空", groups = { AddGroup.class, EditGroup.class })
-    private String supplierName;
+//    @NotBlank(message = "供应商名称不能为空", groups = { AddGroup.class, EditGroup.class })
+//    private String supplierName;
 
 
     /**
      * 本次付款金额
      */
-    @NotNull(message = "本次付款金额不能为空", groups = { AddGroup.class, EditGroup.class })
+//    @NotNull(message = "本次付款金额不能为空", groups = { AddGroup.class, EditGroup.class })
     private BigDecimal payAmount;
 
     /**
@@ -114,6 +114,12 @@ public class QlFinPaymentBo extends BaseEntity {
     /**
      * 入库单号
      */
-    @NotBlank(message = "入库单号不能为空", groups = { AddGroup.class, EditGroup.class })
-    private String warehousingCode;
+//    @NotBlank(message = "入库单号不能为空", groups = { AddGroup.class, EditGroup.class })
+//    private String warehousingCode;
+
+    /**
+     * 付款与入库关系集合
+     */
+    @NotEmpty(message = "付款与入库关系集合不能为空", groups = { AddGroup.class, EditGroup.class })
+    private List<QlPaymentWarehousingRelBo> paymentWarehousingRels;
 }

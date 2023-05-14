@@ -27,6 +27,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updateTime" column="update_time"/>
         <result property="remark" column="remark"/>
         <result property="deptId" column="dept_id"/>
+        <result property="accountPeriod" column="account_period"/>
     </resultMap>
 
 

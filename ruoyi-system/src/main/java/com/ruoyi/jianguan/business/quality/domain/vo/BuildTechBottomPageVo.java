@@ -49,6 +49,7 @@ public class BuildTechBottomPageVo extends NewBaseVo {
      */
     @ApiModelProperty(value = "施工单位")
     private Set<String> buildUnits;
+    private String constructdpts;
 
     /**
      * 登记时间

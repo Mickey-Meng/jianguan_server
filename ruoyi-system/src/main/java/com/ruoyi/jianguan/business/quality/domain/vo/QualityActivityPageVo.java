@@ -48,7 +48,7 @@ public class QualityActivityPageVo extends NewBaseVo {
      */
     @ApiModelProperty(value = "施工单位")
     private Set<String> buildUnits;
-
+    private String constructdpts;
     /**
      * 活动内容概述
      */

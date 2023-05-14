@@ -28,6 +28,8 @@ import com.ruoyi.jianguan.business.contract.service.EquipmentInfoService;
 import com.ruoyi.flowable.domain.dto.FlowTaskCommentDto;
 import com.ruoyi.flowable.service.FlowStaticPageService;
 import com.ruoyi.flowable.service.ZjFGroupsProjectsService;
+import com.ruoyi.jianguan.manage.project.domain.vo.JgProjectItemVo;
+import com.ruoyi.jianguan.manage.project.service.IJgProjectItemService;
 import org.apache.commons.compress.utils.Lists;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,6 +64,9 @@ public class EquipmentEnterServiceImpl extends ServiceImpl<EquipmentEnterMapper,
 
     @Autowired
     private EquipmentInfoService equipmentInfoService;
+    @Autowired
+    private IJgProjectItemService jgProjectItemService;
+
 
     /**
      * 新增或者更新设备进场报验数据
@@ -173,17 +178,23 @@ public class EquipmentEnterServiceImpl extends ServiceImpl<EquipmentEnterMapper,
         //非空
         if (Objects.nonNull(pageVoList) && !pageVoList.isEmpty()) {
             //通过项目id获取施工单位 监理单位等
-            CompanyInfo companyInfo = projectsService.getCompanyInfoByProjectId(pageDto.getProjectId());
+//            CompanyInfo companyInfo = projectsService.getCompanyInfoByProjectId(pageDto.getProjectId());
+
+            JgProjectItemVo jgProjectItemVo = jgProjectItemService.queryById(pageDto.getProjectId().longValue()) ;
+            String constructDept = jgProjectItemVo.getConstructDept();
             //施工单位
-            Set<String> sgdws = companyInfo.getSgdws();
+//            Set<String> sgdws = companyInfo.getSgdws();
             //监理单位
-            Set<String> jldws = companyInfo.getJldws();
-            if (Objects.nonNull(sgdws) && !sgdws.isEmpty()) {
+//            Set<String> jldws = companyInfo.getJldws();
+
+            if (Objects.nonNull(constructDept) && !constructDept.isEmpty()) {
                 pageVoList.forEach(pageVo -> {
                     //施工单位
-                    pageVo.setBuildUnits(sgdws);
+//                    pageVo.setBuildUnits(sgdws);
+                    pageVo.setConstructdpts(constructDept);
                     //监理单位
-                    pageVo.setSupervisorUnits(jldws);
+//                    pageVo.setSupervisorUnits(jldws);
+                    pageVo.setSupervisordpts(jgProjectItemVo.getSupervisorDept());
                     //状态
                     if (pageVo.getStatus() == 0) {
                         pageVo.setStatusStr("进行中");

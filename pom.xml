@@ -67,6 +67,13 @@
     <dependencyManagement>
         <dependencies>
 
+            <!-- 添加积木报表依赖 -->
+            <dependency>
+                <groupId>org.jeecgframework.jimureport</groupId>
+                <artifactId>jimureport-spring-boot-starter</artifactId>
+                <version>1.5.6</version>
+            </dependency>
+
             <!-- SpringBoot的依赖配置-->
             <dependency>
                 <groupId>org.springframework.boot</groupId>

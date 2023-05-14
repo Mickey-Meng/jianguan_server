@@ -24,6 +24,8 @@ import com.ruoyi.jianguan.business.quality.service.QualityActivityService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.ruoyi.common.core.domain.object.ResponseBase;
+import com.ruoyi.jianguan.manage.project.domain.vo.JgProjectItemVo;
+import com.ruoyi.jianguan.manage.project.service.IJgProjectItemService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -54,7 +56,8 @@ public class QualityActivityServiceImpl extends ServiceImpl<QualityActivityMappe
 
     @Autowired
     private ZjFGroupsProjectsService projectsService;
-
+    @Autowired
+    private IJgProjectItemService jgProjectItemService;
     /**
      * 新增或者更新质量活动数据
      *
@@ -145,12 +148,15 @@ public class QualityActivityServiceImpl extends ServiceImpl<QualityActivityMappe
         List<QualityActivityPageVo> pageVoList = qualityActivityMapper.getPageInfo(pageDto);
         //非空
         if (Objects.nonNull(pageVoList) && !pageVoList.isEmpty()) {
-            CompanyInfo companyInfo = projectsService.getCompanyInfoByProjectId(pageDto.getProjectId());
+//            CompanyInfo companyInfo = projectsService.getCompanyInfoByProjectId(pageDto.getProjectId());
             //施工单位
-            Set<String> sgdws = companyInfo.getSgdws();
+//            Set<String> sgdws = companyInfo.getSgdws();
+            JgProjectItemVo jgProjectItemVo = jgProjectItemService.queryById(pageDto.getProjectId().longValue()) ;
+            String constructDept = jgProjectItemVo.getConstructDept();
             pageVoList.forEach(pageVo -> {
                 //施工单位
-                pageVo.setBuildUnits(sgdws);
+//                pageVo.setBuildUnits(sgdws);
+                pageVo.setConstructdpts(constructDept);
                 //状态
                 pageVo.setStatusStr(pageVo.getStatus() == 0 ? "进行中" : "已完成");
             });

@@ -1,31 +1,36 @@
 package com.ruoyi.ql.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import com.ruoyi.common.utils.BeanCopyUtils;
-import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.common.core.page.TableDataInfo;
-import com.ruoyi.common.core.domain.PageQuery;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.ruoyi.ql.domain.*;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.ruoyi.common.core.domain.PageQuery;
+import com.ruoyi.common.core.page.TableDataInfo;
+import com.ruoyi.common.utils.BeanCopyUtils;
+import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.ql.domain.QlBasisSupplier;
+import com.ruoyi.ql.domain.QlContractInfoPurchase;
+import com.ruoyi.ql.domain.QlWarehousing;
+import com.ruoyi.ql.domain.bo.QlContractInfoPurchaseBo;
 import com.ruoyi.ql.domain.bo.QlWarehousingBo;
-import com.ruoyi.ql.domain.vo.*;
+import com.ruoyi.ql.domain.vo.QlBasisSupplierVo;
+import com.ruoyi.ql.domain.vo.QlContractInfoPurchaseVo;
+import com.ruoyi.ql.domain.vo.QlWarehousingVo;
 import com.ruoyi.ql.mapper.QlBasisSupplierMapper;
+import com.ruoyi.ql.mapper.QlContractInfoPurchaseMapper;
 import com.ruoyi.ql.mapper.QlFinPaymentMapper;
 import com.ruoyi.ql.mapper.QlWarehousingMapper;
+import com.ruoyi.ql.service.IQlContractInfoPurchaseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import com.ruoyi.ql.domain.bo.QlContractInfoPurchaseBo;
-import com.ruoyi.ql.mapper.QlContractInfoPurchaseMapper;
-import com.ruoyi.ql.service.IQlContractInfoPurchaseService;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Collection;
+import java.util.stream.Collectors;
 
 /**
  * 采购合同 Service业务层处理
@@ -149,7 +154,10 @@ public class QlContractInfoPurchaseServiceImpl implements IQlContractInfoPurchas
         LambdaQueryWrapper<QlWarehousing> qlWarehousingLambdaQueryWrapper = new LambdaQueryWrapper<>();
         qlWarehousingLambdaQueryWrapper.eq(QlWarehousing::getPurchaseOrderId, bo.getContractCode());
         List<QlWarehousing> qlWarehousingBos  = qlWarehousingMapper.selectList(qlWarehousingLambdaQueryWrapper);
-        qlWarehousingMapper.deleteBatchIds(qlWarehousingBos);
+        List<Long> collect = qlWarehousingBos.stream().map(QlWarehousing::getId).collect(Collectors.toList());
+        if (!collect.isEmpty()){
+            qlWarehousingMapper.deleteBatchIds(collect);
+        }
 
 
 

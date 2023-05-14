@@ -98,5 +98,8 @@ public class QlContractInfoPurchase extends BaseEntity {
      * 部门ID
      */
     private Long deptId;
-
+    /**
+     * 账期
+     */
+    private Long accountPeriod;
 }

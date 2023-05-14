@@ -28,6 +28,8 @@ import com.github.pagehelper.PageInfo;
 
 import com.ruoyi.common.core.domain.object.ResponseBase;
 
+import com.ruoyi.jianguan.manage.project.domain.vo.JgProjectItemVo;
+import com.ruoyi.jianguan.manage.project.service.IJgProjectItemService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -62,7 +64,7 @@ public class BuildTechBottomServiceImpl extends ServiceImpl<BuildTechBottomMappe
 
     @Autowired
     private FlowAuditEntryService flowAuditEntryService;
-
+    private IJgProjectItemService jgProjectItemService;
     /**
      * 新增或者更新施工技术交底数据
      *
@@ -154,13 +156,17 @@ public class BuildTechBottomServiceImpl extends ServiceImpl<BuildTechBottomMappe
         //状态转换
         if (Objects.nonNull(pageVoList) && !pageVoList.isEmpty()) {
             //通过项目id获取施工单位 监理单位等
-            CompanyInfo companyInfo = projectsService.getCompanyInfoByProjectId(pageDto.getProjectId());
+//            CompanyInfo companyInfo = projectsService.getCompanyInfoByProjectId(pageDto.getProjectId());
+            JgProjectItemVo jgProjectItemVo = jgProjectItemService.queryById(pageDto.getProjectId().longValue()) ;
+            String constructDept = jgProjectItemVo.getConstructDept();
             //施工单位
-            Set<String> sgdws = companyInfo.getSgdws();
-            if (Objects.nonNull(sgdws) && !sgdws.isEmpty()) {
+//            Set<String> sgdws = companyInfo.getSgdws();
+
+            if (Objects.nonNull(constructDept) && !constructDept.isEmpty()) {
                 pageVoList.forEach(pageVo -> {
                     //施工单位
-                    pageVo.setBuildUnits(sgdws);
+//                    pageVo.setBuildUnits(sgdws);
+                    pageVo.setConstructdpts(constructDept);
                     //状态
                     if (pageVo.getStatus() == 0) {
                         pageVo.setStatusStr("进行中");

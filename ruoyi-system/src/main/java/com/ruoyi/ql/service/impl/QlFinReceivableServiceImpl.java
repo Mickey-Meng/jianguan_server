@@ -1,12 +1,25 @@
 package com.ruoyi.ql.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.ObjectUtil;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.core.domain.PageQuery;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.ruoyi.ql.domain.QlPaymentWarehousingRel;
+import com.ruoyi.ql.domain.QlReceivableOutboundRel;
+import com.ruoyi.ql.domain.bo.QlPaymentWarehousingRelBo;
+import com.ruoyi.ql.domain.bo.QlReceivableOutboundRelBo;
+import com.ruoyi.ql.domain.vo.QlFinPaymentVo;
+import com.ruoyi.ql.domain.vo.QlPaymentWarehousingRelVo;
+import com.ruoyi.ql.domain.vo.QlReceivableOutboundRelVo;
+import com.ruoyi.ql.mapper.QlPaymentWarehousingRelMapper;
+import com.ruoyi.ql.mapper.QlReceivableOutboundRelMapper;
+import com.ruoyi.ql.service.IQlPaymentWarehousingRelService;
+import com.ruoyi.ql.service.IQlReceivableOutboundRelService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import com.ruoyi.ql.domain.bo.QlFinReceivableBo;
@@ -15,9 +28,11 @@ import com.ruoyi.ql.domain.QlFinReceivable;
 import com.ruoyi.ql.mapper.QlFinReceivableMapper;
 import com.ruoyi.ql.service.IQlFinReceivableService;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 /**
  * 收款记录Service业务层处理
@@ -31,12 +46,21 @@ public class QlFinReceivableServiceImpl implements IQlFinReceivableService {
 
     private final QlFinReceivableMapper baseMapper;
 
+    private final IQlReceivableOutboundRelService receivableOutboundRelService;
+
+    private final QlReceivableOutboundRelMapper receivableOutboundRelMapper;
+
     /**
      * 查询收款记录
      */
     @Override
     public QlFinReceivableVo queryById(Long id){
-        return baseMapper.selectVoById(id);
+        QlFinReceivableVo qlFinReceivableVo = baseMapper.selectVoById(id);
+        QlReceivableOutboundRelBo qlReceivableOutboundRelBo = new QlReceivableOutboundRelBo();
+        qlReceivableOutboundRelBo.setReceivableId(qlFinReceivableVo.getId());
+        List<QlReceivableOutboundRelVo> qlReceivableOutboundRelVos = receivableOutboundRelService.queryList(qlReceivableOutboundRelBo);
+        qlFinReceivableVo.setReceivableOutboundRels(qlReceivableOutboundRelVos);
+        return qlFinReceivableVo;
     }
 
     /**
@@ -46,7 +70,28 @@ public class QlFinReceivableServiceImpl implements IQlFinReceivableService {
     public TableDataInfo<QlFinReceivableVo> queryPageList(QlFinReceivableBo bo, PageQuery pageQuery) {
         LambdaQueryWrapper<QlFinReceivable> lqw = buildQueryWrapper(bo);
         Page<QlFinReceivableVo> result = baseMapper.selectVoPage(pageQuery.build(), lqw);
+        if(ObjectUtil.isNull(result) || CollUtil.isEmpty(result.getRecords())) {
+            return TableDataInfo.build(result);
+        }
+        findReceivableOutboundRels(result.getRecords());
         return TableDataInfo.build(result);
+    }
+
+    private void findReceivableOutboundRels(List<QlFinReceivableVo> finReceivableVos) {
+        List<Long> receivableIds = finReceivableVos.stream().map(QlFinReceivableVo::getId).collect(Collectors.toList());
+        QlReceivableOutboundRelBo receivableOutboundRelBo = new QlReceivableOutboundRelBo();
+        receivableOutboundRelBo.setReceivableIds(receivableIds);
+        List<QlReceivableOutboundRelVo> receivableOutboundRelVos = receivableOutboundRelService.queryList(receivableOutboundRelBo);
+        if (CollUtil.isEmpty(receivableOutboundRelVos)) {
+            return;
+        }
+        Map<Long, List<QlReceivableOutboundRelVo>> receivableOutboundRelMap = receivableOutboundRelVos.stream().collect(Collectors.groupingBy(QlReceivableOutboundRelVo::getReceivableId));
+        for (QlFinReceivableVo finReceivableVo : finReceivableVos) {
+            if (!receivableOutboundRelMap.containsKey(finReceivableVo.getId())) {
+                continue;
+            }
+            finReceivableVo.setReceivableOutboundRels(receivableOutboundRelMap.get(finReceivableVo.getId()));
+        }
     }
 
     /**
@@ -55,7 +100,12 @@ public class QlFinReceivableServiceImpl implements IQlFinReceivableService {
     @Override
     public List<QlFinReceivableVo> queryList(QlFinReceivableBo bo) {
         LambdaQueryWrapper<QlFinReceivable> lqw = buildQueryWrapper(bo);
-        return baseMapper.selectVoList(lqw);
+        List<QlFinReceivableVo> qlFinReceivableVos = baseMapper.selectVoList(lqw);
+        if(CollUtil.isEmpty(qlFinReceivableVos)) {
+            return qlFinReceivableVos;
+        }
+        findReceivableOutboundRels(qlFinReceivableVos);
+        return qlFinReceivableVos;
     }
 
     private LambdaQueryWrapper<QlFinReceivable> buildQueryWrapper(QlFinReceivableBo bo) {
@@ -87,6 +137,10 @@ public class QlFinReceivableServiceImpl implements IQlFinReceivableService {
         if (flag) {
             bo.setId(add.getId());
         }
+        for (QlReceivableOutboundRelBo receivableOutboundRelBo : bo.getReceivableOutboundRels()) {
+            receivableOutboundRelBo.setReceivableId(add.getId());
+            receivableOutboundRelService.insertByBo(receivableOutboundRelBo);
+        }
         return flag;
     }
 
@@ -96,7 +150,20 @@ public class QlFinReceivableServiceImpl implements IQlFinReceivableService {
     @Override
     public Boolean updateByBo(QlFinReceivableBo bo) {
         QlFinReceivable update = BeanUtil.toBean(bo, QlFinReceivable.class);
+        BigDecimal amount = bo.getReceivableOutboundRels().stream().map(QlReceivableOutboundRelBo::getAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
+        update.setReceivableAmount(amount);
         validEntityBeforeSave(update);
+        LambdaQueryWrapper<QlReceivableOutboundRel> ql = new LambdaQueryWrapper<>();
+        ql.eq(QlReceivableOutboundRel::getReceivableId, bo.getId());
+        List<QlReceivableOutboundRel> receivableOutboundRels = receivableOutboundRelMapper.selectList(ql);
+        if(CollUtil.isNotEmpty(receivableOutboundRels)) {
+            receivableOutboundRelMapper.deleteBatchIds(receivableOutboundRels);
+        }
+        for (QlReceivableOutboundRelBo receivableOutboundRelBo : bo.getReceivableOutboundRels()) {
+            receivableOutboundRelBo.setId(null);
+            receivableOutboundRelBo.setReceivableId(bo.getId());
+            receivableOutboundRelService.insertByBo(receivableOutboundRelBo);
+        }
         return baseMapper.updateById(update) > 0;
     }
 

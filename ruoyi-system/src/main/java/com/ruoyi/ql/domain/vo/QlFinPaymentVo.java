@@ -7,10 +7,11 @@ import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.ruoyi.common.annotation.ExcelDictFormat;
 import com.ruoyi.common.convert.ExcelDictConvert;
+import com.ruoyi.ql.domain.QlPaymentWarehousingRel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import java.util.Date;
-
+import java.util.List;
 
 
 /**
@@ -128,4 +129,11 @@ public class QlFinPaymentVo {
     @ExcelProperty(value = "入库单号")
     @ApiModelProperty(value = "入库单号", required = true)
     private String warehousingCode;
+
+    /**
+     * 付款与入库关系集合
+     */
+    @ExcelProperty(value = "付款与入库关系集合")
+    @ApiModelProperty(value = "付款与入库关系集合", required = true)
+    private List<QlPaymentWarehousingRelVo> paymentWarehousingRels;
 }

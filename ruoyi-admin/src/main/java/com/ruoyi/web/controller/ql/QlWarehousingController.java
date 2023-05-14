@@ -1,29 +1,34 @@
 package com.ruoyi.web.controller.ql;
 
-import java.util.List;
-import java.util.Arrays;
-import java.util.concurrent.TimeUnit;
-
-import lombok.RequiredArgsConstructor;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.*;
 import cn.dev33.satoken.annotation.SaCheckPermission;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.validation.annotation.Validated;
-import com.ruoyi.common.annotation.RepeatSubmit;
+import cn.hutool.poi.excel.ExcelReader;
 import com.ruoyi.common.annotation.Log;
+import com.ruoyi.common.annotation.RepeatSubmit;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.PageQuery;
 import com.ruoyi.common.core.domain.R;
+import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.core.validate.AddGroup;
 import com.ruoyi.common.core.validate.EditGroup;
-import com.ruoyi.common.core.validate.QueryGroup;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.poi.ExcelUtil;
-import com.ruoyi.ql.domain.vo.QlWarehousingVo;
 import com.ruoyi.ql.domain.bo.QlWarehousingBo;
+import com.ruoyi.ql.domain.vo.QlWarehousingVo;
+import com.ruoyi.ql.domain.vo.WarehousingVo;
+import com.ruoyi.ql.mapstruct.OutboundAndWarehousingMapstruct;
 import com.ruoyi.ql.service.IQlWarehousingService;
-import com.ruoyi.common.core.page.TableDataInfo;
+import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * 入库管理
@@ -57,6 +62,17 @@ public class QlWarehousingController extends BaseController {
     public void export(QlWarehousingBo bo, HttpServletResponse response) {
         List<QlWarehousingVo> list = iQlWarehousingService.queryList(bo);
         ExcelUtil.exportExcel(list, "入库管理", QlWarehousingVo.class, response);
+    }
+    /**
+     * 入库单 明细导入
+     */
+    @PostMapping("/import")
+    public void uploadExcel(MultipartFile file) throws IOException {
+        InputStream inputStream = file.getInputStream();
+        ExcelReader reader = cn.hutool.poi.excel.ExcelUtil.getReader(inputStream);
+        List<WarehousingVo> dmsOpsList = reader.read(2, 3, Integer.MAX_VALUE, WarehousingVo.class);
+        List<QlWarehousingBo> entity = OutboundAndWarehousingMapstruct.INSTANCES.toBQlWarehousingBos(dmsOpsList);
+        iQlWarehousingService.batchInsertBo(entity);
     }
 
     /**

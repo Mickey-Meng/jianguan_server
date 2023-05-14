@@ -692,15 +692,20 @@ public class CountService {
             return new ResponseBase(602, "该单位工程code在不属于该项目!");
         }
         //截取前端传的
-        String project = projectcode.substring(0, 2);
+//        String project = projectcode.substring(0, 2);
         List<PjGirst> pjFirsts = Lists.newArrayList();
-        if (project.equals("QL")) {
+        SsFProjects ssFProjects = projectsDAO.getProjectById(projectId);
+        String projecttype = ssFProjects.getProjecttype();
+
+        pjFirsts = zjConponentProducetimeDao.getAllByProJectType(projectcode,projecttype);
+
+        /*if (project.equals("QL")) {
             pjFirsts = zjConponentProducetimeDao.getAllByProJectSX(projectcode);
         } else if (project.equals("SD")) {
             pjFirsts = zjConponentProducetimeDao.getAllByProJectSD(projectcode);
         } else {
             pjFirsts = zjConponentProducetimeDao.getAllByProJectLM(projectcode);
-        }
+        }*/
         Map<String, List<PjGirst>> collect = pjFirsts.stream().collect(Collectors.groupingBy(PjGirst::gettype));
         List<PjGirst> list = new ArrayList<>();
         collect.forEach((key, value) -> {

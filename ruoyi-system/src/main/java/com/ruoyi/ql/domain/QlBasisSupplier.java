@@ -1,14 +1,13 @@
 package com.ruoyi.ql.domain;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.ruoyi.common.core.domain.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import java.io.Serializable;
-import java.util.Date;
-import java.math.BigDecimal;
 
 import java.math.BigDecimal;
-import com.ruoyi.common.core.domain.BaseEntity;
 
 /**
  * 供应商管理对象 ql_basis_supplier
@@ -36,6 +35,12 @@ public class QlBasisSupplier extends BaseEntity {
      * 供应商编码
      */
     private String supplierCode;
+
+    /**
+     * 营业执照
+     */
+    private String fj;
+
     /**
      * 供应商名称
      */

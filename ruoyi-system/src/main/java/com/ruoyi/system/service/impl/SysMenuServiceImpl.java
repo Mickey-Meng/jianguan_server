@@ -134,7 +134,12 @@ public class SysMenuServiceImpl implements ISysMenuService {
         }
         return getChildPerms(menus, 0);
     }
-
+    @Override
+    public List<SysMenu> selectWebMenuTreeByUserId(Long userId) {
+        List<SysMenu> menus = null;
+        menus = baseMapper.selectWebMenuTreeByUserId(userId);
+        return getChildPerms(menus, 25);
+    }
     /**
      * 根据角色ID查询菜单树信息
      *

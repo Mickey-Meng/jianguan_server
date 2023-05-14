@@ -54,6 +54,8 @@ public class EquipmentExitPageVo extends NewBaseVo {
      */
     @ApiModelProperty(value = "施工单位")
     private Set<String> buildUnits;
+
+    private String constructdpts;
     /**
      * 合同编号
      */
@@ -64,6 +66,7 @@ public class EquipmentExitPageVo extends NewBaseVo {
      */
     @ApiModelProperty(value = "监理单位")
     private Set<String> supervisorUnits;
+    private String supervisordpts;
     /**
      * 状态
      */

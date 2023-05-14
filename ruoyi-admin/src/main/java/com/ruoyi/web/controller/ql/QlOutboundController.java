@@ -1,31 +1,34 @@
 package com.ruoyi.web.controller.ql;
 
-import java.util.List;
-import java.util.Arrays;
-import java.util.concurrent.TimeUnit;
-
-import lombok.RequiredArgsConstructor;
-
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.*;
-
 import cn.dev33.satoken.annotation.SaCheckPermission;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.validation.annotation.Validated;
-import com.ruoyi.common.annotation.RepeatSubmit;
+import cn.hutool.poi.excel.ExcelReader;
 import com.ruoyi.common.annotation.Log;
+import com.ruoyi.common.annotation.RepeatSubmit;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.PageQuery;
 import com.ruoyi.common.core.domain.R;
+import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.core.validate.AddGroup;
 import com.ruoyi.common.core.validate.EditGroup;
-import com.ruoyi.common.core.validate.QueryGroup;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.poi.ExcelUtil;
-import com.ruoyi.ql.domain.vo.QlOutboundVo;
 import com.ruoyi.ql.domain.bo.QlOutboundBo;
+import com.ruoyi.ql.domain.vo.OutboundVo;
+import com.ruoyi.ql.domain.vo.QlOutboundVo;
+import com.ruoyi.ql.mapstruct.OutboundAndWarehousingMapstruct;
 import com.ruoyi.ql.service.IQlOutboundService;
-import com.ruoyi.common.core.page.TableDataInfo;
+import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * 出库管理
@@ -60,6 +63,17 @@ public class QlOutboundController extends BaseController {
         return iQlOutboundService.queryPageList(bo, pageQuery);
     }
 
+    /**
+     * 出库单 明细导入
+     */
+    @PostMapping("/import")
+    public void uploadExcel(MultipartFile file) throws IOException {
+        InputStream inputStream = file.getInputStream();
+        ExcelReader reader = cn.hutool.poi.excel.ExcelUtil.getReader(inputStream);
+        List<OutboundVo> dmsOpsList = reader.read(2, 3, Integer.MAX_VALUE, OutboundVo.class);
+        List<QlOutboundBo> entity = OutboundAndWarehousingMapstruct.INSTANCES.toBos(dmsOpsList);
+        iQlOutboundService.batchInsertBo(entity);
+    }
 
     /**
      * 导出出库管理列表

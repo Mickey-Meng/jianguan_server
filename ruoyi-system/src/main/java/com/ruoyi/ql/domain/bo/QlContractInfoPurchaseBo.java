@@ -119,5 +119,9 @@ public class QlContractInfoPurchaseBo extends BaseEntity {
      */
     private Long deptId;
     private List<QlWarehousingBo> qlWarehousingBos;
-
+    /**
+     * 账期
+     */
+    @NotNull(message = "账期不能为空", groups = { AddGroup.class, EditGroup.class })
+    private Long accountPeriod;
 }

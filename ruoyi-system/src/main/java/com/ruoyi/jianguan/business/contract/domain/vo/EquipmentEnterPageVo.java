@@ -56,7 +56,9 @@ public class EquipmentEnterPageVo extends NewBaseVo {
      * 施工单位
      */
     @ApiModelProperty(value = "施工单位")
-    private Set<String> buildUnits;
+//    private Set<String> buildUnits;
+    // add yangaogao  20230512 添加施工单位，暂时废弃buildUnits字段，
+    private String constructdpts;
     /**
      * 合同编号
      */
@@ -66,7 +68,8 @@ public class EquipmentEnterPageVo extends NewBaseVo {
      * 监理单位
      */
     @ApiModelProperty(value = "监理单位")
-    private Set<String> supervisorUnits;
+//    private Set<String> supervisorUnits;
+    private String supervisordpts;
     /**
      * 状态
      */

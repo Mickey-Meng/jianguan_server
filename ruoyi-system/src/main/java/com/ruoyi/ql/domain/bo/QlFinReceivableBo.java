@@ -10,6 +10,8 @@ import java.util.Date;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ruoyi.common.core.domain.BaseEntity;
 
@@ -33,37 +35,37 @@ public class QlFinReceivableBo extends BaseEntity {
     /**
      * 合同id
      */
-    @NotBlank(message = "合同id不能为空", groups = { AddGroup.class, EditGroup.class })
+//    @NotBlank(message = "合同id不能为空", groups = { AddGroup.class, EditGroup.class })
     private String contractId;
 
     /**
      * 合同编号
      */
-    @NotBlank(message = "合同编号不能为空", groups = { AddGroup.class, EditGroup.class })
+//    @NotBlank(message = "合同编号不能为空", groups = { AddGroup.class, EditGroup.class })
     private String contractCode;
 
     /**
      * 合同名称
      */
-    @NotBlank(message = "合同名称不能为空", groups = { AddGroup.class, EditGroup.class })
+//    @NotBlank(message = "合同名称不能为空", groups = { AddGroup.class, EditGroup.class })
     private String contractName;
 
     /**
      * 客户id
      */
-    @NotBlank(message = "客户id不能为空", groups = { AddGroup.class, EditGroup.class })
+//    @NotBlank(message = "客户id不能为空", groups = { AddGroup.class, EditGroup.class })
     private String customerId;
 
     /**
      * 客户名称
      */
-    @NotBlank(message = "客户名称不能为空", groups = { AddGroup.class, EditGroup.class })
+//    @NotBlank(message = "客户名称不能为空", groups = { AddGroup.class, EditGroup.class })
     private String customerName;
 
     /**
      * 本次收款款金额
      */
-    @NotNull(message = "本次收款款金额不能为空", groups = { AddGroup.class, EditGroup.class })
+//    @NotNull(message = "本次收款款金额不能为空", groups = { AddGroup.class, EditGroup.class })
     private BigDecimal receivableAmount;
 
     /**
@@ -111,5 +113,7 @@ public class QlFinReceivableBo extends BaseEntity {
      */
     private String fj;
 
+
+    private List<QlReceivableOutboundRelBo> receivableOutboundRels;
 
 }

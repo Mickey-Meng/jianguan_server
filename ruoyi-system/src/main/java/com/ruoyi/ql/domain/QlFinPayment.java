@@ -11,6 +11,8 @@ import java.math.BigDecimal;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ruoyi.common.core.domain.BaseEntity;
 
@@ -103,4 +105,5 @@ public class QlFinPayment extends BaseEntity {
      * 入库单号
      */
     private String warehousingCode;
+
 }

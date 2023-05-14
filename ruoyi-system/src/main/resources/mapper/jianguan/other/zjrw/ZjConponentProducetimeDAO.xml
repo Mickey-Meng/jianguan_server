@@ -594,6 +594,18 @@
 
   </select>
 
+  <select id="getAllByProJectType"  parameterType="java.util.ArrayList"  resultMap="pjData">
+    select count(1) as total ,count(case when actulendtime is not null then 1 end) as finish,
+           projectcode,projectname,
+           pjctype as sxtype,
+           (case when  pjctype is null   then '分部工程是空'
+                 else pjctype end 	) as sxname
+    from zj_conponent_producetime where projectcode = #{projectcode}
+                                    and projecttype = #{projecttype}
+    group by projectcode, projectname, pjctype
+  </select>
+
+
 
   <select id="getAllByProJectSX" resultMap="pjData">
     select
@@ -642,6 +654,8 @@
     and projecttype = 'LM'
     group by projectcode, projectname, pjctype
   </select>
+
+
 
   <select id="getcount" parameterType="java.util.ArrayList" resultType="java.lang.Integer" >
     select

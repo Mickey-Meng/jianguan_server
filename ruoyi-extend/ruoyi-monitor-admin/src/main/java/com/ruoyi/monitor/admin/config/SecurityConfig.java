@@ -51,6 +51,7 @@ public class SecurityConfig {
                 .antMatchers(adminContextPath +"/webjars/**").anonymous()
                 .antMatchers(adminContextPath +"/*/api-docs").anonymous()
                 .antMatchers(adminContextPath +"/druid/**").anonymous()
+                .antMatchers(adminContextPath +"/jmreport/**").anonymous()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin().loginPage(adminContextPath + "/login")

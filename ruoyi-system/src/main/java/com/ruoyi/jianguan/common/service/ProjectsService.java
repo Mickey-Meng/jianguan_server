@@ -10,17 +10,23 @@ import com.ruoyi.common.core.domain.entity.SsFUsers;
 import com.ruoyi.common.core.domain.object.ResponseBase;
 import com.ruoyi.common.helper.LoginHelper;
 import com.ruoyi.jianguan.common.dao.FileMapper;
+import com.ruoyi.jianguan.common.dao.ItemDAO;
 import com.ruoyi.jianguan.common.dao.ProjectsDAO;
 import com.ruoyi.jianguan.common.dao.SsFUserRoleDAO;
 import com.ruoyi.jianguan.common.domain.dto.ProjectGroupUserTree;
 import com.ruoyi.jianguan.common.domain.dto.ProjectsDTO;
 import com.ruoyi.jianguan.common.domain.dto.RoleDataDTO;
 import com.ruoyi.jianguan.common.domain.dto.SsFProjectsTree;
+import com.ruoyi.jianguan.common.domain.entity.Item;
 import com.ruoyi.jianguan.common.domain.entity.SsFCompany;
 import com.ruoyi.jianguan.common.domain.entity.SsFProjectCompany;
 import com.ruoyi.jianguan.common.domain.entity.SsFRoles;
 
 import com.ruoyi.common.utils.JwtUtil;
+import com.ruoyi.jianguan.manage.project.domain.vo.JgProjectItemVo;
+import com.ruoyi.jianguan.manage.project.mapper.JgProjectItemMapper;
+import com.ruoyi.jianguan.manage.project.service.IJgProjectItemService;
+import com.ruoyi.jianguan.manage.project.service.impl.JgProjectItemServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -45,6 +51,9 @@ public class ProjectsService {
     @Autowired
     FileMapper fileMapper;
 
+    @Autowired
+    private ItemDAO itemDAO;
+    JgProjectItemMapper jgProjectItemMapper;
     public ResponseBase addCompany(SsFCompany ssFCompany){
         if(ssFCompany.getName().equals("") || ssFCompany.getName() == null){
             return new ResponseBase(500, "请输入有效的单位名称!");
@@ -291,6 +300,13 @@ public class ProjectsService {
         // 2.查询项目信息
         SsFProjects project = projectsDAO.getProjectById(projectId);
         maps.put("project", project);
+
+        // 3.yangaogao 20230509  当前接口需要获取该项目下面的各工程单位信息。
+        // 在接口返回对象中将项目基础信息对象返回，前端获取后显示。
+
+
+        Item item = itemDAO.selectByPrimaryKey(projectId);
+        maps.put("item", item);
 
         return new ResponseBase(200, "查询成功！", maps);
     }

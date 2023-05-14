@@ -117,4 +117,12 @@ public class QlContractInfoPurchaseVo {
      * 供应商信息
      */
     private QlBasisSupplierVo qlBasisSupplierVo;
+
+    /**
+     * 账期
+     */
+    @ExcelProperty(value = "账期")
+    @ApiModelProperty(value = "账期", required = true)
+    private Long accountPeriod;
+
 }

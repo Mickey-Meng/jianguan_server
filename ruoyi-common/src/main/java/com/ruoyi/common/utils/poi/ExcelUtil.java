@@ -221,7 +221,7 @@ public class ExcelUtil {
                 }
             } else {
                 if (itemArray[0].equals(propertyValue)) {
-                    return itemArray[1];
+                    return itemArray[0];
                 }
             }
         }

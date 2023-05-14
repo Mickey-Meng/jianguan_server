@@ -112,6 +112,7 @@ public interface ZjConponentProducetimeDAO {
     List<PjGirst> getAllByProJectSD(@Param("projectcode") String projectcode);
     List<PjGirst> getAllByProJectLM(@Param("projectcode") String projectcode);
 
+    List<PjGirst> getAllByProJectType(@Param("projectcode") String projectcode,@Param("projecttype") String projecttype);
     int getcount(@Param("gongquid") Integer gongquid, Date sttime, Date endtime, @Param("type") String type);
 
     List<NewCensusData> getTypeWeek(@Param("conponentType") String conponentType,

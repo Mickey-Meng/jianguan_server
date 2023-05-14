@@ -1,27 +1,28 @@
 package com.ruoyi.ql.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.common.core.page.TableDataInfo;
-import com.ruoyi.common.core.domain.PageQuery;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.ruoyi.common.core.domain.PageQuery;
+import com.ruoyi.common.core.page.TableDataInfo;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.ql.domain.QlShopGoods;
-import com.ruoyi.ql.mapper.QlShopGoodsMapper;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import com.ruoyi.ql.domain.QlWarehousing;
 import com.ruoyi.ql.domain.bo.QlWarehousingBo;
 import com.ruoyi.ql.domain.vo.QlWarehousingVo;
-import com.ruoyi.ql.domain.QlWarehousing;
+import com.ruoyi.ql.mapper.QlShopGoodsMapper;
 import com.ruoyi.ql.mapper.QlWarehousingMapper;
 import com.ruoyi.ql.service.IQlWarehousingService;
+import com.ruoyi.ql.mapstruct.OutboundAndWarehousingMapstruct;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Collection;
 
 /**
  * 入库管理Service业务层处理
@@ -102,6 +103,12 @@ public class QlWarehousingServiceImpl implements IQlWarehousingService {
             bo.setId(add.getId());
         }
         return flag;
+    }
+
+    @Override
+    public void batchInsertBo(List<QlWarehousingBo> bos) {
+        List<QlWarehousing> entity = OutboundAndWarehousingMapstruct.INSTANCES.toQlWarehousing(bos);
+        baseMapper.insertBatch(entity);
     }
 
     /**

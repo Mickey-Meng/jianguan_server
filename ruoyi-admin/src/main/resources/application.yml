@@ -163,6 +163,9 @@ security:
     - /mong/upload
     - /mong/newUpload
     - /mong/download
+    - /jmreport/**
+    - /warehousing/warehousing/import
+    - /ql/outbound/import
 
 # MyBatisPlus配置
 # https://baomidou.com/config/
@@ -318,4 +321,3 @@ zhuji:
   scope: DataCenterV2
   grantType: client_credentials
   ycApiurl: https://proj.bim-ace.com:10207/services/api/data-center/dustValue/last
-

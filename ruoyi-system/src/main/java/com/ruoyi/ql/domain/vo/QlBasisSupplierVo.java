@@ -1,13 +1,11 @@
 package com.ruoyi.ql.domain.vo;
 
-import java.math.BigDecimal;
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
-import com.ruoyi.common.annotation.ExcelDictFormat;
-import com.ruoyi.common.convert.ExcelDictConvert;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import java.util.Date;
+
+import java.math.BigDecimal;
 import java.util.List;
 
 
@@ -99,5 +97,10 @@ public class QlBasisSupplierVo {
 
     @ApiModelProperty(value = "采购合同编号", required = true)
     private List<String> contractPurchaseList;
+
+    /**
+     * 营业执照
+     */
+    private String fj;
 
 }

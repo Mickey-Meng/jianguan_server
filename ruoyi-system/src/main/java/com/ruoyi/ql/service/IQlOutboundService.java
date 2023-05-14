@@ -1,6 +1,5 @@
 package com.ruoyi.ql.service;
 
-import com.ruoyi.ql.domain.QlOutbound;
 import com.ruoyi.ql.domain.vo.QlOutboundVo;
 import com.ruoyi.ql.domain.bo.QlOutboundBo;
 import com.ruoyi.common.core.page.TableDataInfo;
@@ -36,6 +35,7 @@ public interface IQlOutboundService {
      * 新增出库管理
      */
     Boolean insertByBo(QlOutboundBo bo);
+    void batchInsertBo(List<QlOutboundBo> bos);
 
     /**
      * 修改出库管理

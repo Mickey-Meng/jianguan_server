@@ -1,15 +1,13 @@
 package com.ruoyi.ql.domain.bo;
 
+import com.ruoyi.common.core.domain.BaseEntity;
 import com.ruoyi.common.core.validate.AddGroup;
 import com.ruoyi.common.core.validate.EditGroup;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import javax.validation.constraints.*;
 
-import java.util.Date;
-
+import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
-import com.ruoyi.common.core.domain.BaseEntity;
 
 /**
  * 供应商管理业务对象 ql_basis_supplier
@@ -28,6 +26,11 @@ public class QlBasisSupplierBo extends BaseEntity {
     private Long id;
 
     /**
+     * 营业执照
+     */
+    private String fj;
+
+    /**
      * 单位关联主键
      */
     private Long warehouseId;
@@ -35,7 +38,6 @@ public class QlBasisSupplierBo extends BaseEntity {
     /**
      * 供应商编码
      */
-    @NotBlank(message = "供应商编码不能为空", groups = { AddGroup.class, EditGroup.class })
     private String supplierCode;
 
     /**

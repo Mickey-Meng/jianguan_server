@@ -42,7 +42,7 @@ public class SubitemOpenPageVo extends NewBaseVo {
      */
     @ApiModelProperty(value = "施工单位")
     private Set<String> buildUnits;
-
+    private String constructdpts;
 
     /**
      * 工程编号

@@ -1,6 +1,7 @@
 package com.ruoyi.ql.service;
 
 import com.ruoyi.ql.domain.QlWarehousing;
+import com.ruoyi.ql.domain.bo.QlOutboundBo;
 import com.ruoyi.ql.domain.vo.QlWarehousingVo;
 import com.ruoyi.ql.domain.bo.QlWarehousingBo;
 import com.ruoyi.common.core.page.TableDataInfo;
@@ -36,6 +37,7 @@ public interface IQlWarehousingService {
      * 新增入库管理
      */
     Boolean insertByBo(QlWarehousingBo bo);
+    void batchInsertBo(List<QlWarehousingBo> bos);
 
     /**
      * 修改入库管理

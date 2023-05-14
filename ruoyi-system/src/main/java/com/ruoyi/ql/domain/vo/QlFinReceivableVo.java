@@ -9,6 +9,8 @@ import com.ruoyi.common.annotation.ExcelDictFormat;
 import com.ruoyi.common.convert.ExcelDictConvert;
 import lombok.Data;
 import java.util.Date;
+import java.util.List;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -132,6 +134,12 @@ public class QlFinReceivableVo {
     @ExcelProperty(value = "附件")
     @ApiModelProperty(value = "附件", required = true)
     private String fj;
+
+    /**
+     * 付款与出库关系集合
+     */
+    private List<QlReceivableOutboundRelVo> receivableOutboundRels;
+
 
 
 }
