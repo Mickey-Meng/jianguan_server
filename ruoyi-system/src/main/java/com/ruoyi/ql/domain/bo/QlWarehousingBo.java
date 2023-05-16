@@ -172,7 +172,7 @@ public class QlWarehousingBo extends BaseEntity {
     /**
      * 进货日期，默认系统当天日期
      */
-    @NotNull(message = "进货日期，默认系统当天日期不能为空", groups = { AddGroup.class, EditGroup.class })
+//    @NotNull(message = "进货日期，默认系统当天日期不能为空", groups = { AddGroup.class, EditGroup.class })
     private Date incomeDate;
 
     /**

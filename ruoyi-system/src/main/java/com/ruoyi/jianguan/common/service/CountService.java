@@ -22,6 +22,9 @@ import com.ruoyi.jianguan.common.domain.entity.weather.WeatherNow;
 import com.ruoyi.common.utils.jianguan.zjrw.DateUtils;
 import com.ruoyi.common.utils.jianguan.zjrw.ListUtils;
 import com.ruoyi.common.utils.jianguan.zjrw.MyExcelUtil;
+import com.ruoyi.system.domain.SysOss;
+import com.ruoyi.system.domain.vo.SysOssVo;
+import com.ruoyi.system.mapper.SysOssMapper;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -89,12 +92,16 @@ public class CountService {
     @Autowired
     private WeatherDAO weatherDAO;
 
+    @Autowired
+    private SysOssMapper ossMapper;
+
 
     public ResponseBase getProjectDetail(Integer projectId) {
 
-        Item itemList = itemDAO.selectByPrimaryKey(projectId);
-
-        return new ResponseBase(200, "查询成功", itemList);
+        Item projectDetail = itemDAO.selectByPrimaryKey(projectId);
+        SysOssVo sysOssVo = ossMapper.selectVoById(projectDetail.getEngineeringLayoutImageUrl());
+        projectDetail.setEngineeringLayoutImageUrl(sysOssVo.getUrl());
+        return new ResponseBase(200, "查询成功", projectDetail);
 
     }
 

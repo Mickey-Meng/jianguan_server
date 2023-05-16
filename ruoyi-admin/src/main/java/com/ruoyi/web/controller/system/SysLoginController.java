@@ -22,10 +22,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.constraints.NotBlank;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+
+import static com.ruoyi.common.constant.RoleConstants.SYS_ROLE_SYSTEM;
 
 /**
  * 登录验证
@@ -139,6 +138,17 @@ public class SysLoginController {
     public R<List<RouterVo>> getRouters() {
         Long userId = LoginHelper.getUserId();
         List<SysMenu> menus = menuService.selectMenuTreeByUserId(userId);
+        // 如果是超级管理员，则不过滤数据
+        if (!LoginHelper.isAdmin()) {
+            Iterator<SysMenu> iterator = menus.iterator();
+            while (iterator.hasNext()) {
+                SysMenu next = iterator.next();
+                String name = next.getMenuCode();
+                if (SYS_ROLE_SYSTEM.equalsIgnoreCase(name)) {
+                    iterator.remove();
+                }
+            }
+        }
         return R.ok(menuService.buildMenus(menus));
     }
 }

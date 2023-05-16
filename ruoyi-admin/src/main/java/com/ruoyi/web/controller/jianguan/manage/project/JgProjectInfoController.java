@@ -10,6 +10,10 @@ import java.util.stream.Collectors;
 import cn.hutool.core.lang.tree.Tree;
 import com.google.common.collect.Maps;
 import com.ruoyi.common.core.domain.entity.SysDept;
+import com.ruoyi.jianguan.manage.company.domain.bo.JgCompanyBo;
+import com.ruoyi.jianguan.manage.company.domain.vo.JgCompanyVo;
+import com.ruoyi.jianguan.manage.company.service.IJgCompanyService;
+import com.ruoyi.jianguan.manage.company.service.impl.JgCompanyServiceImpl;
 import com.ruoyi.jianguan.manage.map.domain.bo.MapPlanBo;
 import com.ruoyi.jianguan.manage.map.domain.bo.MapPlanServerBo;
 import com.ruoyi.jianguan.manage.project.domain.bo.JgProjectDeptBo;
@@ -55,6 +59,7 @@ public class JgProjectInfoController extends BaseController {
     private final IJgProjectInfoService iJgProjectInfoService;
     private final IJgProjectItemService projectItemService;
     private final ISysDeptService deptService;
+    private final IJgCompanyService jgCompanyService;
 
 /**
  * 查询项目信息列表
@@ -177,8 +182,30 @@ public class JgProjectInfoController extends BaseController {
      */
     @SaCheckPermission("jg:project:queryItem")
     @GetMapping("/projectItem/{projectId}")
-    public R<JgProjectItemVo> getProjectItem(@NotNull(message = "项目主键不能为空") @PathVariable Long projectId) {
-        return R.ok(projectItemService.queryById(projectId));
+    public R<Map<String, Object>> getProjectItem(@NotNull(message = "项目主键不能为空") @PathVariable Long projectId) {
+        JgProjectItemVo projectItem = projectItemService.queryById(projectId);
+        Map<String, Object> dataMap = Maps.newHashMap();
+        dataMap.put("projectItem", projectItem);
+        List<JgCompanyVo> jgCompanyList = jgCompanyService.queryList(new JgCompanyBo());
+        // 管理单位
+        dataMap.put("manageDeptOptions", jgCompanyList.stream()
+                .filter(jgCompanyVo -> Objects.equals(jgCompanyVo.getTypeCode(),"gldw")).collect(Collectors.toList()));
+        // 建造单位
+        dataMap.put("buildDeptOptions", jgCompanyList.stream()
+                .filter(jgCompanyVo -> Objects.equals(jgCompanyVo.getTypeCode(),"jsdw")).collect(Collectors.toList()));
+        // 设计单位
+        dataMap.put("desginDeptOptions", jgCompanyList.stream()
+                .filter(jgCompanyVo -> Objects.equals(jgCompanyVo.getTypeCode(),"sjdw")).collect(Collectors.toList()));
+        // 施工单位
+        dataMap.put("constructDeptOptions", jgCompanyList.stream()
+                .filter(jgCompanyVo -> Objects.equals(jgCompanyVo.getTypeCode(),"sgdw")).collect(Collectors.toList()));
+        // 监理单位
+        dataMap.put("supervisorDeptOptions", jgCompanyList.stream()
+                .filter(jgCompanyVo -> Objects.equals(jgCompanyVo.getTypeCode(),"jldw")).collect(Collectors.toList()));
+        // 审计单位
+        dataMap.put("auditUnitOptionsOptions", jgCompanyList.stream()
+                .filter(jgCompanyVo -> Objects.equals(jgCompanyVo.getTypeCode(),"gldw")).collect(Collectors.toList()));
+        return R.ok(dataMap);
     }
 
     /**

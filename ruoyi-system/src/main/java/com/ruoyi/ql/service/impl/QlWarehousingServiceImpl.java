@@ -124,12 +124,12 @@ public class QlWarehousingServiceImpl implements IQlWarehousingService {
 
 
         // 2  获取该产品实时库存数量
-        QlShopGoods qlShopGoods  = qlShopGoodsMapper.selectById(bo.getProudctId());
+       /* QlShopGoods qlShopGoods  = qlShopGoodsMapper.selectById(bo.getProudctId());
         BigDecimal seedNumber = qlShopGoods.getStockNumber();
         // 3 修改后库存数据 =  实时库存 - 上一次入库数量 + 当前页面库存数量
         qlShopGoods.setStockNumber(seedNumber.add(bo.getWarehousingNumber()).subtract(n) );
 
-        qlShopGoodsMapper.updateById(qlShopGoods);
+        qlShopGoodsMapper.updateById(qlShopGoods);*/
 
         QlWarehousing update = BeanUtil.toBean(bo, QlWarehousing.class);
         validEntityBeforeSave(update);

@@ -82,6 +82,16 @@
         <el-button
           type="success"
           plain
+          icon="el-icon-view"
+          size="mini"
+          :disabled="single"
+          @click="handleDetail"
+        >详情</el-button>
+      </el-col>
+      <el-col :span="1.5">
+        <el-button
+          type="success"
+          plain
           icon="el-icon-edit"
           size="mini"
           :disabled="single"
@@ -153,6 +163,12 @@
 #end
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-view"
+            @click="handleDetail(scope.row)"
+          >详情</el-button>
           <el-button
             size="mini"
             type="text"
@@ -341,7 +357,7 @@
       </el-form>
 
       <div slot="footer" class="dialog-footer">
-        <el-button :loading="buttonLoading" type="primary" @click="submitForm">确 定</el-button>
+        <el-button :loading="buttonLoading" type="primary" @click="submitForm" v-if="edit">确 定</el-button>
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
@@ -386,6 +402,8 @@ export default {
       title: "",
       // 是否显示弹出层
       open: false,
+      // 是否编辑 true　修改true 查看详情false
+      edit: true,
 #foreach ($column in $columns)
 #if($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
 #set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
@@ -500,11 +518,13 @@ export default {
     handleAdd() {
       this.reset();
       this.open = true;
+      this.edit = true;
       this.title = "添加${functionName}";
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.loading = true;
+      this.edit = true;
       this.reset();
       const ${pkColumn.javaField} = row.${pkColumn.javaField} || this.ids
       get${BusinessName}(${pkColumn.javaField}).then(response => {
@@ -520,6 +540,28 @@ export default {
 #end
         this.open = true;
         this.title = "修改${functionName}";
+      });
+    },
+    
+    /** 详情按钮操作 */
+    handleDetail(row) {
+      this.loading = true;
+      this.edit = false;
+      this.reset();
+      const ${pkColumn.javaField} = row.${pkColumn.javaField} || this.ids
+      get${BusinessName}(${pkColumn.javaField}).then(response => {
+        this.loading = false;
+        this.form = response.data;
+#foreach ($column in $columns)
+#if($column.htmlType == "checkbox")
+        this.form.$column.javaField = this.form.${column.javaField}.split(",");
+#end
+#end
+#if($table.sub)
+        this.${subclassName}List = response.data.${subclassName}List;
+#end
+        this.open = true;
+        this.title = "查看${functionName}";
       });
     },
     /** 提交按钮 */
