@@ -47,12 +47,12 @@ public class QlFinPaymentBo extends BaseEntity {
     /**
      * 供应商id
      */
-//    private String supplierId;
+    private String supplierId;
     /**
      * 供应商名称
      */
-//    @NotBlank(message = "供应商名称不能为空", groups = { AddGroup.class, EditGroup.class })
-//    private String supplierName;
+    @NotBlank(message = "供应商名称不能为空", groups = { AddGroup.class, EditGroup.class })
+    private String supplierName;
 
 
     /**

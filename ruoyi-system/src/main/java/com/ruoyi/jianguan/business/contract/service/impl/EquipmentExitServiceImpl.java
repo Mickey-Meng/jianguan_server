@@ -60,7 +60,7 @@ public class EquipmentExitServiceImpl extends ServiceImpl<EquipmentExitMapper, E
 
     @Autowired
     private EquipmentInfoService equipmentInfoService;
-
+    @Autowired
     private IJgProjectItemService jgProjectItemService;
 
     /**

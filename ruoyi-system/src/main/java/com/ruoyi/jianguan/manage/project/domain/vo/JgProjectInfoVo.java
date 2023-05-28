@@ -167,6 +167,12 @@ public class JgProjectInfoVo {
     @ExcelProperty(value = "项目简介")
     @ApiModelProperty(value = "项目简介", required = true)
     private String introduction;
+    /**
+     * 项目简介
+     */
+    @ExcelProperty(value = "项目地图")
+    @ApiModelProperty(value = "项目地图", required = true)
+    private String mapUrl;
 
     /**
      * 备注

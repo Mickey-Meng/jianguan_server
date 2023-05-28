@@ -95,4 +95,18 @@ public class QlFinEmpVo {
     @ApiModelProperty(value = "部门描述", required = true)
     private String deptName;
 
+
+    /**
+     * 入职日期
+     */
+    private Date empRzDate;
+
+    /**
+     * 家庭住址
+     */
+    private String empAddr;
+    /**
+     * 备注
+     */
+    private String remark;
 }

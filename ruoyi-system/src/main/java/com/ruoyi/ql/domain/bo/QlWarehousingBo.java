@@ -2,6 +2,7 @@ package com.ruoyi.ql.domain.bo;
 
 import com.ruoyi.common.core.validate.AddGroup;
 import com.ruoyi.common.core.validate.EditGroup;
+import com.ruoyi.ql.domain.vo.QlWarehousingDetailVo;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import javax.validation.constraints.*;
@@ -10,6 +11,8 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 import java.util.Date;
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ruoyi.common.core.domain.BaseEntity;
 
@@ -50,7 +53,6 @@ public class QlWarehousingBo extends BaseEntity {
     /**
      * 产品id
      */
-    @NotBlank(message = "产品id不能为空", groups = { AddGroup.class, EditGroup.class })
     private String proudctId;
 
     /**
@@ -74,13 +76,12 @@ public class QlWarehousingBo extends BaseEntity {
     /**
      * 采购数量
      */
-    @NotNull(message = "采购数量不能为空", groups = { AddGroup.class, EditGroup.class })
     private BigDecimal orderNumber;
 
     /**
      * 采购金额
      */
-    @NotNull(message = "采购金额不能为空", groups = { AddGroup.class, EditGroup.class })
+    @NotNull(message = "销售总额不能为空", groups = { AddGroup.class, EditGroup.class })
     private BigDecimal amount;
     /**
      *
@@ -95,7 +96,6 @@ public class QlWarehousingBo extends BaseEntity {
     /**
      * 产品名称
      */
-    @NotBlank(message = "产品名称不能为空", groups = { AddGroup.class, EditGroup.class })
     private String proudctName;
 
 
@@ -124,9 +124,13 @@ public class QlWarehousingBo extends BaseEntity {
     private String contractCode;
 
     /**
+     * 供应商Id
+     */
+    private Long supplierId;
+
+    /**
      * 供应商名称
      */
-    @NotBlank(message = "供应商名称不能为空", groups = { AddGroup.class, EditGroup.class })
     private String supplierName;
 
     /**
@@ -149,19 +153,16 @@ public class QlWarehousingBo extends BaseEntity {
     /**
      * 基准价
      */
-    @NotNull(message = "基准价不能为空", groups = { AddGroup.class, EditGroup.class })
     private BigDecimal basePrice;
 
     /**
      * 进货价
      */
-    @NotNull(message = "进货价不能为空", groups = { AddGroup.class, EditGroup.class })
     private BigDecimal incomePrice;
 
     /**
      * 附加价格
      */
-    @NotNull(message = "附加价格不能为空", groups = { AddGroup.class, EditGroup.class })
     private BigDecimal extraPrice;
 
     /**
@@ -185,12 +186,16 @@ public class QlWarehousingBo extends BaseEntity {
     /**
      * 规格
      */
-    @NotBlank(message = "规格不能为空", groups = { AddGroup.class, EditGroup.class })
     private String goodsSearchstandard;
 
     /**
      * 单位
      */
-    @NotBlank(message = "单位不能为空", groups = { AddGroup.class, EditGroup.class })
     private String goodsUnit;
+    /**
+     * 入库单明细表
+     */
+    private List<QlWarehousingDetailBo> warehousingDetails;
+
 }
+

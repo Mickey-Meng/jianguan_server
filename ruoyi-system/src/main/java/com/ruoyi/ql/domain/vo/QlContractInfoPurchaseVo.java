@@ -112,7 +112,13 @@ public class QlContractInfoPurchaseVo {
     @ExcelProperty(value = "合同状态")
     private String contractStatus;
 
-    private List<QlWarehousingBo> qlWarehousingBos;
+    /**
+     * 销售合同与商品关系
+     */
+    @ExcelProperty(value = "销售合同与商品关系")
+    @ApiModelProperty(value = "销售合同与商品关系", required = true)
+    private List<QlContractGoodsRelVo> contractGoodsRels;
+
     /**
      * 供应商信息
      */
@@ -124,5 +130,11 @@ public class QlContractInfoPurchaseVo {
     @ExcelProperty(value = "账期")
     @ApiModelProperty(value = "账期", required = true)
     private Long accountPeriod;
+
+
+    /**
+     * 备注
+     */
+    private String remark;
 
 }

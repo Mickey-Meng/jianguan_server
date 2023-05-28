@@ -164,4 +164,17 @@ public class JgProjectItem {
     @TableField(value = "engineeringLayoutImageUrl")
     private String engineeringLayoutImage;
 
+
+    /**
+     * 付款进度
+     */
+    @TableField("attachment_progress")
+    private Long attachmentProgress;
+
+
+    /**
+     * 产值进度
+     */
+    @TableField("production_progress")
+    private Long productionProgress;
 }

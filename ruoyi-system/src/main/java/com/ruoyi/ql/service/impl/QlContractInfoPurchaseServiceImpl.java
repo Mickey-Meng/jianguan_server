@@ -1,6 +1,8 @@
 package com.ruoyi.ql.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -11,15 +13,15 @@ import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.ql.domain.QlBasisSupplier;
 import com.ruoyi.ql.domain.QlContractInfoPurchase;
 import com.ruoyi.ql.domain.QlWarehousing;
+import com.ruoyi.ql.domain.bo.QlContractGoodsRelBo;
 import com.ruoyi.ql.domain.bo.QlContractInfoPurchaseBo;
 import com.ruoyi.ql.domain.bo.QlWarehousingBo;
-import com.ruoyi.ql.domain.vo.QlBasisSupplierVo;
-import com.ruoyi.ql.domain.vo.QlContractInfoPurchaseVo;
-import com.ruoyi.ql.domain.vo.QlWarehousingVo;
+import com.ruoyi.ql.domain.vo.*;
 import com.ruoyi.ql.mapper.QlBasisSupplierMapper;
 import com.ruoyi.ql.mapper.QlContractInfoPurchaseMapper;
 import com.ruoyi.ql.mapper.QlFinPaymentMapper;
 import com.ruoyi.ql.mapper.QlWarehousingMapper;
+import com.ruoyi.ql.service.IQlContractGoodsRelService;
 import com.ruoyi.ql.service.IQlContractInfoPurchaseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -44,11 +46,9 @@ public class QlContractInfoPurchaseServiceImpl implements IQlContractInfoPurchas
 
     private final QlContractInfoPurchaseMapper baseMapper;
 
-    private final QlWarehousingMapper qlWarehousingMapper;
-
     private final QlBasisSupplierMapper qlBasisSupplierMapper;
 
-    private final QlFinPaymentMapper qlFinPaymentMapper;
+    private final IQlContractGoodsRelService contractGoodsRelService;
 
     /**
      * 查询采购合同
@@ -56,18 +56,16 @@ public class QlContractInfoPurchaseServiceImpl implements IQlContractInfoPurchas
     @Override
     public QlContractInfoPurchaseVo queryById(Long id){
         QlContractInfoPurchaseVo vo = baseMapper.selectVoById(id);
-        LambdaQueryWrapper<QlWarehousing> qlWarehousingLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        qlWarehousingLambdaQueryWrapper.eq(QlWarehousing::getPurchaseOrderId, vo.getContractCode());
-        List<QlWarehousingVo> qlFinReimbursementItemVoList = qlWarehousingMapper.selectVoList(qlWarehousingLambdaQueryWrapper);
-        List<QlWarehousingBo> qlWarehousingBos = new ArrayList<QlWarehousingBo>();
-        qlWarehousingBos = BeanCopyUtils.copyList(qlFinReimbursementItemVoList, QlWarehousingBo.class);
-        vo.setQlWarehousingBos(qlWarehousingBos);
-
-
-        QlBasisSupplierVo qlBasisSupplierVo = qlBasisSupplierMapper.selectVoById(vo.getSupplierId());
-        vo.setQlBasisSupplierVo(qlBasisSupplierVo);
+        if(ObjectUtil.isNotNull(vo.getId())) {
+            QlContractGoodsRelBo qlContractGoodsRelBo = new QlContractGoodsRelBo();
+            qlContractGoodsRelBo.setContractId(vo.getId());
+            List<QlContractGoodsRelVo> qlContractGoodsRels = contractGoodsRelService.queryList(qlContractGoodsRelBo);
+            vo.setContractGoodsRels(qlContractGoodsRels);
+        }
         return vo;
     }
+
+
 
     /**
      * 查询采购合同 列表
@@ -76,6 +74,10 @@ public class QlContractInfoPurchaseServiceImpl implements IQlContractInfoPurchas
     public TableDataInfo<QlContractInfoPurchaseVo> queryPageList(QlContractInfoPurchaseBo bo, PageQuery pageQuery) {
         LambdaQueryWrapper<QlContractInfoPurchase> lqw = buildQueryWrapper(bo);
         Page<QlContractInfoPurchaseVo> result = baseMapper.selectVoPage(pageQuery.build(), lqw);
+        if (ObjectUtil.isNull(result) || CollUtil.isEmpty(result.getRecords())) {
+            return TableDataInfo.build(result);
+        }
+        findContractGoodsRels(result.getRecords());
         return TableDataInfo.build(result);
     }
 
@@ -85,8 +87,29 @@ public class QlContractInfoPurchaseServiceImpl implements IQlContractInfoPurchas
     @Override
     public List<QlContractInfoPurchaseVo> queryList(QlContractInfoPurchaseBo bo) {
         LambdaQueryWrapper<QlContractInfoPurchase> lqw = buildQueryWrapper(bo);
-        List<QlContractInfoPurchaseVo> qlContractInfoPurchaseVo = baseMapper.selectVoList(lqw);
-        return qlContractInfoPurchaseVo;
+        List<QlContractInfoPurchaseVo> qlContractInfoPurchaseVos = baseMapper.selectVoList(lqw);
+        findContractGoodsRels(qlContractInfoPurchaseVos);
+        return qlContractInfoPurchaseVos;
+    }
+
+    private void findContractGoodsRels(List<QlContractInfoPurchaseVo> contractInfoPurchaseVos) {
+        if(CollUtil.isEmpty(contractInfoPurchaseVos)) {
+            return;
+        }
+        List<Long> paymentIds = contractInfoPurchaseVos.stream().map(QlContractInfoPurchaseVo::getId).collect(Collectors.toList());
+        QlContractGoodsRelBo contractGoodsRelBo = new QlContractGoodsRelBo();
+        contractGoodsRelBo.setContractIds(paymentIds);
+        List<QlContractGoodsRelVo> contractGoodsRelVos = contractGoodsRelService.queryList(contractGoodsRelBo);
+        if (CollUtil.isEmpty(contractGoodsRelVos)) {
+            return;
+        }
+        Map<Long, List<QlContractGoodsRelVo>> contractGoodsRelMap = contractGoodsRelVos.stream().collect(Collectors.groupingBy(QlContractGoodsRelVo::getContractId));
+        for (QlContractInfoPurchaseVo contractInfoPurchaseVo : contractInfoPurchaseVos) {
+            if (!contractGoodsRelMap.containsKey(contractInfoPurchaseVo.getId())) {
+                continue;
+            }
+            contractInfoPurchaseVo.setContractGoodsRels(contractGoodsRelMap.get(contractInfoPurchaseVo.getId()));
+        }
     }
 
     private LambdaQueryWrapper<QlContractInfoPurchase> buildQueryWrapper(QlContractInfoPurchaseBo bo) {
@@ -101,6 +124,7 @@ public class QlContractInfoPurchaseServiceImpl implements IQlContractInfoPurchas
         lqw.eq(bo.getContactDate() != null, QlContractInfoPurchase::getContactDate, bo.getContactDate());
         lqw.eq(bo.getStartDate() != null, QlContractInfoPurchase::getStartDate, bo.getStartDate());
         lqw.eq(bo.getEndDate() != null, QlContractInfoPurchase::getEndDate, bo.getEndDate());
+        lqw.in(CollUtil.isNotEmpty(bo.getContractCodes()), QlContractInfoPurchase::getContractCode, bo.getContractCodes());
         return lqw;
     }
 
@@ -116,13 +140,13 @@ public class QlContractInfoPurchaseServiceImpl implements IQlContractInfoPurchas
         boolean flag = baseMapper.insert(add) > 0;
         //2. 插入订单表（入库表）
         if (flag) {
-            List<QlWarehousing> items = new ArrayList<>();
-            for (QlWarehousingBo qlWarehousingBo : bo.getQlWarehousingBos()) {
-                QlWarehousing item = BeanUtil.toBean(qlWarehousingBo, QlWarehousing.class);
-                item.setPurchaseOrderId(add.getContractCode());
-                items.add(item);
+            if (CollUtil.isNotEmpty(bo.getContractGoodsRels())) {
+                for (QlContractGoodsRelBo contractGoodsRel : bo.getContractGoodsRels()) {
+                    contractGoodsRel.setContractId(add.getId());
+                    contractGoodsRel.setContractType("purchase");
+                    contractGoodsRelService.insertByBo(contractGoodsRel);
+                }
             }
-            flag = qlWarehousingMapper.insertBatch(items);
         }
         // 3.更新该供应商的欠款金额
         if(flag){
@@ -150,27 +174,19 @@ public class QlContractInfoPurchaseServiceImpl implements IQlContractInfoPurchas
         List<QlWarehousing> items = new ArrayList<>();
         QlContractInfoPurchaseVo qlContractInfoPurchaseVo =  baseMapper.selectVoById(bo.getId());
 
-        //1 ，合同中，产品明细先删除后新增
-        LambdaQueryWrapper<QlWarehousing> qlWarehousingLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        qlWarehousingLambdaQueryWrapper.eq(QlWarehousing::getPurchaseOrderId, bo.getContractCode());
-        List<QlWarehousing> qlWarehousingBos  = qlWarehousingMapper.selectList(qlWarehousingLambdaQueryWrapper);
-        List<Long> collect = qlWarehousingBos.stream().map(QlWarehousing::getId).collect(Collectors.toList());
-        if (!collect.isEmpty()){
-            qlWarehousingMapper.deleteBatchIds(collect);
+        QlContractGoodsRelBo contractGoodsRelBo = new QlContractGoodsRelBo();
+        contractGoodsRelBo.setContractId(bo.getId());
+        List<QlContractGoodsRelVo> contractGoodsRelVos = contractGoodsRelService.queryList(contractGoodsRelBo);
+
+        if(CollUtil.isNotEmpty(contractGoodsRelVos)) {
+            List<Long> ids = contractGoodsRelVos.stream().map(QlContractGoodsRelVo::getId).collect(Collectors.toList());
+            contractGoodsRelService.deleteWithValidByIds(ids, true);
         }
-
-
-
-        //2 ，新传入的list对象，把id置为null，方便insert
-        for (QlWarehousingBo qlWarehousingBo : bo.getQlWarehousingBos()) {
-            QlWarehousing item = BeanUtil.toBean(qlWarehousingBo, QlWarehousing.class);
-            item.setPurchaseOrderId(update.getContractCode());//因为修改的做法是delete 后insert，id会变化，因此需要用业务主键进行关联，
-            items.add(item);
+        for (QlContractGoodsRelBo contractGoodsRel : bo.getContractGoodsRels()) {
+            contractGoodsRel.setId(null);
+            contractGoodsRel.setContractId(bo.getId());
+            contractGoodsRelService.insertByBo(contractGoodsRel);
         }
-        items.forEach((e) -> {
-            e.setId(null);
-        });
-        qlWarehousingMapper.insertBatch(items);
 
 
         // 3.获取当前合同信息，需要获取合同总额，从而在供应商表中，回退 对应的未付款金额
@@ -203,6 +219,21 @@ public class QlContractInfoPurchaseServiceImpl implements IQlContractInfoPurchas
         if(isValid){
             //TODO 做一些业务上的校验,判断是否需要校验
         }
-        return baseMapper.deleteBatchIds(ids) > 0;
+        boolean deleteResult = baseMapper.deleteBatchIds(ids) > 0;
+        if (deleteResult) {
+            QlContractGoodsRelBo qlContractGoodsRelBo = new QlContractGoodsRelBo();
+            List<Long> idList = ids.stream().distinct().collect(Collectors.toList());
+            if(CollUtil.isEmpty(idList)) {
+                return true;
+            }
+            qlContractGoodsRelBo.setContractIds(idList);
+            List<QlContractGoodsRelVo> contractGoodsRels = contractGoodsRelService.queryList(qlContractGoodsRelBo);
+            List<Long> relIds = contractGoodsRels.stream().map(QlContractGoodsRelVo::getId).collect(Collectors.toList());
+            if(CollUtil.isEmpty(relIds)) {
+                return true;
+            }
+            contractGoodsRelService.deleteWithValidByIds(relIds, true);
+        }
+        return deleteResult;
     }
 }

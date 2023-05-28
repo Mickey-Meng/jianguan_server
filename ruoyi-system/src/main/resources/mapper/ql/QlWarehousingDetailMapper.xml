@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.ql.mapper.QlWarehousingDetailMapper">
+
+    <resultMap type="com.ruoyi.ql.domain.QlWarehousingDetail" id="QlWarehousingDetailResult">
+        <result property="id" column="id"/>
+        <result property="inventoryId" column="inventory_id"/>
+        <result property="inventoryCode" column="inventory_code"/>
+        <result property="goodsId" column="goods_id"/>
+        <result property="goodsName" column="goods_name"/>
+        <result property="basePrice" column="base_price"/>
+        <result property="incomePrice" column="income_price"/>
+        <result property="salePrice" column="sale_price"/>
+        <result property="extraPrice" column="extra_price"/>
+        <result property="inventoryNumber" column="inventory_number"/>
+        <result property="amount" column="amount"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+        <result property="deptId" column="dept_id"/>
+        <result property="inventoryDirection" column="inventory_direction"/>
+        <result property="goodsUnit" column="goods_unit"/>
+        <result property="goodsSearchstandard" column="goods_searchStandard"/>
+    </resultMap>
+
+</mapper>

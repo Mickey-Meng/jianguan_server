@@ -1,30 +1,30 @@
 package com.ruoyi.web.controller.ql;
 
-import java.util.List;
-import java.util.Arrays;
-import java.util.concurrent.TimeUnit;
-
-import lombok.RequiredArgsConstructor;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.*;
 import cn.dev33.satoken.annotation.SaCheckPermission;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.validation.annotation.Validated;
-import com.ruoyi.common.annotation.RepeatSubmit;
 import com.ruoyi.common.annotation.Log;
+import com.ruoyi.common.annotation.RepeatSubmit;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.PageQuery;
 import com.ruoyi.common.core.domain.R;
+import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.core.validate.AddGroup;
 import com.ruoyi.common.core.validate.EditGroup;
-import com.ruoyi.common.core.validate.QueryGroup;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.poi.ExcelUtil;
-import com.ruoyi.ql.domain.vo.QlFinPaymentVo;
 import com.ruoyi.ql.domain.bo.QlFinPaymentBo;
+import com.ruoyi.ql.domain.vo.QlFinPaymentExport;
+import com.ruoyi.ql.domain.vo.QlFinPaymentVo;
+import com.ruoyi.ql.mapstruct.QlFinPaymentMapstruct;
 import com.ruoyi.ql.service.IQlFinPaymentService;
-import com.ruoyi.common.core.page.TableDataInfo;
+import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * 供应商付款
@@ -57,7 +57,8 @@ public class QlFinPaymentController extends BaseController {
     @PostMapping("/export")
     public void export(QlFinPaymentBo bo, HttpServletResponse response) {
         List<QlFinPaymentVo> list = iQlFinPaymentService.queryList(bo);
-        ExcelUtil.exportExcel(list, "供应商付款", QlFinPaymentVo.class, response);
+        List<QlFinPaymentExport> qlFinPaymentExports = QlFinPaymentMapstruct.INSTANCES.toQlFinPaymentExports(list);
+        ExcelUtil.exportExcel(qlFinPaymentExports, "供应商付款", QlFinPaymentExport.class, response);
     }
 
     /**

@@ -96,11 +96,21 @@ public class SsFProjects implements Serializable {
     @ApiModelProperty(value = "项目线")
     private String projectline;
 
+    public String getMapUrl() {
+        return mapUrl;
+    }
+
+    public void setMapUrl(String mapUrl) {
+        this.mapUrl = mapUrl;
+    }
+
     @ApiModelProperty(value = "项目面")
     private String projectsurface;
 
     @ApiModelProperty(value = "项目简介")
     private String introduction;
+    @ApiModelProperty(value = "项目地图")
+    private String mapUrl;
 
     private static final long serialVersionUID = 1L;
 

@@ -64,6 +64,8 @@ public class BuildTechBottomServiceImpl extends ServiceImpl<BuildTechBottomMappe
 
     @Autowired
     private FlowAuditEntryService flowAuditEntryService;
+
+    @Autowired
     private IJgProjectItemService jgProjectItemService;
     /**
      * 新增或者更新施工技术交底数据

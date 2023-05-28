@@ -1,7 +1,14 @@
 package com.ruoyi.web.controller.ql;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.RandomUtil;
 import cn.hutool.poi.excel.ExcelReader;
+import cn.hutool.poi.excel.ExcelUtil;
+import cn.hutool.poi.excel.ExcelWriter;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.annotation.RepeatSubmit;
 import com.ruoyi.common.core.controller.BaseController;
@@ -11,24 +18,31 @@ import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.core.validate.AddGroup;
 import com.ruoyi.common.core.validate.EditGroup;
 import com.ruoyi.common.enums.BusinessType;
-import com.ruoyi.common.utils.poi.ExcelUtil;
-import com.ruoyi.ql.domain.bo.QlOutboundBo;
-import com.ruoyi.ql.domain.vo.OutboundVo;
-import com.ruoyi.ql.domain.vo.QlOutboundVo;
+import com.ruoyi.common.exception.ServiceException;
+import com.ruoyi.ql.domain.bo.*;
+import com.ruoyi.ql.domain.export.OutboundExportVo;
+import com.ruoyi.ql.domain.importvo.OutboundImportVo;
+import com.ruoyi.ql.domain.vo.*;
 import com.ruoyi.ql.mapstruct.OutboundAndWarehousingMapstruct;
+import com.ruoyi.ql.mapstruct.QlWarehousingDetailMapstruct;
+import com.ruoyi.ql.service.IQlContractGoodsRelService;
+import com.ruoyi.ql.service.IQlContractInfoSaleService;
 import com.ruoyi.ql.service.IQlOutboundService;
+import com.ruoyi.ql.service.IQlProjectInfoService;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.collections.ArrayStack;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 出库管理
@@ -44,11 +58,17 @@ public class QlOutboundController extends BaseController {
 
     private final IQlOutboundService iQlOutboundService;
 
-/**
- * 查询出库管理列表
- */
-@SaCheckPermission("ql:outbound:list")
-@GetMapping("/list")
+    private final IQlContractGoodsRelService iQlContractGoodsRelService;
+
+    private final IQlContractInfoSaleService iQlContractInfoSaleService;
+
+    private final IQlProjectInfoService iQlProjectInfoService;
+
+    /**
+     * 查询出库管理列表
+     */
+    @SaCheckPermission("ql:outbound:list")
+    @GetMapping("/list")
     public TableDataInfo<QlOutboundVo> list(QlOutboundBo bo, PageQuery pageQuery) {
         return iQlOutboundService.queryPageList(bo, pageQuery);
     }
@@ -70,20 +90,211 @@ public class QlOutboundController extends BaseController {
     public void uploadExcel(MultipartFile file) throws IOException {
         InputStream inputStream = file.getInputStream();
         ExcelReader reader = cn.hutool.poi.excel.ExcelUtil.getReader(inputStream);
-        List<OutboundVo> dmsOpsList = reader.read(2, 3, Integer.MAX_VALUE, OutboundVo.class);
-        List<QlOutboundBo> entity = OutboundAndWarehousingMapstruct.INSTANCES.toBos(dmsOpsList);
-        iQlOutboundService.batchInsertBo(entity);
+        List<OutboundImportVo> outboundImports = reader.read(2, 3, Integer.MAX_VALUE, OutboundImportVo.class);
+        List<QlOutboundBo> outboundBos = importToBo(outboundImports);
+        if (CollUtil.isEmpty(outboundBos)) {
+            return;
+        }
+        iQlOutboundService.batchInsertBo(outboundBos);
+    }
+
+    /**
+     * @param outboundImports
+     * @return
+     */
+    private List<QlOutboundBo> importToBo(List<OutboundImportVo> outboundImports) {
+        if (CollUtil.isEmpty(outboundImports)) {
+            return new ArrayList<>();
+        }
+        List<QlOutboundBo> outbounds = new ArrayList<>();
+        List<QlContractInfoSaleVo> contractInfoSales = findContractInfoSale(outboundImports);
+        Map<String, QlContractInfoSaleVo> contractInfoSaleMap = contractInfoSales.stream().collect(Collectors.toMap(QlContractInfoSaleVo::getContractCode, qlContractInfoSaleVo -> qlContractInfoSaleVo));
+
+        List<QlProjectInfoVo> projectInfos = findProjectInfo(outboundImports);
+        Map<String, QlProjectInfoVo> projectInfoMap = projectInfos.stream().collect(Collectors.toMap(QlProjectInfoVo::getProjectName, project -> project));
+
+        List<QlContractGoodsRelVo> qlContractGoodsRelVos = findContractGoodsRel(contractInfoSales);
+        Map<String, Long> goodsIds = buildGoodsIds(contractInfoSales, qlContractGoodsRelVos);
+
+        Map<String, List<OutboundImportVo>> outboundImportMap = outboundImports.stream().collect(Collectors.groupingBy(OutboundImportVo::getOutboundCode));
+
+        outboundImportMap.forEach((key, value) -> {
+            QlOutboundBo outbound = OutboundAndWarehousingMapstruct.INSTANCES.importToBo(value.get(0));
+
+            // 销售合同编号查询客户Id[customerId]
+            setCustomerId(outbound, contractInfoSaleMap);
+
+            // 项目名称查询项目Id[projectId]
+            setProjectId(outbound, projectInfoMap);
+
+            // 销售合同Id和产品名称查询产品id[goodsId]
+            QlContractInfoSaleVo qlContractInfoSaleVo = contractInfoSaleMap.get(outbound.getSaleContractCode());
+
+            List<QlWarehousingDetailBo> warehousingDetails = QlWarehousingDetailMapstruct.INSTANCES.outboundImportToBos(value);
+            for (QlWarehousingDetailBo warehousingDetail : warehousingDetails) {
+                Long goodsId = goodsIds.get(qlContractInfoSaleVo.getId() + "-" + warehousingDetail.getGoodsName());
+                if(ObjectUtil.isNull(goodsId)) {
+                    throw new ServiceException("未查询到销售合同下的产品销售信息");
+                }
+                warehousingDetail.setGoodsId(String.valueOf(goodsId));
+                warehousingDetail.setInventoryDirection("outbound");
+            }
+            outbound.setWarehousingDetails(warehousingDetails);
+
+            outbounds.add(outbound);
+        });
+        return outbounds;
+    }
+
+    private List<QlContractInfoSaleVo> findContractInfoSale(List<OutboundImportVo> outboundImports) {
+        // 销售合同编码查询合同Id
+        QlContractInfoSaleBo qlContractInfoSaleBo = new QlContractInfoSaleBo();
+        List<String> contractCodes = outboundImports.stream().map(OutboundImportVo:: getSaleContractCode).collect(Collectors.toList());
+        qlContractInfoSaleBo.setContractCodes(contractCodes);
+        return iQlContractInfoSaleService.queryList(qlContractInfoSaleBo);
+    }
+
+    private List<QlProjectInfoVo>  findProjectInfo(List<OutboundImportVo> outboundImports) {
+        List<String> projectNames = outboundImports.stream().map(OutboundImportVo::getProjectName).distinct().collect(Collectors.toList());
+        QlProjectInfoBo projectInfo = new QlProjectInfoBo();
+        projectInfo.setProjectNames(projectNames);
+        return iQlProjectInfoService.queryList(projectInfo);
+    }
+
+    private List<QlContractGoodsRelVo> findContractGoodsRel(List<QlContractInfoSaleVo> contractInfoSales) {
+        QlContractGoodsRelBo contractGoodsRel = new QlContractGoodsRelBo();
+        List<Long> contractSaleIds = contractInfoSales.stream().map(QlContractInfoSaleVo::getId).distinct().collect(Collectors.toList());
+        contractGoodsRel.setContractIds(contractSaleIds);
+        return iQlContractGoodsRelService.queryList(contractGoodsRel);
+    }
+
+    private Map<String, Long> buildGoodsIds(List<QlContractInfoSaleVo> contractInfoSales, List<QlContractGoodsRelVo> qlContractGoodsRelVos) {
+        Map<String, QlContractInfoSaleVo> contractInfoSaleMap = contractInfoSales.stream().collect(Collectors.toMap(contractInfoSale-> String.valueOf(contractInfoSale.getId()), qlContractInfoSaleVo -> qlContractInfoSaleVo));
+        Long contractSaleId = contractInfoSales.get(0).getId();
+        Map<String, Long> goodsIds = new HashMap<>();
+        for (QlContractGoodsRelVo qlContractGoodsRelVo : qlContractGoodsRelVos) {
+            String contractId = String.valueOf(qlContractGoodsRelVo.getContractId());
+            QlContractInfoSaleVo qlContractInfoSaleVo = contractInfoSaleMap.get(contractId);
+            if (ObjectUtil.isNull(qlContractInfoSaleVo)) {
+                throw new ServiceException("未查询到销售合同下的产品销售信息");
+            }
+            String key = contractSaleId + "-" + qlContractGoodsRelVo.getGoodsName();
+            goodsIds.put(key, qlContractGoodsRelVo.getGoodsId());
+        }
+        return goodsIds;
+    }
+
+    private void setCustomerId(QlOutboundBo outbound, Map<String, QlContractInfoSaleVo> contractInfoSaleMap) {
+        if(!contractInfoSaleMap.containsKey(outbound.getSaleContractCode())) {
+            throw new ServiceException("合同编码未找到对应的合同信息");
+        }
+        outbound.setCustomerId(Long.parseLong(contractInfoSaleMap.get(outbound.getSaleContractCode()).getCustomerId()));
+    }
+
+    private void setProjectId(QlOutboundBo outbound, Map<String, QlProjectInfoVo> projectInfoMap) {
+        if(!projectInfoMap.containsKey(outbound.getProjectName())) {
+            throw new ServiceException("项目名称未查询到对应的项目信息");
+        }
+        outbound.setProjectId(String.valueOf(projectInfoMap.get(outbound.getProjectName()).getId()));
     }
 
     /**
      * 导出出库管理列表
      */
     @SaCheckPermission("ql:outbound:export")
-    @Log(title = "出库管理" , businessType = BusinessType.EXPORT)
+    @Log(title = "出库管理", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(QlOutboundBo bo, HttpServletResponse response) {
-        List<QlOutboundVo> list = iQlOutboundService.queryList(bo);
-        ExcelUtil.exportExcel(list, "出库管理" , QlOutboundVo.class, response);
+    public void export(QlOutboundBo bo, HttpServletResponse response) throws IOException {
+        List<QlOutboundVo> qutbounds = iQlOutboundService.queryList(bo);
+        List<OutboundExportVo> outboundExports = new ArrayList<>();
+        for (QlOutboundVo outbound : qutbounds) {
+            if(CollUtil.isEmpty(outbound.getWarehousingDetails())) {
+                continue;
+            }
+            for (QlWarehousingDetailVo warehousingDetail : outbound.getWarehousingDetails()) {
+                OutboundExportVo outboundExport = new OutboundExportVo();
+                BeanUtil.copyProperties(outbound, outboundExport);
+                BeanUtil.copyProperties(warehousingDetail, outboundExport);
+                outboundExports.add(outboundExport);
+            }
+        }
+
+//        ExcelUtil.exportExcel(outboundExports, "出库管理", OutboundExportVo.class, response);
+
+
+        // 通过工具类创建writer
+        ExcelWriter writer = ExcelUtil.getWriter(true);
+        // 合并单元格后的标题行
+        writer.merge(22, "出库明细");
+
+        List<LinkedHashMap<String, String>> headers = new LinkedList<>();
+
+        LinkedHashMap<String, String> columnDesc = new LinkedHashMap<>();
+        columnDesc.put("outboundCode","单据编号");
+        columnDesc.put("projectName","项目名称");
+        columnDesc.put("outboundDate","出货日期");
+        columnDesc.put("salesperson","销售员");
+        columnDesc.put("saleContractCode","销售合同编号");
+        columnDesc.put("purchaseContractCode","采购合同编号");
+        columnDesc.put("customerName","客户名称");
+        columnDesc.put("telephone","客户电话");
+        columnDesc.put("address","客户地址");
+        columnDesc.put("saleDate","销售日期");
+        columnDesc.put("saleAmount","销售金额");
+        columnDesc.put("outboundUsername","出库对接人");
+        columnDesc.put("outboundReleaseuser","出库审核人");
+        columnDesc.put("goodsName","产品名称");
+        columnDesc.put("goodsSearchstandard","产品规格");
+        columnDesc.put("goodsUnit","产品单位");
+        columnDesc.put("basePrice","销售数量");
+        columnDesc.put("inventoryNumber","基准价");
+        columnDesc.put("salePrice","销售价");
+        columnDesc.put("extraPrice","附加价格");
+        columnDesc.put("amount","总价");
+        columnDesc.put("remark","备注");
+        headers.add(columnDesc);
+
+        LinkedHashMap<String, String> columnNames = new LinkedHashMap<>();
+        columnNames.put("outboundCode","outboundCode");
+        columnNames.put("projectName","projectName");
+        columnNames.put("outboundDate","outboundDate");
+        columnNames.put("salesperson","salesperson");
+        columnNames.put("saleContractCode","saleContractCode");
+        columnNames.put("purchaseContractCode","purchaseContractCode");
+        columnNames.put("customerName","customerName");
+        columnNames.put("telephone","telephone");
+        columnNames.put("address","address");
+        columnNames.put("saleDate","saleDate");
+        columnNames.put("saleAmount","saleAmount");
+        columnNames.put("outboundUsername","outboundUsername");
+        columnNames.put("outboundReleaseuser","outboundReleaseuser");
+        columnNames.put("goodsName","goodsName");
+        columnNames.put("goodsSearchstandard","goodsSearchstandard");
+        columnNames.put("goodsUnit","goodsUnit");
+        columnNames.put("basePrice","basePrice");
+        columnNames.put("inventoryNumber","inventoryNumber");
+        columnNames.put("salePrice","salePrice");
+        columnNames.put("extraPrice","extraPrice");
+        columnNames.put("amount","amount");
+        columnNames.put("remark","remark");
+
+        headers.add(columnNames);
+
+        writer.write(headers, false);
+        // 一次性写出内容
+        writer.write(outboundExports, false);
+        // 此处的response.setContentType 和教程里的不同
+        response.setContentType("application/octet-stream");
+        // filename就是表格的名字，这个无所谓，反正前端还会重命名
+        response.setHeader("Content-Disposition","attachment;filename=warehousing-"+ RandomUtil.randomNumbers(5) +".xlsx");
+        // 输出流
+        ServletOutputStream servletOutputStream = response.getOutputStream();
+
+        writer.flush(servletOutputStream);
+        // 关闭writer，释放内存
+        writer.close();
+        // 关闭输出Servlet流
+        IoUtil.close(servletOutputStream);
     }
 
     /**
@@ -94,7 +305,7 @@ public class QlOutboundController extends BaseController {
     @SaCheckPermission("ql:outbound:query")
     @GetMapping("/{id}")
     public R<QlOutboundVo> getInfo(@NotNull(message = "主键不能为空")
-                                     @PathVariable Long id) {
+                                   @PathVariable Long id) {
         return R.ok(iQlOutboundService.queryById(id));
     }
 
@@ -102,7 +313,7 @@ public class QlOutboundController extends BaseController {
      * 新增出库管理
      */
     @SaCheckPermission("ql:outbound:add")
-    @Log(title = "出库管理" , businessType = BusinessType.INSERT)
+    @Log(title = "出库管理", businessType = BusinessType.INSERT)
     @RepeatSubmit()
     @PostMapping()
     public R<Void> add(@Validated(AddGroup.class) @RequestBody QlOutboundBo bo) {
@@ -113,7 +324,7 @@ public class QlOutboundController extends BaseController {
      * 修改出库管理
      */
     @SaCheckPermission("ql:outbound:edit")
-    @Log(title = "出库管理" , businessType = BusinessType.UPDATE)
+    @Log(title = "出库管理", businessType = BusinessType.UPDATE)
     @RepeatSubmit()
     @PutMapping()
     public R<Void> edit(@Validated(EditGroup.class) @RequestBody QlOutboundBo bo) {
@@ -126,7 +337,7 @@ public class QlOutboundController extends BaseController {
      * @param ids 主键串
      */
     @SaCheckPermission("ql:outbound:remove")
-    @Log(title = "出库管理" , businessType = BusinessType.DELETE)
+    @Log(title = "出库管理", businessType = BusinessType.DELETE)
     @DeleteMapping("/{ids}")
     public R<Void> remove(@NotEmpty(message = "主键不能为空")
                           @PathVariable Long[] ids) {

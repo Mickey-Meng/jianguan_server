@@ -9,13 +9,14 @@ import com.ruoyi.common.annotation.ExcelDictFormat;
 import com.ruoyi.common.convert.ExcelDictConvert;
 import com.ruoyi.common.core.validate.AddGroup;
 import com.ruoyi.common.core.validate.EditGroup;
+import com.ruoyi.ql.domain.bo.QlContractGoodsRelBo;
 import io.swagger.annotations.ApiModelProperty;
 import liquibase.pro.packaged.S;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 import java.util.Date;
-
+import java.util.List;
 
 
 /**
@@ -126,4 +127,17 @@ public class QlContractInfoSaleVo {
     @ExcelProperty(value = "结束时间")
     @ApiModelProperty(value = "结束时间", required = true)
     private Date endDate;
+
+    /**
+     * 销售合同与商品关系
+     */
+    @ExcelProperty(value = "销售合同与商品关系")
+    @ApiModelProperty(value = "销售合同与商品关系", required = true)
+    private List<QlContractGoodsRelVo> contractGoodsRels;
+
+    /**
+     * 账期
+     */
+    private Long accountPeriod;
+
 }

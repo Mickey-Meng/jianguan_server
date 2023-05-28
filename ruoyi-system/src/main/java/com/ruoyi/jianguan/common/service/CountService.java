@@ -14,6 +14,7 @@ import com.ruoyi.common.core.domain.model.ZjPersonLeave;
 import com.ruoyi.common.core.domain.object.ResponseBase;
 import com.ruoyi.common.helper.LoginHelper;
 import com.ruoyi.common.utils.JwtUtil;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.jianguan.common.dao.*;
 import com.ruoyi.jianguan.common.domain.dto.*;
 import com.ruoyi.jianguan.common.domain.entity.*;
@@ -100,7 +101,9 @@ public class CountService {
 
         Item projectDetail = itemDAO.selectByPrimaryKey(projectId);
         SysOssVo sysOssVo = ossMapper.selectVoById(projectDetail.getEngineeringLayoutImageUrl());
-        projectDetail.setEngineeringLayoutImageUrl(sysOssVo.getUrl());
+        if(sysOssVo != null){
+            projectDetail.setEngineeringLayoutImageUrl(sysOssVo.getUrl());
+        }
         return new ResponseBase(200, "查询成功", projectDetail);
 
     }

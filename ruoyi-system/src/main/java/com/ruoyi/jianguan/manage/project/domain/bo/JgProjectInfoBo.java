@@ -135,6 +135,7 @@ public class JgProjectInfoBo extends BaseEntity {
      */
    // @NotBlank(message = "项目简介不能为空", groups = { AddGroup.class, EditGroup.class })
     private String introduction;
+    private String mapUrl;
 
     /**
      * 备注

@@ -28,6 +28,17 @@ public class ProduceRecord {
 
     private Date maxTime;
 
+    public List<ProduceRecordDetail> getProduceRecordDetails() {
+        return produceRecordDetails;
+    }
+
+    public void setProduceRecordDetails(List<ProduceRecordDetail> produceRecordDetails) {
+        this.produceRecordDetails = produceRecordDetails;
+    }
+
+    //yangaogao 20230527
+    List<ProduceRecordDetail> produceRecordDetails ;
+
     public static List<Head> toMap(){
 
         List<Head> list=new ArrayList<>();

@@ -1,7 +1,9 @@
 package com.ruoyi.ql.domain.bo;
 
+import com.alibaba.excel.annotation.ExcelProperty;
 import com.ruoyi.common.core.validate.AddGroup;
 import com.ruoyi.common.core.validate.EditGroup;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import javax.validation.constraints.*;
@@ -10,6 +12,8 @@ import java.util.Date;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ruoyi.common.core.domain.BaseEntity;
 
@@ -35,6 +39,11 @@ public class QlContractInfoSaleBo extends BaseEntity {
      */
     @NotBlank(message = "合同编码不能为空", groups = { AddGroup.class, EditGroup.class })
     private String contractCode;
+
+    /**
+     * 合同编码集合
+     */
+    private List<String> contractCodes;
 
     /**
      * 合同名称
@@ -134,4 +143,14 @@ public class QlContractInfoSaleBo extends BaseEntity {
      * 结束时间
      */
     private Date endDate;
+
+    /**
+     * 销售合同与商品关系
+     */
+    private List<QlContractGoodsRelBo> contractGoodsRels;
+
+    /**
+     * 账期
+     */
+    private Long accountPeriod;
 }

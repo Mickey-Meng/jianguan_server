@@ -1,16 +1,14 @@
 package com.ruoyi.ql.domain.vo;
 
-import java.math.BigDecimal;
-import java.util.Date;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
-import com.ruoyi.common.annotation.ExcelDictFormat;
-import com.ruoyi.common.convert.ExcelDictConvert;
-import lombok.Data;
-import java.util.Date;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
 
 
 
@@ -69,6 +67,13 @@ public class QlOutboundVo {
     @ExcelProperty(value = "采购合同编号")
     @ApiModelProperty(value = "采购合同编号", required = true)
     private String purchaseContractCode;
+
+    /**
+     * 客户Id
+     */
+    @ExcelProperty(value = "客户Id")
+    @ApiModelProperty(value = "客户Id", required = true)
+    private Long customerId;
 
     /**
      * 客户名称
@@ -216,5 +221,16 @@ public class QlOutboundVo {
     @ExcelProperty(value = "项目名称")
     @ApiModelProperty(value = "项目名称", required = true)
     private String projectName;
+    /**
+     * 最后收款日期
+     */
+    @ExcelProperty(value = "最后收款日期")
+    @ApiModelProperty(value = "最后收款日期", required = true)
+    private Date lastReceivableDate;
+
+    /**
+     * 入库单明细表
+     */
+    private List<QlWarehousingDetailVo> warehousingDetails;
 
 }

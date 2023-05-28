@@ -13,6 +13,13 @@ import java.util.List;
  * @Description :
  **/
 public class SsFProjectsTree {
+    public String getMapUrl() {
+        return mapUrl;
+    }
+
+    public void setMapUrl(String mapUrl) {
+        this.mapUrl = mapUrl;
+    }
 
     /**
      * key,自增主键
@@ -123,6 +130,8 @@ public class SsFProjectsTree {
 
     @ApiModelProperty(value = "项目简介")
     private String introduction;
+    @ApiModelProperty(value = "项目地图")
+    private String mapUrl;
 
     private List<SsFProjectsTree> child;
 

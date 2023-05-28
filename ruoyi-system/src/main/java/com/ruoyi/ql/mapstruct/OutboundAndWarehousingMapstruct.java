@@ -4,6 +4,7 @@ import com.ruoyi.ql.domain.QlOutbound;
 import com.ruoyi.ql.domain.QlWarehousing;
 import com.ruoyi.ql.domain.bo.QlOutboundBo;
 import com.ruoyi.ql.domain.bo.QlWarehousingBo;
+import com.ruoyi.ql.domain.importvo.OutboundImportVo;
 import com.ruoyi.ql.domain.vo.OutboundVo;
 import com.ruoyi.ql.domain.vo.WarehousingVo;
 import org.mapstruct.Mapper;
@@ -23,4 +24,5 @@ public interface OutboundAndWarehousingMapstruct {
     List<QlWarehousing> toQlWarehousing(List<QlWarehousingBo> microservicePoList);
     List<QlOutboundBo> toBos(List<OutboundVo> microservicePoList);
     List<QlWarehousingBo> toBQlWarehousingBos(List<WarehousingVo> microservicePoList);
+    QlOutboundBo importToBo(OutboundImportVo outboundImport);
 }

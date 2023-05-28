@@ -1,6 +1,8 @@
 package com.ruoyi.jianguan.manage.project.domain.vo;
 
 import java.util.Date;
+
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
@@ -216,5 +218,19 @@ public class JgProjectItemVo {
     @ApiModelProperty(value = "工程布局图", required = true)
     private String engineeringLayoutImage;
 
+    /**
+     * 付款进度
+     */
+    @ExcelProperty(value = "付款进度")
+    @ApiModelProperty(value = "付款进度")
+    private Long attachmentProgress;
+
+
+    /**
+     * 产值进度
+     */
+    @ExcelProperty(value = "产值进度")
+    @ApiModelProperty(value = "产值进度")
+    private Long productionProgress;
 
 }

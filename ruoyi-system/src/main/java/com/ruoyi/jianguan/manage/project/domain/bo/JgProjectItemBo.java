@@ -1,5 +1,6 @@
 package com.ruoyi.jianguan.manage.project.domain.bo;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.ruoyi.common.core.validate.AddGroup;
 import com.ruoyi.common.core.validate.EditGroup;
 import lombok.Data;
@@ -159,4 +160,14 @@ public class JgProjectItemBo extends BaseEntity {
      */
     private String engineeringLayoutImage;
 
+    /**
+     * 付款进度
+     */
+    private Long attachmentProgress;
+
+
+    /**
+     * 产值进度
+     */
+    private Long productionProgress;
 }

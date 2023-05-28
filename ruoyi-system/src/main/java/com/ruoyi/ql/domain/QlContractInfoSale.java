@@ -111,4 +111,9 @@ public class QlContractInfoSale extends BaseEntity {
      * 结束时间
      */
     private Date endDate;
+
+    /**
+     * 账期
+     */
+    private Long accountPeriod;
 }

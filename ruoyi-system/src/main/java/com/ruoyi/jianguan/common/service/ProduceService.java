@@ -175,28 +175,16 @@ public class ProduceService {
         }
     }
 
-    private List<Head>  tohead(String type){
+    private List<Head> tohead(String type) {
         List<Head> heads = ProduceRecord.toMap();
-        int num = heads.size();
         List<Produce> produces = produceDAO.getAllByType(type);
-        if (produces.size() == 1){
-            heads.add(new Head(produces.get(0).getName(),"one",num + 1));
-        }else if (produces.size() == 2){
-            heads.add(new Head(produces.get(0).getName(),"one",num + 1));
-            heads.add(new Head(produces.get(1).getName(),"two",num + 2));
-        } else if (produces.size() == 3){
-            heads.add(new Head(produces.get(0).getName(),"one",num + 1));
-            heads.add(new Head(produces.get(1).getName(),"two",num + 2));
-            heads.add(new Head(produces.get(2).getName(),"three",num + 3));
-        } else if (produces.size() == 4){
-            heads.add(new Head(produces.get(0).getName(),"one",num + 1));
-            heads.add(new Head(produces.get(1).getName(),"two",num + 2));
-            heads.add(new Head(produces.get(2).getName(),"three",num + 3));
-            heads.add(new Head(produces.get(3).getName(),"four",num + 4));
+        for (int i = 0; i < produces.size(); i++) {
+            Produce  produce = produces.get(i);
+            heads.add(new Head(produces.get(i).getName(), "P"+i, produce.getRangee()+5));
         }
+
         return heads;
     }
-
 
     private boolean getStatus(Float key, Integer produceid) {
         float k =produceid;
@@ -396,7 +384,11 @@ public class ProduceService {
 //            zjConponentProducetime.setPlanendtime(
 //                    ObjectUtils.isEmpty(recodeData.getUploadtime())?
 //                            new Date():recodeData.getUploadtime());
+            // add yangaogao  20230526
             zjConponentProducetime.setActulsttime(new Date());
+            if(null !=recodeData.getUploadtime() ){
+                zjConponentProducetime.setActulsttime(recodeData.getUploadtime());
+            }
             zjConponentProducetimeDAO.updateByPrimaryKeySelective(zjConponentProducetime);
         }else if(findLastProduceid == produceid){
             //修改项目进度表的计划完成时间
@@ -974,6 +966,9 @@ public class ProduceService {
                     produceRecord.setProjectcode(produceandrecode.getProjectcode());
                     produceRecord.setProjectname(collect1.get(produceandrecode.getProjectcode()));
                     produceRecord.setSttime(produceandrecode.getStime());
+                    List<ProduceRecordDetail> p = new ArrayList<ProduceRecordDetail>();
+                    produceRecord.setProduceRecordDetails(p);
+
 
                     listt.stream().forEach((produceandrecodeindex)->{
                         //设置详细数据

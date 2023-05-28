@@ -181,7 +181,7 @@ public interface ProjectsDAO {
     @Select("select a.* from ss_f_projects a " +
             " left join ss_f_projects b on a.id = b.parentid " +
             " left join ss_f_user_project c on b.id = c.GROUPID " +
-            " where c.USERID = #{userId} group by a.name")
+            " where c.USERID = #{userId} group by a.name ORDER BY a.STORDER asc")
     List<SsFProjects> getSectionProjectsIdByUserId(@Param("userId")Integer userId);
 
     @Select("select a.PROJECTID from zj_f_groups_projects a " +

@@ -11,13 +11,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="salesperson" column="salesperson"/>
         <result property="saleContractCode" column="sale_contract_code"/>
         <result property="purchaseContractCode" column="purchase_contract_code"/>
+        <result property="customerId" column="customer_id"/>
         <result property="customerName" column="customer_name"/>
         <result property="telephone" column="telephone"/>
         <result property="address" column="address"/>
         <result property="proudctId" column="proudct_id"/>
         <result property="proudctName" column="proudct_name"/>
         <result property="goodsSearchstandard" column="goods_searchStandard"/>
-        <result property="goodsUnit" column="goods_unit"/>
         <result property="basePrice" column="base_price"/>
         <result property="salePrice" column="sale_price"/>
         <result property="extraPrice" column="extra_price"/>
@@ -37,6 +37,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="deptId" column="dept_id"/>
         <result property="projectId" column="project_id"/>
         <result property="projectName" column="project_name"/>
+        <result property="lastReceivableDate" column="last_receivable_date"/>
+
     </resultMap>
 
 </mapper>

@@ -38,6 +38,10 @@ public class HiddenProjectAcceptPageVo extends NewBaseVo {
      */
     @ApiModelProperty(value = "施工单位")
     private Set<String> buildUnit;
+
+    private String constructdpts;
+    private String supervisorDepts;
+
     /**
      * 合同编号
      */

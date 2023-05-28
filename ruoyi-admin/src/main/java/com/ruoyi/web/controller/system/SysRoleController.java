@@ -59,8 +59,8 @@ public class SysRoleController extends BaseController {
      */
     @SaCheckPermission("system:role:list")
     @GetMapping("/allList")
-    public R<List<SysRole>> allList() {
-        return R.ok(roleService.selectRoleAll());
+    public R<List<SysRole>> allList(SysRole role) {
+        return R.ok(roleService.selectRoleList(role));
     }
 
     /**

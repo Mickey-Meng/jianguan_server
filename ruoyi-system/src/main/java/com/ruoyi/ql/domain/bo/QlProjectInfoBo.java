@@ -9,6 +9,8 @@ import javax.validation.constraints.*;
 import java.util.Date;
 
 import java.math.BigDecimal;
+import java.util.List;
+
 import com.ruoyi.common.core.domain.BaseEntity;
 
 /**
@@ -41,6 +43,11 @@ public class QlProjectInfoBo extends BaseEntity {
      */
     @NotBlank(message = "项目名称不能为空", groups = { AddGroup.class, EditGroup.class })
     private String projectName;
+
+    /**
+     * 项目名称
+     */
+    private List<String> projectNames;
 
     /**
      * 项目金额

@@ -50,4 +50,14 @@ public interface I${ClassName}Service {
      * 校验并批量删除${functionName}信息
      */
     Boolean deleteWithValidByIds(Collection<${pkColumn.javaType}> ids, Boolean isValid);
+
+#foreach ($column in $columns)
+    #if ($column.columnComment.indexOf("业务主键") != -1)
+    /**
+     * 校验主键是否唯一${functionName}信息
+     */
+    Boolean checkUniqueByPrimaryKey(${pkColumn.javaType} ${pkColumn.javaField});
+    #end
+#end
+
 }

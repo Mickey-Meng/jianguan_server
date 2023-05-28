@@ -1,32 +1,29 @@
 package com.ruoyi.ql.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.crypto.digest.MD5;
-import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.common.core.page.TableDataInfo;
-import com.ruoyi.common.core.domain.PageQuery;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.ruoyi.common.core.domain.PageQuery;
+import com.ruoyi.common.core.page.TableDataInfo;
+import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.ql.domain.QlShopGoods;
 import com.ruoyi.ql.domain.QlShopGoodsType;
+import com.ruoyi.ql.domain.bo.QlShopGoodsBo;
 import com.ruoyi.ql.domain.vo.QlShopGoodsTypeVo;
-
-
+import com.ruoyi.ql.domain.vo.QlShopGoodsVo;
 import com.ruoyi.ql.domain.vo.TreeVo;
+import com.ruoyi.ql.mapper.QlShopGoodsMapper;
 import com.ruoyi.ql.mapper.QlShopGoodsTypeMapper;
-import liquibase.pro.packaged.T;
+import com.ruoyi.ql.service.IQlShopGoodsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import com.ruoyi.ql.domain.bo.QlShopGoodsBo;
-import com.ruoyi.ql.domain.vo.QlShopGoodsVo;
-import com.ruoyi.ql.domain.QlShopGoods;
-import com.ruoyi.ql.mapper.QlShopGoodsMapper;
-import com.ruoyi.ql.service.IQlShopGoodsService;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Collection;
 
 /**
  * 商品信息Service业务层处理
@@ -73,6 +70,7 @@ public class QlShopGoodsServiceImpl implements IQlShopGoodsService {
     private LambdaQueryWrapper<QlShopGoods> buildQueryWrapper(QlShopGoodsBo bo) {
         Map<String, Object> params = bo.getParams();
         LambdaQueryWrapper<QlShopGoods> lqw = Wrappers.lambdaQuery();
+        lqw.eq(bo.getSupplierId()!= null, QlShopGoods::getSupplierId, bo.getSupplierId());
         lqw.like(StringUtils.isNotBlank(bo.getSupplierName()), QlShopGoods::getSupplierName, bo.getSupplierName());
         lqw.eq(bo.getGoodsTypeId() != null, QlShopGoods::getGoodsTypeId, bo.getGoodsTypeId());
         lqw.eq(StringUtils.isNotBlank(bo.getGoodsCode()), QlShopGoods::getGoodsCode, bo.getGoodsCode());
@@ -80,6 +78,7 @@ public class QlShopGoodsServiceImpl implements IQlShopGoodsService {
         lqw.like(StringUtils.isNotBlank(bo.getGoodsName()), QlShopGoods::getGoodsName, bo.getGoodsName());
         lqw.eq(StringUtils.isNotBlank(bo.getGoodsSearchstandard()), QlShopGoods::getGoodsSearchstandard, bo.getGoodsSearchstandard());
         lqw.eq(StringUtils.isNotBlank(bo.getGoodsUnit()), QlShopGoods::getGoodsUnit, bo.getGoodsUnit());
+        lqw.eq(ObjectUtil.isNotNull(bo.getId()), QlShopGoods::getId, bo.getId());
         return lqw;
     }
 

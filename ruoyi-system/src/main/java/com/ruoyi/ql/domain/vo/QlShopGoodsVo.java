@@ -100,4 +100,9 @@ public class QlShopGoodsVo {
     @ExcelProperty(value = "商品品牌")
     @ApiModelProperty(value = "商品品牌", required = true)
     private String goodsBrand;
+
+    /**
+     * 备注
+     */
+    private String remark;
 }

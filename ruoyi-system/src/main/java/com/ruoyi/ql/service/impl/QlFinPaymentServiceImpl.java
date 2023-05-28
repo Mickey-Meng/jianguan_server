@@ -235,6 +235,20 @@ public class QlFinPaymentServiceImpl implements IQlFinPaymentService {
         if(isValid){
             //TODO 做一些业务上的校验,判断是否需要校验
         }
-        return baseMapper.deleteBatchIds(ids) > 0;
+        boolean deleteResult = baseMapper.deleteBatchIds(ids) > 0;
+        if (deleteResult) {
+            List<Long> idList = ids.stream().distinct().collect(Collectors.toList());
+            if (CollUtil.isEmpty(idList)) {
+                return true;
+            }
+            QlPaymentWarehousingRelBo qlPaymentWarehousingRelBo = new QlPaymentWarehousingRelBo();
+            qlPaymentWarehousingRelBo.setPaymentIds(idList);
+            List<QlPaymentWarehousingRelVo> qlPaymentWarehousingRelVos = paymentWarehousingRelService.queryList(qlPaymentWarehousingRelBo);
+            if(CollUtil.isEmpty(qlPaymentWarehousingRelVos)) {
+                return true;
+            }
+            paymentWarehousingRelService.deleteWithValidByIds(qlPaymentWarehousingRelVos.stream().map(QlPaymentWarehousingRelVo::getId).distinct().collect(Collectors.toList()), true);
+        }
+        return deleteResult;
     }
 }

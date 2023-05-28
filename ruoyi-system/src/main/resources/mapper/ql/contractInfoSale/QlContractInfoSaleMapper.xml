@@ -30,6 +30,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="purchaser" column="purchaser"/>
         <result property="startDate" column="start_date"/>
         <result property="endDate" column="end_date"/>
+        <result property="accountPeriod" column="account_period"/>
+
     </resultMap>
     <select id="ContractExpireScheduled" resultMap="QlContractInfoSaleResult">
 

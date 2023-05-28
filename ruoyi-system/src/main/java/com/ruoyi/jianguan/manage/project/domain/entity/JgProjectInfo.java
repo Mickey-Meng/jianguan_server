@@ -122,6 +122,12 @@ public class JgProjectInfo extends BaseEntity {
      */
     @TableField("INTRODUCTION")
     private String introduction;
+      /**
+     * 项目地图
+     */
+    @TableField("MAPURL")
+    private String mapUrl;
+
     /**
      * 备注
      */

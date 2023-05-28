@@ -32,6 +32,8 @@
         <result property="thirdQuarterActuality" column="third_quarter_actuality"/>
         <result property="fourthQuarterActuality" column="fourth_quarter_actuality"/>
         <result property="engineeringLayoutImage" column="engineeringLayoutImageUrl"/>
+        <result property="productionProgress" column="production_progress"/>
+        <result property="attachmentProgress" column="attachment_progress"/>
     </resultMap>
 
 </mapper>

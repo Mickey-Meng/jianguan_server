@@ -27,6 +27,8 @@ import com.ruoyi.jianguan.manage.project.domain.vo.JgProjectItemVo;
 import com.ruoyi.jianguan.manage.project.mapper.JgProjectItemMapper;
 import com.ruoyi.jianguan.manage.project.service.IJgProjectItemService;
 import com.ruoyi.jianguan.manage.project.service.impl.JgProjectItemServiceImpl;
+import com.ruoyi.system.domain.vo.SysOssVo;
+import com.ruoyi.system.mapper.SysOssMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -51,6 +53,8 @@ public class ProjectsService {
     @Autowired
     FileMapper fileMapper;
 
+    @Autowired
+    private SysOssMapper ossMapper;
     @Autowired
     private ItemDAO itemDAO;
     JgProjectItemMapper jgProjectItemMapper;
@@ -549,6 +553,15 @@ public class ProjectsService {
             //Integer userId = LoginHelper.getUserId().intValue();
             Long userId = LoginHelper.getLoginUser().getUserId();
             List<SsFProjects> projects = projectsDAO.getSectionProjectsIdByUserId(userId.intValue());
+            for (int i =0;i<projects.size();i++){
+                SsFProjects ssFProjects = projects.get(i);
+
+                SysOssVo sysOssVo = ossMapper.selectVoById(ssFProjects.getProjectpic());
+                if(sysOssVo != null){
+                    ssFProjects.setProjectpic(sysOssVo.getUrl());
+                }
+            }
+
             return new ResponseBase(200, "", projects);
         } catch (Exception e) {
             e.printStackTrace();

@@ -1,7 +1,9 @@
 package com.ruoyi.ql.domain.vo;
 
+import com.alibaba.excel.annotation.ExcelProperty;
 import com.ruoyi.common.core.validate.AddGroup;
 import com.ruoyi.common.core.validate.EditGroup;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
@@ -161,5 +163,9 @@ public class OutboundVo {
     @NotBlank(message = "项目名称不能为空", groups = { AddGroup.class, EditGroup.class })
     private String projectName;
 
+    /**
+     * 最后收款日期
+     */
+    private Date lastReceivableDate;
 
 }

@@ -104,6 +104,10 @@ public class QlWarehousing extends BaseEntity {
      */
     private String contractCode;
     /**
+     * 供应商Id
+     */
+    private Long supplierId;
+    /**
      * 供应商名称
      */
     private String supplierName;

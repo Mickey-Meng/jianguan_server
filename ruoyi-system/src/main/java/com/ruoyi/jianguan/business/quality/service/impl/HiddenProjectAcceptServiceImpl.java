@@ -26,6 +26,8 @@ import com.ruoyi.common.core.domain.object.ResponseBase;
 import com.ruoyi.flowable.domain.dto.FlowTaskCommentDto;
 import com.ruoyi.flowable.service.FlowStaticPageService;
 import com.ruoyi.common.core.sequence.util.IdUtil;
+import com.ruoyi.jianguan.manage.project.domain.vo.JgProjectItemVo;
+import com.ruoyi.jianguan.manage.project.service.IJgProjectItemService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -62,7 +64,8 @@ public class HiddenProjectAcceptServiceImpl extends ServiceImpl<HiddenProjectAcc
 
     @Autowired
     private FlowAuditEntryService flowAuditEntryService;
-
+    @Autowired
+    private IJgProjectItemService jgProjectItemService;
     /**
      * 新增或者更新隐蔽工程验收记录数据
      *
@@ -153,28 +156,17 @@ public class HiddenProjectAcceptServiceImpl extends ServiceImpl<HiddenProjectAcc
         //判断
         if (Objects.nonNull(acceptList) && !acceptList.isEmpty()) {
             //通过项目id查询项目详细信息（项目名、施工单位、监理单位、合同号等）
-            List<Map<String, Object>> companys = projectsDAO.getCompanyInfoByProjectId(pageDto.getProjectId());
-            if (Objects.nonNull(companys) && !companys.isEmpty()) {
+//            List<Map<String, Object>> companys = projectsDAO.getCompanyInfoByProjectId(pageDto.getProjectId());
+            JgProjectItemVo jgProjectItemVo = jgProjectItemService.queryById(pageDto.getProjectId().longValue()) ;
+            String constructDept = jgProjectItemVo.getConstructDept();
+            if (Objects.nonNull(constructDept) && !constructDept.isEmpty()) {
                 //循环属性
                 acceptList.forEach(accept -> {
                     //状态
                     accept.setStatusStr(accept.getStatus() == 0 ? "进行中" : "已完成");
-                    //施工单位
-                    Set<String> sgdws = Sets.newHashSet();
-                    //监理单位
-                    Set<String> jldws = Sets.newHashSet();
-                    companys.forEach(company -> {
-                        String typecode = (String) company.get("typecode");
-                        if ("jldw".equals(typecode)) {
-                            jldws.add((String) company.get("name"));
-                        }
-                        if ("sgdw".equals(typecode)) {
-                            sgdws.add((String) company.get("name"));
-                        }
-                        //设置值
-                        accept.setBuildUnit(sgdws);
-                        accept.setSupervisorUnit(jldws);
-                    });
+                    accept.setConstructdpts(jgProjectItemVo.getConstructDept());
+                    accept.setSupervisorDepts(jgProjectItemVo.getSupervisorDept());
+
                 });
             }
         }

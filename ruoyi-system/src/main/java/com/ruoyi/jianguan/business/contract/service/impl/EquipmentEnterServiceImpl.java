@@ -85,7 +85,7 @@ public class EquipmentEnterServiceImpl extends ServiceImpl<EquipmentEnterMapper,
         //附件
         equipmentEnter.setAttachment(JSON.toJSONString(saveDto.getAttachment()));
         //装备信息
-        List<EquipmentInfo> equipmentInfo = saveDto.getEquipmentInfo();
+        List<EquipmentInfo> equipmentInfos = saveDto.getEquipmentInfo();
         //新增
         boolean isStartFlow = false;
         if (Objects.isNull(saveDto.getId())) {
@@ -96,12 +96,12 @@ public class EquipmentEnterServiceImpl extends ServiceImpl<EquipmentEnterMapper,
                 isStartFlow = true;
             }
             //新增设备信息
-            if (Objects.nonNull(equipmentInfo) && equipmentInfo.size() > 0){
-                equipmentInfo.forEach(equipment -> {
+            if (Objects.nonNull(equipmentInfos) && equipmentInfos.size() > 0){
+                equipmentInfos.forEach(equipment -> {
                     equipment.setId(IdUtil.nextLongId());
                     equipment.setEnterId(longId);
                 });
-                equipmentInfoService.saveBatch(equipmentInfo);
+                equipmentInfoService.saveBatch(equipmentInfos);
             }
         } else {
             //判断是否是草稿转为正式数据
@@ -111,7 +111,10 @@ public class EquipmentEnterServiceImpl extends ServiceImpl<EquipmentEnterMapper,
             }
             //编辑 1.先删除 再新增
             equipmentInfoService.removeByEnterId(saveDto.getId());
-            equipmentInfoService.saveBatch(equipmentInfo);
+            equipmentInfos.forEach(equipment -> {
+                equipment.setId(IdUtil.nextLongId());
+            });
+            equipmentInfoService.saveBatch(equipmentInfos);
         }
         //保存
         boolean saveOrUpdate = this.saveOrUpdate(equipmentEnter);

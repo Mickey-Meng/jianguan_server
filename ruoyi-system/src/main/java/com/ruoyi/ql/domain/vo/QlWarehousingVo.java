@@ -14,7 +14,7 @@ import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 import java.util.Date;
-
+import java.util.List;
 
 
 /**
@@ -134,6 +134,13 @@ public class QlWarehousingVo {
     private String contractCode;
 
     /**
+     * 供应商Id
+     */
+    @ExcelProperty(value = "供应商Id")
+    @ApiModelProperty(value = "供应商Id", required = true)
+    private Long supplierId;
+
+    /**
      * 供应商名称
      */
     @ExcelProperty(value = "供应商名称")
@@ -213,4 +220,15 @@ public class QlWarehousingVo {
     @ExcelProperty(value = "单位")
     @ApiModelProperty(value = "单位", required = true)
     private String goodsUnit;
+
+    /**
+     * 入库单明细表
+     */
+    private List<QlWarehousingDetailVo> warehousingDetails;
+
+
+    /**
+     * 备注
+     */
+    private String remark;
 }

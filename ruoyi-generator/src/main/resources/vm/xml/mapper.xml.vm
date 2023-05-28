@@ -10,5 +10,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 #end
     </resultMap>
 
+#foreach ($column in $columns)
+    #if ($column.columnComment.indexOf("业务主键") != -1)
+    <select id="selectCountByPrimaryKey" resultType="java.lang.Integer">
+        SELECT COUNT(1)
+            FROM ${tableName}
+        WHERE ${pkColumn.columnName} = #{${pkColumn.javaField}}
+    </select>
+    #end
+#end
 
 </mapper>

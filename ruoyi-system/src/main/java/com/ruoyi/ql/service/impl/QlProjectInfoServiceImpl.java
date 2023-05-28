@@ -1,6 +1,7 @@
 package com.ruoyi.ql.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.core.domain.PageQuery;
@@ -68,6 +69,7 @@ public class QlProjectInfoServiceImpl implements IQlProjectInfoService {
         lqw.eq(bo.getProjectDays() != null, QlProjectInfo::getProjectDays, bo.getProjectDays());
         lqw.eq(bo.getDeptId() != null, QlProjectInfo::getDeptId, bo.getDeptId());
         lqw.eq(StringUtils.isNotBlank(bo.getArea()), QlProjectInfo::getArea, bo.getArea());
+        lqw.in(CollUtil.isNotEmpty(bo.getProjectNames()), QlProjectInfo:: getProjectName, bo.getProjectNames());
         return lqw;
     }
 

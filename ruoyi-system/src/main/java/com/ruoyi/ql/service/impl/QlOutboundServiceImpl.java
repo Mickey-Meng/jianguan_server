@@ -1,6 +1,8 @@
 package com.ruoyi.ql.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -9,16 +11,21 @@ import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.ql.domain.QlOutbound;
 import com.ruoyi.ql.domain.bo.QlOutboundBo;
+import com.ruoyi.ql.domain.bo.QlWarehousingDetailBo;
 import com.ruoyi.ql.domain.vo.QlOutboundVo;
+import com.ruoyi.ql.domain.vo.QlWarehousingDetailVo;
 import com.ruoyi.ql.mapper.QlOutboundMapper;
 import com.ruoyi.ql.mapstruct.OutboundAndWarehousingMapstruct;
 import com.ruoyi.ql.service.IQlOutboundService;
+import com.ruoyi.ql.service.IQlWarehousingDetailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 出库管理Service业务层处理
@@ -32,12 +39,17 @@ public class QlOutboundServiceImpl implements IQlOutboundService {
 
     private final QlOutboundMapper baseMapper;
 
+    private final IQlWarehousingDetailService warehousingDetailService;
+
     /**
      * 查询出库管理
      */
     @Override
     public QlOutboundVo queryById(Long id){
-        return baseMapper.selectVoById(id);
+        QlOutboundVo qlOutboundVo = baseMapper.selectVoById(id);
+        List<QlWarehousingDetailVo> warehousingDetails = findWarehousingDetails(CollUtil.newArrayList(qlOutboundVo));
+        qlOutboundVo.setWarehousingDetails(warehousingDetails);
+        return qlOutboundVo;
     }
 
     /**
@@ -47,6 +59,8 @@ public class QlOutboundServiceImpl implements IQlOutboundService {
     public TableDataInfo<QlOutboundVo> queryPageList(QlOutboundBo bo, PageQuery pageQuery) {
         LambdaQueryWrapper<QlOutbound> lqw = buildQueryWrapper(bo);
         Page<QlOutboundVo> result = baseMapper.selectVoPage(pageQuery.build(), lqw);
+        List<QlWarehousingDetailVo> warehousingDetails = findWarehousingDetails(result);
+        setWarehousingDetail(result, warehousingDetails);
         return TableDataInfo.build(result);
     }
 
@@ -56,7 +70,10 @@ public class QlOutboundServiceImpl implements IQlOutboundService {
     @Override
     public List<QlOutboundVo> queryList(QlOutboundBo bo) {
         LambdaQueryWrapper<QlOutbound> lqw = buildQueryWrapper(bo);
-        return baseMapper.selectVoList(lqw);
+        List<QlOutboundVo> qlOutboundVos = baseMapper.selectVoList(lqw);
+        List<QlWarehousingDetailVo> warehousingDetails = findWarehousingDetails(qlOutboundVos);
+        setWarehousingDetail(qlOutboundVos, warehousingDetails);
+        return qlOutboundVos;
     }
 
     private LambdaQueryWrapper<QlOutbound> buildQueryWrapper(QlOutboundBo bo) {
@@ -88,6 +105,50 @@ public class QlOutboundServiceImpl implements IQlOutboundService {
         return lqw;
     }
 
+    private List<QlWarehousingDetailVo> findWarehousingDetails(Page<QlOutboundVo> result) {
+        if (ObjectUtil.isNull(result) || CollUtil.isEmpty(result.getRecords())) {
+            return new ArrayList<>();
+        }
+        return findWarehousingDetails(result.getRecords());
+    }
+
+    private List<QlWarehousingDetailVo> findWarehousingDetails(List<QlOutboundVo> outboundVos) {
+        if(CollUtil.isEmpty(outboundVos)) {
+            return new ArrayList<>();
+        }
+
+        List<Long> inventoryIds = outboundVos.stream().map(QlOutboundVo::getId).collect(Collectors.toList());
+        if(CollUtil.isEmpty(inventoryIds)) {
+            return new ArrayList<>();
+        }
+        QlWarehousingDetailBo warehousingDetail = new QlWarehousingDetailBo();
+        warehousingDetail.setInventoryDirection("outbound");
+        warehousingDetail.setInventoryIds(inventoryIds);
+        List<QlWarehousingDetailVo> warehousingDetails = warehousingDetailService.queryList(warehousingDetail);
+        if (CollUtil.isEmpty(warehousingDetails)) {
+            return new ArrayList<>();
+        }
+        return warehousingDetails;
+    }
+
+    private void setWarehousingDetail(Page<QlOutboundVo> result, List<QlWarehousingDetailVo> warehousingDetails) {
+        if (ObjectUtil.isNull(result) || CollUtil.isEmpty(result.getRecords()) || CollUtil.isEmpty(warehousingDetails)) {
+            return;
+        }
+        setWarehousingDetail(result.getRecords(), warehousingDetails);
+    }
+
+    private void setWarehousingDetail(List<QlOutboundVo> outboundVos, List<QlWarehousingDetailVo> warehousingDetails) {
+        Map<Long, List<QlWarehousingDetailVo>> warehousingDetailMap = warehousingDetails.stream().collect(Collectors.groupingBy(QlWarehousingDetailVo::getInventoryId));
+        for (QlOutboundVo warehousing : outboundVos) {
+            if (!warehousingDetailMap.containsKey(warehousing.getId())) {
+                continue;
+            }
+            List<QlWarehousingDetailVo> warehousingDetailsList = warehousingDetailMap.get(warehousing.getId());
+            warehousing.setWarehousingDetails(warehousingDetailsList);
+        }
+    }
+
     /**
      * 新增出库管理
      */
@@ -99,6 +160,7 @@ public class QlOutboundServiceImpl implements IQlOutboundService {
         if (flag) {
             bo.setId(add.getId());
         }
+        batchInsertDetail(bo.getWarehousingDetails(), add);
         return flag;
     }
 
@@ -106,6 +168,11 @@ public class QlOutboundServiceImpl implements IQlOutboundService {
     public void batchInsertBo(List<QlOutboundBo> bos) {
         List<QlOutbound> entity = OutboundAndWarehousingMapstruct.INSTANCES.toEos(bos);
         baseMapper.insertBatch(entity);
+        Map<String, QlOutbound> qlOutboundMap = entity.stream().collect(Collectors.toMap(QlOutbound::getOutboundCode, outbound -> outbound));
+        for (QlOutboundBo bo : bos) {
+            QlOutbound qlOutbound = qlOutboundMap.get(bo.getOutboundCode());
+            batchInsertDetail(bo.getWarehousingDetails(), qlOutbound);
+        }
     }
 
     /**
@@ -115,7 +182,26 @@ public class QlOutboundServiceImpl implements IQlOutboundService {
     public Boolean updateByBo(QlOutboundBo bo) {
         QlOutbound update = BeanUtil.toBean(bo, QlOutbound.class);
         validEntityBeforeSave(update);
-        return baseMapper.updateById(update) > 0;
+        Boolean updateResult = baseMapper.updateById(update) > 0;
+        List<QlWarehousingDetailVo> warehousingDetails = findWarehousingDetails(CollUtil.newArrayList(BeanUtil.toBean(bo, QlOutboundVo.class)));
+        if(CollUtil.isNotEmpty(warehousingDetails)) {
+            List<Long> detailIds = warehousingDetails.stream().map(QlWarehousingDetailVo::getId).collect(Collectors.toList());
+            if (CollUtil.isNotEmpty(detailIds)) {
+                warehousingDetailService.deleteWithValidByIds(detailIds, true);
+            }
+        }
+        batchInsertDetail(bo.getWarehousingDetails(), update);
+        return updateResult;
+    }
+
+    private void batchInsertDetail(List<QlWarehousingDetailBo> warehousingDetails, QlOutbound outbound) {
+        for (QlWarehousingDetailBo warehousingDetail : warehousingDetails) {
+            warehousingDetail.setId(null);
+            warehousingDetail.setInventoryDirection("outbound");
+            warehousingDetail.setInventoryId(outbound.getId());
+            warehousingDetail.setInventoryCode(outbound.getOutboundCode());
+            warehousingDetailService.insertByBo(warehousingDetail);
+        }
     }
 
     /**
@@ -133,7 +219,26 @@ public class QlOutboundServiceImpl implements IQlOutboundService {
         if(isValid){
             //TODO 做一些业务上的校验,判断是否需要校验
         }
-        return baseMapper.deleteBatchIds(ids) > 0;
+        boolean deleteResult = baseMapper.deleteBatchIds(ids) > 0;
+        if(deleteResult) {
+            List<Long> idList = ids.stream().distinct().collect(Collectors.toList());
+            if (CollUtil.isEmpty(idList)) {
+                return true;
+            }
+            List<QlOutboundVo> inventorys = new ArrayList<>();
+            for (Long inventoryId : idList) {
+                QlOutboundVo outbound = new QlOutboundVo();
+                outbound.setId(inventoryId);
+                inventorys.add(outbound);
+            }
+            List<QlWarehousingDetailVo> warehousingDetails = findWarehousingDetails(inventorys);
+            if(CollUtil.isEmpty(warehousingDetails)) {
+                return true;
+            }
+            List<Long> detailIds = warehousingDetails.stream().map(QlWarehousingDetailVo::getId).distinct().collect(Collectors.toList());
+            warehousingDetailService.deleteWithValidByIds(detailIds, true);
+        }
+        return deleteResult;
     }
 
 

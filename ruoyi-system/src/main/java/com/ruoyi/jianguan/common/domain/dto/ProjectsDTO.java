@@ -120,6 +120,8 @@ public class ProjectsDTO {
 
     @ApiModelProperty(value = "项目简介")
     private String introduction;
+    @ApiModelProperty(value = "项目地图")
+    private String mapUrl;
 
     public String getIntroduction() {
         return introduction;
@@ -298,6 +300,14 @@ public class ProjectsDTO {
 
     public void setProjectsurface(String projectsurface) {
         this.projectsurface = projectsurface;
+    }
+
+    public String getMapUrl() {
+        return mapUrl;
+    }
+
+    public void setMapUrl(String mapUrl) {
+        this.mapUrl = mapUrl;
     }
 
     @Override

@@ -182,6 +182,21 @@ public class QlFinReceivableServiceImpl implements IQlFinReceivableService {
         if(isValid){
             //TODO 做一些业务上的校验,判断是否需要校验
         }
-        return baseMapper.deleteBatchIds(ids) > 0;
+        //TODO 20230525  需要删除对应的收款明细表
+        boolean deleteResult = baseMapper.deleteBatchIds(ids) > 0;
+        if (deleteResult) {
+            List<Long> idList = ids.stream().distinct().collect(Collectors.toList());
+            if (CollUtil.isEmpty(idList)) {
+                return true;
+            }
+            QlReceivableOutboundRelBo qlReceivableOutboundRelBo = new QlReceivableOutboundRelBo();
+            qlReceivableOutboundRelBo.setReceivableIds(idList);
+            List<QlReceivableOutboundRelVo> qlReceivableOutboundRelVos = receivableOutboundRelService.queryList(qlReceivableOutboundRelBo);
+            if(CollUtil.isEmpty(qlReceivableOutboundRelVos)) {
+                return true;
+            }
+            receivableOutboundRelService.deleteWithValidByIds(qlReceivableOutboundRelVos.stream().map(QlReceivableOutboundRelVo::getId).distinct().collect(Collectors.toList()), true);
+        }
+        return deleteResult;
     }
 }

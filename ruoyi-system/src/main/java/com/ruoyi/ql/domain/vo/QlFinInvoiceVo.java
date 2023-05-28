@@ -85,4 +85,9 @@ public class QlFinInvoiceVo {
     @ExcelProperty(value = "发票编号")
     @ApiModelProperty(value = "发票编号", required = true)
     private String invoiceNo;
+
+    /**
+     * 备注
+     */
+    private String remark;
 }

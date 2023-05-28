@@ -24,11 +24,13 @@
     <result column="secondQuarter" jdbcType="VARCHAR" property="secondQuarter" />
     <result column="firstQuarter" jdbcType="VARCHAR" property="firstQuarter" />
     <result column="engineeringLayoutImageUrl" jdbcType="VARCHAR" property="engineeringLayoutImageUrl" />
+    <result column="production_progress" jdbcType="DECIMAL"  property="productionProgress"/>
+    <result column="attachment_progress" jdbcType="DECIMAL"  property="attachmentProgress" />
   </resultMap>
   <sql id="Base_Column_List">
     id, managedpt, builddpt, desgindpt, constructdpt, supervisordpt, projectscale, projectduration,
     inputscale, starttime, projectcode,firstQuarter,secondQuarter,thirdQuarter,fourthQuarter,graspTheProgress,engineeringLayoutImageUrl,
-        implementGuarantee,compactionResponsibility,investmentProjectOverview,projectName,auditUnit
+        implementGuarantee,compactionResponsibility,investmentProjectOverview,projectName,auditUnit,production_progress,attachment_progress
   </sql>
 
 

@@ -51,6 +51,10 @@ public class QlOutbound extends BaseEntity {
      */
     private String purchaseContractCode;
     /**
+     * 客户Id
+     */
+    private Long customerId;
+    /**
      * 客户名称
      */
     private String customerName;
@@ -139,4 +143,8 @@ public class QlOutbound extends BaseEntity {
      * 项目名称
      */
     private String projectName;
+    /**
+     * 最后收款日期
+     */
+    private Date lastReceivableDate;
 }

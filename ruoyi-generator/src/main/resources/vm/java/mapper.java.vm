@@ -3,6 +3,7 @@ package ${packageName}.mapper;
 import ${packageName}.domain.${ClassName};
 import ${packageName}.domain.vo.${ClassName}Vo;
 import com.ruoyi.common.core.mapper.BaseMapperPlus;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * ${functionName}Mapper接口
@@ -12,4 +13,9 @@ import com.ruoyi.common.core.mapper.BaseMapperPlus;
  */
 public interface ${ClassName}Mapper extends BaseMapperPlus<${ClassName}Mapper, ${ClassName}, ${ClassName}Vo> {
 
+#foreach ($column in $columns)
+    #if ($column.columnComment.indexOf("业务主键") != -1)
+    Integer selectCountByPrimaryKey(@Param("${pkColumn.javaField}") ${pkColumn.javaType} ${pkColumn.javaField})
+    #end
+#end
 }

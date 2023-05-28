@@ -131,4 +131,17 @@ public class ${ClassName}ServiceImpl implements I${ClassName}Service {
         }
         return baseMapper.deleteBatchIds(ids) > 0;
     }
+
+#foreach ($column in $columns)
+    #if ($column.columnComment.indexOf("业务主键") != -1)
+    /**
+     * 校验主键是否唯一${functionName}信息
+     */
+    @Override
+    public Boolean checkUniqueByPrimaryKey(${pkColumn.javaType} ${pkColumn.javaField}) {
+        int count = baseMapper.selectCountByPrimaryKey(${pkColumn.javaField});
+        return count <= 1;
+    }
+    #end
+#end
 }

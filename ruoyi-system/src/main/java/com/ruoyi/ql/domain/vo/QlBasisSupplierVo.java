@@ -103,4 +103,9 @@ public class QlBasisSupplierVo {
      */
     private String fj;
 
+    /**
+     * 备注
+     */
+    private String remark;
+
 }
