@@ -131,7 +131,6 @@ public class QlContractInfoSaleVo {
     /**
      * 销售合同与商品关系
      */
-    @ExcelProperty(value = "销售合同与商品关系")
     @ApiModelProperty(value = "销售合同与商品关系", required = true)
     private List<QlContractGoodsRelVo> contractGoodsRels;
 

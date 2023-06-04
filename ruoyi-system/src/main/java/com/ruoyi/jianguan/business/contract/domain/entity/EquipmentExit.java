@@ -89,5 +89,11 @@ public class EquipmentExit extends NewBaseEntity {
     @ApiModelProperty(value = "删除标记(1: 正常 -1: 已删除)")
     private Integer deletedFlag;
 
+    /**
+     * 附件
+     */
+    @ApiModelProperty(value = "附件")
+    private String attachment;
+
 
 }

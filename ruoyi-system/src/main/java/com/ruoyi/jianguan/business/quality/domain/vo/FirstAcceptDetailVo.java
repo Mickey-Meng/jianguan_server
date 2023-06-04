@@ -1,5 +1,6 @@
 package com.ruoyi.jianguan.business.quality.domain.vo;
 
+import com.ruoyi.common.core.domain.entity.Conponent;
 import com.ruoyi.common.core.domain.entity.FileModel;
 import com.ruoyi.common.core.domain.NewBaseEntity;
 import io.swagger.annotations.ApiModel;
@@ -54,6 +55,8 @@ public class FirstAcceptDetailVo extends NewBaseEntity {
      */
     @ApiModelProperty(value = "分部分项id")
     private Integer subProject;
+
+    private Conponent conponent;
 
 
     /**

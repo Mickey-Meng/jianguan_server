@@ -78,6 +78,7 @@ public class LaborContractServiceImpl extends ServiceImpl<LaborContractMapper, L
         laborContract.setAttachment(JSON.toJSONString(saveDto.getAttachment()));
         //信息填报
         laborContract.setInformation(JSON.toJSONString(saveDto.getInformation()));
+        laborContract.setStatus(1);
         //新增
         boolean isStartFlow = false;
         if (Objects.isNull(saveDto.getId())) {

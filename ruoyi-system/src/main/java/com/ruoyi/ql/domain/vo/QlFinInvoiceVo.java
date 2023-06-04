@@ -90,4 +90,11 @@ public class QlFinInvoiceVo {
      * 备注
      */
     private String remark;
+    /**
+     * 附件
+     */
+    @ExcelProperty(value = "附件")
+    @ApiModelProperty(value = "附件", required = true)
+    private String fj;
+
 }

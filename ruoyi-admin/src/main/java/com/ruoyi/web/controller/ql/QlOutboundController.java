@@ -170,7 +170,6 @@ public class QlOutboundController extends BaseController {
 
     private Map<String, Long> buildGoodsIds(List<QlContractInfoSaleVo> contractInfoSales, List<QlContractGoodsRelVo> qlContractGoodsRelVos) {
         Map<String, QlContractInfoSaleVo> contractInfoSaleMap = contractInfoSales.stream().collect(Collectors.toMap(contractInfoSale-> String.valueOf(contractInfoSale.getId()), qlContractInfoSaleVo -> qlContractInfoSaleVo));
-        Long contractSaleId = contractInfoSales.get(0).getId();
         Map<String, Long> goodsIds = new HashMap<>();
         for (QlContractGoodsRelVo qlContractGoodsRelVo : qlContractGoodsRelVos) {
             String contractId = String.valueOf(qlContractGoodsRelVo.getContractId());
@@ -178,7 +177,7 @@ public class QlOutboundController extends BaseController {
             if (ObjectUtil.isNull(qlContractInfoSaleVo)) {
                 throw new ServiceException("未查询到销售合同下的产品销售信息");
             }
-            String key = contractSaleId + "-" + qlContractGoodsRelVo.getGoodsName();
+            String key = contractId + "-" + qlContractGoodsRelVo.getGoodsName();
             goodsIds.put(key, qlContractGoodsRelVo.getGoodsId());
         }
         return goodsIds;

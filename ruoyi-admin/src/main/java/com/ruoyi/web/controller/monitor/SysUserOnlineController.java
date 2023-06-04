@@ -19,6 +19,7 @@ import com.ruoyi.common.helper.LoginHelper;
 import com.ruoyi.common.utils.StreamUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.redis.RedisUtils;
+import com.ruoyi.jianguan.common.domain.entity.SsFUserOnline;
 import com.ruoyi.system.domain.SysUserOnline;
 import com.ruoyi.system.service.ISysRoleService;
 import com.ruoyi.system.service.impl.SysRoleServiceImpl;

@@ -64,7 +64,6 @@ public class JgProjectInfoBo extends BaseEntity {
     /**
      * 是否显示
      */
-    @NotBlank(message = "是否显示不能为空", groups = { AddGroup.class, EditGroup.class })
     private String visible;
 
     /**

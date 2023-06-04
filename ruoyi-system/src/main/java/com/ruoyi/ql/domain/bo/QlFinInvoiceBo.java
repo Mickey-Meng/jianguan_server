@@ -87,5 +87,8 @@ public class QlFinInvoiceBo extends BaseEntity {
      */
     @NotBlank(message = "发票编号不能为空", groups = { AddGroup.class, EditGroup.class })
     private String invoiceNo;
-
+    /**
+     * 附件
+     */
+    private String fj;
 }

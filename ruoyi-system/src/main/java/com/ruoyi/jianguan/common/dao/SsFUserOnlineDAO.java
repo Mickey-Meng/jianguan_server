@@ -29,13 +29,13 @@ public interface SsFUserOnlineDAO {
     Integer getByUserid(@Param("userid")Integer userid);
 
     Integer getJLOnlineCount(@Param("startTime")String startTime,
-                             @Param("endTime")String endTime);
+                             @Param("endTime")String endTime, @Param("roleKeys")List roleKeys);
 
     List<String> getJLOnlineUsers(@Param("startTime")String startTime,
-                                  @Param("endTime")String endTime);
+                                  @Param("endTime")String endTime,@Param("roleKeys")List roleKeys);
 
     List<String> getAllJLUsers(@Param("startTime")String startTime,
-                                  @Param("endTime")String endTime);
+                                  @Param("endTime")String endTime, @Param("roleKeys")List roleKeys);
 
     Integer getSGOnlineCount(@Param("startTime")String startTime,
                              @Param("endTime")String endTime);

@@ -12,6 +12,7 @@ import com.ruoyi.flowable.factory.FlowCustomExtFactory;
 import com.ruoyi.flowable.model.FlowTaskComment;
 import com.ruoyi.flowable.service.*;
 import com.ruoyi.flowable.utils.FlowOperationHelper;
+import com.ruoyi.workflow.plugin.FlowablePluginExecutor;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -62,6 +63,9 @@ public class FlowStaticPageController {
     private RuntimeService runtimeService;
     @Autowired
     private HistoryService historyService;
+
+    @Autowired
+    private FlowablePluginExecutor flowablePluginExecutor;
 
     @DisableDataFilter
     @PostMapping("/startProcess/{processDefinitionKey}")
@@ -158,8 +162,10 @@ public class FlowStaticPageController {
             @MyRequestBody JSONObject masterData,
             @MyRequestBody JSONObject slaveData,
             @MyRequestBody JSONObject copyData) {
-        return flowStaticPageService.submitUserTask(processInstanceId, taskId, flowTaskCommentDto, taskVariableData, masterData,
+        flowablePluginExecutor.executeApply(processInstanceId);
+        ResponseResult<String> stringResponseResult = flowStaticPageService.submitUserTask(processInstanceId, taskId, flowTaskCommentDto, taskVariableData, masterData,
                 slaveData, copyData);
+        return stringResponseResult;
     }
 
 

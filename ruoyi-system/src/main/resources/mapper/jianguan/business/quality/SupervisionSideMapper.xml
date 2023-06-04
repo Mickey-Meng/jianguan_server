@@ -42,7 +42,7 @@
             resultType="com.ruoyi.jianguan.business.quality.domain.vo.SupervisionSidePageVo">
         select a.*,p.name as projectName,u.nick_name as createName,u.nick_name as createUserName from
            zz_supervision_side a
-        left join ss_f_projects p on p.ID = a.project_id and p.GROUPLEVEL = 2
+        left join ss_f_projects p on p.ID = a.project_id
         left join sys_user u on a.create_user_id = u.user_id
         where a.project_id = #{pageDto.projectId}  and a.build_section = #{pageDto.buildSection}
         <if test="pageDto.sideDateStart != null and pageDto.sideDateStart != ''">

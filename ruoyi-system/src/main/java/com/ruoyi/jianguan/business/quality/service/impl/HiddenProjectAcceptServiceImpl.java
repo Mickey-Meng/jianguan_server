@@ -95,6 +95,7 @@ public class HiddenProjectAcceptServiceImpl extends ServiceImpl<HiddenProjectAcc
                 isStartFlow = true;
             }
         }
+        projectAccept.setStatus(0);
         boolean saveOrUpdate = this.saveOrUpdate(projectAccept);
         //保存成功发起流程
         if (saveOrUpdate && isStartFlow) {

@@ -1,6 +1,7 @@
 package com.ruoyi.jianguan.business.contract.domain.dto;
 
 import com.ruoyi.common.core.domain.dto.SaveDTO;
+import com.ruoyi.common.core.domain.entity.FileModel;
 import com.ruoyi.jianguan.business.contract.domain.entity.EquipmentInfo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -83,6 +84,11 @@ public class EquipmentExitSaveDTO extends SaveDTO {
     @ApiModelProperty(value = "删除标记(1: 正常 -1: 已删除)")
     private Integer deletedFlag;
 
+    /**
+     * 附件
+     */
+    @ApiModelProperty(value = "附件")
+    private List<FileModel> attachment;
 
     /**
      * 设备信息

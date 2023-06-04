@@ -31,20 +31,6 @@ public interface IPubMonitorService {
      */
     List<PubMonitorVo> queryList(PubMonitorBo bo);
 
-    /**
-     * 新增设备监控
-     */
-    Boolean insertByBo(PubMonitorBo bo);
 
-    /**
-     * 修改设备监控
-     */
-    Boolean updateByBo(PubMonitorBo bo);
-
-    /**
-     * 校验并批量删除设备监控信息
-     */
-    Boolean deleteWithValidByIds(Collection<Integer> ids, Boolean isValid);
-
-
+    Boolean saveMonitors(String projectId, List<PubMonitorBo> boList);
 }

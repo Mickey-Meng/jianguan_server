@@ -453,6 +453,7 @@ public class FlowOperationController {
             @MyRequestBody(required = true) String taskId,
             @MyRequestBody(required = true) String comment) {
         String errorMessage;
+        flowablePluginExecutor.executeRejectToStart(processInstanceId);
         ResponseResult<Task> taskResult =
                 flowOperationHelper.verifySubmitAndGetTask(processInstanceId, taskId, null);
         if (!taskResult.isSuccess()) {

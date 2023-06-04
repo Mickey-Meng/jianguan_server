@@ -71,4 +71,10 @@ public class LaborContractPageVo extends NewBaseVo {
      */
     @ApiModelProperty(value = "发起时间")
     private LocalDate startDate;
+
+    /**
+     * 状态 0 进行中 1 已完成 2 驳回
+     */
+    @ApiModelProperty(value = "状态 0 进行中 1 已完成 2驳回")
+    private Integer status;
 }

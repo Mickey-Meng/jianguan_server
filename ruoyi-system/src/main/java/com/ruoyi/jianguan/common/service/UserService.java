@@ -42,6 +42,7 @@ import com.ruoyi.jianguan.common.domain.entity.SsFUserOnline;
 import com.ruoyi.common.utils.jianguan.zjrw.HttpsUtils;
 import com.ruoyi.common.utils.jianguan.zjrw.MD5Util;
 import com.ruoyi.common.utils.jianguan.zjrw.MyExcelUtil;
+import com.ruoyi.system.mapper.SysRoleMapper;
 import com.ruoyi.system.service.SysLoginService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -55,10 +56,7 @@ import org.springframework.util.ObjectUtils;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -106,6 +104,9 @@ public class UserService {
     @Autowired
     @Qualifier("zjFGroupsProjectsDAO")
     private ZjFGroupsProjectsDAO zjFGroupsProjectsDAO;
+
+    @Autowired
+    private SysRoleMapper roleMapper;
 
     public volatile int a = 0;
 
@@ -301,66 +302,35 @@ public class UserService {
     @Deprecated
     @CheckRepeatCommit
     public ResponseBase updateOnline(String cid, String lon, String lat) {
-        //通过token获取用户的id
-        Integer userid = LoginHelper.getUserId().intValue();
-        Integer roleId = LoginHelper.getLoginUser().getRoleId().intValue();
-
-        SsFUsers users = ssFUsersDAO.selectByPrimaryKey(userid);
-        Map<String, String> maps = Maps.newHashMap();
+        LoginUser currentLoginUser = LoginHelper.getLoginUser();
+        List<Long> dbRoleIds = roleMapper.selectRoleListByUserId(currentLoginUser.getUserId());
+        List<Long> currentRoleIds = Arrays.asList(currentLoginUser.getRoleIds().split(","))
+                .stream().map(roleId -> Long.valueOf(roleId)).collect(Collectors.toList());
         //两个roleId进行对比，如果不一样说明需要重新登录
-        SsFUserRole userRole = userRoleDAO.getByUserid(userid);
-        //首先查询人员账号的状态  如果为0需要重新登录
-        if (users.getStstate() == 0) {
-            maps.put("isChange", "true");
-            return new ResponseBase(200, "更新用户在线失败! ", maps);
-        }
+        boolean isSame = dbRoleIds.size() == currentRoleIds.size() && dbRoleIds.containsAll(currentRoleIds) && currentRoleIds.containsAll(dbRoleIds);
+        Map<String, String> responseDataMap = Maps.newHashMap();
+        responseDataMap.put("isChange", String.valueOf(!isSame));
 
-        if ((userRole == null && roleId == null)) {
-            //进行更新
+        if (StringUtils.isNotEmpty(cid) &&
+                StringUtils.isNotEmpty(lon) &&
+                    StringUtils.isNotEmpty(lat)) {
             SsFUserOnline userOnline = new SsFUserOnline();
-            userOnline.setUserid(userid);
-            userOnline.setUsername(users.getUsername());
-            userOnline.setName(users.getName());
+            userOnline.setUsername(currentLoginUser.getUsername());
+            userOnline.setUserid(currentLoginUser.getUserId().intValue());
             userOnline.setCid(cid);
-            userOnline.setRole(userRole.getRoleid());
+            userOnline.setRole(currentLoginUser.getRoleId().intValue());
+            userOnline.setName(currentLoginUser.getNickName());
             userOnline.setLat(lat);
             userOnline.setLon(lon);
             //在此之前查询在线表是否有该用户数据
-            Integer result = userOnlineDAO.getByUserid(userid);
+            Integer result = userOnlineDAO.getByUserid(currentLoginUser.getUserId().intValue());
             if (result == 0) {
                 userOnlineDAO.insert(userOnline);
             } else {
-                userOnlineDAO.updateTimeByUserid(userid, cid, userRole.getRoleid(), lon, lat);
+                userOnlineDAO.updateTimeByUserid(currentLoginUser.getUserId().intValue(), cid, currentLoginUser.getRoleId().intValue(), lon, lat);
             }
-            maps.put("isChange", "false");
-            return new ResponseBase(200, "更新用户在线成功! ", maps);
-        } else if (userRole != null && roleId != null) {
-            if (userRole.getRoleid() != null && roleId == userRole.getRoleid()) {
-                SsFUserOnline userOnline = new SsFUserOnline();
-                userOnline.setUsername(users.getUsername());
-                userOnline.setUserid(userid);
-                userOnline.setCid(cid);
-                userOnline.setRole(userRole.getRoleid());
-                userOnline.setName(users.getName());
-                userOnline.setLat(lat);
-                userOnline.setLon(lon);
-                //在此之前查询在线表是否有该用户数据
-                Integer result = userOnlineDAO.getByUserid(userid);
-                if (result == 0) {
-                    userOnlineDAO.insert(userOnline);
-                } else {
-                    userOnlineDAO.updateTimeByUserid(userid, cid, userRole.getRoleid(), lon, lat);
-                }
-                maps.put("isChange", "false");
-                return new ResponseBase(200, "更新用户在线成功! ", maps);
-            } else {
-                maps.put("isChange", "true");
-                return new ResponseBase(200, "更新用户在线失败! ", maps);
-            }
-        } else {
-            maps.put("isChange", "true");
-            return new ResponseBase(200, "更新用户在线失败! ", maps);
         }
+        return new ResponseBase(isSame ? HttpStatus.HTTP_OK :HttpStatus.HTTP_RESET, isSame ? "当前登录用户角色无更新." : "用户角色改变,请重新登录!", responseDataMap);
     }
 
     public ResponseBase getOnline() {
@@ -370,25 +340,44 @@ public class UserService {
         String startTime = today + " 00:00:00";
         String endTime = today + " 23:59:59";
         //监理在线   2022-08-22号， 增加联ss_f_users表，当账号被冻结时不记录
-        Integer onlineJLCount = userOnlineDAO.getJLOnlineCount(startTime, endTime);
-        List<String> onlineJLUsers = userOnlineDAO.getJLOnlineUsers(startTime, endTime);
-        List<String> allJLUsers = userOnlineDAO.getAllJLUsers(startTime, endTime);
+        List<String> rokeKeys = new ArrayList();
+        rokeKeys.add("jianlijihe");
+        Integer onlineJLCount = userOnlineDAO.getJLOnlineCount(startTime, endTime,rokeKeys);
+        List<String> onlineJLUsers = userOnlineDAO.getJLOnlineUsers(startTime, endTime,rokeKeys);
+        List<String> allJLUsers = userOnlineDAO.getAllJLUsers(startTime, endTime,rokeKeys);
         OnlineUser JLUser = new OnlineUser();
         JLUser.setOnlineCount(onlineJLCount);
         JLUser.setOnlineUser(onlineJLUsers);
         JLUser.setAllUser(allJLUsers);
         //施工在线
-        Integer onlineSGCount = userOnlineDAO.getSGOnlineCount(startTime, endTime);
+        List<String> rokeKeysshigongjihe = new ArrayList();
+        rokeKeysshigongjihe.add("shigongjihe");
+        Integer onlineSGCount = userOnlineDAO.getJLOnlineCount(startTime, endTime,rokeKeysshigongjihe);
+        List<String> onlineSGUsers = userOnlineDAO.getJLOnlineUsers(startTime, endTime,rokeKeysshigongjihe);
+        List<String> allSGUsers = userOnlineDAO.getAllJLUsers(startTime, endTime,rokeKeysshigongjihe);
+
+     /*   Integer onlineSGCount = userOnlineDAO.getSGOnlineCount(startTime, endTime);
         List<String> onlineSGUsers = userOnlineDAO.getSGOnlineUsers(startTime, endTime);
-        List<String> allSGUsers = userOnlineDAO.getAllSGUsers(startTime, endTime);
+        List<String> allSGUsers = userOnlineDAO.getAllSGUsers(startTime, endTime);*/
+
+
         OnlineUser SGUser = new OnlineUser();
         SGUser.setOnlineCount(onlineSGCount);
         SGUser.setOnlineUser(onlineSGUsers);
         SGUser.setAllUser(allSGUsers);
         //业主在线
-        Integer onlineYZCount = userOnlineDAO.getYZOnlineCount(startTime, endTime);
+        List<String> rokeKeysYz = new ArrayList();
+        rokeKeysYz.add("quanzijihe"); // 'quanzijihe', 'jiashedanweijihe', 'jianshejituanjihe'
+        rokeKeysYz.add("jiashedanweijihe");
+        rokeKeysYz.add("jianshejituanjihe");
+
+        Integer onlineYZCount = userOnlineDAO.getJLOnlineCount(startTime, endTime,rokeKeysYz);
+        List<String> onlineYZUsers = userOnlineDAO.getJLOnlineUsers(startTime, endTime,rokeKeysYz);
+        List<String> allYZUsers = userOnlineDAO.getAllJLUsers(startTime, endTime,rokeKeysYz);
+
+  /*      Integer onlineYZCount = userOnlineDAO.getYZOnlineCount(startTime, endTime);
         List<String> onlineYZUsers = userOnlineDAO.getYZOnlineUsers(startTime, endTime);
-        List<String> allYZUsers = userOnlineDAO.getAllYZUsers(startTime, endTime);
+        List<String> allYZUsers = userOnlineDAO.getAllYZUsers(startTime, endTime);*/
         OnlineUser YZUser = new OnlineUser();
         YZUser.setOnlineCount(onlineYZCount);
         YZUser.setOnlineUser(onlineYZUsers);

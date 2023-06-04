@@ -16,6 +16,8 @@
         <result column="status" property="status" />
         <result column="draft_flag" property="draftFlag" />
         <result column="deleted_flag" property="deletedFlag" />
+        <result column="attachment" property="attachment" />
+
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -24,7 +26,15 @@
         create_time,
         update_user_id,
         update_time,
-        id, project_id, project_code, supervision_ban, equipment_info, status, draft_flag, deleted_flag
+        id,
+        project_id,
+        project_code,
+        supervision_ban,
+        equipment_info,
+        status,
+        draft_flag,
+        deleted_flag,
+        attachment
     </sql>
 
     <select id="getPageInfo" parameterType="com.ruoyi.jianguan.business.contract.domain.dto.EquipmentExitPageDTO" resultType="com.ruoyi.jianguan.business.contract.domain.vo.EquipmentExitPageVo">

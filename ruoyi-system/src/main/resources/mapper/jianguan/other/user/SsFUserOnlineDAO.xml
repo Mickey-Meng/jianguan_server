@@ -10,15 +10,13 @@
     </resultMap>
 
     <insert id="insert">
-   insert into ss_f_user_online (userid, username, name, role, updatetime)
-    values (
-    #{userid,jdbcType=INTEGER},
-    #{username,jdbcType=VARCHAR},
-    #{name,jdbcType=VARCHAR},
-    #{role,jdbcType=INTEGER},
-    now()
-    )
- </insert>
+        insert into ss_f_user_online (userid, username, name, role, updatetime)
+        values (#{userid,jdbcType=INTEGER},
+                #{username,jdbcType=VARCHAR},
+                #{name,jdbcType=VARCHAR},
+                #{role,jdbcType=INTEGER},
+                now())
+    </insert>
 
     <update id="updateTimeByUserid">
         update ss_f_user_online set updatetime = now(), role = #{role}
@@ -35,132 +33,127 @@
     </update>
 
     <select id="getJLOnlineCount" resultType="integer">
-      select
-        count(a.id)
-      from
-        ss_f_user_online a
-      left join ss_f_roles b on a.role = b.id
-      left join ss_f_roles c on b.parentid = c.id
-      left join ss_f_users d on a.userid = d.id
-      where c.id =
-        (select id from ss_f_roles
-        where `name` = '监理集合' and `code` = 'jianlijihe')
-       and a.updatetime &gt;= #{startTime} and a.updatetime &lt;= #{endTime}
-       and a.role is not null
-       and d.STSTATE = 1
+        SELECT count(a.id)
+        FROM ss_f_user_online a
+                 LEFT JOIN sys_role b ON a.role = b.role_id
+                 LEFT JOIN sys_role c ON b.parent_id = c.role_id
+                 LEFT JOIN sys_user_role d ON a.userid = d.role_id
+        WHERE c.role_id = (SELECT role_id FROM sys_role WHERE role_key in
+        <foreach collection="roleKeys" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        )
+          AND a.role IS NOT NULL
+          and a.updatetime &gt;= #{startTime}
+          and a.updatetime &lt;= #{endTime}
     </select>
 
     <select id="getJLOnlineUsers" resultType="string">
-        select
-            a.name
-         from
-            ss_f_user_online a
-        left join ss_f_roles b on a.role = b.id
-        left join ss_f_roles c on b.parentid = c.id
-        left join ss_f_users d on a.userid = d.id
-        where c.id =
-        (select id from ss_f_roles where
-          `name` = '监理集合' and `code` = 'jianlijihe')
-        and a.updatetime &gt;= #{startTime} and a.updatetime &lt;= #{endTime}
-        and a.role is not null
-        and d.STSTATE = 1
+        SELECT a.NAME
+        FROM ss_f_user_online a
+                 LEFT JOIN sys_role b ON a.role = b.role_id
+                 LEFT JOIN sys_role c ON b.parent_id = c.role_id
+                 LEFT JOIN sys_user_role d ON a.userid = d.role_id
+        WHERE c.role_id = (SELECT role_id FROM sys_role WHERE role_key in
+        <foreach collection="roleKeys" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        )
+          AND a.role IS NOT NULL
+          and a.updatetime &gt;= #{startTime}
+          and a.updatetime &lt;= #{endTime}
     </select>
 
     <select id="getAllJLUsers" resultType="string">
-        select
-            a.name
-         from
-            ss_f_user_online a
-        left join ss_f_roles b on a.role = b.id
-        left join ss_f_roles c on b.parentid = c.id
-        left join ss_f_users d on a.userid = d.id
-        where c.id =
-        (select id from ss_f_roles where
-          `name` = '监理集合' and `code` = 'jianlijihe')
-        and a.role is not null
-        and d.STSTATE = 1
+        SELECT
+        a.name
+        FROM
+        ss_f_user_online a
+        LEFT JOIN sys_role b ON a.role = b.role_id
+        LEFT JOIN sys_role c ON b.parent_id = c.role_id
+        LEFT JOIN sys_user_role d ON a.userid = d.role_id
+        WHERE
+        c.role_id = ( SELECT role_id FROM sys_role WHERE role_key in
+        <foreach collection="roleKeys" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        )
+        AND a.role IS NOT NULL
     </select>
 
     <select id="getSGOnlineCount" resultType="integer">
-      select
-        count(a.id)
-      from
-        ss_f_user_online a
-      left join ss_f_roles b on a.role = b.id
-      left join ss_f_roles c on b.parentid = c.id
-      left join ss_f_users d on a.userid = d.id
-      where c.id =
-        (select id from ss_f_roles
-        where `name` = '施工集合' and `code` = 'shigongjihe')
-      and a.updatetime &gt;= #{startTime}
-      and a.updatetime &lt;= #{endTime}
-      and a.role is not null
-      and d.STSTATE = 1
-  </select>
+        select count(a.id)
+        from ss_f_user_online a
+                 LEFT JOIN sys_role b ON a.role = b.role_id
+                 LEFT JOIN sys_role c ON b.parent_id = c.role_id
+                 LEFT JOIN sys_user_role d ON a.userid = d.role_id
+        WHERE c.role_id = (SELECT role_id FROM sys_role WHERE role_name = '施工集合' and role_key = 'shigongjihe')
+          and a.role IS NOT NULL
+          and a.updatetime &gt;= #{startTime}
+          and a.updatetime &lt;= #{endTime}
+    </select>
 
     <select id="getSGOnlineUsers" resultType="string">
-        select
-            a.name
-        from
-            ss_f_user_online a
-        left join ss_f_roles b on a.role = b.id
-        left join ss_f_roles c on b.parentid = c.id
-        left join ss_f_users d on a.userid = d.id
-        where c.id =
-        (select id from ss_f_roles where
-          `name` = '施工集合' and `code` = 'shigongjihe')
-        and a.updatetime &gt;= #{startTime}
-        and a.updatetime &lt;= #{endTime}
-        and a.role is not null
-        and d.STSTATE = 1
+        SELECT a.NAME
+        FROM ss_f_user_online a
+                 LEFT JOIN sys_role b ON a.role = b.role_id
+                 LEFT JOIN sys_role c ON b.parent_id = c.role_id
+                 LEFT JOIN sys_user_role d ON a.userid = d.role_id
+        WHERE c.role_id = (SELECT role_id FROM sys_role WHERE role_name = '施工集合' AND role_key = 'shigongjihe')
+          and a.updatetime &gt;= #{startTime}
+          and a.updatetime &lt;= #{endTime}
+          and a.role is not null
     </select>
 
     <select id="getAllSGUsers" resultType="string">
-        select
-            a.name
-        from
-            ss_f_user_online a
-        left join ss_f_roles b on a.role = b.id
-        left join ss_f_roles c on b.parentid = c.id
-        left join ss_f_users d on a.userid = d.id
+        select a.name
+        from ss_f_user_online a
+                 left join ss_f_roles b on a.role = b.id
+                 left join ss_f_roles c on b.parentid = c.id
+                 left join ss_f_users d on a.userid = d.id
         where c.id =
-        (select id from ss_f_roles where
-          `name` = '施工集合' and `code` = 'shigongjihe')
-        and a.role is not null
-        and d.STSTATE = 1
+              (select id
+               from ss_f_roles
+               where `name` = '施工集合'
+                 and `code` = 'shigongjihe')
+          and a.role is not null
+          and d.STSTATE = 1
     </select>
 
     <select id="getYZOnlineCount" resultType="integer">
-      select
-        count(a.id)
-      from
-        ss_f_user_online a
-      left join ss_f_roles b on a.role = b.id
-      left join ss_f_roles c on b.parentid = c.id
-      left join ss_f_users d on a.userid = d.id
-      where c.id in
-        (select id from ss_f_roles where
-          `name` in('全咨集合', '建设单位集合', '建设集团集合')
-        and `code` in ('quanzijihe', 'jiashedanweijihe', 'jianshejituanjihe'))
-      and a.updatetime &gt;= #{startTime}
-      and a.updatetime &lt;= #{endTime}
-      and a.role is not null
-      and d.STSTATE = 1
-  </select>
+        select count(a.id)
+        from ss_f_user_online a
+                 left join ss_f_roles b on a.role = b.id
+                 left join ss_f_roles c on b.parentid = c.id
+                 left join ss_f_users d on a.userid = d.id
+        where c.id in
+              (select id
+               from ss_f_roles
+               where `name` in ('全咨集合', '建设单位集合', '建设集团集合')
+                 and `code` in ('quanzijihe', 'jiashedanweijihe', 'jianshejituanjihe'))
+          and a.updatetime &gt;= #{startTime}
+          and a.updatetime &lt;= #{endTime}
+          and a.role is not null
+          and d.STSTATE = 1
+    </select>
 
     <select id="getYZOnlineUsers" resultType="string">
         select
-            a.name
+        a.name
         from
-            ss_f_user_online a
+        ss_f_user_online a
         left join ss_f_roles b on a.role = b.id
         left join ss_f_roles c on b.parentid = c.id
         left join ss_f_users d on a.userid = d.id
         where c.id in
         (select id from ss_f_roles where
-          `name` in('全咨集合', '建设单位集合', '建设集团集合')
-           and
-          `code` in ('quanzijihe', 'jiashedanweijihe', 'jianshejituanjihe'))
+        `name` in('全咨集合', '建设单位集合', '建设集团集合')
+        and
+        `code` in ('quanzijihe', 'jiashedanweijihe', 'jianshejituanjihe'))
+        code in
+        <foreach collection="list" index="index" item="roleKeys" open="(" separator="," close=")">
+            #{item}
+        </foreach>
         and a.updatetime &gt;= #{startTime}
         and a.updatetime &lt;= #{endTime}
         and a.role is not null
@@ -168,42 +161,44 @@
     </select>
 
     <select id="getAllYZUsers" resultType="string">
-        select
-            a.name
-        from
-            ss_f_user_online a
-        left join ss_f_roles b on a.role = b.id
-        left join ss_f_roles c on b.parentid = c.id
-        left join ss_f_users d on a.userid = d.id
+        select a.name
+        from ss_f_user_online a
+                 left join ss_f_roles b on a.role = b.id
+                 left join ss_f_roles c on b.parentid = c.id
+                 left join ss_f_users d on a.userid = d.id
         where c.id in
-        (select id from ss_f_roles where
-          `name` in('全咨集合', '建设单位集合', '建设集团集合')
-           and
-          `code` in ('quanzijihe', 'jiashedanweijihe', 'jianshejituanjihe'))
-        and a.role is not null
-        and d.STSTATE = 1
+              (select id
+               from ss_f_roles
+               where `name` in ('全咨集合', '建设单位集合', '建设集团集合')
+                 and `code` in ('quanzijihe', 'jiashedanweijihe', 'jianshejituanjihe'))
+          and a.role is not null
+          and d.STSTATE = 1
     </select>
 
     <select id="getAllUserOnline" resultType="com.ruoyi.common.core.domain.dto.UserOnlineDTO">
-       select
-            a.userid as userId,
-            a.username as username,
-            a.name as name,
-            a.role as roleId,
-            b.name as roleName,
-            a.updatetime as updatetime
-       from ss_f_user_online a left join ss_f_roles b on a.role = b.id;
+        SELECT
+            a.userid AS userId,
+            a.username AS username,
+            a.NAME AS NAME,
+            a.role AS roleId,
+            b.role_name AS roleName,
+            a.updatetime AS updatetime
+        FROM
+            ss_f_user_online a
+                LEFT JOIN sys_role b ON a.role = b.role_id;
     </select>
 
     <select id="getAllUserOnlineByTime" resultType="com.ruoyi.common.core.domain.dto.UserOnlineDTO">
-       select
-            a.userid as userId,
-            a.username as username,
-            a.name as name,
-            a.role as roleId,
-            b.name as roleName,
-            a.updatetime as updatetime
-       from ss_f_user_online a left join ss_f_roles b on a.role = b.id
-       where a.updatetime &gt;= #{startTime} and a.updatetime &lt;= #{endTime};
+        select a.userid     as userId,
+               a.username   as username,
+               a.name       as name,
+               a.role       as roleId,
+               b.role_name       as roleName,
+               a.updatetime as updatetime
+        from ss_f_user_online a
+                 left join sys_role b on a.role = b.role_id
+
+        where a.updatetime &gt;= #{startTime}
+          and a.updatetime &lt;= #{endTime};
     </select>
 </mapper>

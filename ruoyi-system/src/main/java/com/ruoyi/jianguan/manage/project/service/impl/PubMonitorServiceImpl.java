@@ -1,6 +1,7 @@
 package com.ruoyi.jianguan.manage.project.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.google.common.collect.Maps;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.core.domain.PageQuery;
@@ -17,7 +18,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Collection;
 
 /**
  * 设备监控Service业务层处理
@@ -58,6 +58,18 @@ public class PubMonitorServiceImpl implements IPubMonitorService {
         return baseMapper.selectVoList(lqw);
     }
 
+    @Override
+    public Boolean saveMonitors(String projectId, List<PubMonitorBo> boList) {
+        // 1、删除旧设备数据
+        Map<String, Object> columnMap = Maps.newHashMap();
+        columnMap.put("project_id", projectId);
+        baseMapper.deleteByMap(columnMap);
+        // 2、保存新设备数据
+        boList.forEach(bo -> bo.setProjectId(projectId));
+        List<PubMonitor> monitorList = BeanUtil.copyToList(boList, PubMonitor.class);
+        return baseMapper.insertBatch(monitorList);
+    }
+
     private LambdaQueryWrapper<PubMonitor> buildQueryWrapper(PubMonitorBo bo) {
         Map<String, Object> params = bo.getParams();
         LambdaQueryWrapper<PubMonitor> lqw = Wrappers.lambdaQuery();
@@ -72,45 +84,10 @@ public class PubMonitorServiceImpl implements IPubMonitorService {
     }
 
     /**
-     * 新增设备监控
-     */
-    @Override
-    public Boolean insertByBo(PubMonitorBo bo) {
-        PubMonitor add = BeanUtil.toBean(bo, PubMonitor.class);
-        validEntityBeforeSave(add);
-        boolean flag = baseMapper.insert(add) > 0;
-        if (flag) {
-            bo.setId(add.getId());
-        }
-        return flag;
-    }
-
-    /**
-     * 修改设备监控
-     */
-    @Override
-    public Boolean updateByBo(PubMonitorBo bo) {
-        PubMonitor update = BeanUtil.toBean(bo, PubMonitor.class);
-        validEntityBeforeSave(update);
-        return baseMapper.updateById(update) > 0;
-    }
-
-    /**
      * 保存前的数据校验
      */
     private void validEntityBeforeSave(PubMonitor entity){
         //TODO 做一些数据校验,如唯一约束
-    }
-
-    /**
-     * 批量删除设备监控
-     */
-    @Override
-    public Boolean deleteWithValidByIds(Collection<Integer> ids, Boolean isValid) {
-        if(isValid){
-            //TODO 做一些业务上的校验,判断是否需要校验
-        }
-        return baseMapper.deleteBatchIds(ids) > 0;
     }
 
 }

@@ -206,7 +206,7 @@ public class QlWarehousingController extends BaseController {
             for (QlWarehousingDetailBo warehousingDetail : warehousingDetails) {
                 Long goodsId = goodsIds.get(contractInfoPurchase.getId() + "-" + warehousingDetail.getGoodsName());
                 if(ObjectUtil.isNull(goodsId)) {
-                    throw new ServiceException("未查询到销售合同下的产品销售信息");
+                    throw new ServiceException("未查询到采购合同下的产品销售信息");
                 }
                 warehousingDetail.setGoodsId(String.valueOf(goodsId));
                 warehousingDetail.setInventoryDirection("warehousing");
@@ -241,7 +241,6 @@ public class QlWarehousingController extends BaseController {
 
     private Map<String, Long> buildGoodsIds(List<QlContractInfoPurchaseVo> contractInfos, List<QlContractGoodsRelVo> qlContractGoodsRelVos) {
         Map<String, QlContractInfoPurchaseVo> contractInfoMap = contractInfos.stream().collect(Collectors.toMap(contractInfoSale-> String.valueOf(contractInfoSale.getId()), qlContractInfoSaleVo -> qlContractInfoSaleVo));
-        Long contractSaleId = contractInfos.get(0).getId();
         Map<String, Long> goodsIds = new HashMap<>();
         for (QlContractGoodsRelVo contractGoodsRel : qlContractGoodsRelVos) {
             String contractId = String.valueOf(contractGoodsRel.getContractId());
@@ -249,7 +248,7 @@ public class QlWarehousingController extends BaseController {
             if (ObjectUtil.isNull(contractInfoPurchaseVo)) {
                 throw new ServiceException("未查询到销售合同下的产品销售信息");
             }
-            String key = contractSaleId + "-" + contractGoodsRel.getGoodsName();
+            String key = contractId + "-" + contractGoodsRel.getGoodsName();
             goodsIds.put(key, contractGoodsRel.getGoodsId());
         }
         return goodsIds;

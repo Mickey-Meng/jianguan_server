@@ -5,6 +5,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.util.ObjectUtil;
+import com.google.common.collect.Maps;
 import com.ruoyi.common.core.domain.entity.SysRole;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.core.page.TableDataInfo;
@@ -19,9 +20,12 @@ import com.ruoyi.jianguan.manage.project.domain.bo.JgProjectDeptBo;
 import com.ruoyi.jianguan.manage.project.domain.bo.JgProjectInfoBo;
 import com.ruoyi.jianguan.manage.project.domain.entity.JgProjectDept;
 import com.ruoyi.jianguan.manage.project.domain.entity.JgProjectInfo;
+import com.ruoyi.jianguan.manage.project.domain.entity.JgProjectItem;
 import com.ruoyi.jianguan.manage.project.domain.vo.JgProjectInfoVo;
 import com.ruoyi.jianguan.manage.project.mapper.JgProjectDeptMapper;
 import com.ruoyi.jianguan.manage.project.mapper.JgProjectInfoMapper;
+import com.ruoyi.jianguan.manage.project.mapper.JgProjectItemMapper;
+import com.ruoyi.jianguan.manage.project.mapper.PubMonitorMapper;
 import com.ruoyi.jianguan.manage.project.service.IJgProjectInfoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -40,7 +44,9 @@ import java.util.stream.Collectors;
 public class JgProjectInfoServiceImpl implements IJgProjectInfoService {
 
     private final JgProjectInfoMapper baseMapper;
+    private final JgProjectItemMapper projectItemMapper;
     private final JgProjectDeptMapper projectDeptMapper;
+    private final PubMonitorMapper monitorMapper;
 
     /**
      * 查询项目信息
@@ -138,7 +144,14 @@ public class JgProjectInfoServiceImpl implements IJgProjectInfoService {
     @Override
     public Boolean deleteWithValidByIds(Collection<Long> ids, Boolean isValid) {
         if(isValid){
-            //TODO 做一些业务上的校验,判断是否需要校验
+            Map<String, Object> columnMap = Maps.newHashMap();
+            columnMap.put("project_id", ids);
+            // 1、删除关联的项目明细数据
+            projectItemMapper.deleteByMap(columnMap);
+            // 2、删除关联的部门数据
+            projectDeptMapper.deleteByMap(columnMap);
+            // 3、删除关联的设备信息数据
+            monitorMapper.deleteByMap(columnMap);
         }
         return baseMapper.deleteBatchIds(ids) > 0;
     }

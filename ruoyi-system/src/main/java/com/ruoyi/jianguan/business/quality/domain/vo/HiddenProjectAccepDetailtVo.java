@@ -135,4 +135,9 @@ public class HiddenProjectAccepDetailtVo extends NewBaseEntity {
      */
     @ApiModelProperty(value = "删除标记(1: 正常 -1: 已删除)")
     private Integer deletedFlag;
+
+    /**
+     * 操作状态（0审批完成 1审批中 2驳回）
+     */
+    private Integer status;
 }

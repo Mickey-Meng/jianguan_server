@@ -7,6 +7,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.ruoyi.common.core.domain.entity.Conponent;
 import com.ruoyi.common.enums.BimFlowKey;
 import com.ruoyi.jianguan.business.quality.domain.dto.FirstAcceptPageDTO;
 import com.ruoyi.jianguan.business.quality.domain.dto.FirstAcceptSaveDTO;
@@ -22,8 +23,11 @@ import com.ruoyi.common.core.domain.object.ResponseBase;
 import com.ruoyi.flowable.domain.dto.FlowTaskCommentDto;
 import com.ruoyi.flowable.service.FlowStaticPageService;
 import com.ruoyi.common.core.sequence.util.IdUtil;
+import com.ruoyi.jianguan.common.dao.ConponentDAO;
+import com.ruoyi.jianguan.common.service.ComponentSevice;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,6 +50,11 @@ public class FirstAcceptServiceImpl extends ServiceImpl<FirstAcceptMapper, First
     @Autowired
     private FirstAcceptMapper firstAcceptMapper;
 
+    @Autowired
+    ComponentSevice componentSevice;
+    @Autowired
+    @Qualifier("zjConponentDAO")
+    ConponentDAO conponentDAO;
     @Autowired
     private FlowStaticPageService flowStaticPageService;
 
@@ -134,9 +143,14 @@ public class FirstAcceptServiceImpl extends ServiceImpl<FirstAcceptMapper, First
         if (Objects.isNull(firstAccept)) {
             return null;
         }
+
+
         //属性copy
         FirstAcceptDetailVo vo = new FirstAcceptDetailVo();
         BeanUtils.copyProperties(firstAccept, vo);
+        // yangaogao 20230603   #245 返回构件详情
+        Conponent conponent = conponentDAO.getDataById(firstAccept.getSubProject());
+        vo.setConponent(conponent);
         //施工技术、工艺方案说明和图表
         vo.setBuildTechAttachment(JSONArray.parseArray(firstAccept.getBuildTechAttachment(), FileModel.class));
         //测量放样资料

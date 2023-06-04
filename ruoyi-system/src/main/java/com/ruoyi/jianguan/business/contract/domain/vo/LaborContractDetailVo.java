@@ -2,12 +2,15 @@ package com.ruoyi.jianguan.business.contract.domain.vo;
 
 import com.ruoyi.common.core.domain.NewBaseEntity;
 import com.ruoyi.common.core.domain.entity.FileModel;
+import com.ruoyi.common.core.validate.AddGroup;
+import com.ruoyi.common.core.validate.EditGroup;
 import com.ruoyi.jianguan.business.contract.domain.dto.LaborContractSaveDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -110,5 +113,11 @@ public class LaborContractDetailVo extends NewBaseEntity {
      */
     @ApiModelProperty(value = "删除标记(1: 正常 -1: 已删除)")
     private Integer deletedFlag;
+
+    /**
+     * 状态 0 进行中 1 已完成 2 驳回
+     */
+    @ApiModelProperty(value = "状态 0 进行中 1 已完成 2驳回")
+    private Integer status;
 
 }
