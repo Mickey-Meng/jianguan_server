@@ -72,6 +72,7 @@ public class BuildPlanServiceImpl extends ServiceImpl<BuildPlanMapper, BuildPlan
         buildPlan.setExpertMeetingAttachment(JSON.toJSONString(saveDto.getExpertMeetingAttachment()));
         //整改回复上传
         buildPlan.setReplyAttachment(JSON.toJSONString(saveDto.getReplyAttachment()));
+
         //新增
         boolean isStartFlow = false;
         if (Objects.isNull(saveDto.getId())) {
@@ -87,6 +88,7 @@ public class BuildPlanServiceImpl extends ServiceImpl<BuildPlanMapper, BuildPlan
                 isStartFlow = true;
             }
         }
+        buildPlan.setStatus(0);
         boolean saveOrUpdate = this.saveOrUpdate(buildPlan);
         //保存成功且是新增
         if (saveOrUpdate && isStartFlow) {

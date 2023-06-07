@@ -79,13 +79,13 @@ public class Item implements Serializable {
     /**
      * 付款进度
      */
-    private Long attachmentProgress;
+    private float attachmentProgress;
 
 
     /**
      * 产值进度
      */
-    private Long productionProgress;
+    private float productionProgress;
     /**
      * 项目code
      */

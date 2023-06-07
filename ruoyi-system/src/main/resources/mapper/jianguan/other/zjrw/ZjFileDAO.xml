@@ -20,10 +20,11 @@
     <result column="type" jdbcType="INTEGER" property="type" />
     <result column="calltime" jdbcType="TIMESTAMP" property="calltime" />
     <result column="projectId" jdbcType="INTEGER" property="projectId" />
+    <result column="filename" jdbcType="VARCHAR" property="filename" />
   </resultMap>
   <sql id="Base_Column_List">
     id, uploadid, uploadusername, uploadtime, uploadtype, uploadname, changereason, distiancename,
-    changecontent, isutf, softname, opiontion, callunit, calladdr, fileurl, `type`, calltime, projectId
+    changecontent, isutf, softname, opiontion, callunit, calladdr, fileurl, `type`, calltime, projectId,filename
   </sql>
 
   <select id="selectByType" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -51,13 +52,13 @@
       distiancename, changecontent, isutf,
       softname, opiontion, callunit,
       calladdr, fileurl, `type`,
-      calltime, projectId)
+      calltime, projectId,filename)
     values (#{uploadid,jdbcType=INTEGER}, #{uploadusername,jdbcType=VARCHAR}, #{uploadtime,jdbcType=TIMESTAMP},
       #{uploadtype,jdbcType=VARCHAR}, #{uploadname,jdbcType=VARCHAR}, #{changereason,jdbcType=VARCHAR},
       #{distiancename,jdbcType=VARCHAR}, #{changecontent,jdbcType=VARCHAR}, #{isutf,jdbcType=INTEGER},
       #{softname,jdbcType=VARCHAR}, #{opiontion,jdbcType=VARCHAR}, #{callunit,jdbcType=VARCHAR},
       #{calladdr,jdbcType=VARCHAR}, #{fileurl,jdbcType=VARCHAR}, #{type,jdbcType=INTEGER},
-      #{calltime,jdbcType=TIMESTAMP}, #{projectId,jdbcType=INTEGER})
+      #{calltime,jdbcType=TIMESTAMP}, #{projectId,jdbcType=INTEGER}, #{filename,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.ruoyi.jianguan.common.domain.entity.ZjFile" useGeneratedKeys="true">
     insert into zj_file
@@ -110,6 +111,9 @@
       <if test="calltime != null">
         calltime,
       </if>
+      <if test="filename != null">
+        filename,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="uploadid != null">
@@ -159,6 +163,9 @@
       </if>
       <if test="calltime != null">
         #{calltime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="filename != null">
+        #{filename,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -213,6 +220,9 @@
       <if test="calltime != null">
         calltime = #{calltime,jdbcType=TIMESTAMP},
       </if>
+      <if test="filename != null">
+        filename = #{filename,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -232,6 +242,7 @@
       callunit = #{callunit,jdbcType=VARCHAR},
       calladdr = #{calladdr,jdbcType=VARCHAR},
       fileurl = #{fileurl,jdbcType=VARCHAR},
+      filename = #{filename,jdbcType=VARCHAR},
       `type` = #{type,jdbcType=INTEGER},
       calltime = #{calltime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}

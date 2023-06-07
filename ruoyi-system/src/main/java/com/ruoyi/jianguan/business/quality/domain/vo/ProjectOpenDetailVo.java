@@ -150,4 +150,10 @@ public class ProjectOpenDetailVo extends NewBaseEntity {
      */
     @ApiModelProperty(value = "删除标记(1: 正常 -1: 已删除)")
     private Integer deletedFlag;
+
+    /**
+     * 状态 0 进行中 1已完成
+     */
+    @ApiModelProperty(value = "状态 0 进行中 1已完成")
+    private Integer status;
 }

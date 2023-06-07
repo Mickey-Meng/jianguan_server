@@ -31,7 +31,7 @@ public class PubProduceBo extends BaseEntity {
      * 构建类型编码
      */
     @NotBlank(message = "构建类型编码不能为空", groups = { AddGroup.class, EditGroup.class })
-    private String conponentTypeCode;
+    private String componentTypeCode;
 
     /**
      * 工序名称

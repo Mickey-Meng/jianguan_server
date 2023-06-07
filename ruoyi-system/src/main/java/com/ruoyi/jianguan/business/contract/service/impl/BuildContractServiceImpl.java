@@ -77,6 +77,7 @@ public class BuildContractServiceImpl extends ServiceImpl<BuildContractMapper, B
         buildContract.setContractInfo(JSON.toJSONString(saveDto.getContractInfo()));
         //附件
         buildContract.setAttachment(JSON.toJSONString(saveDto.getAttachment()));
+
         //新增
         boolean isStartFlow = false;
         if (Objects.isNull(saveDto.getId())) {
@@ -92,6 +93,7 @@ public class BuildContractServiceImpl extends ServiceImpl<BuildContractMapper, B
                 isStartFlow = true;
             }
         }
+        buildContract.setStatus(0);
         boolean saveOrUpdate = this.saveOrUpdate(buildContract);
         //保存成功且新增
         if (saveOrUpdate && isStartFlow) {

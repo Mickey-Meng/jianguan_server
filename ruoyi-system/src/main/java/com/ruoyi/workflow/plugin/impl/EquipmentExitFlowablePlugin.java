@@ -27,8 +27,13 @@ public class EquipmentExitFlowablePlugin implements FlowablePlugin {
     private EquipmentExitService equipmentExitService;
 
     @Override
+    public void approved(ProcessInstance processInstance) {
+        updateStatus(processInstance, 1);
+    }
+
+    @Override
     public void apply(ProcessInstance processInstance) {
-        updateStatus(processInstance, 0);
+
     }
 
     @Override

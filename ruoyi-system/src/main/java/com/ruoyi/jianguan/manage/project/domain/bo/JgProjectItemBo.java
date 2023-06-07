@@ -163,11 +163,11 @@ public class JgProjectItemBo extends BaseEntity {
     /**
      * 付款进度
      */
-    private Long attachmentProgress;
+    private float attachmentProgress;
 
 
     /**
      * 产值进度
      */
-    private Long productionProgress;
+    private float productionProgress;
 }

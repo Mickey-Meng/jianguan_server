@@ -113,4 +113,10 @@ public class BuildPlanDetailVo extends NewBaseEntity {
      */
     @ApiModelProperty(value = "删除标记(1: 正常 -1: 已删除)")
     private Integer deletedFlag;
+
+    /**
+     * 状态 0 审批中 1 生效
+     */
+    @ApiModelProperty(value = "状态 0 审批中 1 生效")
+    private Integer status;
 }

@@ -85,6 +85,7 @@ public class SupervisionOrderServiceImpl extends ServiceImpl<SupervisionOrderMap
             }
         }
         //保存
+        supervisionOrder.setStatus(0);
         boolean saveOrUpdate = this.saveOrUpdate(supervisionOrder);
         //新增且保存成功
         if (saveOrUpdate && isStartFlow) {

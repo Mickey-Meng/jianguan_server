@@ -5,7 +5,13 @@ import org.flowable.engine.runtime.ProcessInstance;
 public interface FlowablePlugin {
 
     /**
-     * 审批通过
+     * 最后一个节点审批通过
+     * @param processInstance
+     */
+    void approved(ProcessInstance processInstance);
+
+    /**
+     * 流程中审批通过
      * @param processInstance
      */
     void apply(ProcessInstance processInstance);

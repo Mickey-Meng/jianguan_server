@@ -67,6 +67,7 @@ public class QualityReportServiceImpl extends ServiceImpl<QualityReportMapper, Q
         qualityReport.setReplyPhotoAttachment(JSON.toJSONString(saveDto.getReplyPhotoAttachment()));
         //新增
         boolean isStartFlow = false;
+        qualityReport.setStatus(0);
         if (Objects.isNull(saveDto.getId())) {
             qualityReport.setId(IdUtil.nextLongId());
             //判断是否是草稿

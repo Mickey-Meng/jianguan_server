@@ -1,10 +1,10 @@
-package com.ruoyi.system.service;
+package com.ruoyi.jianguan.manage.produce.service;
 
 import cn.hutool.core.lang.tree.Tree;
-import com.ruoyi.system.domain.vo.PubProduceLibraryVo;
-import com.ruoyi.system.domain.bo.PubProduceLibraryBo;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.core.domain.PageQuery;
+import com.ruoyi.jianguan.manage.produce.domain.bo.PubProduceLibraryBo;
+import com.ruoyi.jianguan.manage.produce.domain.vo.PubProduceLibraryVo;
 
 import java.util.Collection;
 import java.util.List;

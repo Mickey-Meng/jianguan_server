@@ -55,6 +55,16 @@ public class ZjFile implements Serializable {
 
     private Integer projectId;
 
+    private String fileName;
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
     public Integer getProjectId() {
         return projectId;
     }

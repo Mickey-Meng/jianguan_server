@@ -87,6 +87,7 @@ public class QualityActivityServiceImpl extends ServiceImpl<QualityActivityMappe
                 isStartFlow = true;
             }
         }
+        qualityActivity.setStatus(0);
         boolean saveOrUpdate = this.saveOrUpdate(qualityActivity);
         //保存成功发起流程
         if (saveOrUpdate && isStartFlow) {
@@ -120,6 +121,7 @@ public class QualityActivityServiceImpl extends ServiceImpl<QualityActivityMappe
      * @param id
      * @return
      */
+
     @Override
     public QualityActivityDetailVo getInfoById(Long id) {
         //查询

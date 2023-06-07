@@ -101,6 +101,7 @@ public class QualityDetectionServiceImpl extends ServiceImpl<QualityDetectionMap
                 isStartFlow = true;
             }
         }
+        qualityDetection.setStatus(0);
         boolean saveOrUpdate = this.saveOrUpdate(qualityDetection);
         //保存成功发起流程
         if (saveOrUpdate && isStartFlow) {

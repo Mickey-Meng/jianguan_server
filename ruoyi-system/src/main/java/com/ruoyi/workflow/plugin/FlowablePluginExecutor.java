@@ -1,5 +1,6 @@
 package com.ruoyi.workflow.plugin;
 
+import cn.hutool.core.util.StrUtil;
 import com.ruoyi.flowable.service.FlowApiService;
 import lombok.extern.slf4j.Slf4j;
 import org.flowable.engine.runtime.ProcessInstance;
@@ -19,11 +20,20 @@ public class FlowablePluginExecutor {
     @Autowired
     private FlowApiService flowApiService;
 
-    public void executeApply(String processInstanceId) {
-        log.info("FlowablePluginExecutor.executeApply.processInstanceId: {}", processInstanceId);
-        ProcessInstance processInstance = flowApiService.getProcessInstance(processInstanceId);
+    public void executeApply(ProcessInstance processInstance) {
         log.info("FlowablePluginExecutor.executeApply.processInstance: {}", processInstance);
         String processDefinitionKey = processInstance.getProcessDefinitionKey();
+        // 流程最后一个节点审批完成
+        String nextExecutor = flowApiService.getNextExecutor(processInstance.getProcessInstanceId());
+        if(StrUtil.isBlank(nextExecutor)) {
+            flowablePluginMap.forEach((key, plugin) -> {
+                if(key.equals(processDefinitionKey)) {
+                    plugin.approved(processInstance);
+                }
+            });
+            return;
+        }
+        // 流程中审批完成
         flowablePluginMap.forEach((key, plugin) -> {
             if(key.equals(processDefinitionKey)) {
                 plugin.apply(processInstance);

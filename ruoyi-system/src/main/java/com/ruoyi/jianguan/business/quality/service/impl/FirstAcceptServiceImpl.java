@@ -104,6 +104,7 @@ public class FirstAcceptServiceImpl extends ServiceImpl<FirstAcceptMapper, First
             }
         }
         //保存
+        firstAccept.setStatus(0);
         boolean saveOrUpdate = this.saveOrUpdate(firstAccept);
         //新增且保存成功
         if (saveOrUpdate && isStartFlow) {

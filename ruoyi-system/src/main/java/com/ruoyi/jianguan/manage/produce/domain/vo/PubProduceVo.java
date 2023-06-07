@@ -37,7 +37,7 @@ public class PubProduceVo {
      */
     @ExcelProperty(value = "构建类型编码")
     @ApiModelProperty(value = "构建类型编码", required = true)
-    private String conponentTypeCode;
+    private String componentTypeCode;
 
     /**
      * 工序名称

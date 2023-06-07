@@ -169,12 +169,12 @@ public class JgProjectItem {
      * 付款进度
      */
     @TableField("attachment_progress")
-    private Long attachmentProgress;
+    private float attachmentProgress;
 
 
     /**
      * 产值进度
      */
     @TableField("production_progress")
-    private Long productionProgress;
+    private float productionProgress;
 }

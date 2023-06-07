@@ -223,7 +223,7 @@ public class JgProjectItemVo {
      */
     @ExcelProperty(value = "付款进度")
     @ApiModelProperty(value = "付款进度")
-    private Long attachmentProgress;
+    private float attachmentProgress;
 
 
     /**
@@ -231,6 +231,6 @@ public class JgProjectItemVo {
      */
     @ExcelProperty(value = "产值进度")
     @ApiModelProperty(value = "产值进度")
-    private Long productionProgress;
+    private float productionProgress;
 
 }

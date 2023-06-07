@@ -101,6 +101,7 @@ public class EnterExitServiceImpl extends ServiceImpl<EnterExitMapper, EnterExit
             }
         }
         //保存进退场记录
+        enterExit.setStatus(0);
         boolean saveOrUpdate = this.saveOrUpdate(enterExit);
         //保存人员清单
         List<EnterExitUser> enterExitUsers = saveDto.getEnterExitUsers();

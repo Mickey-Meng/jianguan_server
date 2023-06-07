@@ -97,6 +97,7 @@ public class BuildTechBottomServiceImpl extends ServiceImpl<BuildTechBottomMappe
             }
         }
         //保存
+        buildTechBottom.setStatus(0);
         boolean saveOrUpdate = this.saveOrUpdate(buildTechBottom);
         //保存成功且新增，发起流程
         if (saveOrUpdate && isStartFlow) {

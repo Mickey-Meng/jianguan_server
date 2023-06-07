@@ -186,7 +186,7 @@ public class JgProjectInfoController extends BaseController {
         JgProjectItemVo projectItem = projectItemService.queryById(projectId);
         Map<String, Object> dataMap = Maps.newHashMap();
         dataMap.put("projectItem", projectItem);
-        List<JgCompanyVo> jgCompanyList = jgCompanyService.queryList(new JgCompanyBo());
+       /* List<JgCompanyVo> jgCompanyList = jgCompanyService.queryList(new JgCompanyBo());
         // 管理单位
         dataMap.put("manageDeptOptions", jgCompanyList.stream()
                 .filter(jgCompanyVo -> Objects.equals(jgCompanyVo.getTypeCode(),"gldw")).collect(Collectors.toList()));
@@ -204,7 +204,7 @@ public class JgProjectInfoController extends BaseController {
                 .filter(jgCompanyVo -> Objects.equals(jgCompanyVo.getTypeCode(),"jldw")).collect(Collectors.toList()));
         // 审计单位
         dataMap.put("auditUnitOptionsOptions", jgCompanyList.stream()
-                .filter(jgCompanyVo -> Objects.equals(jgCompanyVo.getTypeCode(),"gldw")).collect(Collectors.toList()));
+                .filter(jgCompanyVo -> Objects.equals(jgCompanyVo.getTypeCode(),"gldw")).collect(Collectors.toList()));*/
         return R.ok(dataMap);
     }
 

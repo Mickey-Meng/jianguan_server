@@ -4,9 +4,11 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruoyi.jianguan.business.quality.domain.dto.SupervisionNoticePageDTO;
 import com.ruoyi.jianguan.business.quality.domain.dto.SupervisionNoticeSaveDTO;
 import com.ruoyi.jianguan.business.quality.domain.entity.SupervisionNotice;
+import com.ruoyi.jianguan.business.quality.domain.vo.SupervisionNoticeDetailVo;
 import com.ruoyi.jianguan.business.quality.domain.vo.SupervisionNoticePageVo;
 import com.github.pagehelper.PageInfo;
 import com.ruoyi.common.core.domain.object.ResponseBase;
+import com.ruoyi.jianguan.business.quality.domain.vo.SupervisionOrderDetailVo;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -40,4 +42,13 @@ public interface SupervisionNoticeService extends IService<SupervisionNotice> {
      * @param response
      */
     void export(SupervisionNoticePageDTO pageDto, HttpServletResponse response);
+
+    /**
+     * 通过id获取一条监理指令数据
+     *
+     * @param id
+     * @return
+     */
+    SupervisionNoticeDetailVo getInfoById(Long id);
+
 }

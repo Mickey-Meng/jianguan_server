@@ -25,6 +25,11 @@ public class MetrologyFlowablePlugin implements FlowablePlugin {
     private MetrologyService metrologyService;
 
     @Override
+    public void approved(ProcessInstance processInstance) {
+
+    }
+
+    @Override
     public void apply(ProcessInstance processInstance) {
         String businessKey = processInstance.getBusinessKey();
         Metrology metrology = metrologyService.getById(businessKey);

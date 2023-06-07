@@ -79,7 +79,7 @@ public class EquipmentExitServiceImpl extends ServiceImpl<EquipmentExitMapper, E
         //设备信息
         equipmentExit.setEquipmentInfo(JSON.toJSONString(saveDto.getEquipmentInfo()));
         equipmentExit.setAttachment(JSON.toJSONString(saveDto.getAttachment()));
-        equipmentExit.setStatus(1);
+        equipmentExit.setStatus(0);
         List<EquipmentInfo> equipmentInfos = saveDto.getEquipmentInfo();
         //新增
         boolean isStartFlow = false;

@@ -26,7 +26,7 @@ public class PubComponentType extends BaseEntity {
      * 业务主键ID
      */
     @TableId(value = "id")
-    private Integer id;
+    private Long id;
     /**
      * 工序库id
      */

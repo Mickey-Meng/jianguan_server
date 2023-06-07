@@ -38,11 +38,11 @@ public class PubProduce extends BaseEntity {
     /**
      * 
      */
-    private Long rangee;
+    private Integer rangee;
     /**
      * 
      */
-    private Long isvaild;
+    private Integer isvaild;
     /**
      * 备注
      */

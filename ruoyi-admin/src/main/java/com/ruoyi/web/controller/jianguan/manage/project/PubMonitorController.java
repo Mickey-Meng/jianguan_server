@@ -51,7 +51,7 @@ public class PubMonitorController extends BaseController {
      *
      * @param projectId 主键
      */
-    @SaCheckPermission("jgProject:monitor:query")
+//    @SaCheckPermission("jgProject:monitor:query")
     @GetMapping("/{projectId}")
     public R<Map<String, List<PubMonitorVo>>> getMonitors(@NotNull(message = "项目ID不能为空")
                                      @PathVariable String projectId) {

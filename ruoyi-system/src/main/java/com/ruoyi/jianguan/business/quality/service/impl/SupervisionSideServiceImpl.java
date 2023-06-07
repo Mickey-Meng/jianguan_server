@@ -89,6 +89,7 @@ public class SupervisionSideServiceImpl extends ServiceImpl<SupervisionSideMappe
             }
         }
         //保存
+        supervisionSide.setStatus(0);
         boolean saveOrUpdate = this.saveOrUpdate(supervisionSide);
         //新增且保存成功
         if (saveOrUpdate && isStartFlow) {

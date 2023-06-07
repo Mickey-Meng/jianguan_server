@@ -1,4 +1,4 @@
-package com.ruoyi.system.domain.bo;
+package com.ruoyi.jianguan.manage.produce.domain.bo;
 
 import com.ruoyi.common.core.validate.AddGroup;
 import com.ruoyi.common.core.validate.EditGroup;
@@ -30,7 +30,6 @@ public class PubProduceLibraryBo extends BaseEntity {
     /**
      * 项目id
      */
-    @NotBlank(message = "项目id不能为空", groups = { AddGroup.class, EditGroup.class })
     private String projectId;
 
     /**
@@ -48,7 +47,7 @@ public class PubProduceLibraryBo extends BaseEntity {
     /**
      * 父级工序
      */
-    @NotBlank(message = "父级工序不能为空", groups = { AddGroup.class, EditGroup.class })
+    @NotNull(message = "父级工序不能为空", groups = { AddGroup.class, EditGroup.class })
     private Long parentId;
     /**
      * 级别
@@ -62,7 +61,6 @@ public class PubProduceLibraryBo extends BaseEntity {
     /**
      * 备注
      */
-    @NotBlank(message = "备注不能为空", groups = { AddGroup.class, EditGroup.class })
     private String remark;
 
 }

@@ -104,4 +104,10 @@ public class QualityDetectionDetailVo extends NewBaseEntity {
      */
     @ApiModelProperty(value = "是否为草稿 0是 默认1不是")
     private Integer draftFlag;
+
+    /**
+     * 状态 0 进行中 1已完成
+     */
+    @ApiModelProperty(value = "状态 0 进行中 1已完成")
+    private Integer status;
 }

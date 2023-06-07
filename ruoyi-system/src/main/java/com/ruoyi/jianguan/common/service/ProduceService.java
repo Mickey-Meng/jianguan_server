@@ -1048,10 +1048,10 @@ public class ProduceService {
             //获取倒叙工序的最后一个（即每个类型的工序的第一步）
             Integer produce = produces.stream().reduce((first, second) -> second).orElse(0);
             //当倒叙排列的第一条（该类型工序的最后一道工序） == 工序填报表的工序id，说明删除的为最后一道工序
-            if (produces.get(0) == produceandrecode.getProduceid()){
+            if (produces.get(0).equals(produceandrecode.getProduceid())){
                 //此时只设置实际完成时间为null即可
                 zjConponentProducetimeDAO.setActulendNullTime(conponentid);
-            } else if (produce == produceandrecode.getProduceid()){
+            } else if (produce.equals(produceandrecode.getProduceid())){
                 //此时需设置完成时间和开始时间为null
                 zjConponentProducetimeDAO.setActulstNullTime(conponentid);
             }

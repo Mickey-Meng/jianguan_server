@@ -18,7 +18,6 @@ import com.ruoyi.common.core.domain.entity.FileModel;
 import com.ruoyi.jianguan.business.quality.service.SubitemOpenService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.ruoyi.common.core.domain.entity.CompanyInfo;
 import com.ruoyi.flowable.service.ZjFGroupsProjectsService;
 import com.ruoyi.common.core.domain.object.ResponseBase;
 import com.ruoyi.flowable.domain.dto.FlowTaskCommentDto;
@@ -37,7 +36,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 /**
  * 分项开工申请 服务实现类
@@ -106,6 +104,7 @@ public class SubitemOpenServiceImpl extends ServiceImpl<SubitemOpenMapper, Subit
             }
         }
         //保存
+        subitemOpen.setStatus(0);
         boolean saveOrUpdate = this.saveOrUpdate(subitemOpen);
         //新增且保存成功
         if (saveOrUpdate && isStartFlow) {

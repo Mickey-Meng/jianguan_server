@@ -9,7 +9,10 @@ import com.ruoyi.common.enums.BimFlowKey;
 import com.ruoyi.jianguan.business.quality.domain.dto.SupervisionNoticePageDTO;
 import com.ruoyi.jianguan.business.quality.domain.dto.SupervisionNoticeSaveDTO;
 import com.ruoyi.jianguan.business.quality.domain.entity.SupervisionNotice;
+import com.ruoyi.jianguan.business.quality.domain.entity.SupervisionOrder;
+import com.ruoyi.jianguan.business.quality.domain.vo.SupervisionNoticeDetailVo;
 import com.ruoyi.jianguan.business.quality.domain.vo.SupervisionNoticePageVo;
+import com.ruoyi.jianguan.business.quality.domain.vo.SupervisionOrderDetailVo;
 import com.ruoyi.jianguan.business.quality.mapper.SupervisionNoticeMapper;
 import com.ruoyi.jianguan.business.quality.service.SupervisionNoticeService;
 import com.github.pagehelper.PageHelper;
@@ -73,6 +76,7 @@ public class SupervisionNoticeServiceImpl extends ServiceImpl<SupervisionNoticeM
             }
         }
         //保存
+        notice.setStatus(0);
         boolean saveOrUpdate = this.saveOrUpdate(notice);
         //新增且保存成功
         if (saveOrUpdate && isStartFlow) {
@@ -152,5 +156,18 @@ public class SupervisionNoticeServiceImpl extends ServiceImpl<SupervisionNoticeM
             writer.close();
         }
         IoUtil.close(out);
+    }
+
+    @Override
+    public SupervisionNoticeDetailVo getInfoById(Long id) {
+        //查询
+        SupervisionNotice supervisionOrder = this.getById(id);
+        if (Objects.isNull(supervisionOrder)) {
+            return null;
+        }
+        //属性转换
+        SupervisionNoticeDetailVo vo = new SupervisionNoticeDetailVo();
+        BeanUtils.copyProperties(supervisionOrder, vo);
+        return vo;
     }
 }

@@ -86,6 +86,7 @@ public class ProjectOpenServiceImpl extends ServiceImpl<ProjectOpenMapper, Proje
             }
         }
         //保存
+        projectOpen.setStatus(0);
         boolean saveOrUpdate = this.saveOrUpdate(projectOpen);
         //保存成功且新增
         if (saveOrUpdate && isStartFlow) {

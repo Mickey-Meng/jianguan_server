@@ -24,13 +24,13 @@ public class PubComponentTypeBo extends BaseEntity {
     /**
      * 业务主键ID
      */
-    private Integer id;
+    private Long id;
 
     /**
      * 工序库id
      */
-    @NotBlank(message = "工序库id不能为空", groups = { AddGroup.class, EditGroup.class })
-    private String libraryId;
+    @NotNull(message = "工序库不能为空", groups = { AddGroup.class, EditGroup.class })
+    private Long libraryId;
 
     /**
      * 构建类型名称

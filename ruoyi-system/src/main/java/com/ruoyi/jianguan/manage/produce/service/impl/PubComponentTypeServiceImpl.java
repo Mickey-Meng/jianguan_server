@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 import java.util.Collection;
+import java.util.Objects;
 
 /**
  * 构建类型Service业务层处理
@@ -61,7 +62,7 @@ public class PubComponentTypeServiceImpl implements IPubComponentTypeService {
     private LambdaQueryWrapper<PubComponentType> buildQueryWrapper(PubComponentTypeBo bo) {
         Map<String, Object> params = bo.getParams();
         LambdaQueryWrapper<PubComponentType> lqw = Wrappers.lambdaQuery();
-        lqw.eq(StringUtils.isNotBlank(bo.getLibraryId()), PubComponentType::getLibraryId, bo.getLibraryId());
+        lqw.eq(!Objects.isNull(bo.getLibraryId()), PubComponentType::getLibraryId, bo.getLibraryId());
         lqw.like(StringUtils.isNotBlank(bo.getName()), PubComponentType::getName, bo.getName());
         lqw.eq(StringUtils.isNotBlank(bo.getCode()), PubComponentType::getCode, bo.getCode());
         return lqw;

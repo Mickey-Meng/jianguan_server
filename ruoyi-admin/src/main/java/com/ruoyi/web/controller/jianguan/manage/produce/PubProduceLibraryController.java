@@ -2,10 +2,12 @@ package com.ruoyi.web.controller.jianguan.manage.produce;
 
 import java.util.List;
 import java.util.Arrays;
-import java.util.concurrent.TimeUnit;
 
 import cn.hutool.core.lang.tree.Tree;
-import com.ruoyi.jianguan.manage.project.domain.bo.JgProjectInfoBo;
+import com.ruoyi.common.core.page.TableDataInfo;
+import com.ruoyi.jianguan.manage.produce.domain.bo.PubProduceLibraryBo;
+import com.ruoyi.jianguan.manage.produce.domain.vo.PubProduceLibraryVo;
+import com.ruoyi.jianguan.manage.produce.service.IPubProduceLibraryService;
 import lombok.RequiredArgsConstructor;
 
 import javax.servlet.http.HttpServletResponse;
@@ -21,13 +23,8 @@ import com.ruoyi.common.core.domain.PageQuery;
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.validate.AddGroup;
 import com.ruoyi.common.core.validate.EditGroup;
-import com.ruoyi.common.core.validate.QueryGroup;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.poi.ExcelUtil;
-import com.ruoyi.system.domain.vo.PubProduceLibraryVo;
-import com.ruoyi.system.domain.bo.PubProduceLibraryBo;
-import com.ruoyi.system.service.IPubProduceLibraryService;
-import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
  * 工序库
@@ -51,9 +48,11 @@ public class PubProduceLibraryController extends BaseController {
     public R<List<PubProduceLibraryVo>> list(PubProduceLibraryBo bo) {
         return R.ok(iPubProduceLibraryService.queryList(bo));
     }
+
+
     @SaCheckPermission("jg:produceLibrary:list")
-    @GetMapping("/getProduceLibraryTree")
-    public R<List<Tree<Long>>> getProduceLibraryTree(PubProduceLibraryBo bo) {
+    @GetMapping("/treeData")
+    public R<List<Tree<Long>>> treeData(PubProduceLibraryBo bo) {
         return R.ok(iPubProduceLibraryService.getProduceLibraryTree(bo));
     }
     
@@ -63,7 +62,6 @@ public class PubProduceLibraryController extends BaseController {
      */
     @SaCheckPermission("jg:produceLibrary:list")
     @GetMapping("/page")
-
     public TableDataInfo<PubProduceLibraryVo> page(PubProduceLibraryBo bo, PageQuery pageQuery) {
         return iPubProduceLibraryService.queryPageList(bo, pageQuery);
     }
