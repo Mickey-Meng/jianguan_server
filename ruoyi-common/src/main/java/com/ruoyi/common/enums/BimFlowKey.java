@@ -100,7 +100,12 @@ public enum BimFlowKey {
     /**
      * 计量审批
      */
-    metrology("计量审批", "jiliangshenpiv3");
+    metrology("计量审批", "jiliangshenpiv3"),
+
+    /**
+     * 合同付款
+     */
+    contractPayment("合同付款", "contractPayment");
 
     private String key;
     private String name;

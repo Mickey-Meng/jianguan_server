@@ -3,6 +3,7 @@ package com.ruoyi.jianguan.manage.produce.service;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.core.domain.PageQuery;
 import com.ruoyi.jianguan.manage.produce.domain.bo.PubProduceBo;
+import com.ruoyi.jianguan.manage.produce.domain.entity.PubProduce;
 import com.ruoyi.jianguan.manage.produce.domain.vo.PubProduceVo;
 
 import java.util.Collection;
@@ -51,4 +52,5 @@ public interface IPubProduceService {
      */
     Boolean checkUniqueByPrimaryKey(Long id);
 
+    List<PubProduce> getProduceListByTypeId(Long typeId);
 }

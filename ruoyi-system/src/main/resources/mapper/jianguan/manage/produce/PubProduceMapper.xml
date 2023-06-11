@@ -6,6 +6,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <resultMap type="com.ruoyi.jianguan.manage.produce.domain.entity.PubProduce" id="PubProduceResult">
         <result property="id" column="id"/>
+        <result property="componentTypeId" column="component_type_id"/>
         <result property="componentTypeCode" column="component_type_code"/>
         <result property="name" column="name"/>
         <result property="rangee" column="rangee"/>
@@ -23,4 +24,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         WHERE id = #{id}
     </select>
 
+    <select id="selectProduceListByTypeId" resultMap="PubProduceResult">
+        SELECT
+            p.*,
+            (SELECT 1 FROM pub_component_type WHERE id = p.component_type_id AND id = #{typeId}) AS relatedComponentType
+        FROM pub_produce p
+    </select>
 </mapper>

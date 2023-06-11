@@ -9,6 +9,7 @@ import com.ruoyi.common.helper.LoginHelper;
 import com.ruoyi.common.utils.JwtUtil;
 import com.ruoyi.jianguan.common.dao.FileMapper;
 import com.ruoyi.jianguan.common.dao.ProjectsDAO;
+import com.ruoyi.jianguan.common.domain.dto.ZjFileDTO;
 import com.ruoyi.jianguan.common.domain.entity.ZjFile;
 import com.ruoyi.jianguan.common.service.FileService;
 import io.swagger.annotations.Api;
@@ -215,6 +216,30 @@ public class MongController {
         }
     }
 
+    /***
+     * 通过父级数据字典目录的code来获取该字典下面所有字典类型的文件清单
+     * @param pCode
+     * @param projectId
+     * @return
+     */
+    @GetMapping(value = "/getStoreFileByPcode")
+    public ResponseBase getStoreFileByPcode(@RequestParam(value = "pCode", required = false) String pCode,
+                                         @RequestParam(value = "projectId", required = false) Integer projectId) {
+        if (projectId <= 0){
+            return new ResponseBase(200, "请输入有效的项目id!");
+        }
+        Integer count1 = projectsDAO.getCountById(projectId);
+        if (count1 <= 0){
+            return new ResponseBase(200, "该项目id无数据!");
+        }
+        try {
+            List<ZjFileDTO> storeFileType = fileService.getStoreFileByPcode(pCode, projectId);
+            return new ResponseBase(200, "查询成功", storeFileType);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseBase(500, "修改失败");
+        }
+    }
 
     @PostMapping(value = "/uploadBase64")
     @ApiOperation(value = "上传base64文件")

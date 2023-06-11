@@ -28,9 +28,13 @@ public class PubProduceBo extends BaseEntity {
     private Long id;
 
     /**
+     * 构建类型ID
+     */
+    @NotNull(message = "构建类型ID不能为空", groups = { AddGroup.class, EditGroup.class })
+    private Long componentTypeId;
+    /**
      * 构建类型编码
      */
-    @NotBlank(message = "构建类型编码不能为空", groups = { AddGroup.class, EditGroup.class })
     private String componentTypeCode;
 
     /**

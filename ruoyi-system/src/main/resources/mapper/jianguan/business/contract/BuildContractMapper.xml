@@ -34,8 +34,17 @@
 
 
     <select id="getPageInfo" resultType="com.ruoyi.jianguan.business.contract.domain.vo.BuildContractPageVo" parameterType="com.ruoyi.jianguan.business.contract.domain.dto.BuildContractPageDTO">
-        select a.contract_code as contractCode,a.contract_user as contractUser,a.create_time as createTime,p.NAME as buildSectionName
-             ,a.id,a.project_id as projectId,a.build_section as buildSection,u.nick_name as createUserName
+        select
+                a.contract_code as contractCode,
+               a.contract_user as contractUser,
+               a.create_time as createTime,
+               p.NAME as buildSectionName
+               ,a.id,
+               a.project_id as projectId,
+               a.build_section as buildSection,
+               a.create_user_id as createUserId,
+               u.nick_name as createUserName,
+               a.status
         from zz_build_contract a
           left join ss_f_projects p on a.build_section = p.ID and p.GROUPLEVEL = 3
           left join sys_user u on a.create_user_id = u.user_id

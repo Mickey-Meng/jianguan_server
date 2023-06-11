@@ -18,7 +18,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectCountByPrimaryKey" resultType="java.lang.Integer">
         SELECT COUNT(1)
-            FROM pub_conponent_type
+            FROM pub_component_type
         WHERE id = #{id}
     </select>
 

@@ -4,12 +4,14 @@ import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.ruoyi.common.annotation.ExcelDictFormat;
 import com.ruoyi.common.convert.ExcelDictConvert;
+import com.ruoyi.common.core.validate.AddGroup;
+import com.ruoyi.common.core.validate.EditGroup;
 import lombok.Data;
 import java.util.Date;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-
+import javax.validation.constraints.NotNull;
 
 
 /**
@@ -31,6 +33,13 @@ public class PubProduceVo {
     @ExcelProperty(value = "业务主键ID")
     @ApiModelProperty(value = "业务主键ID", required = true)
     private Long id;
+
+    /**
+     * 构建类型ID
+     */
+    @ExcelProperty(value = "构建类型ID")
+    @ApiModelProperty(value = "构建类型ID", required = true)
+    private Long componentTypeId;
 
     /**
      * 构建类型编码

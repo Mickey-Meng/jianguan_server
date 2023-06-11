@@ -1,23 +1,33 @@
 package com.ruoyi.jianguan.business.contract.service.impl;
 
-import cn.hutool.core.bean.BeanUtil;
-import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.common.core.page.TableDataInfo;
-import com.ruoyi.common.core.domain.PageQuery;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.ruoyi.jianguan.business.contract.domain.bo.ContractPaymentBo;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.ruoyi.common.core.domain.entity.FileModel;
+import com.ruoyi.common.core.domain.object.ResponseBase;
+import com.ruoyi.common.core.sequence.util.IdUtil;
+import com.ruoyi.common.enums.BimFlowKey;
+import com.ruoyi.flowable.domain.dto.FlowTaskCommentDto;
+import com.ruoyi.flowable.service.FlowStaticPageService;
+import com.ruoyi.jianguan.business.contract.domain.dto.ContractPaymentSaveDTO;
+import com.ruoyi.jianguan.business.contract.domain.dto.ContractPaymentPageDTO;
 import com.ruoyi.jianguan.business.contract.domain.entity.ContractPayment;
-import com.ruoyi.jianguan.business.contract.domain.vo.ContractPaymentVo;
+import com.ruoyi.jianguan.business.contract.domain.vo.ContractPaymentPageVo;
+import com.ruoyi.jianguan.business.contract.domain.vo.ContractPaymentDetailVo;
 import com.ruoyi.jianguan.business.contract.mapper.ContractPaymentMapper;
-import com.ruoyi.jianguan.business.contract.service.IContractPaymentService;
+import com.ruoyi.jianguan.business.contract.service.ContractPaymentService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Collection;
+import java.util.Objects;
 
 /**
  * 合同付款Service业务层处理
@@ -25,90 +35,76 @@ import java.util.Collection;
  * @author mickey
  * @date 2023-06-07
  */
-@RequiredArgsConstructor
+@Slf4j
 @Service
-public class ContractPaymentServiceImpl implements IContractPaymentService {
+@RequiredArgsConstructor
+public class ContractPaymentServiceImpl extends ServiceImpl<ContractPaymentMapper, ContractPayment>  implements ContractPaymentService {
 
-    private final ContractPaymentMapper baseMapper;
+    @Autowired
+    private ContractPaymentMapper contractPaymentMapper;
 
-    /**
-     * 查询合同付款
-     */
+    @Autowired
+    private FlowStaticPageService flowStaticPageService;
+
+
     @Override
-    public ContractPaymentVo queryById(Long id){
-        return baseMapper.selectVoById(id);
-    }
-
-    /**
-     * 查询合同付款列表
-     */
-    @Override
-    public TableDataInfo<ContractPaymentVo> queryPageList(ContractPaymentBo bo, PageQuery pageQuery) {
-        LambdaQueryWrapper<ContractPayment> lqw = buildQueryWrapper(bo);
-        Page<ContractPaymentVo> result = baseMapper.selectVoPage(pageQuery.build(), lqw);
-        return TableDataInfo.build(result);
-    }
-
-    /**
-     * 查询合同付款列表
-     */
-    @Override
-    public List<ContractPaymentVo> queryList(ContractPaymentBo bo) {
-        LambdaQueryWrapper<ContractPayment> lqw = buildQueryWrapper(bo);
-        return baseMapper.selectVoList(lqw);
-    }
-
-    private LambdaQueryWrapper<ContractPayment> buildQueryWrapper(ContractPaymentBo bo) {
-        Map<String, Object> params = bo.getParams();
-        LambdaQueryWrapper<ContractPayment> lqw = Wrappers.lambdaQuery();
-        lqw.eq(StringUtils.isNotBlank(bo.getType()), ContractPayment::getType, bo.getType());
-        lqw.eq(bo.getAmount() != null, ContractPayment::getAmount, bo.getAmount());
-        lqw.eq(bo.getRecordTime() != null, ContractPayment::getRecordTime, bo.getRecordTime());
-        lqw.eq(StringUtils.isNotBlank(bo.getAttachment()), ContractPayment::getAttachment, bo.getAttachment());
-        lqw.eq(bo.getStatus() != null, ContractPayment::getStatus, bo.getStatus());
-        return lqw;
-    }
-
-    /**
-     * 新增合同付款
-     */
-    @Override
-    public Boolean insertByBo(ContractPaymentBo bo) {
-        ContractPayment add = BeanUtil.toBean(bo, ContractPayment.class);
-        validEntityBeforeSave(add);
-        boolean flag = baseMapper.insert(add) > 0;
-        if (flag) {
-            bo.setId(add.getId());
+    public ResponseBase addOrUpdate(ContractPaymentSaveDTO saveDto) {
+        //属性copy
+        ContractPayment contractPayment = new ContractPayment();
+        BeanUtils.copyProperties(saveDto, contractPayment);
+        boolean isStartFlow = false;
+        if (Objects.isNull(saveDto.getId())) {
+            isStartFlow = true;
+            contractPayment.setId(IdUtil.nextLongId());
         }
-        return flag;
-    }
-
-    /**
-     * 修改合同付款
-     */
-    @Override
-    public Boolean updateByBo(ContractPaymentBo bo) {
-        ContractPayment update = BeanUtil.toBean(bo, ContractPayment.class);
-        validEntityBeforeSave(update);
-        return baseMapper.updateById(update) > 0;
-    }
-
-    /**
-     * 保存前的数据校验
-     */
-    private void validEntityBeforeSave(ContractPayment entity){
-        //TODO 做一些数据校验,如唯一约束
-    }
-
-    /**
-     * 批量删除合同付款
-     */
-    @Override
-    public Boolean deleteWithValidByIds(Collection<Long> ids, Boolean isValid) {
-        if(isValid){
-            //TODO 做一些业务上的校验,判断是否需要校验
+        // 初始化审批状态：审批中
+        contractPayment.setStatus(0);
+        //附件
+        contractPayment.setAttachment(JSON.toJSONString(saveDto.getAttachment()));
+        boolean saveOrUpdate = this.saveOrUpdate(contractPayment);
+        if (saveOrUpdate && isStartFlow) {
+            String processDefinitionKey = BimFlowKey.contractPayment.getName();
+            String businessKey = contractPayment.getId().toString();
+            //设置流程的审批人
+            Map<String, Object> auditUser = saveDto.getAuditUser();
+            if (auditUser.isEmpty()) {
+                throw new RuntimeException("流程的审批人不能为空！");
+            }
+            //发起流程
+            try {
+                FlowTaskCommentDto flowTaskComment = new FlowTaskCommentDto();
+                flowTaskComment.setApprovalType("save");
+                flowTaskComment.setComment("合同付款单创建");
+                JSONObject taskVariableData = new JSONObject(auditUser);
+                flowStaticPageService.startAndTakeUserTask(processDefinitionKey, flowTaskComment, taskVariableData, null, null, saveDto.getCopyData(), businessKey);
+            } catch (Exception e) {
+                log.error("流程启动失败！e=" + e.getMessage());
+                throw new RuntimeException("流程启动失败！e=" + e.getMessage());
+            }
         }
-        return baseMapper.deleteBatchIds(ids) > 0;
+        return ResponseBase.success("流程启动成功");
     }
 
+    @Override
+    public ContractPaymentDetailVo getInfoById(Long id) {
+        //查询
+        ContractPayment contractPayment = this.getById(id);
+        if (Objects.isNull(contractPayment)) {
+            return null;
+        }
+        //属性转换
+        ContractPaymentDetailVo vo = new ContractPaymentDetailVo();
+        BeanUtils.copyProperties(contractPayment, vo);
+        // TODO: 2023/3/29 附件待实现
+        vo.setAttachment(JSONArray.parseArray(contractPayment.getAttachment(), FileModel.class));
+        return vo;
+    }
+
+    @Override
+    public PageInfo<ContractPaymentPageVo> getPageInfo(ContractPaymentPageDTO pageDto) {
+        //分页查询
+        PageHelper.startPage(pageDto.getPageNum(), pageDto.getPageSize());
+        List<ContractPaymentPageVo> contractPaymentPageVos = contractPaymentMapper.getPageInfo(pageDto);
+        return new PageInfo<>(contractPaymentPageVos);
+    }
 }

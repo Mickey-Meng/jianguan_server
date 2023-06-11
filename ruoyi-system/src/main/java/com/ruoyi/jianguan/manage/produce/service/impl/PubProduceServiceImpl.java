@@ -118,4 +118,9 @@ public class PubProduceServiceImpl implements IPubProduceService {
         int count = baseMapper.selectCountByPrimaryKey(id);
         return count <= 1;
     }
+
+    @Override
+    public List<PubProduce> getProduceListByTypeId(Long typeId) {
+        return baseMapper.selectProduceListByTypeId(typeId);
+    }
 }

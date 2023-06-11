@@ -137,7 +137,7 @@ public class SysLoginController {
     @GetMapping("getRouters")
     public R<List<RouterVo>> getRouters() {
         Long userId = LoginHelper.getUserId();
-        List<SysMenu> menus = menuService.selectMenuTreeByUserId(userId);
+        List<SysMenu> menus = menuService.selectMenuTreeByUserId(userId, "0");
         // 如果是超级管理员，则不过滤数据
         if (!LoginHelper.isAdmin()) {
             Iterator<SysMenu> iterator = menus.iterator();

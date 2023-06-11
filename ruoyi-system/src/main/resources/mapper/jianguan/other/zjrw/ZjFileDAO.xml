@@ -36,6 +36,22 @@
       and projectId = #{projectId}
     </if>
   </select>
+
+  <!--yangaogao 20230607   -->
+  <select id="selectByTypeList" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from zj_file
+    where type in
+      <foreach collection="typeList" index="index" item="item" separator="," open="(" close=")">
+        #{item}
+      </foreach>
+    <if test="projectId != null">
+      and projectId = #{projectId}
+    </if>
+  </select>
+
+
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />

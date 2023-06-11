@@ -46,6 +46,11 @@ public class DataDictionaryServiceImpl implements IDataDictionaryService {
         return baseMapper.selectVoList(lqw);
     }
 
+    @Override
+    public List<DataDictionaryVo> getFileTypesByPCode(String pCode) {
+        return baseMapper.selectVoListByPCode(pCode);
+    }
+
     private LambdaQueryWrapper<DataDictionary> buildQueryWrapper(DataDictionaryBo bo) {
         Map<String, Object> params = bo.getParams();
         LambdaQueryWrapper<DataDictionary> lqw = Wrappers.lambdaQuery();

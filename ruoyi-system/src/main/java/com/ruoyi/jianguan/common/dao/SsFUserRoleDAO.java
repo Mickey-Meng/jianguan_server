@@ -44,19 +44,19 @@ public interface SsFUserRoleDAO {
 */
 
     @Select("SELECT" +
-            "sr.role_id AS id," +
-            "sr.role_name AS NAME," +
-            "sr.role_key AS CODE," +
-            "sr.parent_id AS parentid," +
-            "1 AS type," +
-            "sr.role_level AS rolelevel," +
-            "sr.create_time AS sttime," +
-            "sr.`status` AS STSTATE " +
-            "FROM" +
-            "sys_role sr" +
-            "LEFT JOIN sys_user_role sur ON sr.role_id = sur.role_id " +
-            "WHERE" +
-            "sur.user_id= #{id}")
+            " sr.role_id AS id," +
+            " sr.role_name AS NAME," +
+            " sr.role_key AS CODE," +
+            " sr.parent_id AS parentid," +
+            " 1 AS type," +
+            " sr.role_level AS rolelevel," +
+            " sr.create_time AS sttime," +
+            " sr.`status` AS STSTATE " +
+            " FROM" +
+            " sys_role sr" +
+            " LEFT JOIN sys_user_role sur ON sr.role_id = sur.role_id " +
+            " WHERE" +
+            " sur.user_id= #{id}")
     SsFRoles getRolesByUserid(@Param("id")Integer id);
 /*
 

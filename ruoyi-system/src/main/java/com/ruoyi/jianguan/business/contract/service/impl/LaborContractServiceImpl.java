@@ -31,6 +31,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
@@ -78,7 +79,7 @@ public class LaborContractServiceImpl extends ServiceImpl<LaborContractMapper, L
         laborContract.setAttachment(JSON.toJSONString(saveDto.getAttachment()));
         //信息填报
         laborContract.setInformation(JSON.toJSONString(saveDto.getInformation()));
-        laborContract.setStatus(1);
+        laborContract.setStatus(0);
         //新增
         boolean isStartFlow = false;
         if (Objects.isNull(saveDto.getId())) {
@@ -177,8 +178,9 @@ public class LaborContractServiceImpl extends ServiceImpl<LaborContractMapper, L
      * @return
      */
     @Override
-    public List<LaborContract> getList() {
+    public List<LaborContract> getList(@RequestBody LaborContractPageDTO pageDto) {
         LambdaQueryWrapper<LaborContract> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(LaborContract::getBuildSection,pageDto.getBuildSection());
         queryWrapper.eq(LaborContract::getDraftFlag, 1);
         return this.list(queryWrapper);
     }

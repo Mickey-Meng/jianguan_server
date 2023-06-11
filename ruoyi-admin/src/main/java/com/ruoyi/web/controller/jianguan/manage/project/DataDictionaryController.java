@@ -5,6 +5,7 @@ import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.annotation.RepeatSubmit;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.R;
+import com.ruoyi.common.core.domain.object.ResponseBase;
 import com.ruoyi.common.core.validate.AddGroup;
 import com.ruoyi.common.core.validate.EditGroup;
 import com.ruoyi.common.enums.BusinessType;
@@ -44,6 +45,18 @@ public class DataDictionaryController extends BaseController {
     public R<List<DataDictionaryVo>> list(DataDictionaryBo bo) {
         List<DataDictionaryVo> list = dataDictionaryService.queryList(bo);
         return R.ok(list);
+    }
+    @GetMapping("/getFileType")
+    public ResponseBase getFileType(String pId) {
+        DataDictionaryBo bo = new DataDictionaryBo();
+        bo.setParentId(Long.parseLong(pId));
+        List<DataDictionaryVo> list = dataDictionaryService.queryList(bo);
+        return new ResponseBase(200, "查询查询成功!", list);
+    }
+    @GetMapping("/getFileTypesByPCode")
+    public ResponseBase getFileTypesByPCode(String pCode) {
+        List<DataDictionaryVo> list = dataDictionaryService.getFileTypesByPCode(pCode);
+        return new ResponseBase(200, "查询查询成功!", list);
     }
 
     /**

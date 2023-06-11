@@ -125,20 +125,21 @@ public class SysMenuServiceImpl implements ISysMenuService {
      * @return 菜单列表
      */
     @Override
-    public List<SysMenu> selectMenuTreeByUserId(Long userId) {
+    public List<SysMenu> selectMenuTreeByUserId(Long userId, String sourceType) {
         List<SysMenu> menus = null;
-        if (LoginHelper.isAdmin(userId)) {
+        int parentId = 0;
+        if (LoginHelper.isAdmin(userId) && Objects.equals(sourceType, "0")) {
             menus = baseMapper.selectMenuTreeAll();
         } else {
-            menus = baseMapper.selectMenuTreeByUserId(userId);
+            parentId = Objects.equals(sourceType, "1") ? 25 : 26;
+            menus = baseMapper.selectMenuTreeByUserId(userId, sourceType);
         }
-        return getChildPerms(menus, 0);
+        return getChildPerms(menus, parentId);
     }
     @Override
-    public List<SysMenu> selectWebMenuTreeByUserId(Long userId) {
-        List<SysMenu> menus = null;
-        menus = baseMapper.selectWebMenuTreeByUserId(userId);
-        return getChildPerms(menus, 25);
+    public List<SysMenu> selectWebMenuTreeByUserId(Long userId, String sourceType) {
+        List<SysMenu> menus = baseMapper.selectWebMenuTreeByUserId(userId, Objects.equals(sourceType, "2") ? "2" : "1");
+        return getChildPerms(menus, Objects.equals(sourceType, "2") ? 26 : 25);
     }
     /**
      * 根据角色ID查询菜单树信息

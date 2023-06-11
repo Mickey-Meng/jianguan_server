@@ -30,7 +30,7 @@ public class PubComponentType extends BaseEntity {
     /**
      * 工序库id
      */
-    private String libraryId;
+    private Long libraryId;
     /**
      * 构建类型名称
      */

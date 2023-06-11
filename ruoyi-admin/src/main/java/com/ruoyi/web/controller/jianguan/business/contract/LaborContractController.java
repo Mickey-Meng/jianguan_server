@@ -99,8 +99,9 @@ public class LaborContractController {
      */
     @PostMapping(value = "/list", produces = "application/json;charset=UTF-8")
     @ApiOperation(value = "劳务分包合同列表（不分页）")
-    public List<LaborContract> getList() {
-        return laborContractService.getList();
+    public List<LaborContract> getList(@RequestBody LaborContractPageDTO pageDto) {
+
+        return laborContractService.getList(pageDto);
     }
 
     /**

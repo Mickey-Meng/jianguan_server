@@ -20,4 +20,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="deptId" column="dept_id"/>
     </resultMap>
 
+    <select id="selectVoListByPCode" resultType="com.ruoyi.jianguan.manage.project.domain.entity.DataDictionary">
+        SELECT d.* FROM data_dictionary d, data_dictionary dp where
+        d.parent_id=dp.id and dp.`code`=#{pCode} and d.del_flag=0
+    </select>
+
 </mapper>

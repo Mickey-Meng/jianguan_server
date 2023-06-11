@@ -14,7 +14,11 @@ import lombok.Data;
 @Data
 @ApiModel(value = "LaborContractPageDTO", description = "劳务分包合同分页查询dto")
 public class LaborContractPageDTO extends PageDTO {
-
+    /**
+     * 施工标段名称
+     */
+    @ApiModelProperty(value = "施工标段编号")
+    private Integer buildSection;
     /**
      * 施工标段名称
      */
@@ -25,5 +29,9 @@ public class LaborContractPageDTO extends PageDTO {
      */
     @ApiModelProperty(value = "拟劳务合作工程名称")
     private String laborContractProjectName;
-
+    /**
+     * 合同号
+     */
+    @ApiModelProperty(value = "合同号")
+    private String contractCode;
 }

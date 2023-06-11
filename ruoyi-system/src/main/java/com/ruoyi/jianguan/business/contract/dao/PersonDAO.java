@@ -74,7 +74,7 @@ public interface PersonDAO {
     @Select("select * from zj_person where projectId = #{projectId} order by subDate desc")
     List<PersonDTO> getAllPersonByProjectId(@Param("projectId")Integer projectId);
 
-    @Select("select * from zj_person where recordId = #{userid} group by subDate desc")
+    @Select("select * from zj_person where recordId = #{userid} order by subDate desc")
     List<PersonDTO> getAllPersonByUserid(@Param("userid") Integer userid);
 
     @Select("select * from zj_person where handle = #{userid}")

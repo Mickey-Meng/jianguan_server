@@ -65,7 +65,7 @@ public class UserLoginController {
         String jwtToken = JwtUtil.sign(powerData, JwtUtil.SSO_TIME);
         ajaxDataMap.put("jwtToken", jwtToken);
 
-        List<SysMenu> menus = menuService.selectWebMenuTreeByUserId(loginUser.getUserId());
+        List<SysMenu> menus = menuService.selectWebMenuTreeByUserId(loginUser.getUserId(), loginBody.getSourceType());
         List<RouterVo>  routerVos =  menuService.buildMenus(menus);
         ajaxDataMap.put("menus", routerVos);
 

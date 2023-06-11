@@ -37,15 +37,13 @@
         select a.*,p.NAME as buildSectionName
         ,u.nick_name as createUserName
         from zz_labor_contract a
-        left join ss_f_projects p on a.build_section = p.id and p.GROUPLEVEL = 3
+        left join ss_f_projects p on a.build_section = p.id
         left join sys_user u ON a.create_user_id = u.user_id
-        where a.project_id = #{pageDto.projectId} and a.build_section = #{pageDto.buildSection}
-        <if test="pageDto.buildSectionName != null and pageDto.buildSectionName != ''">
-            and p.NAME like concat('%',#{pageDto.buildSectionName},'%')
+        where  a.build_section = #{pageDto.buildSection}
+        <if test="pageDto.contractCode != null and pageDto.contractCode != ''">
+            and a.contract_code like concat('%',#{pageDto.contractCode},'%')
         </if>
-        <if test="pageDto.laborContractProjectName != null and pageDto.laborContractProjectName != ''">
-            and a.information -> '$[*].buildProjectName' like concat('%',#{pageDto.laborContractProjectName},'%')
-        </if>
+
         <if test="pageDto.draftFlag != null">
             and a.draft_flag = #{pageDto.draftFlag}
         </if>

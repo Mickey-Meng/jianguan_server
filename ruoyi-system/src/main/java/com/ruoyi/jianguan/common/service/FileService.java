@@ -10,6 +10,7 @@ import com.mongodb.client.gridfs.model.GridFSFile;
 import com.ruoyi.common.core.domain.object.ResponseBase;
 import com.ruoyi.jianguan.common.dao.FileMapper;
 import com.ruoyi.jianguan.common.dao.ZjFileDAO;
+import com.ruoyi.jianguan.common.domain.dto.ZjFileDTO;
 import com.ruoyi.jianguan.common.domain.entity.ZjFile;
 import com.ruoyi.common.utils.jianguan.zjrw.FileDownLoadUtils;
 import net.coobird.thumbnailator.Thumbnails;
@@ -75,6 +76,11 @@ public class FileService {
 
     public List<ZjFile> getStoreFileType(Integer type, Integer projectId) {
         List<ZjFile> files = zjFileDAO.selectByType(type, projectId);
+        return files;
+    }
+    public List<ZjFileDTO> getStoreFileByPcode(String pCode, Integer projectId) {
+        List<ZjFileDTO> files = zjFileDAO.selectByPCode(pCode, projectId);
+
         return files;
     }
 

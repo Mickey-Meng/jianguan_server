@@ -30,14 +30,14 @@ public class PubComponentTypeVo {
      */
     @ExcelProperty(value = "业务主键ID")
     @ApiModelProperty(value = "业务主键ID", required = true)
-    private Integer id;
+    private Long id;
 
     /**
      * 工序库id
      */
     @ExcelProperty(value = "工序库id")
     @ApiModelProperty(value = "工序库id", required = true)
-    private String libraryId;
+    private Long libraryId;
 
     /**
      * 构建类型名称

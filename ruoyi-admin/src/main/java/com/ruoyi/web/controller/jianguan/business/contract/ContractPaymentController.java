@@ -1,27 +1,21 @@
 package com.ruoyi.web.controller.jianguan.business.contract;
 
-import cn.dev33.satoken.annotation.SaCheckPermission;
-import com.ruoyi.common.annotation.Log;
-import com.ruoyi.common.annotation.RepeatSubmit;
-import com.ruoyi.common.core.controller.BaseController;
-import com.ruoyi.common.core.domain.PageQuery;
-import com.ruoyi.common.core.domain.R;
-import com.ruoyi.common.core.page.TableDataInfo;
-import com.ruoyi.common.core.validate.AddGroup;
-import com.ruoyi.common.core.validate.EditGroup;
-import com.ruoyi.common.enums.BusinessType;
-import com.ruoyi.common.utils.poi.ExcelUtil;
-import com.ruoyi.jianguan.business.contract.domain.bo.ContractPaymentBo;
-import com.ruoyi.jianguan.business.contract.domain.vo.ContractPaymentVo;
-import com.ruoyi.jianguan.business.contract.service.IContractPaymentService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.validation.annotation.Validated;
+import com.github.pagehelper.PageInfo;
+import com.ruoyi.common.core.domain.object.ResponseBase;
+import com.ruoyi.jianguan.business.contract.domain.dto.ContractPaymentPageDTO;
+import com.ruoyi.jianguan.business.contract.domain.dto.ContractPaymentSaveDTO;
+import com.ruoyi.jianguan.business.contract.domain.entity.ContractPayment;
+import com.ruoyi.jianguan.business.contract.domain.vo.ContractPaymentPageVo;
+import com.ruoyi.jianguan.business.contract.domain.vo.ContractPaymentDetailVo;
+import com.ruoyi.jianguan.business.contract.service.ContractPaymentService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -30,89 +24,73 @@ import java.util.List;
  * @author mickey
  * @date 2023-06-07
  */
-@Validated
-@RequiredArgsConstructor
+@Slf4j
+@Api(value = "合同付款", tags = {"合同付款"})
 @RestController
-@RequestMapping("/produce/contractPayment")
-public class ContractPaymentController extends BaseController {
+@RequestMapping("/web/api/v1/contract/payment")
+public class ContractPaymentController {
 
-    private final IContractPaymentService iContractPaymentService;
-
-    /**
-     * 查询合同付款列表
-     */
-    @SaCheckPermission("produce:contractPayment:list")
-    @GetMapping("/list")
-    public TableDataInfo<ContractPaymentVo> list(ContractPaymentBo bo, PageQuery pageQuery) {
-        return iContractPaymentService.queryPageList(bo, pageQuery);
-    }
+    @Autowired
+    private ContractPaymentService contractPaymentService;
 
     /**
-     * 分页查询合同付款列表
-     */
-    @SaCheckPermission("produce:contractPayment:list")
-    @GetMapping("/page")
-
-    public TableDataInfo<ContractPaymentVo> page(ContractPaymentBo bo, PageQuery pageQuery) {
-        return iContractPaymentService.queryPageList(bo, pageQuery);
-    }
-
-
-    /**
-     * 导出合同付款列表
-     */
-    @SaCheckPermission("produce:contractPayment:export")
-    @Log(title = "合同付款" , businessType = BusinessType.EXPORT)
-    @PostMapping("/export")
-    public void export(ContractPaymentBo bo, HttpServletResponse response) {
-        List<ContractPaymentVo> list = iContractPaymentService.queryList(bo);
-        ExcelUtil.exportExcel(list, "合同付款" , ContractPaymentVo.class, response);
-    }
-
-    /**
-     * 获取合同付款详细信息
+     * 新增或者更新施工专业分包合同表数据
      *
-     * @param id 主键
+     * @param
      */
-    @SaCheckPermission("produce:contractPayment:query")
-    @GetMapping("/{id}")
-    public R<ContractPaymentVo> getInfo(@NotNull(message = "主键不能为空")
-                                          @PathVariable Long id) {
-        return R.ok(iContractPaymentService.queryById(id));
+    @PostMapping(value = "/addOrUpdate", produces = "application/json;charset=UTF-8")
+    @ApiOperation(value = "新增或者更新")
+    public ResponseBase addOrUpdate(@RequestBody @ApiParam(name = "saveDto") ContractPaymentSaveDTO saveDto) {
+        return contractPaymentService.addOrUpdate(saveDto);
     }
 
-    /**
-     * 新增合同付款
-     */
-    @SaCheckPermission("produce:contractPayment:add")
-    @Log(title = "合同付款" , businessType = BusinessType.INSERT)
-    @RepeatSubmit()
-    @PostMapping()
-    public R<Void> add(@Validated(AddGroup.class) @RequestBody ContractPaymentBo bo) {
-        return toAjax(iContractPaymentService.insertByBo(bo) ? 1 : 0);
-    }
 
     /**
-     * 修改合同付款
-     */
-    @SaCheckPermission("produce:contractPayment:edit")
-    @Log(title = "合同付款" , businessType = BusinessType.UPDATE)
-    @RepeatSubmit()
-    @PutMapping()
-    public R<Void> edit(@Validated(EditGroup.class) @RequestBody ContractPaymentBo bo) {
-        return toAjax(iContractPaymentService.updateByBo(bo) ? 1 : 0);
-    }
-
-    /**
-     * 删除合同付款
+     * 通过id删除一条施工专业分包合同表 数据
      *
-     * @param ids 主键串
+     * @param id
      */
-    @SaCheckPermission("produce:contractPayment:remove")
-    @Log(title = "合同付款" , businessType = BusinessType.DELETE)
-    @DeleteMapping("/{ids}")
-    public R<Void> remove(@NotEmpty(message = "主键不能为空")
-                          @PathVariable Long[] ids) {
-        return toAjax(iContractPaymentService.deleteWithValidByIds(Arrays.asList(ids), true) ? 1 : 0);
+    @GetMapping(value = "/id", produces = "application/json;charset=UTF-8")
+    @ApiOperation(value = "通过id删除一条数据")
+    @Transactional(rollbackFor = Exception.class)
+    public boolean removeById(@ApiParam(name = "id") Long id) {
+        return contractPaymentService.removeById(id);
     }
+
+
+    /**
+     * 通过id获取一条施工专业分包合同表数据
+     *
+     * @param id
+     */
+    @GetMapping(value = "/detail/id", produces = "application/json;charset=UTF-8")
+    @ApiOperation(value = "通过id获取一条数据")
+    public ContractPaymentDetailVo getById(@ApiParam(name = "id") Long id) {
+        return contractPaymentService.getInfoById(id);
+    }
+
+
+    /**
+     * 分页查询施工专业分包合同表 数据
+     *
+     * @param pageDto
+     */
+    @PostMapping(value = "/page", produces = "application/json;charset=UTF-8")
+    @ApiOperation(value = "分页查询数据")
+    public PageInfo<ContractPaymentPageVo> page(@RequestBody ContractPaymentPageDTO pageDto) {
+        PageInfo<ContractPaymentPageVo> pageInfo = contractPaymentService.getPageInfo(pageDto);
+        log.info("ContractPaymentPageVo: {}", pageInfo);
+        return pageInfo;
+    }
+
+
+    /**
+     * 查询所有施工专业分包合同数据
+     */
+    @GetMapping(value = "/list", produces = "application/json;charset=UTF-8")
+    @ApiOperation(value = "查询所有数据")
+    public List<ContractPayment> list() {
+        return contractPaymentService.list();
+    }
+
 }

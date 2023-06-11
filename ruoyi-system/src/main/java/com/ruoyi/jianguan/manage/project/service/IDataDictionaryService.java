@@ -25,6 +25,8 @@ public interface IDataDictionaryService {
      * 查询商品类别列表
      */
     List<DataDictionaryVo> queryList(DataDictionaryBo bo);
+    List<DataDictionaryVo> getFileTypesByPCode(String pCode);
+
 
     /**
      * 新增商品类别
@@ -40,4 +42,7 @@ public interface IDataDictionaryService {
      * 校验并批量删除商品类别信息
      */
     Boolean deleteWithValidByIds(Collection<Long> ids, Boolean isValid);
+
+
+
 }

@@ -27,6 +27,11 @@ public class PubProduce extends BaseEntity {
      */
     @TableId(value = "id")
     private Long id;
+
+    /**
+     * 构建类型ID
+     */
+    private Long componentTypeId;
     /**
      * 构建类型编码
      */
@@ -47,5 +52,11 @@ public class PubProduce extends BaseEntity {
      * 备注
      */
     private String remark;
+
+    /**
+     * 是否关联构建类型，默认否-null
+     */
+    @TableField(exist = false)
+    private String relatedComponentType;
 
 }

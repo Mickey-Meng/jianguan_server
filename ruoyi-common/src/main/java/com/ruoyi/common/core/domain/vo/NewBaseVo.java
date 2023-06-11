@@ -50,4 +50,10 @@ public class NewBaseVo extends Model implements Serializable {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty(value = "更新时间")
     private Date updateTime;
+
+    /**
+     * 更新人id
+     */
+    @ApiModelProperty(value = "审批状态 0：审批中 1: 审批完成 2:驳回")
+    private Integer status;
 }

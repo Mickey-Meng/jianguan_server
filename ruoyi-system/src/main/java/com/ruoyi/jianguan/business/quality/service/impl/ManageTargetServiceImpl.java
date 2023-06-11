@@ -12,6 +12,7 @@ import com.ruoyi.common.core.dao.SsFUsersDAO;
 import com.ruoyi.common.core.domain.dto.PageDTO;
 import com.ruoyi.common.core.domain.entity.FileModel;
 import com.ruoyi.common.core.domain.entity.SsFUsers;
+import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.core.sequence.util.IdUtil;
 import com.ruoyi.jianguan.business.quality.domain.dto.ManageTargetSaveDTO;
 import com.ruoyi.jianguan.business.quality.domain.entity.ManageTarget;
@@ -19,6 +20,7 @@ import com.ruoyi.jianguan.business.quality.domain.vo.ManageTargetDetailVo;
 import com.ruoyi.jianguan.business.quality.domain.vo.ManageTargetPageVo;
 import com.ruoyi.jianguan.business.quality.mapper.ManageTargetMapper;
 import com.ruoyi.jianguan.business.quality.service.ManageTargetService;
+import com.ruoyi.system.service.ISysUserService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -44,6 +46,9 @@ public class ManageTargetServiceImpl extends ServiceImpl<ManageTargetMapper, Man
 
     @Autowired
     private SsFUsersDAO ssFUsersDAO;
+
+    @Autowired
+    private ISysUserService iSysUserService;
 
     /**
      * 新增或者更新管理目标数据
@@ -101,10 +106,12 @@ public class ManageTargetServiceImpl extends ServiceImpl<ManageTargetMapper, Man
         PageHelper.startPage(pageDto.getPageNum(), pageDto.getPageSize());
         List<ManageTargetPageVo> manageTargets = manageTargetMapper.getPageInfo(pageDto);
         if (Objects.nonNull(manageTargets) && !manageTargets.isEmpty()) {
+
             manageTargets.forEach(manageTarget -> {
-                SsFUsers ssFUsers = ssFUsersDAO.selectById(manageTarget.getCreateUserId());
-                if (Objects.nonNull(ssFUsers)) {
-                    manageTarget.setCreateName(ssFUsers.getName());
+//                SsFUsers ssFUsers = ssFUsersDAO.selectById(manageTarget.getCreateUserId());
+                SysUser sysUser = iSysUserService.selectUserById(manageTarget.getCreateUserId().longValue());
+                if (Objects.nonNull(sysUser)) {
+                    manageTarget.setCreateName(sysUser.getUserName());
                 }
             });
         }

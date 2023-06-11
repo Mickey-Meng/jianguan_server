@@ -2,8 +2,12 @@ package com.ruoyi.web.controller.jianguan.manage.produce;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
+import com.google.common.collect.Maps;
+import com.ruoyi.common.core.domain.entity.SysDept;
 import com.ruoyi.jianguan.manage.produce.domain.bo.PubProduceBo;
+import com.ruoyi.jianguan.manage.produce.domain.entity.PubProduce;
 import com.ruoyi.jianguan.manage.produce.domain.vo.PubProduceVo;
 import com.ruoyi.jianguan.manage.produce.service.IPubProduceService;
 import lombok.RequiredArgsConstructor;
@@ -40,11 +44,11 @@ public class PubProduceController extends BaseController {
 
     private final IPubProduceService iPubProduceService;
 
-/**
- * 查询工序信息列表
- */
-@SaCheckPermission("system:produce:list")
-@GetMapping("/list")
+    /**
+     * 查询工序信息列表
+     */
+    @SaCheckPermission("jg:produce:list")
+    @GetMapping("/list")
     public TableDataInfo<PubProduceVo> list(PubProduceBo bo, PageQuery pageQuery) {
         return iPubProduceService.queryPageList(bo, pageQuery);
     }
@@ -52,18 +56,25 @@ public class PubProduceController extends BaseController {
     /**
      * 分页查询工序信息列表
      */
-    @SaCheckPermission("system:produce:list")
+    @SaCheckPermission("jg:produce:list")
     @GetMapping("/page")
-
     public TableDataInfo<PubProduceVo> page(PubProduceBo bo, PageQuery pageQuery) {
         return iPubProduceService.queryPageList(bo, pageQuery);
     }
 
+    @SaCheckPermission("jg:produce:list")
+    @GetMapping(value = "/allList/{typeId}")
+    public R<Map<String, Object>> getProjectDept(@PathVariable Long typeId) {
+        List<PubProduce> produceAllList = iPubProduceService.getProduceListByTypeId(typeId);
+        Map<String, Object> dataMap = Maps.newHashMap();
+        dataMap.put("produceAllList", produceAllList);
+        return R.ok(dataMap);
+    }
 
     /**
      * 导出工序信息列表
      */
-    @SaCheckPermission("system:produce:export")
+    @SaCheckPermission("jg:produce:export")
     @Log(title = "工序信息" , businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(PubProduceBo bo, HttpServletResponse response) {
@@ -76,7 +87,7 @@ public class PubProduceController extends BaseController {
      *
      * @param id 主键
      */
-    @SaCheckPermission("system:produce:query")
+    @SaCheckPermission("jg:produce:query")
     @GetMapping("/{id}")
     public R<PubProduceVo> getInfo(@NotNull(message = "主键不能为空")
                                      @PathVariable Long id) {
@@ -86,7 +97,7 @@ public class PubProduceController extends BaseController {
     /**
      * 新增工序信息
      */
-    @SaCheckPermission("system:produce:add")
+    @SaCheckPermission("jg:produce:add")
     @Log(title = "工序信息" , businessType = BusinessType.INSERT)
     @RepeatSubmit()
     @PostMapping()
@@ -97,7 +108,7 @@ public class PubProduceController extends BaseController {
     /**
      * 修改工序信息
      */
-    @SaCheckPermission("system:produce:edit")
+    @SaCheckPermission("jg:produce:edit")
     @Log(title = "工序信息" , businessType = BusinessType.UPDATE)
     @RepeatSubmit()
     @PutMapping()
@@ -110,7 +121,7 @@ public class PubProduceController extends BaseController {
      *
      * @param ids 主键串
      */
-    @SaCheckPermission("system:produce:remove")
+    @SaCheckPermission("jg:produce:remove")
     @Log(title = "工序信息" , businessType = BusinessType.DELETE)
     @DeleteMapping("/{ids}")
     public R<Void> remove(@NotEmpty(message = "主键不能为空")

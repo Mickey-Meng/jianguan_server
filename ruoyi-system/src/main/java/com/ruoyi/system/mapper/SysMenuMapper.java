@@ -68,14 +68,14 @@ public interface SysMenuMapper extends BaseMapperPlus<SysMenuMapper, SysMenu, Sy
      * @param userId 用户ID
      * @return 菜单列表
      */
-    List<SysMenu> selectMenuTreeByUserId(Long userId);
+    List<SysMenu> selectMenuTreeByUserId(Long userId, String sourceType);
     /**
      * 根据用户ID查询菜单
      *
      * @param userId 用户ID
      * @return 菜单列表
      */
-    List<SysMenu> selectWebMenuTreeByUserId(Long userId);
+    List<SysMenu> selectWebMenuTreeByUserId(@Param("userId")Long userId, @Param("sourceType")String sourceType);
     /**
      * 根据角色ID查询菜单树信息
      *

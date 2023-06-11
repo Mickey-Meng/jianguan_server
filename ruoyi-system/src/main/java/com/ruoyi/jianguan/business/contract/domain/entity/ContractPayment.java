@@ -3,9 +3,12 @@ package com.ruoyi.jianguan.business.contract.domain.entity;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.ruoyi.common.core.domain.BaseEntity;
+import com.ruoyi.common.core.domain.NewBaseEntity;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -18,8 +21,10 @@ import java.util.Date;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
+@Accessors(chain = true)
 @TableName("zz_contract_payment")
-public class ContractPayment extends BaseEntity {
+@ApiModel(value = "合同付款对象", description = "合同付款表")
+public class ContractPayment extends NewBaseEntity {
 
     private static final long serialVersionUID=1L;
 
@@ -57,5 +62,11 @@ public class ContractPayment extends BaseEntity {
      */
     @TableLogic
     private String delFlag;
+
+    /**
+     * 项目ID
+     */
+    @ApiModelProperty(value = "项目ID")
+    private String projectId;
 
 }

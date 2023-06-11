@@ -17,6 +17,14 @@ public class FlowablePluginExecutor {
     @Resource
     private Map<String, FlowablePlugin> flowablePluginMap;
 
+    /**
+     *
+     * 0: 审批中
+     * 1：审批完成
+     * 2：驳回
+     *
+     */
+
     @Autowired
     private FlowApiService flowApiService;
 

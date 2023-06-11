@@ -8,6 +8,7 @@ import com.ruoyi.jianguan.business.contract.domain.dto.LaborContractSaveDTO;
 import com.ruoyi.jianguan.business.contract.domain.entity.LaborContract;
 import com.ruoyi.jianguan.business.contract.domain.vo.LaborContractDetailVo;
 import com.ruoyi.jianguan.business.contract.domain.vo.LaborContractPageVo;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
@@ -48,7 +49,7 @@ public interface LaborContractService extends IService<LaborContract> {
      *
      * @return
      */
-    List<LaborContract> getList();
+    List<LaborContract> getList(@RequestBody LaborContractPageDTO pageDto);
 
     /**
      * 劳务分包合同导出
