@@ -15,9 +15,7 @@ import com.ruoyi.jianguan.manage.produce.service.IPubProduceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Collection;
+import java.util.*;
 
 /**
  * 工序信息Service业务层处理
@@ -61,6 +59,7 @@ public class PubProduceServiceImpl implements IPubProduceService {
     private LambdaQueryWrapper<PubProduce> buildQueryWrapper(PubProduceBo bo) {
         Map<String, Object> params = bo.getParams();
         LambdaQueryWrapper<PubProduce> lqw = Wrappers.lambdaQuery();
+        lqw.eq(!Objects.isNull(bo.getComponentTypeId()), PubProduce::getComponentTypeId, bo.getComponentTypeId());
         lqw.eq(StringUtils.isNotBlank(bo.getComponentTypeCode()), PubProduce::getComponentTypeCode, bo.getComponentTypeCode());
         lqw.like(StringUtils.isNotBlank(bo.getName()), PubProduce::getName, bo.getName());
         lqw.eq(bo.getRangee() != null, PubProduce::getRangee, bo.getRangee());
@@ -122,5 +121,31 @@ public class PubProduceServiceImpl implements IPubProduceService {
     @Override
     public List<PubProduce> getProduceListByTypeId(Long typeId) {
         return baseMapper.selectProduceListByTypeId(typeId);
+    }
+
+    @Override
+    public Boolean doImportProduces(Long[] ids, PubProduceBo bo) {
+        // 1、先重置构建类型原关联数据
+        this.restOldRelatedType(bo);
+        // 2、关联当前选择的工序
+        List<PubProduce> pubProduceList = baseMapper.selectVoBatchIds(Arrays.asList(ids), PubProduce.class);
+        pubProduceList.forEach(pubProduce -> {
+            pubProduce.setComponentTypeId(bo.getComponentTypeId());
+            pubProduce.setComponentTypeCode(bo.getComponentTypeCode());
+        });
+        return baseMapper.updateBatchById(pubProduceList);
+    }
+
+    /**
+     * 先重置构建类型原关联数据
+     * @param bo
+     */
+    private void restOldRelatedType(PubProduceBo bo) {
+        List<PubProduce> oldPubProduceList = baseMapper.selectList(this.buildQueryWrapper(bo));
+        oldPubProduceList.forEach(pubProduce -> {
+            pubProduce.setComponentTypeId(Long.valueOf(0));
+            pubProduce.setComponentTypeCode("");
+        });
+        baseMapper.updateBatchById(oldPubProduceList);
     }
 }

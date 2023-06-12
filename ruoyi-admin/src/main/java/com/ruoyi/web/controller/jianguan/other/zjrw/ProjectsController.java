@@ -151,6 +151,13 @@ public class ProjectsController {
         return projectsService.getRoleByUser(projectId);
     }
 
+
+    @PostMapping("/getRolesByUser")
+    @ApiOperation(value = "通过用户查询对应角色信息及父级的code")
+    public ResponseBase getRolesByUser(@RequestParam(value = "projectId")Integer projectId){
+        return projectsService.getRolesByUser(projectId);
+    }
+
     @PostMapping("/getRolesByProject")
     @ApiOperation(value = "通过项目标段id查询该项目下所有用户所拥有的角色信息")
     public ResponseBase getRolesByProject(@RequestParam(value = "projectId")Integer projectId){

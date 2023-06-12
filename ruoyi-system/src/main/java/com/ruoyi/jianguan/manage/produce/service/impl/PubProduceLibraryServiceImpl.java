@@ -21,6 +21,7 @@ import com.ruoyi.jianguan.manage.produce.domain.entity.PubProduceLibrary;
 import java.util.List;
 import java.util.Map;
 import java.util.Collection;
+import java.util.Objects;
 
 /**
  * 工序库Service业务层处理
@@ -76,6 +77,9 @@ public class PubProduceLibraryServiceImpl implements IPubProduceLibraryService {
     @Override
     public Boolean insertByBo(PubProduceLibraryBo bo) {
         PubProduceLibrary add = BeanUtil.toBean(bo, PubProduceLibrary.class);
+        PubProduceLibrary parentProduceLibrary = baseMapper.selectById(bo.getParentId());
+        int currentGroupLevel = Objects.isNull(parentProduceLibrary) ? 1 : parentProduceLibrary.getGroupLevel() + 1;
+        add.setGroupLevel(currentGroupLevel);
         validEntityBeforeSave(add);
         boolean flag = baseMapper.insert(add) > 0;
         if (flag) {

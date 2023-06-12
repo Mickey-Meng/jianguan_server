@@ -80,4 +80,12 @@
     </foreach>
         group by a.NAME, a.CODE
   </select>-->
+
+  <select id="findParentCodesByRoleIds">
+    select role_key from sys_role where role_id in
+    <foreach collection="roleIds" index="index" item="item" open="(" separator="," close=")">
+      #{item.parentid}
+    </foreach>
+  </select>
+
 </mapper>

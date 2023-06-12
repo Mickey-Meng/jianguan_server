@@ -128,4 +128,15 @@ public class PubProduceController extends BaseController {
                           @PathVariable Long[] ids) {
         return toAjax(iPubProduceService.deleteWithValidByIds(Arrays.asList(ids), true) ? 1 : 0);
     }
+
+    /**
+     * 修改工序信息
+     */
+    @SaCheckPermission("jg:produce:edit")
+    @Log(title = "工序信息" , businessType = BusinessType.UPDATE)
+    @RepeatSubmit()
+    @PostMapping("/importProduces/{ids}")
+    public R<Void> edit(@PathVariable Long[] ids, @RequestBody PubProduceBo bo) {
+        return toAjax(iPubProduceService.doImportProduces(ids, bo));
+    }
 }

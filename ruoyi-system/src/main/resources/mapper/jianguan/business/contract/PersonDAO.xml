@@ -84,14 +84,14 @@
       <if test="handlingTime != null">
         handlingTime = #{handlingTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="handle1 != null">
-        handle1 = #{handle1,jdbcType=INTEGER},
+      <if test="handle != null">
+        handle = #{handle,jdbcType=INTEGER},
       </if>
-      <if test="resolution1 != null">
-        resolution1 = #{resolution1,jdbcType=VARCHAR},
+      <if test="resolution != null">
+        resolution = #{resolution,jdbcType=VARCHAR},
       </if>
-      <if test="handlingTime1 != null">
-        handlingTime1 = #{handlingTime1,jdbcType=TIMESTAMP},
+      <if test="handlingTime != null">
+        handlingTime = #{handlingTime,jdbcType=TIMESTAMP},
       </if>
       <if test="status != null">
         status = #{status,jdbcType=INTEGER}

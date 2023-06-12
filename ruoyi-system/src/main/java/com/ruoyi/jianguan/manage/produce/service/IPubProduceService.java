@@ -53,4 +53,6 @@ public interface IPubProduceService {
     Boolean checkUniqueByPrimaryKey(Long id);
 
     List<PubProduce> getProduceListByTypeId(Long typeId);
+
+    Boolean doImportProduces(Long[] ids, PubProduceBo bo);
 }

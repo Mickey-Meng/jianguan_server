@@ -1,5 +1,6 @@
 package com.ruoyi.jianguan.common.service;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -18,6 +19,8 @@ import com.ruoyi.common.core.domain.model.ZjPersonChangeFile;
 import com.ruoyi.common.core.domain.model.ZjPersonLeave;
 import com.ruoyi.common.core.domain.object.ResponseBase;
 import com.ruoyi.common.helper.LoginHelper;
+import com.ruoyi.flowable.domain.vo.FlowKeysVo;
+import com.ruoyi.flowable.service.FlowStaticPageService;
 import com.ruoyi.jianguan.common.dao.*;
 import com.ruoyi.jianguan.common.domain.dto.PersonGroupTree;
 import com.ruoyi.jianguan.common.domain.dto.PersonSubDTO;
@@ -32,6 +35,12 @@ import com.ruoyi.common.utils.jianguan.zjrw.httputils.HttpParamers;
 import com.ruoyi.common.utils.jianguan.zjrw.httputils.HttpUtils;
 import com.ruoyi.jianguan.business.contract.dao.PersonDAO;
 import com.ruoyi.jianguan.business.contract.dao.ZjPersonFenceDAO;
+import org.flowable.engine.HistoryService;
+import org.flowable.engine.RuntimeService;
+import org.flowable.engine.TaskService;
+import org.flowable.engine.history.HistoricProcessInstance;
+import org.flowable.engine.runtime.ProcessInstance;
+import org.flowable.task.api.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -613,6 +622,9 @@ public class PersonService {
         return new ResponseBase(200, "查询成功!", persons);
     }
 
+    @Autowired
+    private FlowStaticPageService flowStaticPageService;
+
     public ResponseBase subContract(PersonSubDTO subDTO) {
         if (subDTO.getPerson().getProjectId() <= 0) {
             return new ResponseBase(200, "请输入有效的项目(标段)id!");
@@ -632,6 +644,7 @@ public class PersonService {
         param.addParam("businessKey", businessKey);
         param.addParam("userId", userid);
 
+
         Map<String, Object> maps = Maps.newHashMap();
         if (subDTO.getVariables() != null && !subDTO.getVariables().equals("")) {
             maps.put("detectionUser", subDTO.getVariables());
@@ -640,18 +653,16 @@ public class PersonService {
         HttpHeader header = new HttpHeader();
         header.addParam("token", token);
         //调用接口
-        String response = ZhuJiAPIConfig.createProcess(businessKey, param, header);
-        //接口返回的数据
-        PersonReturnModel returnModel = JSONObject.parseObject(response, PersonReturnModel.class);
-        log.info("returnModel: " + returnModel);
-        if (returnModel.isSuccess()) {
-            //判断该合同是否有主键id,有说明为修改,没有为新增
+        ProcessInstance processInstance = null;
+        try {
+            processInstance = flowStaticPageService.startProcess(processKey, businessKey, userid, maps);
             Integer gid = null;
             //添加填报的基础信息
-            subDTO.getPerson().setStatus(1);
+            subDTO.getPerson().setStatus(0);
             subDTO.getPerson().setOrder(1);
-            subDTO.getPerson().setTaskId(returnModel.getData());
+            subDTO.getPerson().setTaskId(processInstance.getId());
             subDTO.getPerson().setBusinessKey(businessKey);
+            subDTO.getPerson().setCreateUserId(userid);
             personDAO.newContract(subDTO.getPerson());
             gid = personDAO.getInsertId();
 
@@ -660,9 +671,11 @@ public class PersonService {
                 personDAO.addPersonSub(personSub);
             }
 
-            return new ResponseBase(200, "提交成功!", returnModel.getData());
+            return new ResponseBase(200, "提交成功!", processInstance.getId());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return new ResponseBase(200, "提交失败!", returnModel.getErrorCode() + ", " + returnModel.getErrorMessage());
+        return new ResponseBase(200, "提交失败!", "");
     }
 
     public ResponseBase getContractPerson(Integer id) {
@@ -1859,24 +1872,52 @@ public class PersonService {
     }
 
     private Map<String, String> getFlowAndTaskInfo(String businessKey, String token){
-        String post = "/ZhuJiApi/admin/flow/flowStaticPage/getFlowAndTaskInfo";
-        String url = host + post;
-
-        Map<String, Object> params = new WeakHashMap();
-        params.put("businessKey", businessKey);
-
-        String response = HttpUtils.sendGet(url, params, token);
-        JSONObject jsonObject = JSONObject.parseObject(response);
-        String data = jsonObject.getString("data");
-        JSONObject jsonData = JSONObject.parseObject(data);
-        String processDefinitionId = jsonData.getString("processDefinitionId");
-        String processInstanceId = jsonData.getString("processInstanceId");
-        String taskId = jsonData.getString("taskId");
+        ResponseBase flowAndTaskInfo = getFlowAndTaskInfo(businessKey);
+        FlowKeysVo flowKeysVo = (FlowKeysVo)flowAndTaskInfo.getData();
         Map<String, String> maps = new WeakHashMap();
-        maps.put("taskId", taskId);
-        maps.put("processInstanceId", processInstanceId);
-        maps.put("processDefinitionId", processDefinitionId);
+        maps.put("taskId", flowKeysVo.getTaskId());
+        maps.put("processInstanceId", flowKeysVo.getProcessInstanceId());
+        maps.put("processDefinitionId", flowKeysVo.getProcessDefinitionId());
         return maps;
+    }
+
+    @Autowired
+    private TaskService taskService;
+
+    @Autowired
+    private RuntimeService runtimeService;
+
+    @Autowired
+    private HistoryService historyService;
+
+    public ResponseBase getFlowAndTaskInfo(String businessKey) {
+        //返回
+        FlowKeysVo vo = new FlowKeysVo();
+        //先查询正在运行的
+        List<Task> tasks = taskService.createTaskQuery().active().processInstanceBusinessKey(businessKey).list();
+        if (Objects.nonNull(tasks) && !tasks.isEmpty()){
+            Task task = tasks.get(0);
+            if (Objects.nonNull(task)){
+                //查询流程实例信息
+                ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceBusinessKey(businessKey).singleResult();
+                vo.setProcessDefinitionId(processInstance.getProcessDefinitionId());
+                vo.setTaskId(task.getId());
+                vo.setProcessInstanceId(processInstance.getId());
+                return ResponseBase.success(vo);
+            }
+        }
+        //否则查询历史，说明流程已经完成
+        List<HistoricProcessInstance> historicProcessInstances = historyService.createHistoricProcessInstanceQuery()
+                .processInstanceBusinessKey(businessKey).list();
+        if (CollUtil.isNotEmpty(historicProcessInstances)){
+//            #109 审批完成后，工作流审批记录显示不正确问题
+            historicProcessInstances.sort(Comparator.comparing(HistoricProcessInstance::getEndTime).reversed());
+            HistoricProcessInstance historicProcessInstance = historicProcessInstances.get(0);
+            vo.setProcessDefinitionId(historicProcessInstance.getProcessDefinitionId());
+            vo.setTaskId("");
+            vo.setProcessInstanceId(historicProcessInstance.getId());
+        }
+        return ResponseBase.success(vo);
     }
 
     private ProcessListHistoryReturn listHistoricTask(String businessKey, String token) {
@@ -2074,5 +2115,14 @@ public class PersonService {
             roleId = personDAO.getQuanZiRoleId();
         }
         return roleId;
+    }
+
+    public ResponseBase findPersonByPersonId(Integer personId) {
+        PersonDTO personDTO = personDAO.selectByPrimaryKey(personId);
+        List<PersonSub> personSubs = personDAO.getAllPersonSubById(personId);
+        PersonSubDTO personSubDTO = new PersonSubDTO();
+        personSubDTO.setPerson(personDTO);
+        personSubDTO.setPersonSubs(personSubs);
+        return ResponseBase.success(personSubDTO);
     }
 }

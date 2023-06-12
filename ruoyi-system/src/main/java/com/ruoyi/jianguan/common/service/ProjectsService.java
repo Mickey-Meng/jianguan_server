@@ -293,6 +293,8 @@ public class ProjectsService {
             return new ResponseBase(200, "没有查询到数据!");
         }
         // 1.查询项目有关单位信息
+        /*
+            20230612 项目对应给公司信息，暂且从item表里拍平后获取。
         List<Integer> companyids = projectsDAO.getCompanyidsByProjectId(projectId);
         if (companyids.size()==0){
             //没有查到相关的单位信息
@@ -300,7 +302,7 @@ public class ProjectsService {
         } else {
             List<SsFCompany> companys = projectsDAO.getCompnayByIds(companyids);
             maps.put("companys", companys);
-        }
+        }*/
         // 2.查询项目信息
         SsFProjects project = projectsDAO.getProjectById(projectId);
         maps.put("project", project);
@@ -524,6 +526,24 @@ public class ProjectsService {
         String parentCode = ssFUserRoleDAO.getParentCodeByRoleId(role.getParentid());
         maps.put("role", role);
         maps.put("parentCode", parentCode);
+        return new ResponseBase(200, "查询成功!", maps);
+    }
+
+
+    public ResponseBase getRolesByUser(Integer projectId){
+        if (projectId <= 0){
+            return new ResponseBase(200, "请输入有效的项目id!");
+        }
+        Integer count1 = projectsDAO.getCountById(projectId);
+        if (count1 <= 0){
+            return new ResponseBase(200, "该项目id无数据!");
+        }
+        Map<String, Object> maps = Maps.newHashMap();
+        Integer userId = LoginHelper.getUserId().intValue();
+        List<SsFRoles> roles = ssFUserRoleDAO.findRolesByUserid(userId);
+        List<String> parentCodes = ssFUserRoleDAO.findParentCodesByRoleIds(roles);
+        maps.put("role", roles);
+        maps.put("parentCode", parentCodes);
         return new ResponseBase(200, "查询成功!", maps);
     }
 

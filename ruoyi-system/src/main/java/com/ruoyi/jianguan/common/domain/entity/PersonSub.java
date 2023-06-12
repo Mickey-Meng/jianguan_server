@@ -89,6 +89,20 @@ public class PersonSub implements Serializable {
     @ApiModelProperty(value = "人员照片")
     private String peoplePic;
 
+    /**
+     * 状态 0 审批中 1 审批完成 2 驳回
+     */
+    @ApiModelProperty(value = "状态 0 审批中 1 审批完成 2 驳回", required = true)
+    private Integer status;
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
     public Integer getId() {
         return id;
     }

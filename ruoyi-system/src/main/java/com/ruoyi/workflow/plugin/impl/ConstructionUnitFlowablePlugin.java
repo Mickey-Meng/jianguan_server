@@ -1,9 +1,7 @@
 package com.ruoyi.workflow.plugin.impl;
 
-import cn.hutool.core.bean.BeanUtil;
-import com.ruoyi.jianguan.business.contract.domain.entity.ContractPayment;
-import com.ruoyi.jianguan.business.contract.domain.vo.ContractPaymentDetailVo;
-import com.ruoyi.jianguan.business.contract.service.BuildContractService;
+import com.ruoyi.common.core.domain.dto.PersonDTO;
+import com.ruoyi.jianguan.business.contract.dao.PersonDAO;
 import com.ruoyi.jianguan.business.contract.service.ContractPaymentService;
 import com.ruoyi.workflow.plugin.FlowablePlugin;
 import lombok.extern.slf4j.Slf4j;
@@ -14,15 +12,18 @@ import org.springframework.stereotype.Component;
 import java.util.Objects;
 
 /**
- * 施工分包合同工作流插件
+ * 施工单位人员报审工作流插件
  * @author G.X.L
  */
 @Slf4j
-@Component("contractPayment")
-public class ContractPaymentFlowablePlugin implements FlowablePlugin {
+@Component("sgdwhtrybs")
+public class ConstructionUnitFlowablePlugin implements FlowablePlugin {
 
     @Autowired
     private ContractPaymentService contractPaymentService;
+
+    @Autowired
+    private PersonDAO personDAO;
 
 
     @Override
@@ -51,16 +52,12 @@ public class ContractPaymentFlowablePlugin implements FlowablePlugin {
      */
     private void updateStatus(ProcessInstance processInstance, Integer status) {
         String businessKey = processInstance.getBusinessKey();
-
-        ContractPaymentDetailVo contractPaymentDetailVo = contractPaymentService.getInfoById(Long.parseLong(businessKey));
-        log.info("ContractPaymentFlowablePlugin.contractPaymentDetailVo: {}", contractPaymentDetailVo);
-        if (Objects.nonNull(contractPaymentDetailVo)) {
-            contractPaymentDetailVo.setStatus(status);
-            ContractPayment contractPayment = new ContractPayment();
-            BeanUtil.copyProperties(contractPaymentDetailVo, contractPayment, false);
-            //合同信息
-            contractPayment.setAttachment(null);
-            contractPaymentService.updateById(contractPayment);
+        PersonDTO personDTO = personDAO.getByBusinessKey(businessKey);
+        log.info("PersonFlowablePlugin.personDTO: {}", personDTO);
+        if (Objects.nonNull(personDTO)) {
+            personDTO.setStatus(status);
+            personDTO.setHandle(null);
+            personDAO.updateContract(personDTO);
         }
     }
 }

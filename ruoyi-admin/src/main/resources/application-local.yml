@@ -219,3 +219,6 @@ weather:
   url: https://restapi.amap.com/v3/weather/weatherInfo?parameters
   key: 3af235c56530508f7c93b3c40d43f3a8
   location_id: 330681
+
+jianguan:
+  jmreportUrl: "http://150.158.139.18:8088/"

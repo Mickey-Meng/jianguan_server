@@ -67,17 +67,17 @@ public interface SsFUsersDAO extends BaseDaoMapper<SsFUsers> {
     @Select("select * from ss_f_users where id = #{id}")
     SsFUsers checkLoginById(@Param("id") Integer id);
 
-    @Select("SELECT" +
-            "su.user_id AS id," +
-            "su.user_name AS username," +
-            "su.`password` AS pwd," +
-            "su.nick_name AS NAME," +
-            "su.create_time AS sttime," +
+    @Select("SELECT " +
+            "su.user_id AS id, " +
+            "su.user_name AS username, " +
+            "su.`password` AS pwd, " +
+            "su.nick_name AS NAME, " +
+            "su.create_time AS sttime, " +
             "su.`status` AS ststate " +
-            "FROM" +
+            "FROM " +
             "sys_user su " +
-            "WHERE" +
-            "su.user_id  =#{id}")
+            "WHERE " +
+            "su.user_id  =#{id} ")
     String getNameByUserId(@Param("id") Integer id);
 
     /**

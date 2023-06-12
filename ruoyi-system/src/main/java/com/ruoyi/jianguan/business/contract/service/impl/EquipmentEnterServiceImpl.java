@@ -80,12 +80,12 @@ public class EquipmentEnterServiceImpl extends ServiceImpl<EquipmentEnterMapper,
         //属性copy
         EquipmentEnter equipmentEnter = new EquipmentEnter();
         BeanUtils.copyProperties(saveDto, equipmentEnter);
-        //装备信息
-        equipmentEnter.setEquipmentInfo(JSON.toJSONString(saveDto.getEquipmentInfo()));
-        //附件
-        equipmentEnter.setAttachment(JSON.toJSONString(saveDto.getAttachment()));
+
         //装备信息
         List<EquipmentInfo> equipmentInfos = saveDto.getEquipmentInfo();
+
+        //附件
+        equipmentEnter.setAttachment(JSON.toJSONString(saveDto.getAttachment()));
         //新增
         boolean isStartFlow = false;
         if (Objects.isNull(saveDto.getId())) {
@@ -102,7 +102,7 @@ public class EquipmentEnterServiceImpl extends ServiceImpl<EquipmentEnterMapper,
                     equipment.setEnterId(longId);
                 });
                 equipmentInfoService.saveBatch(equipmentInfos);
-            }
+             }
         } else {
             //判断是否是草稿转为正式数据
             EquipmentEnter equipmentEnte = this.getById(saveDto.getId());
@@ -116,6 +116,8 @@ public class EquipmentEnterServiceImpl extends ServiceImpl<EquipmentEnterMapper,
             });
             equipmentInfoService.saveBatch(equipmentInfos);
         }
+        //装备信息 20230612，在设备信息set对应的进场id后，再将整体设备信息set到进场对象。这样，设备对象中就有了进场id字段。
+        equipmentEnter.setEquipmentInfo(JSON.toJSONString(equipmentInfos));
         //保存
         boolean saveOrUpdate = this.saveOrUpdate(equipmentEnter);
 

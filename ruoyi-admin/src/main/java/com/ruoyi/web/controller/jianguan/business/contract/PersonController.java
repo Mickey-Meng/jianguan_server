@@ -339,4 +339,11 @@ public class PersonController {
     public ResponseBase getPerson(@RequestParam(value = "projectId", required = true, defaultValue = "0")Integer projectId){
         return personService.getPerson(projectId);
     }
+
+    @ResponseBody
+    @PostMapping("/getPersonDetail")
+    @ApiOperation(value = "查询人员申报详情")
+    public ResponseBase getPersonDetail(@RequestParam(value = "personId", required = true,  defaultValue = "0")Integer personId){
+        return personService.findPersonByPersonId(personId);
+    }
 }
