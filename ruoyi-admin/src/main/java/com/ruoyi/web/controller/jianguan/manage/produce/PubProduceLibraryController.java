@@ -121,7 +121,15 @@ public class PubProduceLibraryController extends BaseController {
     @Log(title = "工序库" , businessType = BusinessType.DELETE)
     @DeleteMapping("/{ids}")
     public R<Void> remove(@NotEmpty(message = "主键不能为空")
-                          @PathVariable Integer[] ids) {
+                          @PathVariable Long[] ids) {
         return toAjax(iPubProduceLibraryService.deleteWithValidByIds(Arrays.asList(ids), true) ? 1 : 0);
+    }
+
+    @SaCheckPermission("jg:produceLibrary:add")
+    @Log(title = "复制工序库" , businessType = BusinessType.INSERT)
+    @RepeatSubmit()
+    @PostMapping("/copy")
+    public R<Void> copy(@Validated(AddGroup.class) @RequestBody PubProduceLibraryBo bo) {
+        return toAjax(iPubProduceLibraryService.copyProduceLibrary(bo));
     }
 }

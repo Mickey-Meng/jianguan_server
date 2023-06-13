@@ -56,18 +56,6 @@ public class PubProduceLibraryVo {
     private String code;
 
     /**
-     * 父级工序
-     */
-    @ExcelProperty(value = "父级工序")
-    @ApiModelProperty(value = "父级工序", required = true)
-    private Long parentId;
-    /**
-     * 分组级别
-     */
-    @ExcelProperty(value = "分组级别")
-    @ApiModelProperty(value = "分组级别", required = true)
-    private Integer groupLevel;
-    /**
      * 排序
      */
     @ExcelProperty(value = "排序")

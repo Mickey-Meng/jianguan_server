@@ -42,14 +42,6 @@ public class PubProduceLibrary extends BaseEntity {
     private String code;
 
     /**
-     * 父级工序
-     */
-    private Long parentId;
-    /**
-     * 级别
-     */
-    private Integer groupLevel;
-    /**
      * 排序
      */
     private Integer orderNum;

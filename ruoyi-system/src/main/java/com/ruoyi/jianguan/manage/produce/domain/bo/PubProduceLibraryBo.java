@@ -45,15 +45,6 @@ public class PubProduceLibraryBo extends BaseEntity {
     private String code;
 
     /**
-     * 父级工序
-     */
-    @NotNull(message = "父级工序不能为空", groups = { AddGroup.class, EditGroup.class })
-    private Long parentId;
-    /**
-     * 级别
-     */
-    private Integer groupLevel;
-    /**
      * 排序
      */
     private Integer orderNum;

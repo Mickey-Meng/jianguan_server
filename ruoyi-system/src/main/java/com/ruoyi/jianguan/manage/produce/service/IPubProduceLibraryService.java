@@ -45,7 +45,7 @@ public interface IPubProduceLibraryService {
     /**
      * 校验并批量删除工序库信息
      */
-    Boolean deleteWithValidByIds(Collection<Integer> ids, Boolean isValid);
+    Boolean deleteWithValidByIds(Collection<Long> ids, Boolean isValid);
 
     /**
      * 校验主键是否唯一工序库信息
@@ -53,4 +53,11 @@ public interface IPubProduceLibraryService {
     Boolean checkUniqueByPrimaryKey(Integer id);
 
     List<Tree<Long>> getProduceLibraryTree(PubProduceLibraryBo bo);
+
+    /**
+     * 复制工序库
+     * @param bo
+     * @return
+     */
+    Boolean copyProduceLibrary(PubProduceLibraryBo bo);
 }
