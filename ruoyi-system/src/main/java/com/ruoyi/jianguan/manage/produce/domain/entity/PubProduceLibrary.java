@@ -28,10 +28,7 @@ public class PubProduceLibrary extends BaseEntity {
      */
     @TableId(value = "id")
     private Long id;
-    /**
-     * 项目id
-     */
-    private String projectId;
+
     /**
      * 工序库名称
      */

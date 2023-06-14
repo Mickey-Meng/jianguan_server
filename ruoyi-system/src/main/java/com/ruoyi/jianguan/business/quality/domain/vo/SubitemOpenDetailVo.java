@@ -90,6 +90,25 @@ public class SubitemOpenDetailVo extends NewBaseEntity {
     @ApiModelProperty(value = "质检员")
     private Integer checkUser;
 
+    /**
+     * 现场负责人
+     */
+    @ApiModelProperty(value = "现场负责人名称")
+    private String liveUserName;
+
+
+    /**
+     * 施工员
+     */
+    @ApiModelProperty(value = "施工员名称")
+    private String buildUserName;
+
+
+    /**
+     * 质检员
+     */
+    @ApiModelProperty(value = "质检员名称")
+    private String checkUserName;
 
     /**
      * 施工准备情况说明

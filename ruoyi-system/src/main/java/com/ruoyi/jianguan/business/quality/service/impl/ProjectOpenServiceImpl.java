@@ -1,6 +1,7 @@
 package com.ruoyi.jianguan.business.quality.service.impl;
 
 import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.util.ObjUtil;
 import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
 import com.alibaba.fastjson.JSON;
@@ -85,8 +86,11 @@ public class ProjectOpenServiceImpl extends ServiceImpl<ProjectOpenMapper, Proje
                 isStartFlow = true;
             }
         }
+        // 编辑操作不修改审批状态
+        if(ObjUtil.isNull(saveDto.getId())) {
+            projectOpen.setStatus(0);
+        }
         //保存
-        projectOpen.setStatus(0);
         boolean saveOrUpdate = this.saveOrUpdate(projectOpen);
         //保存成功且新增
         if (saveOrUpdate && isStartFlow) {

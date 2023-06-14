@@ -62,8 +62,8 @@ public class PubProduceServiceImpl implements IPubProduceService {
         lqw.eq(!Objects.isNull(bo.getComponentTypeId()), PubProduce::getComponentTypeId, bo.getComponentTypeId());
         lqw.eq(StringUtils.isNotBlank(bo.getComponentTypeCode()), PubProduce::getComponentTypeCode, bo.getComponentTypeCode());
         lqw.like(StringUtils.isNotBlank(bo.getName()), PubProduce::getName, bo.getName());
-        lqw.eq(bo.getRangee() != null, PubProduce::getRangee, bo.getRangee());
-        lqw.eq(bo.getIsvaild() != null, PubProduce::getIsvaild, bo.getIsvaild());
+        lqw.eq(bo.getOrderNum() != null, PubProduce::getOrderNum, bo.getOrderNum());
+        lqw.eq(bo.getIsEffect() != null, PubProduce::getIsEffect, bo.getIsEffect());
         return lqw;
     }
 

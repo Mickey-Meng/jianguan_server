@@ -82,11 +82,16 @@ public class DataDictionaryController extends BaseController {
         return R.ok(dataDictionaryService.queryById(id));
     }
 
+    @GetMapping("/code/{code}")
+    public R<DataDictionaryVo> getInfoByCode(@PathVariable String code) {
+        return R.ok(dataDictionaryService.queryByCode(code));
+    }
+
     /**
-     * 新增商品类别
+     * 新增数据字典
      */
     @SaCheckPermission("dataDictionary:dataDictionary:add")
-    @Log(title = "商品类别", businessType = BusinessType.INSERT)
+    @Log(title = "新增数据字典", businessType = BusinessType.INSERT)
     @RepeatSubmit()
     @PostMapping()
     public R<Void> add(@Validated(AddGroup.class) @RequestBody DataDictionaryBo bo) {

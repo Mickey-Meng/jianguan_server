@@ -1,6 +1,8 @@
 package com.ruoyi.jianguan.manage.produce.domain.entity;
 
+import com.alibaba.excel.annotation.ExcelProperty;
 import com.baomidou.mybatisplus.annotation.*;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import java.io.Serializable;
@@ -40,14 +42,19 @@ public class PubProduce extends BaseEntity {
      * 工序名称
      */
     private String name;
+
     /**
-     * 
+     * 工序顺序
      */
-    private Integer rangee;
+    @TableField("rangee")
+    private Integer orderNum;
+
     /**
-     * 
+     * 是否有效
      */
-    private Integer isvaild;
+    @TableField("isvaild")
+    private Integer isEffect;
+
     /**
      * 备注
      */

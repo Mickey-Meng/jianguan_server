@@ -33,7 +33,7 @@ public class ConsultingUnitFlowablePlugin implements FlowablePlugin {
 
     @Override
     public void apply(ProcessInstance processInstance) {
-
+        updateStatus(processInstance, 0);
     }
 
     @Override

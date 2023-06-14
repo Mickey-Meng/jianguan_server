@@ -1,6 +1,7 @@
 package com.ruoyi.jianguan.business.quality.service.impl;
 
 import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.util.ObjUtil;
 import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
 import com.alibaba.fastjson.JSON;
@@ -88,8 +89,11 @@ public class SupervisionSideServiceImpl extends ServiceImpl<SupervisionSideMappe
                 isStartFlow = true;
             }
         }
+        // 编辑操作不修改审批状态
+        if(ObjUtil.isNull(saveDto.getId())) {
+            supervisionSide.setStatus(0);
+        }
         //保存
-        supervisionSide.setStatus(0);
         boolean saveOrUpdate = this.saveOrUpdate(supervisionSide);
         //新增且保存成功
         if (saveOrUpdate && isStartFlow) {

@@ -28,11 +28,6 @@ public class PubProduceLibraryBo extends BaseEntity {
     private Long id;
 
     /**
-     * 项目id
-     */
-    private String projectId;
-
-    /**
      * 工序库名称
      */
     @NotBlank(message = "工序库名称不能为空", groups = { AddGroup.class, EditGroup.class })

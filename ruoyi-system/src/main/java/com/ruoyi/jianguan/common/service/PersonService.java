@@ -1,9 +1,11 @@
 package com.ruoyi.jianguan.common.service;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.ruoyi.common.config.zjrw.ZhuJiAPIConfig;
@@ -17,9 +19,12 @@ import com.ruoyi.common.core.domain.model.SsFUserRole;
 import com.ruoyi.common.core.domain.model.ZjPersonChange;
 import com.ruoyi.common.core.domain.model.ZjPersonChangeFile;
 import com.ruoyi.common.core.domain.model.ZjPersonLeave;
+import com.ruoyi.common.core.domain.object.MyPageParam;
 import com.ruoyi.common.core.domain.object.ResponseBase;
 import com.ruoyi.common.helper.LoginHelper;
 import com.ruoyi.flowable.domain.vo.FlowKeysVo;
+import com.ruoyi.flowable.domain.vo.FlowTaskVo;
+import com.ruoyi.flowable.service.FlowApiService;
 import com.ruoyi.flowable.service.FlowStaticPageService;
 import com.ruoyi.jianguan.common.dao.*;
 import com.ruoyi.jianguan.common.domain.dto.PersonGroupTree;
@@ -48,6 +53,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -315,7 +321,7 @@ public class PersonService {
         }
         Integer userId = LoginHelper.getUserId().intValue();
         List<PersonSubDTO> personSubDTOS = Lists.newArrayList();
-        List<PersonDTO> persons = personDAO.getAllPersonByUserid(userId);
+        List<PersonDTO> persons = personDAO.getAllPersonByUseridAndProjectId(userId, projectId);
 
         //调用接口获取数据
         String token = getRequest().getHeader("Authorization");// 从 http 请求头中取出 token
@@ -653,25 +659,37 @@ public class PersonService {
         HttpHeader header = new HttpHeader();
         header.addParam("token", token);
         //调用接口
-        ProcessInstance processInstance = null;
         try {
-            processInstance = flowStaticPageService.startProcess(processKey, businessKey, userid, maps);
             Integer gid = null;
-            //添加填报的基础信息
-            subDTO.getPerson().setStatus(0);
-            subDTO.getPerson().setOrder(1);
-            subDTO.getPerson().setTaskId(processInstance.getId());
-            subDTO.getPerson().setBusinessKey(businessKey);
-            subDTO.getPerson().setCreateUserId(userid);
-            personDAO.newContract(subDTO.getPerson());
-            gid = personDAO.getInsertId();
+            if(ObjectUtil.isNull(subDTO.getPerson().getId())) {
 
+                ProcessInstance processInstance = flowStaticPageService.startProcess(processKey, businessKey, userid, maps);
+
+                //添加填报的基础信息
+                subDTO.getPerson().setOrder(1);
+                subDTO.getPerson().setTaskId(processInstance.getId());
+                subDTO.getPerson().setBusinessKey(businessKey);
+                subDTO.getPerson().setCreateUserId(userid);
+                subDTO.getPerson().setStatus(0);
+                subDTO.getPerson().setCreateUserId(userid);
+                subDTO.getPerson().setCreateTime(new Date());
+                personDAO.newContract(subDTO.getPerson());
+                gid = personDAO.getInsertId();
+            } else {
+                subDTO.getPerson().setUpdateUserId(userid);
+                subDTO.getPerson().setUpdateTime(new Date());
+                personDAO.updateContract(subDTO.getPerson());
+                gid = subDTO.getPerson().getId();
+            }
+
+            personDAO.delPersonSubByGid(gid);
             for (PersonSub personSub : subDTO.getPersonSubs()) {
+                personSub.setId(null);
                 personSub.setGid(gid);
                 personDAO.addPersonSub(personSub);
             }
 
-            return new ResponseBase(200, "提交成功!", processInstance.getId());
+            return new ResponseBase(200, "提交成功!", subDTO.getPerson().getTaskId());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -2120,6 +2138,15 @@ public class PersonService {
     public ResponseBase findPersonByPersonId(Integer personId) {
         PersonDTO personDTO = personDAO.selectByPrimaryKey(personId);
         List<PersonSub> personSubs = personDAO.getAllPersonSubById(personId);
+        PersonSubDTO personSubDTO = new PersonSubDTO();
+        personSubDTO.setPerson(personDTO);
+        personSubDTO.setPersonSubs(personSubs);
+        return ResponseBase.success(personSubDTO);
+    }
+
+    public ResponseBase findPersonByBusinessKey(String businessKey) {
+        PersonDTO personDTO = personDAO.findPersonByBusinessKey(businessKey);
+        List<PersonSub> personSubs = personDAO.getAllPersonSubById(personDTO.getId());
         PersonSubDTO personSubDTO = new PersonSubDTO();
         personSubDTO.setPerson(personDTO);
         personSubDTO.setPersonSubs(personSubs);

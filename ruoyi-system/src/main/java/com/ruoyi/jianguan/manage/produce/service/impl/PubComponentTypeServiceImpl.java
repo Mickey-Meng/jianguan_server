@@ -1,6 +1,7 @@
 package com.ruoyi.jianguan.manage.produce.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollectionUtil;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.core.domain.PageQuery;
@@ -9,8 +10,10 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.ruoyi.jianguan.manage.produce.domain.bo.PubComponentTypeBo;
 import com.ruoyi.jianguan.manage.produce.domain.entity.PubComponentType;
+import com.ruoyi.jianguan.manage.produce.domain.entity.PubProduce;
 import com.ruoyi.jianguan.manage.produce.domain.vo.PubComponentTypeVo;
 import com.ruoyi.jianguan.manage.produce.mapper.PubComponentTypeMapper;
+import com.ruoyi.jianguan.manage.produce.mapper.PubProduceMapper;
 import com.ruoyi.jianguan.manage.produce.service.IPubComponentTypeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -31,6 +34,7 @@ import java.util.Objects;
 public class PubComponentTypeServiceImpl implements IPubComponentTypeService {
 
     private final PubComponentTypeMapper baseMapper;
+    private final PubProduceMapper pubProduceMapper;
 
     /**
      * 查询构建类型
@@ -106,6 +110,10 @@ public class PubComponentTypeServiceImpl implements IPubComponentTypeService {
     public Boolean deleteWithValidByIds(Collection<Integer> ids, Boolean isValid) {
         if(isValid){
             //TODO 做一些业务上的校验,判断是否需要校验
+            LambdaQueryWrapper<PubProduce> lqw = new LambdaQueryWrapper<>();
+            lqw.in(CollectionUtil.isNotEmpty(ids), PubProduce::getComponentTypeId, ids);
+            // 删除构建类型关联的工序数据
+            pubProduceMapper.delete(lqw);
         }
         return baseMapper.deleteBatchIds(ids) > 0;
     }

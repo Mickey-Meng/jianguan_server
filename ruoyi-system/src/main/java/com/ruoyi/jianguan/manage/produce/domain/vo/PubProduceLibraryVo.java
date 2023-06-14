@@ -35,13 +35,6 @@ public class PubProduceLibraryVo {
     private Long id;
 
     /**
-     * 项目id
-     */
-    @ExcelProperty(value = "项目id")
-    @ApiModelProperty(value = "项目id", required = true)
-    private String projectId;
-
-    /**
      * 工序库名称
      */
     @ExcelProperty(value = "工序库名称")

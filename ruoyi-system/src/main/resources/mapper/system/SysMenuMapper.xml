@@ -39,7 +39,7 @@
         ${ew.getCustomSqlSegment}
     </select>
 
-    <select id="selectMenuTreeByUserId" parameterType="Long" resultMap="SysMenuResult">
+    <select id="selectMenuTreeByUserId"   resultMap="SysMenuResult">
         select distinct m.menu_id,
                         m.parent_id,
                         m.menu_name,

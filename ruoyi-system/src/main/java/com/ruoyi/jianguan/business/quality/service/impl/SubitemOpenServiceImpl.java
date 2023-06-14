@@ -1,12 +1,14 @@
 package com.ruoyi.jianguan.business.quality.service.impl;
 
 import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.util.ObjUtil;
 import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.enums.BimFlowKey;
 import com.ruoyi.jianguan.business.quality.domain.dto.SubitemOpenPageDTO;
 import com.ruoyi.jianguan.business.quality.domain.dto.SubitemOpenSaveDTO;
@@ -25,6 +27,7 @@ import com.ruoyi.flowable.service.FlowStaticPageService;
 import com.ruoyi.common.core.sequence.util.IdUtil;
 import com.ruoyi.jianguan.manage.project.domain.vo.JgProjectItemVo;
 import com.ruoyi.jianguan.manage.project.service.IJgProjectItemService;
+import com.ruoyi.system.service.ISysUserService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -53,7 +56,11 @@ public class SubitemOpenServiceImpl extends ServiceImpl<SubitemOpenMapper, Subit
     private ZjFGroupsProjectsService projectsService;
     @Autowired
     private FlowStaticPageService flowStaticPageService;
+    @Autowired
     private IJgProjectItemService jgProjectItemService;
+    @Autowired
+    private  ISysUserService userService;
+
     /**
      * 新增或者更新分项开工申请数据
      *
@@ -103,8 +110,10 @@ public class SubitemOpenServiceImpl extends ServiceImpl<SubitemOpenMapper, Subit
                 isStartFlow = true;
             }
         }
-        //保存
-        subitemOpen.setStatus(0);
+        // 编辑操作不修改审批状态
+        if(ObjUtil.isNull(saveDto.getId())) {
+            subitemOpen.setStatus(0);
+        }
         boolean saveOrUpdate = this.saveOrUpdate(subitemOpen);
         //新增且保存成功
         if (saveOrUpdate && isStartFlow) {
@@ -144,9 +153,17 @@ public class SubitemOpenServiceImpl extends ServiceImpl<SubitemOpenMapper, Subit
         if (Objects.isNull(subitemOpen)) {
             return null;
         }
+        SysUser liveUser = userService.selectUserById(subitemOpen.getLiveUser().longValue());
+        SysUser buildUser = userService.selectUserById(subitemOpen.getBuildUser().longValue());
+        SysUser checkUser = userService.selectUserById(subitemOpen.getCheckUser().longValue());
+
         //属性copy
         SubitemOpenDetailVo vo = new SubitemOpenDetailVo();
         BeanUtils.copyProperties(subitemOpen, vo);
+        vo.setLiveUserName(liveUser.getNickName());
+        vo.setBuildUserName(buildUser.getNickName());
+        vo.setCheckUserName(checkUser.getNickName());
+
         //标准试验审批表附件
         vo.setExperimentAttachment(JSONArray.parseArray(subitemOpen.getExperimentAttachment(), FileModel.class));
         //专项施工方案审批表附件
@@ -184,7 +201,7 @@ public class SubitemOpenServiceImpl extends ServiceImpl<SubitemOpenMapper, Subit
         PageHelper.startPage(pageDto.getPageNum(), pageDto.getPageSize());
         List<SubitemOpenPageVo> pageVoList = subitemOpenMapper.getPageInfo(pageDto);
         //非空
-        JgProjectItemVo jgProjectItemVo = jgProjectItemService.queryById(pageDto.getProjectId().longValue()) ;
+        JgProjectItemVo jgProjectItemVo = jgProjectItemService.queryById(pageDto.getBuildSection().longValue()) ;
         String constructDept = jgProjectItemVo.getConstructDept();
         if (Objects.nonNull(pageVoList) && !pageVoList.isEmpty()) {
 //            CompanyInfo companyInfo = projectsService.getCompanyInfoByProjectId(pageDto.getProjectId());

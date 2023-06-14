@@ -74,8 +74,11 @@ public interface PersonDAO {
     @Select("select * from zj_person where projectId = #{projectId} order by subDate desc")
     List<PersonDTO> getAllPersonByProjectId(@Param("projectId")Integer projectId);
 
-    @Select("select *, create_user_id as createUserId from zj_person where recordId = #{userid} order by subDate desc")
+    @Select("select *, create_user_id as createUserId from zj_person where recordId = #{userid} order by create_time desc")
     List<PersonDTO> getAllPersonByUserid(@Param("userid") Integer userid);
+
+    @Select("select *, create_user_id as createUserId from zj_person where recordId = #{userid} and projectId = #{projectId} order by create_time desc")
+    List<PersonDTO> getAllPersonByUseridAndProjectId(@Param("userid") Integer userid, @Param("projectId") Integer projectId);
 
     @Select("select * from zj_person where handle = #{userid}")
     List<PersonDTO> getAllVerifyPersonByUserid(@Param("userid") Integer userid);
@@ -94,6 +97,12 @@ public interface PersonDAO {
 
     @Select("select * from zj_person_people_sub where gid = #{gid}")
     List<PersonSub> getAllPersonSubById(@Param("gid")Integer gid);
+
+
+    @Select("select * from zj_person where businessKey = #{businessKey}")
+    PersonDTO findPersonByBusinessKey(@Param("businessKey")String  businessKey);
+
+
 
     @Select("select a.* from ss_f_roles a left join ss_f_user_role b " +
             "on a.id = b.roleid where b.userid = #{userid}")

@@ -346,4 +346,12 @@ public class PersonController {
     public ResponseBase getPersonDetail(@RequestParam(value = "personId", required = true,  defaultValue = "0")Integer personId){
         return personService.findPersonByPersonId(personId);
     }
+
+    @ResponseBody
+    @PostMapping("/findPersonByBusinessKey")
+    @ApiOperation(value = "查询人员申报详情")
+    public ResponseBase findPersonByBusinessKey(@RequestParam(value = "businessKey")String businessKey){
+        return personService.findPersonByBusinessKey(businessKey);
+    }
+
 }

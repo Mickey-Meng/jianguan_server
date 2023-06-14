@@ -1,5 +1,6 @@
 package com.ruoyi.jianguan.business.contract.service.impl;
 
+import cn.hutool.core.util.ObjUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -57,10 +58,12 @@ public class ContractPaymentServiceImpl extends ServiceImpl<ContractPaymentMappe
             isStartFlow = true;
             contractPayment.setId(IdUtil.nextLongId());
         }
-        // 初始化审批状态：审批中
-        contractPayment.setStatus(0);
         //附件
         contractPayment.setAttachment(JSON.toJSONString(saveDto.getAttachment()));
+        // 编辑操作不修改审批状态
+        if(ObjUtil.isNull(saveDto.getId())) {
+            contractPayment.setStatus(0);
+        }
         boolean saveOrUpdate = this.saveOrUpdate(contractPayment);
         if (saveOrUpdate && isStartFlow) {
             String processDefinitionKey = BimFlowKey.contractPayment.getName();

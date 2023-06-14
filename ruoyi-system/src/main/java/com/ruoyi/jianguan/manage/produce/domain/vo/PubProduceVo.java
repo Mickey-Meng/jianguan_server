@@ -56,18 +56,18 @@ public class PubProduceVo {
     private String name;
 
     /**
-     * 
+     * 工序顺序
      */
-    @ExcelProperty(value = "")
-    @ApiModelProperty(value = "", required = true)
-    private Long rangee;
+    @ExcelProperty(value = "工序顺序")
+    @ApiModelProperty(value = "工序顺序", required = true)
+    private Integer orderNum;
 
     /**
      * 
      */
-    @ExcelProperty(value = "")
-    @ApiModelProperty(value = "", required = true)
-    private Long isvaild;
+    @ExcelProperty(value = "是否有效")
+    @ApiModelProperty(value = "是否有效", required = true)
+    private Integer isEffect;
 
     /**
      * 备注

@@ -1,6 +1,7 @@
 package com.ruoyi.jianguan.business.contract.service.impl;
 
 import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.util.ObjUtil;
 import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
 import com.alibaba.fastjson.JSONObject;
@@ -100,8 +101,11 @@ public class EnterExitServiceImpl extends ServiceImpl<EnterExitMapper, EnterExit
                 isStartFlow = true;
             }
         }
+        // 编辑操作不修改审批状态
+        if(ObjUtil.isNull(saveDto.getId())) {
+            enterExit.setStatus(0);
+        }
         //保存进退场记录
-        enterExit.setStatus(0);
         boolean saveOrUpdate = this.saveOrUpdate(enterExit);
         //保存人员清单
         List<EnterExitUser> enterExitUsers = saveDto.getEnterExitUsers();

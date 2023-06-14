@@ -1,6 +1,7 @@
 package com.ruoyi.jianguan.business.quality.service.impl;
 
 import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.util.ObjUtil;
 import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
 import com.alibaba.fastjson.JSONObject;
@@ -75,8 +76,11 @@ public class SupervisionNoticeServiceImpl extends ServiceImpl<SupervisionNoticeM
                 isStartFlow = true;
             }
         }
+        // 编辑操作不修改审批状态
+        if(ObjUtil.isNull(saveDto.getId())) {
+            notice.setStatus(0);
+        }
         //保存
-        notice.setStatus(0);
         boolean saveOrUpdate = this.saveOrUpdate(notice);
         //新增且保存成功
         if (saveOrUpdate && isStartFlow) {

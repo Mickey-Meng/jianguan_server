@@ -36,6 +36,13 @@ public class DataDictionaryServiceImpl implements IDataDictionaryService {
         return baseMapper.selectVoById(id);
     }
 
+    @Override
+    public DataDictionaryVo queryByCode(String code) {
+        DataDictionary dataDictionary = new DataDictionary();
+        dataDictionary.setCode(code);
+        return baseMapper.selectVoOne(Wrappers.lambdaQuery(dataDictionary));
+    }
+
 
     /**
      * 查询商品类别列表

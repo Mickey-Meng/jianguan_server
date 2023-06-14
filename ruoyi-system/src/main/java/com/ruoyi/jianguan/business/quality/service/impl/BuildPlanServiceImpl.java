@@ -1,6 +1,7 @@
 package com.ruoyi.jianguan.business.quality.service.impl;
 
 import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.util.ObjUtil;
 import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
 import com.alibaba.fastjson.JSON;
@@ -88,7 +89,10 @@ public class BuildPlanServiceImpl extends ServiceImpl<BuildPlanMapper, BuildPlan
                 isStartFlow = true;
             }
         }
-        buildPlan.setStatus(0);
+        // 编辑操作不修改审批状态
+        if(ObjUtil.isNull(saveDto.getId())) {
+            buildPlan.setStatus(0);
+        }
         boolean saveOrUpdate = this.saveOrUpdate(buildPlan);
         //保存成功且是新增
         if (saveOrUpdate && isStartFlow) {

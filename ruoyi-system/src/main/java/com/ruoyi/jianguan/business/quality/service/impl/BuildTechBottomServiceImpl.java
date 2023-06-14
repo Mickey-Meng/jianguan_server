@@ -1,6 +1,7 @@
 package com.ruoyi.jianguan.business.quality.service.impl;
 
 import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.util.ObjUtil;
 import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
 import com.alibaba.fastjson.JSON;
@@ -96,8 +97,11 @@ public class BuildTechBottomServiceImpl extends ServiceImpl<BuildTechBottomMappe
                 isStartFlow = true;
             }
         }
+        // 编辑操作不修改审批状态
+        if(ObjUtil.isNull(saveDto.getId())) {
+            buildTechBottom.setStatus(0);
+        }
         //保存
-        buildTechBottom.setStatus(0);
         boolean saveOrUpdate = this.saveOrUpdate(buildTechBottom);
         //保存成功且新增，发起流程
         if (saveOrUpdate && isStartFlow) {

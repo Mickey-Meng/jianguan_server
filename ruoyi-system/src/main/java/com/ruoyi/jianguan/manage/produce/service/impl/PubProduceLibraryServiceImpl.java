@@ -74,7 +74,6 @@ public class PubProduceLibraryServiceImpl implements IPubProduceLibraryService {
     private LambdaQueryWrapper<PubProduceLibrary> buildQueryWrapper(PubProduceLibraryBo bo) {
         Map<String, Object> params = bo.getParams();
         LambdaQueryWrapper<PubProduceLibrary> lqw = Wrappers.lambdaQuery();
-        lqw.eq(StringUtils.isNotBlank(bo.getProjectId()), PubProduceLibrary::getProjectId, bo.getProjectId());
         lqw.like(StringUtils.isNotBlank(bo.getName()), PubProduceLibrary::getName, bo.getName());
         lqw.eq(StringUtils.isNotBlank(bo.getCode()), PubProduceLibrary::getCode, bo.getCode());
         return lqw;

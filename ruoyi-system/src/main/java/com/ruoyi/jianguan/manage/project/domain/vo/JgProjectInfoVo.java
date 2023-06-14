@@ -175,6 +175,13 @@ public class JgProjectInfoVo {
     private String mapUrl;
 
     /**
+     * 工序库id
+     */
+    @ExcelProperty(value = "工序库")
+    @ApiModelProperty(value = "工序库", required = true)
+    private Long libraryId;
+
+    /**
      * 备注
      */
     @ExcelProperty(value = "备注")

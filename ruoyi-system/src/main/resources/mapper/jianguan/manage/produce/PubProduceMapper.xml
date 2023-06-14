@@ -9,8 +9,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="componentTypeId" column="component_type_id"/>
         <result property="componentTypeCode" column="component_type_code"/>
         <result property="name" column="name"/>
-        <result property="rangee" column="rangee"/>
-        <result property="isvaild" column="isvaild"/>
+        <result property="orderNum" column="rangee"/>
+        <result property="isEffect" column="isvaild"/>
         <result property="remark" column="remark"/>
         <result property="createBy" column="create_by"/>
         <result property="createTime" column="create_time"/>

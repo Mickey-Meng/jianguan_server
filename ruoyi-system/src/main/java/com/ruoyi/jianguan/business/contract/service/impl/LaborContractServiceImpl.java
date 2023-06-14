@@ -1,6 +1,7 @@
 package com.ruoyi.jianguan.business.contract.service.impl;
 
 import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.util.ObjUtil;
 import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
 import com.alibaba.fastjson.JSON;
@@ -79,7 +80,6 @@ public class LaborContractServiceImpl extends ServiceImpl<LaborContractMapper, L
         laborContract.setAttachment(JSON.toJSONString(saveDto.getAttachment()));
         //信息填报
         laborContract.setInformation(JSON.toJSONString(saveDto.getInformation()));
-        laborContract.setStatus(0);
         //新增
         boolean isStartFlow = false;
         if (Objects.isNull(saveDto.getId())) {
@@ -94,6 +94,10 @@ public class LaborContractServiceImpl extends ServiceImpl<LaborContractMapper, L
             if (laborContrac.getDraftFlag() == 0 && saveDto.getDraftFlag() == 1) {
                 isStartFlow = true;
             }
+        }
+        // 编辑操作不修改审批状态
+        if(ObjUtil.isNull(saveDto.getId())) {
+            laborContract.setStatus(0);
         }
         boolean saveOrUpdate = this.saveOrUpdate(laborContract);
         //保存成功且新增

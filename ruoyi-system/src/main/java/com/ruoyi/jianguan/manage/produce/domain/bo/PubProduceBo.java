@@ -44,16 +44,16 @@ public class PubProduceBo extends BaseEntity {
     private String name;
 
     /**
-     * 
+     * 工序顺序
      */
     @NotNull(message = "不能为空", groups = { AddGroup.class, EditGroup.class })
-    private Long rangee;
+    private Integer orderNum;
 
     /**
-     * 
+     * 是否有效
      */
     @NotNull(message = "不能为空", groups = { AddGroup.class, EditGroup.class })
-    private Long isvaild;
+    private Integer isEffect;
 
     /**
      * 备注

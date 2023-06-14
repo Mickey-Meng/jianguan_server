@@ -1,6 +1,7 @@
 package com.ruoyi.jianguan.business.contract.service.impl;
 
 import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.util.ObjUtil;
 import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
 import com.alibaba.fastjson.JSON;
@@ -79,7 +80,6 @@ public class EquipmentExitServiceImpl extends ServiceImpl<EquipmentExitMapper, E
         //设备信息
         equipmentExit.setEquipmentInfo(JSON.toJSONString(saveDto.getEquipmentInfo()));
         equipmentExit.setAttachment(JSON.toJSONString(saveDto.getAttachment()));
-        equipmentExit.setStatus(0);
         List<EquipmentInfo> equipmentInfos = saveDto.getEquipmentInfo();
         //新增
         boolean isStartFlow = false;
@@ -111,7 +111,10 @@ public class EquipmentExitServiceImpl extends ServiceImpl<EquipmentExitMapper, E
                 isStartFlow = true;
             }
         }
-        //保存
+        // 编辑操作不修改审批状态
+        if(ObjUtil.isNull(saveDto.getId())) {
+            equipmentExit.setStatus(0);
+        }
         boolean saveOrUpdate = this.saveOrUpdate(equipmentExit);
         //新增成功
         if (saveOrUpdate && isStartFlow) {

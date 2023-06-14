@@ -55,8 +55,8 @@ public class PubProduceLibraryController extends BaseController {
     public R<List<Tree<Long>>> treeData(PubProduceLibraryBo bo) {
         return R.ok(iPubProduceLibraryService.getProduceLibraryTree(bo));
     }
-    
-    
+
+
     /**
      * 分页查询工序库列表
      */
@@ -86,7 +86,7 @@ public class PubProduceLibraryController extends BaseController {
     @SaCheckPermission("jg:produceLibrary:query")
     @GetMapping("/{id}")
     public R<PubProduceLibraryVo> getInfo(@NotNull(message = "主键不能为空")
-                                     @PathVariable Integer id) {
+                                          @PathVariable Integer id) {
         return R.ok(iPubProduceLibraryService.queryById(id));
     }
 

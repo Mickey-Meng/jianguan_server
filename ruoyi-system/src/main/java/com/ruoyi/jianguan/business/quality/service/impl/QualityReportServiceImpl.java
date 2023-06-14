@@ -1,6 +1,7 @@
 package com.ruoyi.jianguan.business.quality.service.impl;
 
 import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.util.ObjUtil;
 import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
 import com.alibaba.fastjson.JSON;
@@ -67,7 +68,7 @@ public class QualityReportServiceImpl extends ServiceImpl<QualityReportMapper, Q
         qualityReport.setReplyPhotoAttachment(JSON.toJSONString(saveDto.getReplyPhotoAttachment()));
         //新增
         boolean isStartFlow = false;
-        qualityReport.setStatus(0);
+
         if (Objects.isNull(saveDto.getId())) {
             qualityReport.setId(IdUtil.nextLongId());
             //判断是否是草稿
@@ -80,6 +81,10 @@ public class QualityReportServiceImpl extends ServiceImpl<QualityReportMapper, Q
             if (qualityRepor.getDraftFlag() == 0 && saveDto.getDraftFlag() == 1) {
                 isStartFlow = true;
             }
+        }
+        // 编辑操作不修改审批状态
+        if(ObjUtil.isNull(saveDto.getId())) {
+            qualityReport.setStatus(0);
         }
         //保存
         boolean saveOrUpdate = this.saveOrUpdate(qualityReport);

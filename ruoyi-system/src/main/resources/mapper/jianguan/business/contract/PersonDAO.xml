@@ -51,10 +51,11 @@
   </update>
 
   <insert id="newContract" parameterType="com.ruoyi.common.core.domain.dto.PersonDTO">
-    insert into zj_person (`projectId`, `recordId`, `recorder`, `subDate`, `isContract`, `status`, `order`, `taskId`, `businessKey`)
+    insert into zj_person (`projectId`, `recordId`, `recorder`, `subDate`, `isContract`, `status`, `order`, `taskId`,
+                           `businessKey`, `create_user_id`, create_time)
     values (#{projectId,jdbcType=INTEGER}, #{recordId, jdbcType=INTEGER}, #{recorder, jdbcType=INTEGER},
             #{subDate, jdbcType=TIMESTAMP}, #{isContract, jdbcType=INTEGER}, #{status, jdbcType=INTEGER},
-            #{order, jdbcType=INTEGER}, #{taskId, jdbcType=VARCHAR}, #{businessKey});
+            #{order, jdbcType=INTEGER}, #{taskId, jdbcType=VARCHAR}, #{businessKey}, #{createUserId}, now());
   </insert>
 
   <update id="updateContract" parameterType="com.ruoyi.common.core.domain.dto.PersonDTO">
@@ -254,7 +255,7 @@
 
 
   <select id="getByRoleIdAndProjectId" resultType="com.ruoyi.common.core.domain.entity.SsFUsers">
-    SELECT
+    SELECT distinct
       su.user_id AS id,
       su.user_name AS username,
       su.nick_name AS NAME,

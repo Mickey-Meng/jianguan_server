@@ -129,6 +129,11 @@ public class JgProjectInfo extends BaseEntity {
     private String mapUrl;
 
     /**
+     * 工序库id
+     */
+    private Long libraryId;
+
+    /**
      * 备注
      */
     private String remark;

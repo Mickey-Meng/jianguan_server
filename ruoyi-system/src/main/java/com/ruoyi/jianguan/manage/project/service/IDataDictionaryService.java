@@ -19,6 +19,7 @@ public interface IDataDictionaryService {
      * 查询商品类别
      */
     DataDictionaryVo queryById(Long id);
+    DataDictionaryVo queryByCode(String code);
 
 
     /**
