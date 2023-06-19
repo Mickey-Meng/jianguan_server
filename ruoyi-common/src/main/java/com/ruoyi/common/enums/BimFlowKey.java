@@ -105,7 +105,30 @@ public enum BimFlowKey {
     /**
      * 合同付款
      */
-    contractPayment("合同付款", "contractPayment");
+    contractPayment("合同付款", "contractPayment"),
+
+    /**
+     * 合同付款
+     */
+    AQWMCSF("安全文明措施费", "AQWMCSF"),
+
+    /**
+     * 第三方检测单位资料
+     */
+    DSFJCDWZLGL("第三方检测单位资料", "DSFJCDWZLGL"),
+
+    /**
+     * 计划管理-证照管理
+     */
+    planCertificate("计划管理-证照管理", "planCertificate"),
+
+    /**
+     * 进度管理-证照管理
+     */
+    progressCertificate("进度管理-证照管理", "progressCertificate"),
+
+
+    dailyReport("每日晨检", "dailyReport");
 
     private String key;
     private String name;

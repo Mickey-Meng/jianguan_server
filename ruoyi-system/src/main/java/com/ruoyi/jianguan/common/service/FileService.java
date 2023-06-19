@@ -64,6 +64,12 @@ public class FileService {
     @Value("${zhuji.video}")
     private String videoUrl;
 
+
+    public ZjFile selectByPrimaryKey(Integer id) {
+        ZjFile zjFile = zjFileDAO.selectByPrimaryKey(id);
+        return zjFile;
+    }
+
     public Integer storZjFile(ZjFile zjFile) {
         int insert = zjFileDAO.insert(zjFile);
         return insert;
@@ -332,6 +338,11 @@ public class FileService {
         zjFileDAO.deleteByPrimaryKey(zjFile.getId());
         zjFile.setId(null);
         int insert = zjFileDAO.insert(zjFile);
+        return insert;
+    }
+
+    public Integer updateByPrimaryKeySelective(ZjFile zjFile) {
+        int insert = zjFileDAO.updateByPrimaryKeySelective(zjFile);
         return insert;
     }
 

@@ -32,6 +32,7 @@ public interface ZjFileDAO {
             " AND d.del_flag = 0")
     List<ZjFileDTO> selectByPCode(@Param("PCode")String PCode,
                                   @Param("projectId")Integer projectId);
+
     @Select("select fileurl from zj_file where id = #{id}")
     String getFileIdById(@Param("id") Integer id);
 

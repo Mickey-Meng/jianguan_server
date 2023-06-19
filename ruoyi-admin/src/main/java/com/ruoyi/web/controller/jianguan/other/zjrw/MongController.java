@@ -1,20 +1,28 @@
 package com.ruoyi.web.controller.jianguan.other.zjrw;
 
 
+import cn.hutool.core.util.ObjUtil;
+import com.alibaba.fastjson.JSONObject;
 import com.mongodb.client.gridfs.GridFSFindIterable;
 import com.mongodb.client.gridfs.model.GridFSFile;
 import com.ruoyi.common.constant.Constant;
 import com.ruoyi.common.core.domain.object.ResponseBase;
+import com.ruoyi.common.enums.BimFlowKey;
 import com.ruoyi.common.helper.LoginHelper;
 import com.ruoyi.common.utils.JwtUtil;
+import com.ruoyi.flowable.domain.dto.FlowTaskCommentDto;
+import com.ruoyi.flowable.service.FlowStaticPageService;
 import com.ruoyi.jianguan.common.dao.FileMapper;
 import com.ruoyi.jianguan.common.dao.ProjectsDAO;
 import com.ruoyi.jianguan.common.domain.dto.ZjFileDTO;
 import com.ruoyi.jianguan.common.domain.entity.ZjFile;
 import com.ruoyi.jianguan.common.service.FileService;
+import com.ruoyi.jianguan.manage.project.domain.vo.DataDictionaryVo;
+import com.ruoyi.jianguan.manage.project.service.IDataDictionaryService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.bson.BsonObjectId;
 import org.bson.BsonValue;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +30,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
@@ -32,6 +41,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/mong")
 @Api(value="图片上传新")
+@Slf4j
 public class MongController {
 
     @Autowired
@@ -40,6 +50,8 @@ public class MongController {
     private FileMapper mapper;
     @Autowired
     private ProjectsDAO projectsDAO;
+    @Autowired
+    private FlowStaticPageService flowStaticPageService;
 
     @ApiOperation(value = "上传文件", notes = "上传文件")
     @PostMapping(value = "/upload")
@@ -121,6 +133,18 @@ public class MongController {
             return fileService.previewVideo(url, request, response);
         }
     }
+    @Resource
+    private IDataDictionaryService dataDictionaryService;
+
+    @PostMapping(value = "/selectByPrimaryKey")
+    @ApiOperation(value = "查询文件详情")
+    public ResponseBase selectByPrimaryKey(@RequestParam(value = "id") String id){
+        ZjFile zjFile = fileService.selectByPrimaryKey(Integer.parseInt(id));
+        Integer type = zjFile.getType();
+        DataDictionaryVo dataDictionaryVo = dataDictionaryService.queryById(type.longValue());
+        zjFile.setTypeDesc(dataDictionaryVo.getName());
+        return new ResponseBase(200, "查询文件详情成功", zjFile);
+    }
 
     @PostMapping(value = "/fileStore")
     @ApiOperation("档案管理: 上传文件")
@@ -135,7 +159,32 @@ public class MongController {
         Integer userid = LoginHelper.getUserId().intValue();
         zjFile.setUploadid(userid);
         zjFile.setUploadtime(new Date());
+        boolean isStartFlow = false;
+        if(ObjUtil.isNull(zjFile.getId())) {
+            isStartFlow = true;
+        }
         Integer integer = fileService.storZjFile(zjFile);
+        if (integer == 1 && isStartFlow && "DSFJCDWZLGL".equals(zjFile.getFileType())) {
+            String processDefinitionKey = BimFlowKey.DSFJCDWZLGL.getName();
+            String businessKey = zjFile.getId().toString();
+            //设置流程的审批人
+            Map<String, Object> auditUser = zjFile.getAuditUser();
+            if (auditUser.isEmpty()) {
+                throw new RuntimeException("流程的审批人不能为空！");
+            }
+
+            //发起流程
+            try {
+                FlowTaskCommentDto flowTaskComment = new FlowTaskCommentDto();
+                flowTaskComment.setApprovalType("save");
+                flowTaskComment.setComment("第三方检测单位资料");
+                JSONObject taskVariableData = new JSONObject(auditUser);
+                flowStaticPageService.startAndTakeUserTask(processDefinitionKey, flowTaskComment, taskVariableData, null, null, null, businessKey);
+            } catch (Exception e) {
+                log.error("流程启动失败！e=" + e.getMessage());
+                throw new RuntimeException("流程启动失败！e=" + e.getMessage());
+            }
+        }
 
         if (integer > 0) {
             return new ResponseBase(200, "保存成功");

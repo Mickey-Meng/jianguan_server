@@ -1,6 +1,8 @@
 package com.ruoyi.jianguan.common.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.ruoyi.common.core.domain.dto.SaveDTO;
+import io.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -9,7 +11,7 @@ import java.util.Date;
  * @author
  *
  */
-public class ZjFile implements Serializable {
+public class ZjFile extends SaveDTO implements Serializable {
 
 
     private Integer id;
@@ -48,6 +50,8 @@ public class ZjFile implements Serializable {
 
     private Integer type;
 
+    private String typeDesc;
+
     private Integer groupid;
 
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
@@ -56,6 +60,38 @@ public class ZjFile implements Serializable {
     private Integer projectId;
 
     private String filename;
+
+    private String fileType;
+
+    /**
+     * 审批状态
+     */
+    @ApiModelProperty(value = "审批状态 0：审批中 1: 审批完成 2:驳回")
+    private Integer status;
+
+    public String getTypeDesc() {
+        return typeDesc;
+    }
+
+    public void setTypeDesc(String typeDesc) {
+        this.typeDesc = typeDesc;
+    }
+
+    public String getFileType() {
+        return fileType;
+    }
+
+    public void setFileType(String fileType) {
+        this.fileType = fileType;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
 
     public String getFilename() {
         return filename;
@@ -217,63 +253,6 @@ public class ZjFile implements Serializable {
 
     public void setGroupid(Integer groupid) {
         this.groupid = groupid;
-    }
-
-    @Override
-    public boolean equals(Object that) {
-        if (this == that) {
-            return true;
-        }
-        if (that == null) {
-            return false;
-        }
-        if (getClass() != that.getClass()) {
-            return false;
-        }
-        ZjFile other = (ZjFile) that;
-        return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
-            && (this.getUploadid() == null ? other.getUploadid() == null : this.getUploadid().equals(other.getUploadid()))
-            && (this.getUploadusername() == null ? other.getUploadusername() == null : this.getUploadusername().equals(other.getUploadusername()))
-            && (this.getUploadtime() == null ? other.getUploadtime() == null : this.getUploadtime().equals(other.getUploadtime()))
-            && (this.getUploadtype() == null ? other.getUploadtype() == null : this.getUploadtype().equals(other.getUploadtype()))
-            && (this.getUploadname() == null ? other.getUploadname() == null : this.getUploadname().equals(other.getUploadname()))
-            && (this.getChangereason() == null ? other.getChangereason() == null : this.getChangereason().equals(other.getChangereason()))
-            && (this.getDistiancename() == null ? other.getDistiancename() == null : this.getDistiancename().equals(other.getDistiancename()))
-            && (this.getChangecontent() == null ? other.getChangecontent() == null : this.getChangecontent().equals(other.getChangecontent()))
-            && (this.getIsutf() == null ? other.getIsutf() == null : this.getIsutf().equals(other.getIsutf()))
-            && (this.getSoftname() == null ? other.getSoftname() == null : this.getSoftname().equals(other.getSoftname()))
-            && (this.getOpiontion() == null ? other.getOpiontion() == null : this.getOpiontion().equals(other.getOpiontion()))
-            && (this.getCallunit() == null ? other.getCallunit() == null : this.getCallunit().equals(other.getCallunit()))
-            && (this.getCalladdr() == null ? other.getCalladdr() == null : this.getCalladdr().equals(other.getCalladdr()))
-            && (this.getFileurl() == null ? other.getFileurl() == null : this.getFileurl().equals(other.getFileurl()))
-            && (this.getType() == null ? other.getType() == null : this.getType().equals(other.getType()))
-            && (this.getGroupid() == null ? other.getGroupid() == null : this.getGroupid().equals(other.getGroupid()))
-            && (this.getCalltime() == null ? other.getCalltime() == null : this.getCalltime().equals(other.getCalltime()));
-    }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
-        result = prime * result + ((getUploadid() == null) ? 0 : getUploadid().hashCode());
-        result = prime * result + ((getUploadusername() == null) ? 0 : getUploadusername().hashCode());
-        result = prime * result + ((getUploadtime() == null) ? 0 : getUploadtime().hashCode());
-        result = prime * result + ((getUploadtype() == null) ? 0 : getUploadtype().hashCode());
-        result = prime * result + ((getUploadname() == null) ? 0 : getUploadname().hashCode());
-        result = prime * result + ((getChangereason() == null) ? 0 : getChangereason().hashCode());
-        result = prime * result + ((getDistiancename() == null) ? 0 : getDistiancename().hashCode());
-        result = prime * result + ((getChangecontent() == null) ? 0 : getChangecontent().hashCode());
-        result = prime * result + ((getIsutf() == null) ? 0 : getIsutf().hashCode());
-        result = prime * result + ((getSoftname() == null) ? 0 : getSoftname().hashCode());
-        result = prime * result + ((getOpiontion() == null) ? 0 : getOpiontion().hashCode());
-        result = prime * result + ((getCallunit() == null) ? 0 : getCallunit().hashCode());
-        result = prime * result + ((getCalladdr() == null) ? 0 : getCalladdr().hashCode());
-        result = prime * result + ((getFileurl() == null) ? 0 : getFileurl().hashCode());
-        result = prime * result + ((getType() == null) ? 0 : getType().hashCode());
-        result = prime * result + ((getCalltime() == null) ? 0 : getCalltime().hashCode());
-        result = prime * result + ((getGroupid() == null) ? 0 : getGroupid().hashCode());
-        return result;
     }
 
     @Override

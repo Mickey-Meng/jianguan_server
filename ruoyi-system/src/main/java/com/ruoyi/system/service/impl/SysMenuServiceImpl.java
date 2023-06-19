@@ -131,7 +131,6 @@ public class SysMenuServiceImpl implements ISysMenuService {
         if (LoginHelper.isAdmin(userId) && Objects.equals(sourceType, "0")) {
             menus = baseMapper.selectMenuTreeAll();
         } else {
-//            parentId = Objects.equals(sourceType, "1") ? 25 : 26;
             menus = baseMapper.selectMenuTreeByUserId(userId, sourceType);
         }
         return getChildPerms(menus, parentId);

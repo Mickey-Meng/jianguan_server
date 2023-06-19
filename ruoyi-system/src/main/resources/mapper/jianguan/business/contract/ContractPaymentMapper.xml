@@ -7,6 +7,7 @@
     <resultMap type="com.ruoyi.jianguan.business.contract.domain.entity.ContractPayment" id="ContractPaymentResult">
         <result property="id" column="id"/>
         <result property="type" column="type"/>
+        <result property="typeCode" column="type_code"/>
         <result property="amount" column="amount"/>
         <result property="recordTime" column="record_time"/>
         <result property="remark" column="remark"/>
@@ -19,10 +20,10 @@
         <result property="updateTime" column="update_time"/>
     </resultMap>
 
-
     <select id="getPageInfo" resultType="com.ruoyi.jianguan.business.contract.domain.vo.ContractPaymentPageVo" parameterType="com.ruoyi.jianguan.business.contract.domain.dto.ContractPaymentPageDTO">
         select id,
             type,
+            type_code as typeCode,
             amount,
             record_time as recordTime,
             remark,
@@ -34,14 +35,25 @@
             update_user_id as updateUserId,
             update_time as updateTime
         from zz_contract_payment a
-        <where>
+        where del_flag = 0
             <if test="pageDto.recordTime != null">
-            a.record_time = #{pageDto.recordTime}
+                and a.record_time = #{pageDto.recordTime}
             </if>
             <if test="pageDto.status != null">
-                a.status = #{status}
+                and a.status = #{status}
             </if>
-        </where>
+            <if test="pageDto.includeTypeCodes != null and pageDto.includeTypeCodes.size > 0">
+                and a.type_code in
+                <foreach collection="pageDto.includeTypeCodes" item="typeCode" open="(" close=")">
+                    #{typeCode}
+                </foreach>
+            </if>
+            <if test="pageDto.excludeTypeCodes != null and pageDto.excludeTypeCodes.size > 0">
+                and a.type_code not in
+                <foreach collection="pageDto.excludeTypeCodes" item="typeCode" open="(" close=")">
+                    #{typeCode}
+                </foreach>
+            </if>
         order by create_time desc
     </select>
 

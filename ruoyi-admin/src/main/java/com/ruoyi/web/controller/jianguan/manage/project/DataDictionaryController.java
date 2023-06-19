@@ -40,7 +40,6 @@ public class DataDictionaryController extends BaseController {
     /**
      * 查询商品类别列表
      */
-    @SaCheckPermission("dataDictionary:dataDictionary:list")
     @GetMapping("/list")
     public R<List<DataDictionaryVo>> list(DataDictionaryBo bo) {
         List<DataDictionaryVo> list = dataDictionaryService.queryList(bo);

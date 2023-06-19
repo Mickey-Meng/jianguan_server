@@ -54,7 +54,8 @@ public class ContractPaymentController {
     @ApiOperation(value = "通过id删除一条数据")
     @Transactional(rollbackFor = Exception.class)
     public boolean removeById(@ApiParam(name = "id") Long id) {
-        return contractPaymentService.removeById(id);
+        boolean b = contractPaymentService.removeById(id);
+        return b;
     }
 
 

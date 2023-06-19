@@ -26,7 +26,7 @@ import java.util.Date;
 @ApiModel(value = "合同付款对象", description = "合同付款表")
 public class ContractPayment extends NewBaseEntity {
 
-    private static final long serialVersionUID=1L;
+    private static final long serialVersionUID = 1L;
 
     /**
      * id
@@ -37,6 +37,10 @@ public class ContractPayment extends NewBaseEntity {
      * 款项类型
      */
     private String type;
+    /**
+     * 款项类型编码
+     */
+    private String typeCode;
     /**
      * 款项金额
      */

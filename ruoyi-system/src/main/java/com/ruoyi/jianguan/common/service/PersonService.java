@@ -3,6 +3,7 @@ package com.ruoyi.jianguan.common.service;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
@@ -375,6 +376,11 @@ public class PersonService {
                 personSubDTOS.add(subDTO);
             }
         }
+        personSubDTOS.forEach(personSub -> {
+            if (ObjectUtil.isEmpty(personSub.getPerson().getMaps().get("taskId"))) {
+                personSub.getPerson().getMaps().put("taskId", personSub.getPerson().getTaskId());
+            }
+        });
         return new ResponseBase(200, "查询成功!", personSubDTOS);
     }
 

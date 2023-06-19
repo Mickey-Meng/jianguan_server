@@ -4,7 +4,6 @@ import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.ruoyi.common.core.domain.NewBaseEntity;
 import com.ruoyi.common.core.domain.entity.FileModel;
-import com.ruoyi.common.core.domain.vo.NewBaseVo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -40,6 +39,13 @@ public class ContractPaymentDetailVo extends NewBaseEntity {
     @ExcelProperty(value = "款项类型")
     @ApiModelProperty(value = "款项类型", required = true)
     private String type;
+
+    /**
+     * 款项类型编码
+     */
+    @ExcelProperty(value = "款项类型编码")
+    @ApiModelProperty(value = "款项类型编码", required = true)
+    private String typeCode;
 
     /**
      * 款项金额

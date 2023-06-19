@@ -70,6 +70,7 @@ public class EnterExitServiceImpl extends ServiceImpl<EnterExitMapper, EnterExit
     @Autowired
     private LaborContractService laborContractService;
 
+    @Autowired
     private IJgProjectItemService jgProjectItemService;
 
     /**

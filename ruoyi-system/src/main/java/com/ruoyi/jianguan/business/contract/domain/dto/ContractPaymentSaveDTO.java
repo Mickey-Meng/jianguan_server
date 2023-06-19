@@ -39,6 +39,12 @@ public class ContractPaymentSaveDTO extends SaveDTO {
     private String type;
 
     /**
+     * 款项类型编码
+     */
+    @NotBlank(message = "款项类型编码不能为空", groups = {AddGroup.class, EditGroup.class})
+    private String typeCode;
+
+    /**
      * 款项金额
      */
     @NotNull(message = "款项金额不能为空", groups = {AddGroup.class, EditGroup.class})

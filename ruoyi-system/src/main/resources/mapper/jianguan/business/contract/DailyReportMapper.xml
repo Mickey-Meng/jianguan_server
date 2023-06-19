@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.jianguan.business.contract.mapper.DailyReportMapper">
+
+    <resultMap type="com.ruoyi.jianguan.business.contract.domain.entity.DailyReport" id="DailyReportResult">
+        <result property="id" column="id"/>
+        <result property="content" column="content"/>
+        <result property="reportPeople" column="report_people"/>
+        <result property="reportTime" column="report_time"/>
+        <result property="remark" column="remark"/>
+        <result property="attachment" column="attachment"/>
+        <result property="status" column="status"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="createUserId" column="createUserId"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateUserId" column="updateUserId"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+
+    <select id="getPageInfo" resultType="com.ruoyi.jianguan.business.contract.domain.vo.DailyReportPageVo" parameterType="com.ruoyi.jianguan.business.contract.domain.dto.DailyReportPageDTO">
+        select id,
+        content,
+        report_people,
+        report_time as reportTime,
+            remark,
+            attachment,
+            status,
+            del_flag as delFlag,
+            create_user_id as createUserId,
+            create_time as createTime,
+            update_user_id as updateUserId,
+            update_time as updateTime
+        from daily_report a
+        <where>
+            <if test="pageDto.reportTime != null">
+            a.report_time = #{pageDto.reportTime}
+            </if>
+            <if test="pageDto.status != null">
+                a.status = #{pageDto.status}
+            </if>
+        </where>
+        order by create_time desc
+    </select>
+
+</mapper>

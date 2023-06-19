@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.jianguan.business.certificate.mapper.PlanCertificatePhotosMapper">
+
+    <resultMap type="com.ruoyi.jianguan.business.certificate.domain.entity.PlanCertificatePhotos" id="PlanCertificatePhotosResult">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="contents" column="contents"/>
+        <result property="startTime" column="start_time"/>
+        <result property="endTime" column="end_time"/>
+        <result property="reportTime" column="report_time"/>
+        <result property="reportUser" column="report_user"/>
+        <result property="owner" column="owner"/>
+        <result property="status" column="status"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="projectId" column="project_id"/>
+        <result property="remark" column="remark"/>
+        <result property="createUserId" column="create_user_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateUserId" column="update_user_id"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <select id="getPageInfo" resultType="com.ruoyi.jianguan.business.certificate.domain.vo.PlanCertificatePhotosVo" parameterType="com.ruoyi.jianguan.business.certificate.domain.dto.PlanCertificatePhotosPageDTO">
+        select
+            id,
+            name,
+            contents,
+            start_time,
+            end_time,
+            report_time,
+            report_user,
+            owner,
+            status,
+            del_flag as delFlag,
+            project_id as projectId,
+            remark,
+            create_user_id as createUserId,
+            create_time as createTime,
+            update_user_id as updateUserId,
+            update_time as updateTime
+        from zz_plan_certificate_photos a
+        where del_flag = 0
+            <if test="pageDto.reportTime != null">
+                and a.report_time = #{pageDto.reportTime}
+            </if>
+            <if test="pageDto.status != null">
+                and a.status = #{status}
+            </if>
+        order by create_time desc
+    </select>
+
+</mapper>

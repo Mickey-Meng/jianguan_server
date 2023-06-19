@@ -66,7 +66,14 @@ public class ContractPaymentServiceImpl extends ServiceImpl<ContractPaymentMappe
         }
         boolean saveOrUpdate = this.saveOrUpdate(contractPayment);
         if (saveOrUpdate && isStartFlow) {
-            String processDefinitionKey = BimFlowKey.contractPayment.getName();
+            String processDefinitionKey = null;
+            // 安全文明措施费
+            String typeCode = "51";
+            if(typeCode.equals(saveDto.getTypeCode())) {
+                processDefinitionKey = BimFlowKey.AQWMCSF.getName();
+            } else {
+                processDefinitionKey = BimFlowKey.contractPayment.getName();
+            }
             String businessKey = contractPayment.getId().toString();
             //设置流程的审批人
             Map<String, Object> auditUser = saveDto.getAuditUser();

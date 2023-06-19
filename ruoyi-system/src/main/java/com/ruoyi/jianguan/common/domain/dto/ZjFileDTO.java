@@ -1,6 +1,7 @@
 package com.ruoyi.jianguan.common.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -66,6 +67,20 @@ public class ZjFileDTO implements Serializable {
     private Integer projectId;
 
     private String filename;
+
+    /**
+     * 审批状态
+     */
+    @ApiModelProperty(value = "审批状态 0：审批中 1: 审批完成 2:驳回")
+    private Integer status;
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
 
     public String getFilename() {
         return filename;

@@ -10,6 +10,7 @@ import lombok.Data;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 合同付款dto
@@ -30,4 +31,14 @@ public class ContractPaymentPageDTO extends PageDTO {
      * 状态 0 审批中 1 审批完成 2 驳回
      */
     private Integer status;
+
+    /**
+     * 包含的合同付款类型
+     */
+    private List<String> includeTypeCodes;
+
+    /**
+     * 不包含的合同付款类型
+     */
+    private List<String> excludeTypeCodes;
 }
