@@ -47,7 +47,17 @@ public class ManageTargetSaveDTO {
      */
     @ApiModelProperty(value = "标题")
     private String title;
+    /**
+     * 登记人
+     */
+    @ApiModelProperty(value = "登记人")
+    private String registrant;
 
+    /**
+     * 登记部门
+     */
+    @ApiModelProperty(value = "登记部门")
+    private String registrationDepartment;
 
     /**
      * 文件

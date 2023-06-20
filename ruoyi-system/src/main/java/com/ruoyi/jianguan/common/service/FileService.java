@@ -335,10 +335,11 @@ public class FileService {
     }
 
     public Integer updateZjFile(ZjFile zjFile) {
-        zjFileDAO.deleteByPrimaryKey(zjFile.getId());
-        zjFile.setId(null);
-        int insert = zjFileDAO.insert(zjFile);
-        return insert;
+        int i = zjFileDAO.updateByPrimaryKeySelective(zjFile);
+//        zjFileDAO.deleteByPrimaryKey(zjFile.getId());
+//        zjFile.setId(null);
+//        int insert = zjFileDAO.insert(zjFile);
+        return i;
     }
 
     public Integer updateByPrimaryKeySelective(ZjFile zjFile) {

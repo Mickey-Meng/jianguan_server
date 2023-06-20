@@ -120,12 +120,22 @@ public enum BimFlowKey {
     /**
      * 计划管理-证照管理
      */
-    planCertificate("计划管理-证照管理", "planCertificate"),
+    planCertificatePhotos("计划管理-证照管理", "planCertificatePhotos"),
 
     /**
      * 进度管理-证照管理
      */
-    progressCertificate("进度管理-证照管理", "progressCertificate"),
+    progressCertificatePhotos("进度管理-证照管理", "progressCertificatePhotos"),
+
+    /**
+     * 计划管理-施工图设计
+     */
+    planConstructionDesign("计划管理-施工图设计", "planConstructionDesign"),
+
+    /**
+     * 进度管理-施工图设计
+     */
+    progressConstructionDesign("进度管理-施工图设计", "progressConstructionDesign"),
 
 
     dailyReport("每日晨检", "dailyReport");

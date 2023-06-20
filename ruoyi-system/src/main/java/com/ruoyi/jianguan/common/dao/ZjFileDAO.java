@@ -27,7 +27,7 @@ public interface ZjFileDAO {
     List<ZjFile> selectByType(@Param("type")Integer type,
                               @Param("projectId")Integer projectId);
 
-    @Select("select zf.*,d.`name` as typename from zj_file zf , data_dictionary d,data_dictionary dp  where zf.type = d.id and d.parent_id = dp.id" +
+    @Select("select zf.*,d.`name` as typename, zf.create_user_id as createUserId from zj_file zf , data_dictionary d,data_dictionary dp  where zf.type = d.id and d.parent_id = dp.id" +
             " AND dp.`code` = #{PCode} and zf.projectId= #{projectId}" +
             " AND d.del_flag = 0")
     List<ZjFileDTO> selectByPCode(@Param("PCode")String PCode,

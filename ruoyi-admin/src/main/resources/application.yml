@@ -61,7 +61,7 @@ server:
 # 日志配置
 logging:
   level:
-    com.ruoyi: @logging.level@
+#    com.ruoyi: @logging.level@
     org.springframework: warn
   config: classpath:logback.xml
 
@@ -148,7 +148,6 @@ security:
     - /**/*.html
     - /**/*.css
     - /**/*.js
-    # swagger 文档配置
     - /favicon.ico
     - /*/api-docs
     - /*/api-docs/**
@@ -161,9 +160,7 @@ security:
     - /swagger-resources
     - /doc.html
     - /swagger-resources/**
-    # druid 监控配置
     - /druid/**
-    # actuator 监控配置
     - /actuator
     - /actuator/**
     - /mong/preview
@@ -173,6 +170,7 @@ security:
     - /jmreport/**
     - /warehousing/warehousing/import
     - /ql/outbound/import
+    - /logo/**
 
 # MyBatisPlus配置
 # https://baomidou.com/config/

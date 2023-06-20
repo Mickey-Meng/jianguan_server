@@ -20,27 +20,14 @@
     </resultMap>
 
 
-    <select id="getPageInfo" resultType="com.ruoyi.jianguan.business.contract.domain.vo.DailyReportPageVo" parameterType="com.ruoyi.jianguan.business.contract.domain.dto.DailyReportPageDTO">
-        select id,
-        content,
-        report_people,
-        report_time as reportTime,
-            remark,
-            attachment,
-            status,
-            del_flag as delFlag,
-            create_user_id as createUserId,
-            create_time as createTime,
-            update_user_id as updateUserId,
-            update_time as updateTime
+    <select id="getPageInfo" resultType="com.ruoyi.jianguan.business.contract.domain.vo.DailyReportPageVo"
+            parameterType="com.ruoyi.jianguan.business.contract.domain.dto.DailyReportPageDTO">
+        select *
         from daily_report a
         <where>
-            <if test="pageDto.reportTime != null">
-            a.report_time = #{pageDto.reportTime}
-            </if>
-            <if test="pageDto.status != null">
-                a.status = #{pageDto.status}
-            </if>
+            a.project_id = #{pageDto.projectId}
+            and
+            a.del_flag = 0
         </where>
         order by create_time desc
     </select>

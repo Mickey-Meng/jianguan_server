@@ -147,6 +147,19 @@ public class Conponent implements Serializable {
     private String wbscode;
 
     /**
+     * 进度预警级别
+     */
+    private String warninglevel;
+
+    public String getWarninglevel() {
+        return warninglevel;
+    }
+
+    public void setWarninglevel(String warninglevel) {
+        this.warninglevel = warninglevel;
+    }
+
+    /**
      * 老BIM编码
      */
     private String oldconponentcode;

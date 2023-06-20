@@ -103,9 +103,7 @@ public class CountController {
     @ResponseBody
     @ApiOperation(value="构件完成数量--左右上图数据，还有方量数量")
     public ResponseBase getFinishConponent(@RequestBody SafePerData safePerData){
-        if (safePerData.getProjectId() == null || safePerData.getProjectId().equals("")){
-            safePerData.setProjectId(3);
-        }
+
         try {
             return countService.getFinishConponent(safePerData);
         } catch (ParseException e) {

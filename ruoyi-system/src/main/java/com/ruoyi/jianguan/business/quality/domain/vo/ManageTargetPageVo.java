@@ -48,12 +48,18 @@ public class ManageTargetPageVo extends NewBaseVo {
     @ApiModelProperty(value = "标题")
     private String title;
 
-    /**
-     * 登记人名称
-     */
-    @ApiModelProperty(value = "登记人名称")
-    private String createName;
 
+    /**
+     * 登记人
+     */
+    @ApiModelProperty(value = "登记人")
+    private String registrant;
+
+    /**
+     * 登记部门
+     */
+    @ApiModelProperty(value = "登记部门")
+    private String registrationDepartment;
     /**
      * 登记人id
      */

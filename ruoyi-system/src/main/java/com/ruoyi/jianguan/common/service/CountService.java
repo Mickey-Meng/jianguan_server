@@ -300,10 +300,10 @@ public class CountService {
         }
 
         Map<String, CountData> map = Maps.newHashMap();
-        if (safePerData.getProjectId() == 3) {
+//        if (safePerData.getProjectId() == 3) {
             //获取当前用户的项目权限
             Integer userId = LoginHelper.getUserId().intValue();
-            List<String> projects = ssFUserGroupDAO.getGroupProjectsByUserId(userId);
+            List<String> projects = ssFUserGroupDAO.getGroupProjectsByUserIdAndProjectId(userId,safePerData.getProjectId());
             //截止到今天所有实际完成 今天的时间
             List<ZjConponentProducetime> actureData = Lists.newArrayList();
             //截止到今天为止所有计划完成
@@ -316,7 +316,7 @@ public class CountService {
                 // 当前端type传值为空时，默认查询QL数据
                 String type = safePerData.getType();
                 if (type == null) {
-                    type = "QL";
+                    type = "LM";
                 }
                 if (ObjectUtils.isEmpty(safePerData.getSttime()) || ObjectUtils.isEmpty(safePerData.getEndtime())) {
                     //没有开始与结束时间
@@ -380,7 +380,7 @@ public class CountService {
                 map.put("act", countDataAct);
                 map.put("plan", countDataPlan);
             }
-        }
+//        }
         return new ResponseBase(200, "查询成功", map);
     }
 

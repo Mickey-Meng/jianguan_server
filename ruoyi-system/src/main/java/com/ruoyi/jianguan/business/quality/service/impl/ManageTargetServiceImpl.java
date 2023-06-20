@@ -105,8 +105,8 @@ public class ManageTargetServiceImpl extends ServiceImpl<ManageTargetMapper, Man
         //分页查询
         PageHelper.startPage(pageDto.getPageNum(), pageDto.getPageSize());
         List<ManageTargetPageVo> manageTargets = manageTargetMapper.getPageInfo(pageDto);
-        if (Objects.nonNull(manageTargets) && !manageTargets.isEmpty()) {
-
+        /*if (Objects.nonNull(manageTargets) && !manageTargets.isEmpty()) {
+  20230615 新增登记人名称字段,无需使用createName
             manageTargets.forEach(manageTarget -> {
 //                SsFUsers ssFUsers = ssFUsersDAO.selectById(manageTarget.getCreateUserId());
                 SysUser sysUser = iSysUserService.selectUserById(manageTarget.getCreateUserId().longValue());
@@ -114,7 +114,7 @@ public class ManageTargetServiceImpl extends ServiceImpl<ManageTargetMapper, Man
                     manageTarget.setCreateName(sysUser.getUserName());
                 }
             });
-        }
+        }*/
         return new PageInfo(manageTargets);
     }
 

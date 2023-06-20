@@ -1,5 +1,6 @@
 package com.ruoyi.system.service.impl;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ruoyi.common.constant.CacheNames;
@@ -65,8 +66,8 @@ public class SysDictDataServiceImpl implements ISysDictDataService {
     public String selectDictLabel(String dictType, String dictValue) {
         return baseMapper.selectOne(new LambdaQueryWrapper<SysDictData>()
                 .select(SysDictData::getDictLabel)
-                .eq(SysDictData::getDictType, dictType)
-                .eq(SysDictData::getDictValue, dictValue))
+                .eq(ObjectUtil.isNotEmpty(dictType), SysDictData::getDictType, dictType)
+                .eq(ObjectUtil.isNotEmpty(dictValue),SysDictData::getDictValue, dictValue))
             .getDictLabel();
     }
 

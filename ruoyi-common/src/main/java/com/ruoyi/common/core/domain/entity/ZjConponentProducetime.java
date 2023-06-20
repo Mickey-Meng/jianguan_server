@@ -133,6 +133,7 @@ public class ZjConponentProducetime implements Serializable {
      */
     private Integer groupid;
 
+
     public int getStatus() {
         return status;
     }

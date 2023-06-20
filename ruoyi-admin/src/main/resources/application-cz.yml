@@ -195,3 +195,4 @@ weather:
 
 jianguan:
   jmreportUrl: "http://112.30.143.209:8888/"
+  serverBaseUrl: "http://112.30.143.209:26666/"

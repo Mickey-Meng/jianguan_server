@@ -12,6 +12,8 @@
         <result column="project_id" property="projectId" />
         <result column="publish_date" property="publishDate" />
         <result column="title" property="title" />
+        <result column="registrant" property="registrant" />
+        <result column="registration_department" property="registrationDepartment" />
         <result column="attachment" property="attachment" />
         <result column="draft_flag" property="draftFlag" />
         <result column="deleted_flag" property="deletedFlag" />
@@ -23,7 +25,7 @@
         create_time,
         update_user_id,
         update_time,
-        id, project_id, publish_date, title, attachment, draft_flag, deleted_flag
+        id, project_id, publish_date, title, attachment, draft_flag, deleted_flag,registrant,registration_department
     </sql>
 
     <select id="getPageInfo" resultType="com.ruoyi.jianguan.business.quality.domain.vo.ManageTargetPageVo" parameterType="com.ruoyi.common.core.domain.dto.PageDTO">

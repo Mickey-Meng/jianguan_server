@@ -25,14 +25,22 @@ public class LogoController {
 
     @Value("${jianguan.jmreportUrl}")
     String jmreportUrl;
+    @Value("${jianguan.serverBaseUrl}")
+    String serverBaseUrl;
 
     @GetMapping("/{id}")
     public ResponseBase getLogo(@PathVariable Long id) {
         Logo logo = logoMapper.selectById(id);
         return new ResponseBase(200, "查询成功!", logo);
     }
+
     @GetMapping("/jmreportUrl")
     public ResponseBase getJmreportUrl() {
         return new ResponseBase(200, "查询成功!", jmreportUrl);
+    }
+
+    @GetMapping("/baseServerUrl")
+    public ResponseBase getBaseServerUrl() {
+        return new ResponseBase(200, "查询成功!", serverBaseUrl);
     }
 }

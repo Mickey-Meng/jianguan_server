@@ -69,6 +69,63 @@ public class ZjFile extends SaveDTO implements Serializable {
     @ApiModelProperty(value = "审批状态 0：审批中 1: 审批完成 2:驳回")
     private Integer status;
 
+
+    /**
+     * 更新时间。
+     */
+    @ApiModelProperty(value = "更新时间")
+    private Date updateTime;
+
+    /**
+     * 更新者Id。
+     */
+    @ApiModelProperty(value = "更新者Id")
+    private Long updateUserId;
+
+    /**
+     * 创建时间。
+     */
+    @ApiModelProperty(value = "创建时间")
+    private Date createTime;
+
+    /**
+     * 创建者Id。
+     */
+    @ApiModelProperty(value = "创建者Id")
+    private Long createUserId;
+
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
+    }
+
+    public Long getUpdateUserId() {
+        return updateUserId;
+    }
+
+    public void setUpdateUserId(Long updateUserId) {
+        this.updateUserId = updateUserId;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public Long getCreateUserId() {
+        return createUserId;
+    }
+
+    public void setCreateUserId(Long createUserId) {
+        this.createUserId = createUserId;
+    }
+
     public String getTypeDesc() {
         return typeDesc;
     }

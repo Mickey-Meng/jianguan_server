@@ -176,6 +176,14 @@ public interface SsFUserGroupDAO {
         " where userid = #{userid}) group by a.PROJECTID")
     List<String> getGroupProjectsByUserId(@Param("userid")Integer userid);
 
+    @Select("select a.PROJECTID from zj_f_groups_projects a " +
+        " left join ss_f_projects b on a.GROUPID = b.id " +
+        " left join ss_f_projects c on b.parentid = c.id " +
+        " left join ss_f_projects d on c.parentid = d.id " +
+        " where c.id in (select groupid from ss_f_user_project " +
+        " where userid = #{userid}  and d.id=  #{projectId} )    group by a.PROJECTID")
+    List<String> getGroupProjectsByUserIdAndProjectId(@Param("userid")Integer userid,@Param("projectId")Integer projectId);
+
     @Select("select su.user_id as id,su.user_name as username,su.nick_name as name,   " +
             "  su.create_time as sttime,  su.`status` as ststate  from sys_user su    " +
             "  LEFT JOIN sys_user_role sur   on su.user_id = sur.user_id   " +

@@ -782,6 +782,73 @@
     </foreach>
   </select>
 
+
+
+
+  <resultMap id="conponentProcessWarning" type="com.ruoyi.jianguan.common.domain.dto.ZjConponentProcessWarningDTO">
+    <result column="id" jdbcType="INTEGER" property="id" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="overdueDays" jdbcType="INTEGER" property="overdueDays" />
+    <result column="startDays" jdbcType="INTEGER" property="startDays" />
+    <result column="danweigongcheng" jdbcType="VARCHAR" property="danweigongcheng" />
+    <result column="febugongcheng" jdbcType="VARCHAR" property="febugongcheng" />
+    <result column="zifenbugongcheng" jdbcType="VARCHAR" property="zifenbugongcheng" />
+    <result column="fenxianggongcheng" jdbcType="VARCHAR" property="fenxianggongcheng" />
+    <result column="goujian" jdbcType="VARCHAR" property="goujian" />
+    <result column="warninglevel" jdbcType="VARCHAR" property="warninglevel" />
+    <result column="jiedianjibie" jdbcType="VARCHAR" property="jiedianjibie" />
+    <result column="processwarningLevel" jdbcType="VARCHAR" property="processwarningLevel" />
+    <result column="actulendtime" jdbcType="TIMESTAMP" property="actulendtime" />
+    <result column="actulsttime" jdbcType="TIMESTAMP" property="actulsttime" />
+    <result column="plansttime" jdbcType="TIMESTAMP" property="plansttime" />
+    <result column="planendtime" jdbcType="TIMESTAMP" property="planendtime" />
+
+  </resultMap>
+
+  <select id="getProcessWarning" parameterType="com.ruoyi.jianguan.common.domain.dto.NewCheckData" resultMap="conponentProcessWarning">
+    SELECT
+    cp.id,
+    cp.conponentcode,
+    cp.plansttime,
+    cp.planendtime,
+    cp.actulsttime,
+    cp.actulendtime,
+    TIMESTAMPDIFF(DAY,cp.planendtime,cp.actulendtime) as overdueDays,
+    TIMESTAMPDIFF( DAY, cp.plansttime, SYSDATE() ) AS startDays,
+    t.warninglevel,
+    t.w2 AS gongqu,
+    t.w3 AS danweigongcheng ,
+    t.w4 as fenbugongchneg,
+    t.w5 as zifenbugongcheng,
+    t.w6 as fenxianggongcheng ,
+    t.w7 as goujian
+
+    FROM
+    zj_conponent_producetime cp,
+    conponent t
+    WHERE cp.conponentid = t.id
+    <if test="sttime != null ">
+      and cp.actulendtime &gt;= #{sttime}
+    </if>
+    <if test="endtime != null ">
+      and cp.actulendtime &lt;= #{endtime}
+    </if>
+    <if test="code != null ">
+      and cp.conponentcode like concat('%', #{code}, '%')
+    </if>
+    <if test="projectid != null ">
+      and cp.projectcode = #{projectid}
+    </if>
+    <if test="conponenttype != null ">
+      and cp.conponenttype = #{conponenttype}
+    </if>
+    and cp.projectcode in
+    <foreach collection="projectCodes" index="index" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </select>
+
+
   <resultMap id="componentStatus" type="com.ruoyi.jianguan.common.domain.dto.ComponentProducetimeDTO">
     <result column="mouldid" jdbcType="VARCHAR" property="mouldid" />
     <result column="id" jdbcType="INTEGER" property="id" />

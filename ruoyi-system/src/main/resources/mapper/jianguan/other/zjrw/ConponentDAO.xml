@@ -42,12 +42,13 @@
     <result column="pid" jdbcType="INTEGER" property="pid" />
     <result column="projecttype" jdbcType="VARCHAR" property="projecttype" />
     <result column="conponenttypename" jdbcType="VARCHAR" property="conponenttypename" />
+    <result column="warninglevel" jdbcType="VARCHAR" property="warninglevel" />
   </resultMap>
   <sql id="Base_Column_List">
     id, mouldid, conponenttype, projectcode, w1, w1code, w2, w2code, w3, w3code, w4,
     w4code, w5, w5code, w6, w6code, w7, w7code, w8, w8code, w9, w9code, w10, w10code,
     produceid, zhuangnumber, dunnumber, mark, conponentcode, conponentstatus, belongw6,
-    issafe, isvaild, pcode, pname, `name`, code, pid, projecttype, conponenttypename
+    issafe, isvaild, pcode, pname, `name`, code, pid, projecttype, conponenttypename,warninglevel
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select
@@ -71,7 +72,7 @@
       belongw6, issafe, isvaild,
       pcode, pname, `name`,
       code, pid, projecttype,
-      conponenttypename)
+      conponenttypename,warninglevel)
     values (#{mouldid,jdbcType=VARCHAR}, #{conponenttype,jdbcType=VARCHAR}, #{projectcode,jdbcType=VARCHAR},
       #{w1,jdbcType=VARCHAR}, #{w1code,jdbcType=VARCHAR}, #{w2,jdbcType=VARCHAR}, #{w2code,jdbcType=VARCHAR},
       #{w3,jdbcType=VARCHAR}, #{w3code,jdbcType=VARCHAR}, #{w4,jdbcType=VARCHAR}, #{w4code,jdbcType=VARCHAR},
@@ -83,7 +84,7 @@
       #{belongw6,jdbcType=VARCHAR}, #{issafe,jdbcType=INTEGER}, #{isvaild,jdbcType=INTEGER},
       #{pcode,jdbcType=VARCHAR}, #{pname,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR},
       #{code,jdbcType=VARCHAR}, #{pid,jdbcType=INTEGER}, #{projecttype,jdbcType=VARCHAR},
-      #{conponenttypename,jdbcType=VARCHAR})
+      #{conponenttypename,jdbcType=VARCHAR}, #{warninglevel,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.ruoyi.common.core.domain.entity.Conponent" useGeneratedKeys="true">
     insert into conponent
@@ -204,6 +205,8 @@
       </if>
       <if test="conponenttypename != null">
         conponenttypename,
+      </if> <if test="warninglevel != null">
+      warninglevel,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -323,6 +326,8 @@
       </if>
       <if test="conponenttypename != null">
         #{conponenttypename,jdbcType=VARCHAR},
+      </if>  <if test="warninglevel != null">
+        #{warninglevel,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -490,6 +495,7 @@
       pid = #{pid,jdbcType=INTEGER},
       projecttype = #{projecttype,jdbcType=VARCHAR},
       conponenttypename = #{conponenttypename,jdbcType=VARCHAR}
+      warninglevel = #{warninglevel,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
 

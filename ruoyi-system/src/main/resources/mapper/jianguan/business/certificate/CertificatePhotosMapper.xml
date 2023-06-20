@@ -24,32 +24,62 @@
         <result property="updateTime" column="update_time"/>
     </resultMap>
 
-    <select id="getPageInfo" resultType="com.ruoyi.jianguan.business.certificate.domain.vo.CertificatePhotosVo" parameterType="com.ruoyi.jianguan.business.certificate.domain.dto.CertificatePhotosPageDTO">
+    <select id="getPlanPageInfo" resultType="com.ruoyi.jianguan.business.certificate.domain.vo.PlanCertificatePhotosVo" parameterType="com.ruoyi.jianguan.business.certificate.domain.dto.CertificatePhotosPageDTO">
         select
-        id,
-        name,
-        contents,
-        start_time,
-        end_time,
-        report_time,
-        report_user,
-        owner,
-        status,
-        attachment,
-        del_flag as delFlag,
-        project_id as projectId,
-        remark,
-        create_user_id as createUserId,
-        create_time as createTime,
-        update_user_id as updateUserId,
-        update_time as updateTime
-        from zz_plan_certificate_photos a
+            id,
+            name,
+            contents,
+            start_time,
+            end_time,
+            report_time,
+            report_user,
+            owner,
+            plan_status AS status,
+            del_flag as delFlag,
+            project_id as projectId,
+            remark,
+            create_user_id as createUserId,
+            create_time as createTime,
+            update_user_id as updateUserId,
+            update_time as updateTime
+            from zz_certificate_photos a
         where del_flag = 0
-        <if test="pageDto.reportTime != null">
-            and a.report_time = #{pageDto.reportTime}
+        <if test="pageDto.name != null">
+            and a.name like concat('%',#{pageDto.name},'%')
         </if>
         <if test="pageDto.status != null">
-            and a.status = #{status}
+            and a.plan_status = #{pageDto.status}
+        </if>
+        order by create_time desc
+    </select>
+
+    <select id="getProgressPageInfo" resultType="com.ruoyi.jianguan.business.certificate.domain.vo.ProgressCertificatePhotosVo" parameterType="com.ruoyi.jianguan.business.certificate.domain.dto.CertificatePhotosPageDTO">
+        select
+            id,
+            name,
+            contents,
+            start_time,
+            end_time,
+            report_time,
+            report_user,
+            owner,
+            progress_status AS status,
+            attachment,
+            del_flag as delFlag,
+            project_id as projectId,
+            remark,
+            create_user_id as createUserId,
+            create_time as createTime,
+            update_user_id as updateUserId,
+            update_time as updateTime
+        from zz_certificate_photos a
+        where del_flag = 0
+          and plan_status = 1
+        <if test="pageDto.name != null">
+            and a.name like concat('%',#{pageDto.name},'%')
+        </if>
+        <if test="pageDto.status != null">
+            and a.progress_status = #{pageDto.status}
         </if>
         order by create_time desc
     </select>

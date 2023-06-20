@@ -163,6 +163,8 @@ public class MongController {
         if(ObjUtil.isNull(zjFile.getId())) {
             isStartFlow = true;
         }
+        zjFile.setCreateUserId(LoginHelper.getUserId());
+        zjFile.setStatus(0);
         Integer integer = fileService.storZjFile(zjFile);
         if (integer == 1 && isStartFlow && "DSFJCDWZLGL".equals(zjFile.getFileType())) {
             String processDefinitionKey = BimFlowKey.DSFJCDWZLGL.getName();
@@ -209,7 +211,7 @@ public class MongController {
         Integer userid = LoginHelper.getUserId().intValue();
         zjFile.setUploadid(userid);
         zjFile.setUploadtime(new Date());
-
+        zjFile.setStatus(2);
         Integer integer = fileService.updateZjFile(zjFile);
 
         if (integer > 0) {

@@ -35,3 +35,10 @@ INSERT INTO `data_dictionary`(`id`, `parent_id`, `ancestors`, `code`, `name`, `o
 
 
 alter table zj_file add `status`      INT ( 1 ) DEFAULT '0' COMMENT '状态 0 审批中 1 审批完成 2 驳回';
+
+
+
+alter table zj_file add  `create_user_id` int(11) DEFAULT NULL COMMENT '创建者Id';
+alter table zj_file add `create_time` datetime DEFAULT NULL COMMENT '创建时间';
+alter table zj_file add `update_user_id` int(11) DEFAULT NULL COMMENT '更新者Id';
+alter table zj_file add `update_time` datetime DEFAULT NULL COMMENT '最后更新时间';

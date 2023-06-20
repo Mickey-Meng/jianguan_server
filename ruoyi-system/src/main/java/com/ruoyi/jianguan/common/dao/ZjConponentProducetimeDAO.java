@@ -141,6 +141,7 @@ public interface ZjConponentProducetimeDAO {
 
     List<ZjConponentProducetime> getbyTypeData(NewCheckData newCheckData);
 
+    List<ZjConponentProcessWarningDTO> getProcessWarning(NewCheckData newCheckData);
     void updateTime(@Param("zjByConponentId") ZjConponentProducetime zjByConponentId);
 
     List<ComponentProducetimeDTO> getData(@Param("list") List<String> list);

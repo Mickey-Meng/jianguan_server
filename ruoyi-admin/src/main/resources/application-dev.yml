@@ -222,3 +222,4 @@ weather:
 
 jianguan:
   jmreportUrl: "http://150.158.139.18:8088/"
+  serverBaseUrl: "http://150.158.139.18:26666/"
