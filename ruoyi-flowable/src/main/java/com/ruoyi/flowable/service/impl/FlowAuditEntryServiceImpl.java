@@ -7,9 +7,12 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Maps;
+import com.ruoyi.common.core.domain.dto.SsFUsersDTO;
+import com.ruoyi.common.core.domain.entity.SsFUsers;
 import com.ruoyi.common.core.domain.object.ResponseBase;
 import com.ruoyi.common.core.domain.object.ResponseResult;
 import com.ruoyi.common.core.sequence.util.IdUtil;
+import com.ruoyi.common.utils.jianguan.BeanCopyUtils;
 import com.ruoyi.flowable.service.UserService;
 import com.ruoyi.flowable.domain.dto.FlowAuditEntryPageDTO;
 import com.ruoyi.flowable.domain.dto.FlowAuditEntrySaveDTO;
@@ -82,7 +85,10 @@ public class FlowAuditEntryServiceImpl extends ServiceImpl<FlowAuditEntryMapper,
                 flowAuditEntrie.setUserIds(userIds);
                 //用户信息
                 if (Objects.nonNull(userIds) && !userIds.isEmpty()) {
-                    flowAuditEntrie.setUserInfo(userService.getUsersByIds(userIds));
+                    List<SsFUsersDTO> ssFUsersDTOList  = new ArrayList<>();
+                    List<SsFUsers> ssFUsersList  = userService.getUsersByIds(userIds);
+                    ssFUsersDTOList = com.ruoyi.common.utils.BeanCopyUtils.copyList(ssFUsersList,SsFUsersDTO.class);
+                    flowAuditEntrie.setUserInfo(ssFUsersDTOList);
                 }
                 //用户名称
                 List<String> userNames = JSONArray.parseArray(flowAuditEntrie.getUserName(), String.class);
@@ -91,7 +97,10 @@ public class FlowAuditEntryServiceImpl extends ServiceImpl<FlowAuditEntryMapper,
                 List<Integer> copyUserIds = JSONArray.parseArray(flowAuditEntrie.getCopyUser(), Integer.class);
                 flowAuditEntrie.setCopyUserId(copyUserIds);
                 if (Objects.nonNull(copyUserIds) && !copyUserIds.isEmpty()) {
-                    flowAuditEntrie.setCopyUserInfo(userService.getUsersByIds(copyUserIds));
+                    List<SsFUsersDTO> ssFUsersDTOList  = new ArrayList<>();
+                    List<SsFUsers> ssFUsersList  = userService.getUsersByIds(userIds);
+                    ssFUsersDTOList = com.ruoyi.common.utils.BeanCopyUtils.copyList(ssFUsersList,SsFUsersDTO.class);
+                    flowAuditEntrie.setUserInfo(ssFUsersDTOList);
                 }
             });
             return detailVos.stream().collect(Collectors.groupingBy(FlowAuditEntryDetailVo::getTypeName));
@@ -260,7 +269,9 @@ public class FlowAuditEntryServiceImpl extends ServiceImpl<FlowAuditEntryMapper,
             List<Integer> copyUserIds = JSONArray.parseArray(flowAuditEntrie.getCopyUser(), Integer.class);
             if (Objects.nonNull(copyUserIds) && !copyUserIds.isEmpty()) {
                 detailVo.setCopyUserId(copyUserIds);
-                detailVo.setCopyUserInfo(userService.getUsersByIds(copyUserIds));
+                List<SsFUsersDTO> ssFUsersDTOList  = new ArrayList<>();
+                BeanUtils.copyProperties(userService.getUsersByIds(copyUserIds),ssFUsersDTOList);
+                detailVo.setCopyUserInfo(ssFUsersDTOList);
             }
             //审核人员名称
             detailVo.setUserNames(JSONArray.parseArray(flowAuditEntrie.getUserName(), String.class));

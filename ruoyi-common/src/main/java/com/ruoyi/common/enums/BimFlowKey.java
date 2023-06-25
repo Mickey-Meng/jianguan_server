@@ -130,7 +130,7 @@ public enum BimFlowKey {
     /**
      * 计划管理-施工图设计
      */
-    planConstructionDesign("计划管理-施工图设计", "planConstructionDesign"),
+    planConstructionDesign("计划报审-施工图设计", "planConstructionDesign"),
 
     /**
      * 进度管理-施工图设计

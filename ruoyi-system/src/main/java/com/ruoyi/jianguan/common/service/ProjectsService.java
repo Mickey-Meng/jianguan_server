@@ -485,7 +485,7 @@ public class ProjectsService {
         if (userid <= 0){
             return new ResponseBase(200, "该用户id无效!");
         }
-        List<UserRolesDTO> users = ssFUserGroupDAO.getUsersByUserid(userid);
+        List<UserRolesDTO> users = ssFUserGroupDAO.getUsersByUserid(userid,projectId);
 
         return new ResponseBase(200, "查询成功!", users);
     }

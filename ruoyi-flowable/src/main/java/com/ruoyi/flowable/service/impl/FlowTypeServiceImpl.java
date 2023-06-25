@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.ruoyi.common.core.domain.dto.SsFUsersDTO;
+import com.ruoyi.common.core.domain.entity.SsFUsers;
 import com.ruoyi.common.core.sequence.util.IdUtil;
 import com.ruoyi.flowable.domain.dto.FlowTypePageDTO;
 import com.ruoyi.flowable.domain.entity.FlowAuditEntry;
@@ -21,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -100,7 +103,9 @@ public class FlowTypeServiceImpl extends ServiceImpl<FlowTypeMapper, FlowType> i
                 List<Integer> copyUserIds = JSONArray.parseArray(pageVo.getCopyUser(), Integer.class);
                 vo.setCopyUserId(copyUserIds);
                 if (Objects.nonNull(copyUserIds) && !copyUserIds.isEmpty()) {
-                    vo.setCopyUserInfo(userService.getUsersByIds(copyUserIds));
+                    List<SsFUsersDTO> ssFUsersDTOList  = new ArrayList<>();
+                    ssFUsersDTOList = com.ruoyi.common.utils.BeanCopyUtils.copyList(userService.getUsersByIds(copyUserIds),SsFUsersDTO.class);
+                    vo.setUserInfo(ssFUsersDTOList);
                 }
                 //审核人员名称
                 vo.setUserNames(JSONArray.parseArray(pageVo.getUserName(), String.class));
@@ -108,7 +113,9 @@ public class FlowTypeServiceImpl extends ServiceImpl<FlowTypeMapper, FlowType> i
                 List<Integer> userIds = JSONArray.parseArray(pageVo.getUserId(), Integer.class);
                 vo.setUserIds(userIds);
                 if (Objects.nonNull(userIds) && !userIds.isEmpty()) {
-                    vo.setUserInfo(userService.getUsersByIds(userIds));
+                    List<SsFUsersDTO> ssFUsersDTOList  = new ArrayList<>();
+                    ssFUsersDTOList = com.ruoyi.common.utils.BeanCopyUtils.copyList(userService.getUsersByIds(userIds),SsFUsersDTO.class);
+                    vo.setUserInfo(ssFUsersDTOList);
                 }
 //                //是否配置节点
 //                vo.setCount(flowAuditEntryService.getCount(id, projectId, buildSection));

@@ -1,6 +1,7 @@
 package com.ruoyi.flowable.domain.vo;
 
 import com.ruoyi.common.core.domain.NewBaseEntity;
+import com.ruoyi.common.core.domain.dto.SsFUsersDTO;
 import com.ruoyi.common.core.domain.entity.SsFUsers;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -105,7 +106,7 @@ public class FlowAuditEntryDetailVo extends NewBaseEntity {
      * 抄送人员信息
      */
     @ApiModelProperty(value = "抄送人员信息")
-    private List<SsFUsers> copyUserInfo;
+    private List<SsFUsersDTO> copyUserInfo;
 
     /**
      * 用户id
@@ -123,7 +124,7 @@ public class FlowAuditEntryDetailVo extends NewBaseEntity {
      * 审核人员信息
      */
     @ApiModelProperty(value = "审核人员信息")
-    private List<SsFUsers> userInfo;
+    private List<SsFUsersDTO> userInfo;
 
 
     /**

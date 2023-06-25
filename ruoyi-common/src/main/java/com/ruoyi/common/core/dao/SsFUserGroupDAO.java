@@ -146,9 +146,13 @@ public interface SsFUserGroupDAO {
             " LEFT JOIN sys_role b ON c.role_id = b.role_id   " +
             "WHERE  " +
             " a.user_id IN (  " +
-            " SELECT  user_id  FROM  sys_user  WHERE  dept_id = (  " +
+            " SELECT user_id FROM sys_user su,ss_f_user_project  sfu ,ss_f_projects sfp  " +
+            "WHERE su.user_id = sfu.USERID and sfu.GROUPID = sfp.ID and sfp.PARENTID= #{projectId} and  " +
+            "su.dept_id = ( SELECT s.dept_id FROM sys_user s WHERE user_id =  #{userid} )) ")
+    /*" SELECT  user_id  FROM  sys_user  WHERE  dept_id = (  " +
             "  SELECT s.dept_id FROM  sys_user s  WHERE user_id =  #{userid}))")
-    List<UserRolesDTO> getUsersByUserid(@Param("userid")Integer userid);
+    */
+    List<UserRolesDTO> getUsersByUserid(@Param("userid")Integer userid,@Param("projectId")Integer projectId);
 /*
 
     @Select("select " +

@@ -31,7 +31,6 @@ import java.util.Objects;
 
 /**
  * 计划&进度管理-证照管理Service业务层处理
- *
  * @author mickey
  * @date 2023-06-07
  */
@@ -56,11 +55,10 @@ public class CertificatePhotosServiceImpl extends ServiceImpl<CertificatePhotosM
             isStartFlow = true;
             certificatePhotos.setId(IdUtil.nextLongId());
         }
-        //附件
-        // certificatePhotos.setAttachment(JSON.toJSONString(saveDto.getAttachment()));
         // 编辑操作不修改审批状态
         if(ObjUtil.isNull(saveDto.getId())) {
             certificatePhotos.setPlanStatus(0);
+            certificatePhotos.setProgressStatus(-1);
         }
         boolean saveOrUpdate = this.saveOrUpdate(certificatePhotos);
         if (saveOrUpdate && isStartFlow) {
