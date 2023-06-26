@@ -150,7 +150,7 @@ public interface PersonDAO {
     String getHisInstanceIdByBusinessKey(String key);
 
     // #118 modify mengzhengbin 20230405 修改：group by subDate desc 改为 order by subDate desc。 [S]
-    @Select("select * from zj_person where status = 2 order by subDate desc")
+    @Select("select * from zj_person where status = 1 order by subDate desc")
     List<PersonDTO> getAllFinishContracts();
     // #118 --[E]
 

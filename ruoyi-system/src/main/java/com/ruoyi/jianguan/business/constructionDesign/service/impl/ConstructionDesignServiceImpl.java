@@ -2,10 +2,12 @@ package com.ruoyi.jianguan.business.constructionDesign.service.impl;
 
 import cn.hutool.core.util.ObjUtil;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.ruoyi.common.core.domain.entity.FileModel;
 import com.ruoyi.common.core.domain.object.ResponseBase;
 import com.ruoyi.common.core.sequence.util.IdUtil;
 import com.ruoyi.common.enums.BimFlowKey;
@@ -48,22 +50,23 @@ public class ConstructionDesignServiceImpl extends ServiceImpl<ConstructionDesig
     @Override
     public ResponseBase addOrUpdate(PlanConstructionDesignSaveDTO saveDto) {
         //属性copy
-        ConstructionDesign ConstructionDesign = new ConstructionDesign();
-        BeanUtils.copyProperties(saveDto, ConstructionDesign);
+        ConstructionDesign constructionDesign = new ConstructionDesign();
+        BeanUtils.copyProperties(saveDto, constructionDesign);
+        constructionDesign.setPlanOwner(saveDto.getOwner());
         boolean isStartFlow = false;
         if (Objects.isNull(saveDto.getId())) {
             isStartFlow = true;
-            ConstructionDesign.setId(IdUtil.nextLongId());
+            constructionDesign.setId(IdUtil.nextLongId());
         }
         // 编辑操作不修改审批状态
         if(ObjUtil.isNull(saveDto.getId())) {
-            ConstructionDesign.setPlanStatus(0);
-            ConstructionDesign.setProgressStatus(-1);
+            constructionDesign.setPlanStatus(0);
+            constructionDesign.setProgressStatus(-1);
         }
-        boolean saveOrUpdate = this.saveOrUpdate(ConstructionDesign);
+        boolean saveOrUpdate = this.saveOrUpdate(constructionDesign);
         if (saveOrUpdate && isStartFlow) {
             String processDefinitionKey = BimFlowKey.planConstructionDesign.getName();
-            String businessKey = ConstructionDesign.getId().toString();
+            String businessKey = constructionDesign.getId().toString();
             //设置流程的审批人
             Map<String, Object> auditUser = saveDto.getAuditUser();
             if (auditUser.isEmpty()) {
@@ -86,14 +89,15 @@ public class ConstructionDesignServiceImpl extends ServiceImpl<ConstructionDesig
 
     @Override
     public ResponseBase updateUploadFile(ProgressConstructionDesignSaveDTO saveDto) {
-        ConstructionDesign ConstructionDesign = constructionDesignMapper.selectById(saveDto.getId());
+        ConstructionDesign constructionDesign = constructionDesignMapper.selectById(saveDto.getId());
         //附件
-        ConstructionDesign.setAttachment(JSON.toJSONString(saveDto.getAttachment()));
-        ConstructionDesign.setProgressStatus(0);
-        boolean saveOrUpdate = this.saveOrUpdate(ConstructionDesign);
+        constructionDesign.setAttachment(JSON.toJSONString(saveDto.getAttachment()));
+        constructionDesign.setProgressStatus(0);
+        constructionDesign.setProgressOwner(saveDto.getOwner());
+        boolean saveOrUpdate = this.saveOrUpdate(constructionDesign);
         if (saveOrUpdate) {
             String processDefinitionKey = BimFlowKey.progressConstructionDesign.getName();
-            String businessKey = ConstructionDesign.getId().toString();
+            String businessKey = constructionDesign.getId().toString();
             //设置流程的审批人
             Map<String, Object> auditUser = saveDto.getAuditUser();
             if (auditUser.isEmpty()) {
@@ -117,31 +121,32 @@ public class ConstructionDesignServiceImpl extends ServiceImpl<ConstructionDesig
     @Override
     public PlanConstructionDesignVo getPlanInfoById(Long id) {
         //查询
-        ConstructionDesign ConstructionDesign = this.getById(id);
-        if (Objects.isNull(ConstructionDesign)) {
+        ConstructionDesign constructionDesign = this.getById(id);
+        if (Objects.isNull(constructionDesign)) {
             return null;
         }
         //属性转换
         PlanConstructionDesignVo vo = new PlanConstructionDesignVo();
-        BeanUtils.copyProperties(ConstructionDesign, vo);
+        BeanUtils.copyProperties(constructionDesign, vo);
+        vo.setOwner(constructionDesign.getPlanOwner());
+        vo.setStatus(constructionDesign.getPlanStatus());
         return vo;
     }
     @Override
     public ProgressConstructionDesignVo getProgressInfoById(Long id) {
         //查询
-        ConstructionDesign ConstructionDesign = this.getById(id);
-        if (Objects.isNull(ConstructionDesign)) {
+        ConstructionDesign constructionDesign = this.getById(id);
+        if (Objects.isNull(constructionDesign)) {
             return null;
         }
         //属性转换
         ProgressConstructionDesignVo vo = new ProgressConstructionDesignVo();
-        BeanUtils.copyProperties(ConstructionDesign, vo);
-        // TODO: 2023/3/29 附件待实现
-       // vo.setAttachment(JSONArray.parseArray(progressConstructionDesign.getAttachment(), FileModel.class));
+        BeanUtils.copyProperties(constructionDesign, vo);
+        vo.setOwner(constructionDesign.getProgressOwner());
+        vo.setStatus(constructionDesign.getProgressStatus());
+        vo.setAttachment(JSONArray.parseArray(constructionDesign.getAttachment(), FileModel.class));
         return vo;
     }
-
-
 
     /**
      * 查询[计划报审-施工图管理]分页数据

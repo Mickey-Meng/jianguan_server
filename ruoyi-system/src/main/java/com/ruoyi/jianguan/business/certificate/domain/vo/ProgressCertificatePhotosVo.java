@@ -1,8 +1,11 @@
 package com.ruoyi.jianguan.business.certificate.domain.vo;
 
+import com.ruoyi.common.core.domain.entity.FileModel;
 import com.ruoyi.common.core.domain.vo.NewBaseVo;
 import lombok.Data;
 import java.util.Date;
+import java.util.List;
+
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 import io.swagger.annotations.ApiModel;
@@ -28,7 +31,7 @@ public class ProgressCertificatePhotosVo extends PlanCertificatePhotosVo {
      */
     @ExcelProperty(value = "附件")
     @ApiModelProperty(value = "附件", required = true)
-    private String attachment;
+    private List<FileModel> attachment;
 
 }
 

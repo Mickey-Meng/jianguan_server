@@ -2,10 +2,12 @@ package com.ruoyi.jianguan.business.certificate.service.impl;
 
 import cn.hutool.core.util.ObjUtil;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.ruoyi.common.core.domain.entity.FileModel;
 import com.ruoyi.common.core.domain.object.ResponseBase;
 import com.ruoyi.common.core.sequence.util.IdUtil;
 import com.ruoyi.common.enums.BimFlowKey;
@@ -50,6 +52,7 @@ public class CertificatePhotosServiceImpl extends ServiceImpl<CertificatePhotosM
         //属性copy
         CertificatePhotos certificatePhotos = new CertificatePhotos();
         BeanUtils.copyProperties(saveDto, certificatePhotos);
+        certificatePhotos.setPlanOwner(saveDto.getOwner());
         boolean isStartFlow = false;
         if (Objects.isNull(saveDto.getId())) {
             isStartFlow = true;
@@ -90,6 +93,7 @@ public class CertificatePhotosServiceImpl extends ServiceImpl<CertificatePhotosM
         //附件
         certificatePhotos.setAttachment(JSON.toJSONString(saveDto.getAttachment()));
         certificatePhotos.setProgressStatus(0);
+        certificatePhotos.setProgressOwner(saveDto.getOwner());
         boolean saveOrUpdate = this.saveOrUpdate(certificatePhotos);
         if (saveOrUpdate) {
             String processDefinitionKey = BimFlowKey.progressCertificatePhotos.getName();
@@ -124,6 +128,8 @@ public class CertificatePhotosServiceImpl extends ServiceImpl<CertificatePhotosM
         //属性转换
         PlanCertificatePhotosVo vo = new PlanCertificatePhotosVo();
         BeanUtils.copyProperties(certificatePhotos, vo);
+        vo.setOwner(certificatePhotos.getPlanOwner());
+        vo.setStatus(certificatePhotos.getPlanStatus());
         return vo;
     }
     @Override
@@ -136,12 +142,11 @@ public class CertificatePhotosServiceImpl extends ServiceImpl<CertificatePhotosM
         //属性转换
         ProgressCertificatePhotosVo vo = new ProgressCertificatePhotosVo();
         BeanUtils.copyProperties(certificatePhotos, vo);
-        // TODO: 2023/3/29 附件待实现
-       // vo.setAttachment(JSONArray.parseArray(progressCertificatePhotos.getAttachment(), FileModel.class));
+        vo.setOwner(certificatePhotos.getProgressOwner());
+        vo.setStatus(certificatePhotos.getProgressStatus());
+        vo.setAttachment(JSONArray.parseArray(certificatePhotos.getAttachment(), FileModel.class));
         return vo;
     }
-
-
 
     /**
      * 查询[计划管理-证照管理]分页数据

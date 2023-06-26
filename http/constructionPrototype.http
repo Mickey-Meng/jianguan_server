@@ -1,12 +1,9 @@
-GET {{host}}/web/api/v1/daily_report/detail/id?id=1
+###
+GET {{host}}/web/api/v1/construction_prototype/detail/id?id=1672985760048877569
 Authorization: {{Authorization}}
 
 ###
-GET {{host}}/web/api/v1/daily_report/detail/id?id=1670610421997899776
-Authorization: {{Authorization}}
-
-###
-POST {{host}}/web/api/v1/daily_report/addOrUpdate
+POST {{host}}/web/api/v1/construction_prototype/addOrUpdate
 Authorization: {{Authorization}}
 Content-Type: application/json
 
@@ -17,7 +14,7 @@ Content-Type: application/json
 }
 
 ###
-POST {{host}}/web/api/v1/daily_report/page
+POST {{host}}/web/api/v1/construction_prototype/page
 Authorization: {{Authorization}}
 Content-Type: application/json
 
@@ -29,5 +26,5 @@ Content-Type: application/json
 }
 
 ###
-GET {{host}}/web/api/v1/daily_report/list
+GET {{host}}/web/api/v1/construction_prototype/list
 Authorization: {{Authorization}}

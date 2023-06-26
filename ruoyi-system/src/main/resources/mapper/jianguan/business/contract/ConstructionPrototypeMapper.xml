@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.jianguan.business.contract.mapper.ConstructionPrototypeMapper">
+
+    <resultMap type="com.ruoyi.jianguan.business.contract.domain.entity.ConstructionPrototype"
+               id="ConstructionPrototypeResult">
+        <result property="id" column="id"/>
+        <result property="content" column="content"/>
+        <result property="reportPeople" column="report_people"/>
+        <result property="reportTime" column="report_time"/>
+        <result property="attachment" column="attachment"/>
+        <result property="status" column="status"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="createUserId" column="createUserId"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateUserId" column="updateUserId"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+
+    <select id="getPageInfo" resultType="com.ruoyi.jianguan.business.contract.domain.vo.ConstructionPrototypePageVo"
+            parameterType="com.ruoyi.jianguan.business.contract.domain.dto.ConstructionPrototypePageDTO">
+        select *
+        from construction_prototype a
+        <where>
+            <if test="pageDto.content != null">
+                and a.content = #{pageDto.content }
+            </if>
+            <if test="pageDto.reportPeople != null">
+                and a.report_people = #{pageDto.reportPeople}
+            </if>
+            a.project_id = #{pageDto.projectId}
+            and
+            a.del_flag = 0
+        </where>
+        order by create_time desc
+    </select>
+
+</mapper>

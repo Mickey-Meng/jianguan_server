@@ -1,9 +1,9 @@
 package com.ruoyi.workflow.plugin.impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import com.ruoyi.jianguan.business.certificate.domain.entity.CertificatePhotos;
-import com.ruoyi.jianguan.business.certificate.domain.vo.PlanCertificatePhotosVo;
-import com.ruoyi.jianguan.business.certificate.service.CertificatePhotosService;
+import com.ruoyi.jianguan.business.constructionDesign.domain.entity.ConstructionDesign;
+import com.ruoyi.jianguan.business.constructionDesign.domain.vo.PlanConstructionDesignVo;
+import com.ruoyi.jianguan.business.constructionDesign.service.ConstructionDesignService;
 import com.ruoyi.workflow.plugin.FlowablePlugin;
 import lombok.extern.slf4j.Slf4j;
 import org.flowable.engine.runtime.ProcessInstance;
@@ -21,7 +21,7 @@ import java.util.Objects;
 public class PlanConstructionDesignFlowablePlugin implements FlowablePlugin {
 
     @Autowired
-    private CertificatePhotosService certificatePhotosService;
+    private ConstructionDesignService constructionDesignService;
 
 
     @Override
@@ -50,16 +50,15 @@ public class PlanConstructionDesignFlowablePlugin implements FlowablePlugin {
      */
     private void updateStatus(ProcessInstance processInstance, Integer status) {
         String businessKey = processInstance.getBusinessKey();
-
-        PlanCertificatePhotosVo planCertificatePhotosVo = certificatePhotosService.getPlanInfoById(Long.parseLong(businessKey));
-        log.info("PlanCertificatePhotosFlowablePlugin.planCertificatePhotosVo: {}", planCertificatePhotosVo);
-        if (Objects.nonNull(planCertificatePhotosVo)) {
-            CertificatePhotos certificatePhotos = new CertificatePhotos();
-            BeanUtil.copyProperties(planCertificatePhotosVo, certificatePhotos, false);
-            certificatePhotos.setPlanStatus(0);
+        PlanConstructionDesignVo planConstructionDesignVo = constructionDesignService.getPlanInfoById(Long.parseLong(businessKey));
+        log.info("PlanConstructionDesignFlowablePlugin.planConstructionDesignVo: {}", planConstructionDesignVo);
+        if (Objects.nonNull(planConstructionDesignVo)) {
+            ConstructionDesign constructionDesign = new ConstructionDesign();
+            BeanUtil.copyProperties(planConstructionDesignVo, constructionDesign, false);
+            constructionDesign.setPlanStatus(0);
             //合同信息
-            certificatePhotos.setAttachment(null);
-            certificatePhotosService.updateById(certificatePhotos);
+            constructionDesign.setAttachment(null);
+            constructionDesignService.updateById(constructionDesign);
         }
     }
 }

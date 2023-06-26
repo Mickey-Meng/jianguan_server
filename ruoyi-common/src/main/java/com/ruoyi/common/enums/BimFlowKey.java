@@ -138,6 +138,12 @@ public enum BimFlowKey {
     progressConstructionDesign("进度管理-施工图设计", "progressConstructionDesign"),
 
 
+
+    /**
+     * 合同付款
+     */
+    constructionPrototype("施工样板", "constructionPrototype"),
+
     dailyReport("每日晨检", "dailyReport");
 
     private String key;

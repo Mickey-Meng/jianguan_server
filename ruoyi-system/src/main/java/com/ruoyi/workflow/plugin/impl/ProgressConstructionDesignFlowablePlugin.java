@@ -1,9 +1,9 @@
 package com.ruoyi.workflow.plugin.impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import com.ruoyi.jianguan.business.certificate.domain.entity.CertificatePhotos;
-import com.ruoyi.jianguan.business.certificate.domain.vo.PlanCertificatePhotosVo;
-import com.ruoyi.jianguan.business.certificate.service.CertificatePhotosService;
+import com.ruoyi.jianguan.business.constructionDesign.domain.entity.ConstructionDesign;
+import com.ruoyi.jianguan.business.constructionDesign.domain.vo.ProgressConstructionDesignVo;
+import com.ruoyi.jianguan.business.constructionDesign.service.ConstructionDesignService;
 import com.ruoyi.workflow.plugin.FlowablePlugin;
 import lombok.extern.slf4j.Slf4j;
 import org.flowable.engine.runtime.ProcessInstance;
@@ -21,8 +21,7 @@ import java.util.Objects;
 public class ProgressConstructionDesignFlowablePlugin implements FlowablePlugin {
 
     @Autowired
-    private CertificatePhotosService certificatePhotosService;
-
+    private ConstructionDesignService constructionDesignService;
 
     @Override
     public void approved(ProcessInstance processInstance) {
@@ -51,15 +50,14 @@ public class ProgressConstructionDesignFlowablePlugin implements FlowablePlugin 
     private void updateStatus(ProcessInstance processInstance, Integer status) {
         String businessKey = processInstance.getBusinessKey();
 
-        PlanCertificatePhotosVo planCertificatePhotosVo = certificatePhotosService.getPlanInfoById(Long.parseLong(businessKey));
-        log.info("PlanCertificatePhotosFlowablePlugin.planCertificatePhotosVo: {}", planCertificatePhotosVo);
-        if (Objects.nonNull(planCertificatePhotosVo)) {
-            CertificatePhotos certificatePhotos = new CertificatePhotos();
-            BeanUtil.copyProperties(planCertificatePhotosVo, certificatePhotos, false);
-            certificatePhotos.setPlanStatus(0);
-            //合同信息
-            certificatePhotos.setAttachment(null);
-            certificatePhotosService.updateById(certificatePhotos);
+        ProgressConstructionDesignVo progressConstructionDesignVo = constructionDesignService.getProgressInfoById(Long.parseLong(businessKey));
+        log.info("ProgressConstructionDesignFlowablePlugin.progressConstructionDesignVo: {}", progressConstructionDesignVo);
+        if (Objects.nonNull(progressConstructionDesignVo)) {
+            ConstructionDesign constructionDesign = new ConstructionDesign();
+            BeanUtil.copyProperties(progressConstructionDesignVo, constructionDesign, false);
+            constructionDesign.setProgressStatus(0);
+            constructionDesign.setAttachment(null);
+            constructionDesignService.updateById(constructionDesign);
         }
     }
 }

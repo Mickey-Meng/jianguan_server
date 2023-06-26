@@ -9,6 +9,7 @@ import cn.jimmyshi.beanquery.BeanQuery;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageInfo;
 import com.github.pagehelper.page.PageMethod;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.ruoyi.common.annotation.MyRequestBody;
@@ -16,6 +17,7 @@ import com.ruoyi.common.core.domain.object.*;
 import com.ruoyi.common.core.validate.UpdateGroup;
 import com.ruoyi.common.enums.ErrorCodeEnum;
 import com.ruoyi.common.exception.MyRuntimeException;
+import com.ruoyi.common.helper.LoginHelper;
 import com.ruoyi.common.utils.MyCommonUtil;
 import com.ruoyi.common.utils.MyModelUtil;
 import com.ruoyi.common.utils.MyPageUtil;
@@ -24,18 +26,14 @@ import com.ruoyi.flowable.common.constant.FlowEntryStatus;
 import com.ruoyi.flowable.common.constant.FlowTaskType;
 import com.ruoyi.flowable.domain.dto.FlowEntryDto;
 import com.ruoyi.flowable.domain.dto.FlowKeyValueDto;
+import com.ruoyi.flowable.domain.dto.FlowTypePageDTO;
 import com.ruoyi.flowable.domain.entity.FlowTaskMultiSignAssign;
 import com.ruoyi.flowable.domain.vo.FlowEntryPublishVo;
 import com.ruoyi.flowable.domain.vo.FlowEntryVo;
+import com.ruoyi.flowable.domain.vo.FlowTypeDetailVo;
 import com.ruoyi.flowable.domain.vo.TaskInfoVo;
-import com.ruoyi.flowable.model.FlowEntry;
-import com.ruoyi.flowable.model.FlowEntryPublish;
-import com.ruoyi.flowable.model.FlowEntryVariable;
-import com.ruoyi.flowable.model.FlowTaskExt;
-import com.ruoyi.flowable.service.FlowApiService;
-import com.ruoyi.flowable.service.FlowCategoryService;
-import com.ruoyi.flowable.service.FlowEntryService;
-import com.ruoyi.flowable.service.FlowEntryVariableService;
+import com.ruoyi.flowable.model.*;
+import com.ruoyi.flowable.service.*;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.flowable.bpmn.model.Process;
@@ -70,6 +68,9 @@ public class FlowEntryController {
     private FlowApiService flowApiService;
     @Autowired
     private RepositoryService repositoryService;
+    @Autowired
+    private FlowTypeService flowTypeService;
+
     /**
      * 新增工作流对象数据。
      *
@@ -173,6 +174,8 @@ public class FlowEntryController {
         return ResponseResult.success();
     }
 
+    @Autowired
+    private FlowAuditEntryService flowAuditEntryService;
     /**
      * 发布工作流。
      *
@@ -198,6 +201,32 @@ public class FlowEntryController {
         List<FlowTaskExt> flowTaskExtList = this.buildTaskExtList(flowEntry);
         String taskInfo = taskInfoResult.getData() == null ? null : JSON.toJSONString(taskInfoResult.getData());
         flowEntryService.publish(flowEntry, taskInfo, flowTaskExtList);
+
+        FlowTypePageDTO flowTypePageDTO = new FlowTypePageDTO();
+        flowTypePageDTO.setFlowKey(flowEntry.getProcessDefinitionKey());
+        flowTypePageDTO.setPageSize(1000);
+        flowTypePageDTO.setPageNum(1);
+        PageInfo<FlowTypeDetailVo> pageInfo = flowTypeService.getPageInfo(flowTypePageDTO);
+        if (ObjectUtil.isNull(pageInfo) || CollUtil.isEmpty(pageInfo.getList()) || pageInfo.getList().size() != 1) {
+            FlowType flowType = new FlowType();
+            flowType.setFlowKey(flowEntry.getProcessDefinitionKey());
+            flowType.setFlowName(flowEntry.getProcessDefinitionName());
+            flowType.setDeletedFlag(1);
+            flowType.setCreateUserId(LoginHelper.getUserId().intValue());
+            flowType.setCreateTime(new Date());
+            flowTypeService.addOrUpdate(flowType);
+            return ResponseResult.success();
+        }
+
+        flowAuditEntryService.removeByFlowKey(flowEntry.getProcessDefinitionKey());
+
+//        重新发布工作流
+//          1、typeId清理zz_flow_audit_entry表数据
+//          2、调用生成节点功能，重新生成节点
+//        影响：
+//          1、流程中的数据-待测
+//          2、已配置的节点人员需要重新配置
+
         return ResponseResult.success();
     }
 
