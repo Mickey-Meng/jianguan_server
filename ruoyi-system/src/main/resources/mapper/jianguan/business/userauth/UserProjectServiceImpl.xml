@@ -25,4 +25,18 @@
                 SELECT id FROM ss_f_projects WHERE PARENTID = #{projectId}
         )
     </delete>
+
+    <select id="selectUserListByProjectId" resultType="com.ruoyi.common.core.domain.entity.SysUser">
+        SELECT
+            u.user_id AS userId,
+            u.user_name AS userName,
+            u.nick_name AS nickName,
+            d.dept_id AS deptId
+        FROM sys_user u
+        LEFT JOIN sys_dept d ON d.dept_id = u.dept_id
+        LEFT JOIN sys_project_dept pd ON pd.dept_id = d.dept_id
+        LEFT JOIN ss_f_projects p ON p.id = pd.project_id
+        WHERE p.parentid = #{projectId}
+
+    </select>
 </mapper>

@@ -55,7 +55,7 @@ public class ProgressConstructionDesignFlowablePlugin implements FlowablePlugin 
         if (Objects.nonNull(progressConstructionDesignVo)) {
             ConstructionDesign constructionDesign = new ConstructionDesign();
             BeanUtil.copyProperties(progressConstructionDesignVo, constructionDesign, false);
-            constructionDesign.setProgressStatus(0);
+            constructionDesign.setProgressStatus(status);
             constructionDesign.setAttachment(null);
             constructionDesignService.updateById(constructionDesign);
         }

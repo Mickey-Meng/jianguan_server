@@ -1648,7 +1648,7 @@ public class PersonService {
             Integer roleId = getRoleIdByRoleType(parentRoleId);
             personDTOs = personDAO.getContractByRoleId(roleId);
         } else {
-            personDTOs = personDAO.getAllFinishContracts();
+            personDTOs = personDAO.getAllFinishContracts(projectId);
         }
         // 从 http 请求头中取出 token
         String token = getRequest().getHeader("Authorization");

@@ -2,7 +2,7 @@ package com.ruoyi.workflow.plugin.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.ruoyi.jianguan.business.certificate.domain.entity.CertificatePhotos;
-import com.ruoyi.jianguan.business.certificate.domain.vo.PlanCertificatePhotosVo;
+import com.ruoyi.jianguan.business.certificate.domain.vo.ProgressCertificatePhotosVo;
 import com.ruoyi.jianguan.business.certificate.service.CertificatePhotosService;
 import com.ruoyi.workflow.plugin.FlowablePlugin;
 import lombok.extern.slf4j.Slf4j;
@@ -51,12 +51,12 @@ public class ProgressCertificatePhotosFlowablePlugin implements FlowablePlugin {
     private void updateStatus(ProcessInstance processInstance, Integer status) {
         String businessKey = processInstance.getBusinessKey();
 
-        PlanCertificatePhotosVo planCertificatePhotosVo = certificatePhotosService.getPlanInfoById(Long.parseLong(businessKey));
-        log.info("PlanCertificatePhotosFlowablePlugin.planCertificatePhotosVo: {}", planCertificatePhotosVo);
-        if (Objects.nonNull(planCertificatePhotosVo)) {
+        ProgressCertificatePhotosVo progressCertificatePhotosVo = certificatePhotosService.getProgressInfoById(Long.parseLong(businessKey));
+        log.info("ProgressCertificatePhotosFlowablePlugin.progressCertificatePhotosVo: {}", progressCertificatePhotosVo);
+        if (Objects.nonNull(progressCertificatePhotosVo)) {
             CertificatePhotos certificatePhotos = new CertificatePhotos();
-            BeanUtil.copyProperties(planCertificatePhotosVo, certificatePhotos, false);
-            certificatePhotos.setPlanStatus(0);
+            BeanUtil.copyProperties(progressCertificatePhotosVo, certificatePhotos, false);
+            certificatePhotos.setProgressStatus(status);
             //合同信息
             certificatePhotos.setAttachment(null);
             certificatePhotosService.updateById(certificatePhotos);

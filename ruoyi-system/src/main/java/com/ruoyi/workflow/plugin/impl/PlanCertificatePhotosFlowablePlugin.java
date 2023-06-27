@@ -59,7 +59,7 @@ public class PlanCertificatePhotosFlowablePlugin implements FlowablePlugin {
         if (Objects.nonNull(planCertificatePhotosVo)) {
             CertificatePhotos certificatePhotos = new CertificatePhotos();
             BeanUtil.copyProperties(planCertificatePhotosVo, certificatePhotos, false);
-            certificatePhotos.setPlanStatus(0);
+            certificatePhotos.setPlanStatus(status);
             //合同信息
             certificatePhotos.setAttachment(null);
             certificatePhotosService.updateById(certificatePhotos);

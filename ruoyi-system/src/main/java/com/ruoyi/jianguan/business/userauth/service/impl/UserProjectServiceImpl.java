@@ -2,6 +2,7 @@ package com.ruoyi.jianguan.business.userauth.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.jianguan.business.userauth.domain.entity.UserProject;
 import com.ruoyi.jianguan.business.userauth.mapper.UserProjectMapper;
 import com.ruoyi.jianguan.business.userauth.service.IUserProjectService;
@@ -47,5 +48,10 @@ public class UserProjectServiceImpl implements IUserProjectService {
         LambdaQueryWrapper<UserProject> lqw = Wrappers.lambdaQuery();
         lqw.eq(!Objects.isNull(userId), UserProject::getUserId, userId);
         return userProjectMapper.selectList(lqw);
+    }
+
+    @Override
+    public List<SysUser> getUsersByProjectId(Long projectId) {
+        return userProjectMapper.selectUserListByProjectId(projectId);
     }
 }

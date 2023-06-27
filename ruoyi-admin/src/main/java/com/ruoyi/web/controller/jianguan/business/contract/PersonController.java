@@ -102,7 +102,7 @@ public class PersonController {
 
     @PostMapping("/getContracts")
     @ApiOperation(value = "通过项目id,用户id 获取所有人员合同(填报记录)")
-    public ResponseBase getContracts(@RequestParam(value = "projectid", defaultValue = "0")Integer projectid){
+    public ResponseBase getContracts(@RequestParam(value = "projectid" )Integer projectid){
         return personService.getContracts(projectid);
     }
 

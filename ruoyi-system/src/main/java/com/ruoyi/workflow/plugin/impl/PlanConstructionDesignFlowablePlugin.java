@@ -55,7 +55,7 @@ public class PlanConstructionDesignFlowablePlugin implements FlowablePlugin {
         if (Objects.nonNull(planConstructionDesignVo)) {
             ConstructionDesign constructionDesign = new ConstructionDesign();
             BeanUtil.copyProperties(planConstructionDesignVo, constructionDesign, false);
-            constructionDesign.setPlanStatus(0);
+            constructionDesign.setPlanStatus(status);
             //合同信息
             constructionDesign.setAttachment(null);
             constructionDesignService.updateById(constructionDesign);

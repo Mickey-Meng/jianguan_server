@@ -1,6 +1,7 @@
 package com.ruoyi.jianguan.business.userauth.service;
 
 import com.ruoyi.jianguan.business.userauth.domain.entity.UserProject;
+import com.ruoyi.common.core.domain.entity.SysUser;
 
 import java.util.List;
 
@@ -26,4 +27,5 @@ public interface IUserProjectService {
      */
     public List<UserProject> getWorkAreaByUserId(Integer userId);
 
+    List<SysUser> getUsersByProjectId(Long projectId);
 }
