@@ -303,8 +303,9 @@ public class PersonController {
             @ApiImplicitParam(name = "roleType", value = "角色的集合, 例(1:施工, 2:监理, 3:全资)")
     })
     public ResponseBase getContractStandingBook(@RequestParam(value = "projectId")Integer project,
-                                                @RequestParam(value = "roleType", required = false)Integer roleType){
-        return personService.getContractStandingBook(project, roleType);
+                                                @RequestParam(value = "roleType", required = false)Integer roleType,
+                                                @RequestParam(value = "subName", required = false)String subName){
+        return personService.getContractStandingBook(project, roleType,subName);
     }
 
     @PostMapping("/getChangeStandingBook")

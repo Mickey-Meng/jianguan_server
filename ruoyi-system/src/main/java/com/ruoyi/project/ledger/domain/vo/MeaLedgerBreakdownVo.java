@@ -46,7 +46,7 @@ public class MeaLedgerBreakdownVo {
     @ExcelProperty(value = "台账分解编号父节点")
     private String tzfjbhParent;
 
-    /**
+/*    *//**
      * 台账分解编号祖级列表
      */
     @ExcelProperty(value = "台账分解编号祖级列表")
@@ -68,15 +68,15 @@ public class MeaLedgerBreakdownVo {
     /**
      * 状态（0正常 1停用）
      */
-    @ExcelProperty(value = "状态", converter = ExcelDictConvert.class)
+ /*   @ExcelProperty(value = "状态", converter = ExcelDictConvert.class)
     @ExcelDictFormat(dictType = "data_status")
     private String status;
-
+*/
     /**
      * 备注
      */
-    @ExcelProperty(value = "备注")
-    private String remark;
+ /*   @ExcelProperty(value = "备注")
+    private String remark;*/
 
     /**
      * 树id

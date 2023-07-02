@@ -65,7 +65,7 @@ public class PlanConstructionDesignSaveDTO extends SaveDTO {
     private String reportUser;
 
     /**
-     * 责任人
+     * 责任人 ID&名称
      */
     @NotBlank(message = "责任人不能为空", groups = { AddGroup.class, EditGroup.class })
     private String owner;

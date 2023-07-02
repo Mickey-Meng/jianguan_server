@@ -125,9 +125,11 @@ public class UserService extends RoleService
         users.setId(id);
         final Map<String, Object> userInfo = this.usersMapper.select(users).get(0);
         final UserRole userRole = new UserRole();
-        userRole.setUserid((int)userInfo.get("ID"));
-        if (mobile != -1) {
-            this.authservice.updateMobile((Integer) userInfo.get("ID"), mobile);
+        if(null != userInfo){
+            userRole.setUserid(Integer.parseInt(userInfo.get("user_id").toString()));
+            if (mobile != -1) {
+                this.authservice.updateMobile(Integer.parseInt(userInfo.get("user_id").toString()), mobile);
+            }
         }
         final Map<String, Object> userAuth = this.selectUserAuth(userRole, type, systemName);
         final List<Map<String, Object>> roles = (List<Map<String, Object>>)((EntityList)this.selectUserRole(userRole).getData()).getGetMe();
@@ -499,10 +501,10 @@ public class UserService extends RoleService
     public Map<String, Object> selectUserAuth(final UserRole userRole, final String type, final String systemName) {
         final List<Map<String, Object>> roleList = (List<Map<String, Object>>)((EntityList)this.selectUserRole(userRole).getData()).getGetMe();
         final List<Integer> uids = new ArrayList<Integer>();
-        roleList.forEach(item -> uids.add((int)item.get("ID")));
+        roleList.forEach(item -> uids.add((int)item.get("role_id")));
         final Map<String, Object> params = new HashMap<String, Object>();
-        params.put("uids", uids);
-        params.put("sysCode", systemName);
+        params.put("uids", uids); // 角色集合。
+        params.put("sysCode", systemName); //
         final List<Map<String, Object>> menuList = this.menuMapper.selectMenu(params);
         final List<Map<String, Object>> menuCookie = ZListUtil.getTreeByList("ID", "PARENTID", "children", menuList, -1);
         final List<Map<String, Object>> funList = this.funMapper.selectFun(params);

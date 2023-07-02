@@ -57,14 +57,14 @@ public class ConstructionDesign extends NewBaseEntity {
      */
     private String reportUser;
     /**
-     * 计划责任人
+     * 责任人ID
      */
-    private String planOwner;
+    private Long ownerId;
 
     /**
-     * 进度责任人
+     * 责任人名称
      */
-    private String progressOwner;
+    private String ownerName;
     /**
      * 附件
      */

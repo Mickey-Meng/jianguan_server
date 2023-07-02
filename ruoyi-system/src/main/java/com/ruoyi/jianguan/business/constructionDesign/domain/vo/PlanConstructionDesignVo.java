@@ -75,6 +75,20 @@ public class PlanConstructionDesignVo extends NewBaseVo {
     private String reportUser;
 
     /**
+     * 责任人ID
+     */
+    @ExcelProperty(value = "责任人ID")
+    @ApiModelProperty(value = "责任人ID", required = true)
+    private Long ownerId;
+
+    /**
+     * 责任人名称
+     */
+    @ExcelProperty(value = "责任人名称")
+    @ApiModelProperty(value = "责任人名称", required = true)
+    private String ownerName;
+
+    /**
      * 责任人
      */
     @ExcelProperty(value = "责任人")

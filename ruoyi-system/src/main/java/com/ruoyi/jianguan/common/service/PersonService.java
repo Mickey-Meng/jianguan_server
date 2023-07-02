@@ -23,6 +23,7 @@ import com.ruoyi.common.core.domain.model.ZjPersonLeave;
 import com.ruoyi.common.core.domain.object.MyPageParam;
 import com.ruoyi.common.core.domain.object.ResponseBase;
 import com.ruoyi.common.helper.LoginHelper;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.flowable.domain.vo.FlowKeysVo;
 import com.ruoyi.flowable.domain.vo.FlowTaskVo;
 import com.ruoyi.flowable.service.FlowApiService;
@@ -522,11 +523,11 @@ public class PersonService {
                 } else if (roleType == 2) {
                     //监理
                     roleId = personDAO.getJianLiRoleId();
-                } else {
+                } else if (roleType == 3) {
                     //全资
                     roleId = personDAO.getQuanZiRoleId();
                 }
-                persons = personDAO.getAllContractByRoleId(roleId);
+                persons = personDAO.getAllContractByRoleId(roleId,projectId);
             } else {
                 persons = personDAO.getAllPersonByProjectId(projectId);
             }
@@ -543,7 +544,7 @@ public class PersonService {
                     //全资
                     roleId = personDAO.getQuanZiRoleId();
                 }
-                persons = personDAO.getAllContractByRoleId(roleId);
+                persons = personDAO.getAllContractByRoleId(roleId,projectId);
             } else {
                 persons = personDAO.getAllPersonByProjectId(projectId);
             }
@@ -1633,7 +1634,7 @@ public class PersonService {
         return new ResponseBase(200, "未打卡消息提醒发送成功!");
     }
 
-    public ResponseBase getContractStandingBook(Integer projectId, Integer parentRoleId) {
+    public ResponseBase getContractStandingBook(Integer projectId, Integer parentRoleId,String subName) {
         if (projectId <= 0) {
             return new ResponseBase(200, "请输入有效的项目id!");
         }
@@ -1646,7 +1647,7 @@ public class PersonService {
         List<PersonDTO> personDTOs = Lists.newArrayList();
         if (parentRoleId != null && !parentRoleId.equals("")) {
             Integer roleId = getRoleIdByRoleType(parentRoleId);
-            personDTOs = personDAO.getContractByRoleId(roleId);
+            personDTOs = personDAO.getContractByRoleId(roleId,projectId);
         } else {
             personDTOs = personDAO.getAllFinishContracts(projectId);
         }
@@ -1661,13 +1662,18 @@ public class PersonService {
                 String projectName = projectsDAO.getNameById(projectid);
                 person.setProjectName(projectName);
                 Integer userid = person.getRecordId();
-                String name = usersDAO.getNameByUserId(userid);
-                person.setRecodeName(name);
-
+                String rname = usersDAO.getNameByUserId(userid);
+                person.setRecodeName(rname);
                 subDTO.setPerson(person);
+                if(StringUtils.isEmpty(subName)){
+                    List<PersonSub> subs = personDAO.getPersonByGid(person.getId());
+                    subDTO.setPersonSubs(subs);
+                }else{
+                    List<PersonSub> subs = personDAO.getPersonByGidAndName(person.getId(),subName);
+                    subDTO.setPersonSubs(subs);
+                }
 
-                List<PersonSub> subs = personDAO.getPersonByGid(person.getId());
-                subDTO.setPersonSubs(subs);
+
 
                 //这里的taskId为processInstanceId
 //                TaskCommentReturn commentReturn = taskCommentReturn(person.getTaskId(), token);

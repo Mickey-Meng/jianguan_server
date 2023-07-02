@@ -143,6 +143,7 @@ public enum BimFlowKey {
      * 合同付款
      */
     constructionPrototype("施工样板", "constructionPrototype"),
+    constructionPlan("施工方案计划", "constructionPlan"),
 
     dailyReport("每日晨检", "dailyReport");
 

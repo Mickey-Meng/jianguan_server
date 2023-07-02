@@ -1,5 +1,6 @@
 package com.ruoyi.jianguan.business.certificate.service.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -30,6 +31,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * 计划&进度管理-证照管理Service业务层处理
@@ -52,7 +54,11 @@ public class CertificatePhotosServiceImpl extends ServiceImpl<CertificatePhotosM
         //属性copy
         CertificatePhotos certificatePhotos = new CertificatePhotos();
         BeanUtils.copyProperties(saveDto, certificatePhotos);
-        certificatePhotos.setPlanOwner(saveDto.getOwner());
+        String[] ownerInfo = Objects.isNull(saveDto.getOwner()) ? null : saveDto.getOwner().split("&");
+        if (ownerInfo != null && ownerInfo.length == 2) {
+            certificatePhotos.setOwnerId(Long.valueOf(ownerInfo[0]));
+            certificatePhotos.setOwnerName(ownerInfo[1]);
+        }
         boolean isStartFlow = false;
         if (Objects.isNull(saveDto.getId())) {
             isStartFlow = true;
@@ -93,7 +99,6 @@ public class CertificatePhotosServiceImpl extends ServiceImpl<CertificatePhotosM
         //附件
         certificatePhotos.setAttachment(JSON.toJSONString(saveDto.getAttachment()));
         certificatePhotos.setProgressStatus(0);
-        certificatePhotos.setProgressOwner(saveDto.getOwner());
         boolean saveOrUpdate = this.saveOrUpdate(certificatePhotos);
         if (saveOrUpdate) {
             String processDefinitionKey = BimFlowKey.progressCertificatePhotos.getName();
@@ -128,8 +133,8 @@ public class CertificatePhotosServiceImpl extends ServiceImpl<CertificatePhotosM
         //属性转换
         PlanCertificatePhotosVo vo = new PlanCertificatePhotosVo();
         BeanUtils.copyProperties(certificatePhotos, vo);
-        vo.setOwner(certificatePhotos.getPlanOwner());
         vo.setStatus(certificatePhotos.getPlanStatus());
+        vo.setOwner(certificatePhotos.getOwnerId() + "&" + certificatePhotos.getOwnerName());
         return vo;
     }
     @Override
@@ -142,7 +147,6 @@ public class CertificatePhotosServiceImpl extends ServiceImpl<CertificatePhotosM
         //属性转换
         ProgressCertificatePhotosVo vo = new ProgressCertificatePhotosVo();
         BeanUtils.copyProperties(certificatePhotos, vo);
-        vo.setOwner(certificatePhotos.getProgressOwner());
         vo.setStatus(certificatePhotos.getProgressStatus());
         vo.setAttachment(JSONArray.parseArray(certificatePhotos.getAttachment(), FileModel.class));
         return vo;
@@ -171,6 +175,13 @@ public class CertificatePhotosServiceImpl extends ServiceImpl<CertificatePhotosM
         //分页查询
         PageHelper.startPage(pageDto.getPageNum(), pageDto.getPageSize());
         List<ProgressCertificatePhotosVo> progressCertificatePhotosPageVos = certificatePhotosMapper.getProgressPageInfo(pageDto);
+        progressCertificatePhotosPageVos.forEach(progressCertificatePhotosVo -> {
+            List<FileModel> fileModelList = JSONArray.parseArray(progressCertificatePhotosVo.getAttachmentNames(), FileModel.class);
+            if (CollectionUtil.isNotEmpty(fileModelList)) {
+                String attachmentNames = fileModelList.stream().map(FileModel::getFileName).collect(Collectors.joining(","));
+                progressCertificatePhotosVo.setAttachmentNames(attachmentNames);
+            }
+        });
         return new PageInfo<>(progressCertificatePhotosPageVos);
     }
 }

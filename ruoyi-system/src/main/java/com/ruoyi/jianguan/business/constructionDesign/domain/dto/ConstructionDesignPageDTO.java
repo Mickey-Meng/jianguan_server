@@ -47,13 +47,18 @@ public class ConstructionDesignPageDTO extends PageDTO {
      */
     private String reportUser;
     /**
-     * 责任人
+     * 责任人ID
      */
-    private String owner;
+    private String ownerId;
+
     /**
-     * 附件
+     * 责任人名称
      */
-    private String attachment;
+    private String ownerName;
+    /**
+     * 附件名称
+     */
+    private String attachmentNames;
     /**
      * 状态 0 审批中 1 审批完成 2 驳回
      */

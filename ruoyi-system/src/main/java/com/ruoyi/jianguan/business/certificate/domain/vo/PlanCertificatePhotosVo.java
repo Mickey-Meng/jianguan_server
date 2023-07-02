@@ -7,10 +7,15 @@ import com.alibaba.excel.annotation.ExcelProperty;
 import com.ruoyi.common.annotation.ExcelDictFormat;
 import com.ruoyi.common.convert.ExcelDictConvert;
 import com.ruoyi.common.core.domain.vo.NewBaseVo;
+import com.ruoyi.common.core.validate.AddGroup;
+import com.ruoyi.common.core.validate.EditGroup;
 import lombok.Data;
 import java.util.Date;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 /**
  * 计划管理-证照管理视图对象
@@ -73,6 +78,20 @@ public class PlanCertificatePhotosVo extends NewBaseVo {
     @ExcelProperty(value = "上报人")
     @ApiModelProperty(value = "上报人", required = true)
     private String reportUser;
+
+    /**
+     * 责任人ID
+     */
+    @ExcelProperty(value = "责任人ID")
+    @ApiModelProperty(value = "责任人ID", required = true)
+    private Long ownerId;
+
+    /**
+     * 责任人名称
+     */
+    @ExcelProperty(value = "责任人名称")
+    @ApiModelProperty(value = "责任人名称", required = true)
+    private String ownerName;
 
     /**
      * 责任人

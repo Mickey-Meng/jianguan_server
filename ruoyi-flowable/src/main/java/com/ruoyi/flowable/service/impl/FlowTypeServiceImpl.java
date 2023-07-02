@@ -105,7 +105,7 @@ public class FlowTypeServiceImpl extends ServiceImpl<FlowTypeMapper, FlowType> i
                 if (Objects.nonNull(copyUserIds) && !copyUserIds.isEmpty()) {
                     List<SsFUsersDTO> ssFUsersDTOList  = new ArrayList<>();
                     ssFUsersDTOList = com.ruoyi.common.utils.BeanCopyUtils.copyList(userService.getUsersByIds(copyUserIds),SsFUsersDTO.class);
-                    vo.setUserInfo(ssFUsersDTOList);
+                    vo.setCopyUserInfo(ssFUsersDTOList);
                 }
                 //审核人员名称
                 vo.setUserNames(JSONArray.parseArray(pageVo.getUserName(), String.class));

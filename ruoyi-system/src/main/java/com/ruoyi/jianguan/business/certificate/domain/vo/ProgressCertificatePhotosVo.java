@@ -33,5 +33,12 @@ public class ProgressCertificatePhotosVo extends PlanCertificatePhotosVo {
     @ApiModelProperty(value = "附件", required = true)
     private List<FileModel> attachment;
 
+    /**
+     * 附件名称
+     */
+    @ExcelProperty(value = "附件名称")
+    @ApiModelProperty(value = "附件名称", required = true)
+    private String attachmentNames;
+
 }
 

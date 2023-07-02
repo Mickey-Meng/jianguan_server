@@ -77,15 +77,19 @@ public class MetrologyServiceImpl extends ServiceImpl<MetrologyMapper, Metrology
         Metrology metrology = new Metrology();
         BeanUtils.copyProperties(saveDto, metrology);
         metrology.setAttachment(JSON.toJSONString(saveDto.getAttachment()));
+        boolean isStartFlow = false;
         if (Objects.isNull(saveDto.getId())) {
+            isStartFlow = true;
+            // 初始化审批状态：审批中
+            metrology.setAuditStatus(AuditStatusEnum.APPROVING.name());
             metrology.setId(IdUtil.nextLongId());
+        } else {
+            metrology.setAuditStatus(AuditStatusEnum.REJECT.name());
         }
-        // 初始化审批状态：审批中
-        metrology.setAuditStatus(AuditStatusEnum.APPROVING.name());
         //附件
         metrology.setAttachment(JSON.toJSONString(saveDto.getAttachment()));
         boolean saveOrUpdate = this.saveOrUpdate(metrology);
-        if (saveOrUpdate) {
+        if (saveOrUpdate && isStartFlow) {
             String processDefinitionKey = BimFlowKey.metrology.getName();
             String businessKey = metrology.getId().toString();
             //设置流程的审批人

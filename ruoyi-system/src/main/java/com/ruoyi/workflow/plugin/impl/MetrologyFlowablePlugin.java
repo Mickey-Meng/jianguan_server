@@ -26,7 +26,12 @@ public class MetrologyFlowablePlugin implements FlowablePlugin {
 
     @Override
     public void approved(ProcessInstance processInstance) {
-
+        String businessKey = processInstance.getBusinessKey();
+        Metrology metrology = metrologyService.getById(businessKey);
+        if (Objects.nonNull(metrology)){
+            metrology.setAuditStatus(AuditStatusEnum.APPROVED.name());
+            metrologyService.updateById(metrology);
+        }
     }
 
     @Override
@@ -34,7 +39,7 @@ public class MetrologyFlowablePlugin implements FlowablePlugin {
         String businessKey = processInstance.getBusinessKey();
         Metrology metrology = metrologyService.getById(businessKey);
         if (Objects.nonNull(metrology)){
-            metrology.setAuditStatus(AuditStatusEnum.APPROVED.name());
+            metrology.setAuditStatus(AuditStatusEnum.APPROVING.name());
             metrologyService.updateById(metrology);
         }
     }

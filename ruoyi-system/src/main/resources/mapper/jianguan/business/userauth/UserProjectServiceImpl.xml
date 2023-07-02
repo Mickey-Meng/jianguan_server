@@ -26,7 +26,7 @@
         )
     </delete>
 
-    <select id="selectUserListByProjectId" resultType="com.ruoyi.common.core.domain.entity.SysUser">
+    <select id="selectUserListByProjectId_V1" resultType="com.ruoyi.common.core.domain.entity.SysUser">
         SELECT
             u.user_id AS userId,
             u.user_name AS userName,
@@ -38,5 +38,29 @@
         LEFT JOIN ss_f_projects p ON p.id = pd.project_id
         WHERE p.parentid = #{projectId}
 
+    </select>
+
+    <select id="selectUserListByProjectId" resultType="com.ruoyi.common.core.domain.entity.SysUser">
+        SELECT
+            a.user_id AS userId,
+            a.user_name AS userName,
+            a.nick_name AS nickName,
+            b.role_name AS roleName
+        FROM
+            sys_user a
+                LEFT JOIN sys_user_role c ON a.user_id = c.user_id
+                LEFT JOIN sys_role b ON c.role_id = b.role_id
+        WHERE a.user_id IN (
+                SELECT
+                    user_id
+                FROM
+                    sys_user su,
+                    ss_f_user_project sfu,
+                    ss_f_projects sfp
+                WHERE
+                    su.user_id = sfu.USERID
+                  AND sfu.GROUPID = sfp.ID
+                  AND sfp.PARENTID = #{projectId}
+            )
     </select>
 </mapper>

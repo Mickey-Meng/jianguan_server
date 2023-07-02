@@ -835,6 +835,21 @@ public class FlowOperationController {
      */
     @PostMapping("/deleteProcessInstance")
     public ResponseResult<Void> deleteProcessInstance(@MyRequestBody(required = true) String processInstanceId) {
+        flowApiService.stopProcessInstance(processInstanceId, "手动删除",false);
+        flowApiService.deleteProcessInstance(processInstanceId);
+        return ResponseResult.success();
+    }
+
+
+    /**
+     * 删除流程实例。
+     *
+     * @param processInstanceId 流程实例Id。
+     * @return 执行结果应答。
+     */
+    @PostMapping("/handDeleteProcessInstance")
+    public ResponseResult<Void> handDeleteProcessInstance(@MyRequestBody(required = true) String processInstanceId) {
+        flowApiService.stopProcessInstance(processInstanceId, "手动删除",false);
         flowApiService.deleteProcessInstance(processInstanceId);
         return ResponseResult.success();
     }

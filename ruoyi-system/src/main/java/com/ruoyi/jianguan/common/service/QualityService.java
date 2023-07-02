@@ -392,7 +392,7 @@ public class QualityService {
             return new ResponseBase(200, "该项目id无数据!");
         }
         Integer userid = LoginHelper.getUserId().intValue();
-        List<ZjQualityEvent> zjSafeEventList = zjQualityEventDAO.getNotDoneSafeEvent(userid, projectId);
+        List<ZjQualityEventDTO> zjSafeEventList = zjQualityEventDAO.getNotDoneSafeEventDTO(userid, projectId);
         if(zjSafeEventList.size()==0){
             return new ResponseBase(300,"暂无数据");
         }

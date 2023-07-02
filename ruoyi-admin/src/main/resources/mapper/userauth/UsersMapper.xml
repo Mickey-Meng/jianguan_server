@@ -3,21 +3,17 @@
 <mapper namespace="com.ruoyi.web.controller.jianguan.other.zlsk.strestservice.userauth.mapper.UsersMapper">
 
     <select id="select" parameterType="Map" resultType="Map">
-        SELECT DISTINCT t4.`NAME` as GROUPNAME, t4.`CODE` as GROUPCODE, t4.GROUPLEVEL, t4.ID as GROUPID, t1.*, t2.*,t5.positionName
-        ,t6.userGroupName,t6.userGroupCode,t9.ROLENAME as NEWPOST,t9.ROLENAME FROM ss_f_users AS t1
-        LEFT JOIN (select * from ss_f_userinfo where STSTATE &lt;> - 1) AS t2 ON t1.ID = t2.USERID
-        LEFT JOIN (select * from zlsk_position where ststate &lt;> - 1) AS t5 ON t2.POST = t5.positionCode
-        LEFT JOIN (select * from ss_f_user_group where STSTATE = 1) AS t3 ON t1.ID = t3.USERID
-        LEFT JOIN (select * from ss_f_groups where STSTATE = 1) AS t4 ON t3.GROUPID = t4.ID
-        LEFT JOIN (select * from zlsk_userorganize where ststate = 1) AS t6 ON t6.id = t1.ugid
-        LEFT JOIN ( SELECT USERID,CONCAT_WS(',',t8.NAME) ROLENAME FROM ss_f_user_role t7 LEFT JOIN ss_f_roles t8 on t8.ID = t7.ROLEID GROUP BY USERID  ) t9 on t9.USERID = t1.ID
-        where t1.STSTATE &lt;> -1
-        <if test="id != null and id != ''">and t1.ID = #{id}</if>
-        <if test="username != null and username != ''">and USERNAME = #{username}</if>
-        <if test="pwd != null and pwd != ''">and PWD = #{pwd}</if>
-        <if test="name1 != null and name1 != ''">and t1.USERNAME like CONCAT('%',#{name1},'%')</if>
-        <if test="groupid != null and groupid != ''">and t4.ID = #{groupid}</if>
-        order by t1.STTIME desc
+        SELECT DISTINCT	t4.dept_name AS GROUPNAME,	t4.dept_code AS GROUPCODE,
+        t4.dept_id AS GROUPID,	t1.*,	sr.role_name AS NEWPOST,	sr.role_name
+        FROM	sys_user  AS t1 	LEFT JOIN  sys_dept  t4  ON t1.dept_id = t4.dept_id
+        left join sys_user_role sur on t1.user_id = sur.user_id	LEFT JOIN sys_role sr on sur.role_id = sr.role_id
+        WHERE  t1.del_flag = 0
+        <if test="id != null and id != ''">and t1.user_id = #{id}</if>
+        <if test="username != null and username != ''">and t1.user_name = #{username}</if>
+        <if test="pwd != null and pwd != ''">and t1.`password` = #{pwd}</if>
+        <if test="name1 != null and name1 != ''">and t1.user_name like CONCAT('%',#{name1},'%')</if>
+        <if test="groupid != null and groupid != ''">and t4.dept_id = #{groupid}</if>
+        order by t1.create_time desc
         <if test="pageSize != null and pageNumber != null">
             limit ${pageSize} offset ${(pageNumber-1)*pageSize}
         </if>

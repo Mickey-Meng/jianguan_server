@@ -1,5 +1,6 @@
 package com.ruoyi.jianguan.common.dao;
 
+import com.ruoyi.jianguan.common.domain.dto.ZjQualityEventDTO;
 import com.ruoyi.jianguan.common.domain.entity.SafeGongQugroup;
 import com.ruoyi.jianguan.common.domain.entity.SafeGongQugroupOverdue;
 import com.ruoyi.jianguan.common.domain.entity.ZjQualityEvent;
@@ -44,6 +45,12 @@ public interface ZjQualityEventDAO {
     @Select("select * from zj_quality_event where  uploadid = #{userid}  and status = 2 and projectId = #{projectId}")
     List<ZjQualityEvent> getNotDoneSafeEvent(@Param("userid")Integer userid,
                                              @Param("projectId")Integer projectId);
+
+    @Select("select zqe.*, sf1.`NAME` as gongquname,sf2.name as singleProjectName  " +
+            "from zj_quality_event zqe  ,ss_f_projects sf1 ,ss_f_projects sf2 " +
+            "where zqe.gongquid = sf1.id  and zqe.singleProjectId = sf2.id  and uploadid =  #{userid}  and status = 2 and projectId = #{projectId}")
+    List<ZjQualityEventDTO> getNotDoneSafeEventDTO(@Param("userid")Integer userid,
+                                                   @Param("projectId")Integer projectId);
 
     @Select("select * from zj_quality_event where singleProjectId = #{projectid} and projectId = #{projectId}")
     List<ZjQualityEvent> getAllStatusSafeByProjectcode(@Param("projectid") Integer projectid,

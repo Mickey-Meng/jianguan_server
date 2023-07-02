@@ -1,5 +1,6 @@
 package com.ruoyi.jianguan.business.constructionDesign.service.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -30,6 +31,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * 计划&进度管理-施工图管理Service业务层处理
@@ -52,7 +54,11 @@ public class ConstructionDesignServiceImpl extends ServiceImpl<ConstructionDesig
         //属性copy
         ConstructionDesign constructionDesign = new ConstructionDesign();
         BeanUtils.copyProperties(saveDto, constructionDesign);
-        constructionDesign.setPlanOwner(saveDto.getOwner());
+        String[] ownerInfo = Objects.isNull(saveDto.getOwner()) ? null : saveDto.getOwner().split("&");
+        if (ownerInfo != null && ownerInfo.length == 2) {
+            constructionDesign.setOwnerId(Long.valueOf(ownerInfo[0]));
+            constructionDesign.setOwnerName(ownerInfo[1]);
+        }
         boolean isStartFlow = false;
         if (Objects.isNull(saveDto.getId())) {
             isStartFlow = true;
@@ -93,7 +99,6 @@ public class ConstructionDesignServiceImpl extends ServiceImpl<ConstructionDesig
         //附件
         constructionDesign.setAttachment(JSON.toJSONString(saveDto.getAttachment()));
         constructionDesign.setProgressStatus(0);
-        constructionDesign.setProgressOwner(saveDto.getOwner());
         boolean saveOrUpdate = this.saveOrUpdate(constructionDesign);
         if (saveOrUpdate) {
             String processDefinitionKey = BimFlowKey.progressConstructionDesign.getName();
@@ -128,8 +133,9 @@ public class ConstructionDesignServiceImpl extends ServiceImpl<ConstructionDesig
         //属性转换
         PlanConstructionDesignVo vo = new PlanConstructionDesignVo();
         BeanUtils.copyProperties(constructionDesign, vo);
-        vo.setOwner(constructionDesign.getPlanOwner());
         vo.setStatus(constructionDesign.getPlanStatus());
+        vo.setStatus(constructionDesign.getPlanStatus());
+        vo.setOwner(constructionDesign.getOwnerId() + "&" + constructionDesign.getOwnerName());
         return vo;
     }
     @Override
@@ -142,7 +148,6 @@ public class ConstructionDesignServiceImpl extends ServiceImpl<ConstructionDesig
         //属性转换
         ProgressConstructionDesignVo vo = new ProgressConstructionDesignVo();
         BeanUtils.copyProperties(constructionDesign, vo);
-        vo.setOwner(constructionDesign.getProgressOwner());
         vo.setStatus(constructionDesign.getProgressStatus());
         vo.setAttachment(JSONArray.parseArray(constructionDesign.getAttachment(), FileModel.class));
         return vo;
@@ -171,6 +176,13 @@ public class ConstructionDesignServiceImpl extends ServiceImpl<ConstructionDesig
         //分页查询
         PageHelper.startPage(pageDto.getPageNum(), pageDto.getPageSize());
         List<ProgressConstructionDesignVo> progressConstructionDesignPageVos = constructionDesignMapper.getProgressPageInfo(pageDto);
+        progressConstructionDesignPageVos.forEach(progressConstructionDesignVo -> {
+            List<FileModel> fileModelList = JSONArray.parseArray(progressConstructionDesignVo.getAttachmentNames(), FileModel.class);
+            if (CollectionUtil.isNotEmpty(fileModelList)) {
+                String attachmentNames = fileModelList.stream().map(FileModel::getFileName).collect(Collectors.joining(","));
+                progressConstructionDesignVo.setAttachmentNames(attachmentNames);
+            }
+        });
         return new PageInfo<>(progressConstructionDesignPageVos);
     }
 }

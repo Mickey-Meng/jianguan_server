@@ -130,8 +130,14 @@ public interface PersonDAO {
     @Select("select * from zj_person where businessKey = #{businessKey}")
     PersonDTO getByBusinessKey(@Param("businessKey")String businessKey);
 
-    @Select("select * from zj_person_people_sub where gid = #{gid}")
+    @Select("select * from zj_person_people_sub where gid = #{gid} ")
     List<PersonSub> getPersonByGid(@Param("gid")Integer gid);
+
+
+
+    @Select("select * from zj_person_people_sub where gid = #{gid} and name like concat('%',#{subName},'%') ")
+    List<PersonSub> getPersonByGidAndName(@Param("gid")Integer gid,@Param("subName")String subName);
+
 
     @Select("select PROC_DEF_ID_ as processDefinitionId, " +
             " PROC_INST_ID_ as processInstanceId from act_hi_taskinst" +
@@ -154,28 +160,30 @@ public interface PersonDAO {
     List<PersonDTO> getAllFinishContracts( @Param("projectId")Integer projectId);
     // #118 --[E]
 
-    @Select("select id from ss_f_roles where code = 'shigongjihe'")
+    @Select("select role_id from sys_role where role_key  = 'shigongjihe'")
     Integer getShiGongRoleId();
 
-    @Select("select id from ss_f_roles where code = 'jianlijihe'")
+    @Select("select role_id from sys_role where role_key  = 'jianlijihe'")
     Integer getJianLiRoleId();
 
-    @Select("select id from ss_f_roles where code = 'quanzijihe'")
+    @Select("select role_id from sys_role where role_key  = 'quanzijihe'")
     Integer getQuanZiRoleId();
 
-    @Select("select a.* from zj_person a " +
-            " left join ss_f_user_role b on a.recordId = b.USERID " +
-            " left join ss_f_roles c on b.ROLEID = c.id " +
-            " left join ss_f_roles d on c.parentid = d.id " +
-            " where d.id = #{roleId} and a.status = 2 order by a.subDate")
-    List<PersonDTO> getContractByRoleId(@Param("roleId")Integer roleId);
+    @Select("SELECT a.*  FROM " +
+            "zj_person a " +
+            "LEFT JOIN sys_user_role b ON a.recordId = b.user_id " +
+            "LEFT JOIN sys_role c ON b.role_id = c.role_id " +
+            "LEFT JOIN sys_role d ON c.parent_id = d.role_id  " +
+            " where d.role_id =  #{roleId} and a.status = 1 and  projectId = #{projectId} order by a.subDate")
+    List<PersonDTO> getContractByRoleId(@Param("roleId")Integer roleId,@Param("projectId")Integer projectId);
 
-    @Select("select a.* from zj_person a " +
-            " left join ss_f_user_role b on a.recordId = b.USERID " +
-            " left join ss_f_roles c on b.ROLEID = c.id " +
-            " left join ss_f_roles d on c.parentid = d.id " +
-            " where d.id = #{roleId} order by a.subDate desc")
-    List<PersonDTO> getAllContractByRoleId(@Param("roleId")Integer roleId);
+    @Select("SELECT a.*  FROM " +
+            "zj_person a " +
+            "LEFT JOIN sys_user_role b ON a.recordId = b.user_id " +
+            "LEFT JOIN sys_role c ON b.role_id = c.role_id " +
+            "LEFT JOIN sys_role d ON c.parent_id = d.role_id  " +
+            " where d.role_id = #{roleId} and  projectId = #{projectId} order by a.subDate desc")
+    List<PersonDTO> getAllContractByRoleId(@Param("roleId")Integer roleId,@Param("projectId")Integer projectId);
 
     @Select("select a.* from zj_person a " +
             " left join ss_f_user_role b on a.recordId = b.USERID " +

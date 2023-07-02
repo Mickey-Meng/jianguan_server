@@ -1,5 +1,6 @@
 package com.ruoyi.flowable.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -270,7 +271,8 @@ public class FlowAuditEntryServiceImpl extends ServiceImpl<FlowAuditEntryMapper,
             if (Objects.nonNull(copyUserIds) && !copyUserIds.isEmpty()) {
                 detailVo.setCopyUserId(copyUserIds);
                 List<SsFUsersDTO> ssFUsersDTOList  = new ArrayList<>();
-                BeanUtils.copyProperties(userService.getUsersByIds(copyUserIds),ssFUsersDTOList);
+                List<SsFUsers> ssFUsers = userService.getUsersByIds(copyUserIds);
+                ssFUsersDTOList = com.ruoyi.common.utils.BeanCopyUtils.copyList(ssFUsers,SsFUsersDTO.class);
                 detailVo.setCopyUserInfo(ssFUsersDTOList);
             }
             //审核人员名称

@@ -1,9 +1,10 @@
 package com.ruoyi.workflow.plugin.impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import com.ruoyi.jianguan.business.contract.domain.entity.DailyReport;
-import com.ruoyi.jianguan.business.contract.domain.vo.DailyReportDetailVo;
-import com.ruoyi.jianguan.business.contract.service.DailyReportService;
+import com.ruoyi.jianguan.business.contract.domain.entity.ConstructionPrototype;
+import com.ruoyi.jianguan.business.contract.domain.vo.ConstructionPrototypeDetailVo;
+import com.ruoyi.jianguan.business.contract.service.ConstructionPrototypeService;
+import com.ruoyi.jianguan.business.contract.service.ConstructionPrototypeService;
 import com.ruoyi.workflow.plugin.FlowablePlugin;
 import lombok.extern.slf4j.Slf4j;
 import org.flowable.engine.runtime.ProcessInstance;
@@ -18,7 +19,7 @@ public class ConstructionPrototypeFlowablePlugin implements FlowablePlugin {
 
 
     @Autowired
-    private DailyReportService dailyReportService;
+    private ConstructionPrototypeService constructionPrototypeService;
 
 
     @Override
@@ -49,15 +50,15 @@ public class ConstructionPrototypeFlowablePlugin implements FlowablePlugin {
     private void updateStatus(ProcessInstance processInstance, Integer status) {
         String businessKey = processInstance.getBusinessKey();
 
-        DailyReportDetailVo dailyReportDetailVo = dailyReportService.getInfoById(Long.parseLong(businessKey));
-        log.info("ContractPaymentFlowablePlugin.contractPaymentDetailVo: {}", dailyReportDetailVo);
-        if (Objects.nonNull(dailyReportDetailVo)) {
-            dailyReportDetailVo.setStatus(status);
-            DailyReport dailyReport = new DailyReport();
-            BeanUtil.copyProperties(dailyReportDetailVo, dailyReport, false);
+        ConstructionPrototypeDetailVo constructionPrototypeDetailVo = constructionPrototypeService.getInfoById(Long.parseLong(businessKey));
+        log.info("ContractPaymentFlowablePlugin.contractPaymentDetailVo: {}", constructionPrototypeDetailVo);
+        if (Objects.nonNull(constructionPrototypeDetailVo)) {
+            constructionPrototypeDetailVo.setStatus(status);
+            ConstructionPrototype constructionPrototype = new ConstructionPrototype();
+            BeanUtil.copyProperties(constructionPrototypeDetailVo, constructionPrototype, false);
             //合同信息
-            dailyReport.setAttachment(null);
-            dailyReportService.updateById(dailyReport);
+            constructionPrototype.setAttachment(null);
+            constructionPrototypeService.updateById(constructionPrototype);
         }
     }
 }

@@ -37,7 +37,6 @@ public class SysDictDataController extends BaseController {
     /**
      * 查询字典数据列表
      */
-    @SaCheckPermission("system:dict:list")
     @GetMapping("/list")
     public TableDataInfo<SysDictData> list(SysDictData dictData, PageQuery pageQuery) {
         return dictDataService.selectPageDictDataList(dictData, pageQuery);
