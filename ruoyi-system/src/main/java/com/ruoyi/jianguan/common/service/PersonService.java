@@ -689,8 +689,9 @@ public class PersonService {
                 gid = subDTO.getPerson().getId();
             }
 
-//            personDAO.delPersonSubByGid(gid);
+            personDAO.delPersonSubByGid(gid);
             for (PersonSub personSub : subDTO.getPersonSubs()) {
+                personDAO.delPersonSubByGid(personSub.getGid());
                 personSub.setId(null);
                 personSub.setGid(gid);
                 personDAO.addPersonSub(personSub);

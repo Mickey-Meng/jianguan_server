@@ -34,6 +34,8 @@ public class ConstructionPlanPageVo extends NewBaseVo {
      */
     private Date reportTime;
     private String responsiblePerson;
+    private String responsiblePersonId;
+
     private Date plainStartTime;
     private Date plainEndTime;
 
@@ -48,6 +50,7 @@ public class ConstructionPlanPageVo extends NewBaseVo {
      */
     @ApiModelProperty(value = "状态 0 审批中 1 审批完成 2 驳回", required = true)
     private Integer status;
-
+    //上报工作流状态 0 审批中 1 审批完成 2 驳回
+    private Integer reportStatus;
 
 }

@@ -161,10 +161,11 @@ public class FlowStaticPageController {
             @MyRequestBody JSONObject taskVariableData,
             @MyRequestBody JSONObject masterData,
             @MyRequestBody JSONObject slaveData,
-            @MyRequestBody JSONObject copyData) {
+            @MyRequestBody JSONObject copyData,
+            @MyRequestBody String projectId) {
         ProcessInstance processInstance = flowApiService.getProcessInstance(processInstanceId);
         ResponseResult<String> stringResponseResult = flowStaticPageService.submitUserTask(processInstanceId, taskId, flowTaskCommentDto, taskVariableData, masterData,
-                slaveData, copyData);
+                slaveData, copyData, projectId);
         flowablePluginExecutor.executeApply(processInstance);
         return stringResponseResult;
     }

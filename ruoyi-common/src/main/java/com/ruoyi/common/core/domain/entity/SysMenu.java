@@ -101,7 +101,10 @@ public class SysMenu extends TreeEntity<SysMenu> {
      * 菜单图标
      */
     private String icon;
-
+    /**
+     * 菜单图标
+     */
+    private String iconApp;
     /**
      * 备注
      */

@@ -22,6 +22,7 @@
         <result property="status" column="status"/>
         <result property="perms" column="perms"/>
         <result property="icon" column="icon"/>
+        <result property="iconApp" column="icon_app"/>
         <result property="createBy" column="create_by"/>
         <result property="createTime" column="create_time"/>
         <result property="updateTime" column="update_time"/>
@@ -31,7 +32,7 @@
 
     <select id="selectMenuListByUserId" parameterType="SysMenu" resultMap="SysMenuResult">
         select distinct m.menu_id, m.parent_id, m.menu_name, m.menu_code, m.path, m.source_type, m.component, m.query_param, m.visible, m.status,
-        m.perms, m.is_frame, m.is_cache, m.menu_type, m.icon, m.order_num, m.create_time
+        m.perms, m.is_frame, m.is_cache, m.menu_type, m.icon,m.icon_app, m.order_num, m.create_time
         from sys_menu m
         left join sys_role_menu rm on m.menu_id = rm.menu_id
         left join sys_user_role sur on rm.role_id = sur.role_id
@@ -55,6 +56,7 @@
                         m.is_cache,
                         m.menu_type,
                         m.icon,
+                        m.icon_app,
                         m.order_num,
                         m.create_time
         from sys_menu m
@@ -87,6 +89,7 @@
                         m.is_cache,
                         m.menu_type,
                         m.icon,
+                        m.icon_app,
                         m.order_num,
                         m.create_time
         from sys_menu m

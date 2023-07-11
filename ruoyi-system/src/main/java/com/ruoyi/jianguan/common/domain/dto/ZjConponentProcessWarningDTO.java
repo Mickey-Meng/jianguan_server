@@ -105,7 +105,7 @@ public class ZjConponentProcessWarningDTO implements Serializable {
     /**
      * 预警级别
      */
-    private String warninglevel;
+    private String conponentlevel;
     /**
      * 单位工程
      */
@@ -113,7 +113,7 @@ public class ZjConponentProcessWarningDTO implements Serializable {
     /**
      * 分部工程
      */
-    private String febugongcheng;
+    private String fenbugongcheng;
     /**
      * 子分部工程
      */

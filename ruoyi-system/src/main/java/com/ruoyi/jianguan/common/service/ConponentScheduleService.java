@@ -17,10 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author ：lin_zhixiong
@@ -103,10 +100,12 @@ public class ConponentScheduleService {
                         zjConponentProcessWarningDTO.setStatus(1);
                     }
                 }else {// 2 未完成
-                    String level = zjConponentProcessWarningDTO.getWarninglevel() == null ? "1级" :zjConponentProcessWarningDTO.getWarninglevel() ;
-                    Integer levelDays = map.get(level);//获取当前构件最小预警天数
-                    if (zjConponentProcessWarningDTO.getStartDays() != null && zjConponentProcessWarningDTO.getStartDays() <= levelDays) {
-                        zjConponentProcessWarningDTO.setStatus(0);
+                    String level = zjConponentProcessWarningDTO.getConponentlevel() == null ? "1" :zjConponentProcessWarningDTO.getConponentlevel() ;
+                    Integer levelDays = map.get(level) == null ? 0 :map.get(level) ;//获取当前构件最小预警天数
+                    if(zjConponentProcessWarningDTO.getPlanendtime()!= null && zjConponentProcessWarningDTO.getPlanendtime().before(new Date())){// 已经过了 计划结束时间，
+                        zjConponentProcessWarningDTO.setStatus(3);// 逾期未完工
+                    }else if (zjConponentProcessWarningDTO.getStartDays() != null && zjConponentProcessWarningDTO.getStartDays() <= levelDays) {
+                        zjConponentProcessWarningDTO.setStatus(0);// 需要预警
                     }
                 }
                 listVo.add(zjConponentProcessWarningDTO);

@@ -147,16 +147,16 @@ public class Conponent implements Serializable {
     private String wbscode;
 
     /**
-     * 进度预警级别
+     * 构件级别，用于进度预警
      */
-    private String warninglevel;
+    private String conponentlevel;
 
-    public String getWarninglevel() {
-        return warninglevel;
+    public String getConponentlevel() {
+        return conponentlevel;
     }
 
-    public void setWarninglevel(String warninglevel) {
-        this.warninglevel = warninglevel;
+    public void setConponentlevel(String conponentlevel) {
+        this.conponentlevel = conponentlevel;
     }
 
     /**

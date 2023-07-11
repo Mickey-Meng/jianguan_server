@@ -57,6 +57,7 @@ public class ConstructionPlanDetailVo extends NewBaseEntity {
     @ExcelProperty(value = "状态 0 审批中 1 审批完成 2 驳回")
     @ApiModelProperty(value = "状态 0 审批中 1 审批完成 2 驳回", required = true)
     private Integer status;
+    private Integer reportStatus;
 
     /**
      * 项目ID

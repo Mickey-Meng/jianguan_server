@@ -15,13 +15,11 @@ import com.ruoyi.common.core.domain.object.TokenData;
 import com.ruoyi.common.core.sequence.wrapper.IdGeneratorWrapper;
 import com.ruoyi.common.enums.ErrorCodeEnum;
 import com.ruoyi.common.helper.LoginHelper;
-import com.ruoyi.common.utils.JwtUtil;
+import com.ruoyi.common.utils.redis.RedisUtils;
 import com.ruoyi.flowable.common.constant.FlowApprovalType;
 import com.ruoyi.flowable.common.constant.FlowConstant;
 import com.ruoyi.flowable.domain.dto.FlowTaskCommentDto;
-import com.ruoyi.flowable.domain.entity.FlowTaskMultiSignAssign;
-import com.ruoyi.flowable.domain.entity.FlowTaskOperation;
-import com.ruoyi.flowable.domain.entity.FlowTaskPostCandidateGroup;
+import com.ruoyi.flowable.domain.entity.*;
 import com.ruoyi.flowable.domain.vo.TaskInfoVo;
 import com.ruoyi.flowable.exception.FlowOperationException;
 import com.ruoyi.flowable.factory.FlowCustomExtFactory;
@@ -89,7 +87,9 @@ public class FlowStaticPageServiceImpl implements FlowStaticPageService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public ResponseResult<String> submitUserTask(String processInstanceId, String taskId, FlowTaskCommentDto flowTaskCommentDto, JSONObject taskVariableData, JSONObject masterData, JSONObject slaveData, JSONObject copyData){
+    public ResponseResult<String> submitUserTask(String processInstanceId, String taskId, FlowTaskCommentDto flowTaskCommentDto,
+                                                 JSONObject taskVariableData, JSONObject masterData, JSONObject slaveData,
+                                                 JSONObject copyData, String projectId){
         String errorMessage;
         // 验证流程任务的合法性。
         Task task = flowApiService.getProcessInstanceActiveTask(processInstanceId, taskId);
@@ -113,6 +113,11 @@ public class FlowStaticPageServiceImpl implements FlowStaticPageService {
             }
             taskVariableData.put(FlowConstant.COPY_DATA_KEY, copyData);
         }
+        if(taskVariableData == null) {
+            taskVariableData = new JSONObject();
+        }
+        taskVariableData.put("projectId", projectId);
+
         FlowTaskComment flowTaskComment = BeanUtil.copyProperties(flowTaskCommentDto, FlowTaskComment.class);
         if (StrUtil.isBlank(dataId)) {
             this.saveNewAndTakeTask( processInstanceId, taskId, dataId, flowTaskComment, taskVariableData );
@@ -330,7 +335,6 @@ public class FlowStaticPageServiceImpl implements FlowStaticPageService {
     @Override
     public ProcessInstance startAndTakeFirstByProcessKey(
             String processKey, String businessKey,   FlowTaskComment flowTaskComment, JSONObject taskVariableData) {
-
 //        String loginName = TokenData.takeFromRequest().getLoginName();
         String loginName =LoginHelper.getUsername();
         Map<String, Object> variableMap =new HashMap<>();
@@ -338,6 +342,8 @@ public class FlowStaticPageServiceImpl implements FlowStaticPageService {
         variableMap.put("businessKey", businessKey);
         variableMap.put(FlowConstant.PROC_INSTANCE_INITIATOR_VAR, loginName);
         variableMap.put(FlowConstant.PROC_INSTANCE_START_USER_NAME_VAR, loginName);
+        String projectId = (String)RedisUtils.getCacheObject(LoginHelper.getUserId() + ".projectId");
+        variableMap.put("projectId", projectId);
         Authentication.setAuthenticatedUserId(loginName);
         // 根据当前流程的主版本，启动一个流程实例，同时将businessKey参数设置为主表主键值。
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(processKey, businessKey, variableMap);
@@ -353,7 +359,28 @@ public class FlowStaticPageServiceImpl implements FlowStaticPageService {
             flowTaskComment.setApprovalType(FlowApprovalType.SAVE);
             this.completeTask(task, flowTaskComment, taskVariableData);
         }
+        // 更新运行时-任务表和任务变量表
+        updateRuntimeTaskAndVariable(processInstance);
         return processInstance;
+    }
+
+    @Autowired
+    private ActRuTaskService actRuTaskService;
+
+    @Autowired
+    private ActRuVariableService actRuVariableService;
+
+    private void updateRuntimeTaskAndVariable(ProcessInstance processInstance) {
+        ActRuTask actRuTask = new ActRuTask();
+        actRuTask.setScopeId("jianguan");
+        actRuTask.setScopeType("cmmn");
+        actRuTask.setProcessInstanceId(processInstance.getId());
+        actRuTaskService.updateActRuTask(actRuTask);
+        ActRuVariable actRuVariable = new ActRuVariable();
+        actRuVariable.setProcessInstanceId(processInstance.getId());
+        actRuVariable.setScopeId("jianguan");
+        actRuVariable.setScopeType("cmmn");
+        actRuVariableService.updateActRuVariable(actRuVariable);
     }
 
     @Transactional(rollbackFor = Exception.class)

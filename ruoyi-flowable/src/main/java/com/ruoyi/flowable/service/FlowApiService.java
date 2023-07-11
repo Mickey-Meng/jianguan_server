@@ -237,10 +237,11 @@ public interface FlowApiService {
      * @param definitionName 流程定义名。
      * @param taskName       任务名称。
      * @param pageParam      分页对象。
+     * @param projectId
      * @return 用户的任务列表。
      */
     PageInfo<Task> getTaskListByUserName(
-            String username, String definitionKey, String definitionName, String taskName, MyPageParam pageParam);
+            String username, String definitionKey, String definitionName, String taskName, MyPageParam pageParam, String projectId);
 
     /**
      * 获取用户的任务数量。这其中包括当前用户作为指派人和候选人。
@@ -318,7 +319,7 @@ public interface FlowApiService {
             String beginDate,
             String endDate,
             MyPageParam pageParam,
-            boolean finishedOnly) throws ParseException;
+            boolean finishedOnly,String projectId) throws ParseException;
 
     /**
      * 获取流程实例的已完成历史任务列表。
@@ -343,6 +344,7 @@ public interface FlowApiService {
      * @param beginDate             流程发起开始时间。
      * @param endDate               流程发起结束时间。
      * @param pageParam             分页对象。
+     * @param projectId
      * @return 分页后的查询列表对象。
      * @throws ParseException 日期参数解析失败。
      */
@@ -350,7 +352,7 @@ public interface FlowApiService {
             String processDefinitionName,
             String beginDate,
             String endDate,
-            MyPageParam pageParam) throws ParseException;
+            MyPageParam pageParam, String projectId) throws ParseException;
 
     /**
      * 获取指定的历史任务实例。

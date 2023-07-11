@@ -108,6 +108,9 @@ public class SysUserOnlineController extends BaseController {
     @ApiOperation(value = "更新在线状态")
     public ResponseBase onlineStatus(){
         LoginUser currentLoginUser = LoginHelper.getLoginUser();
+        if (Objects.isNull(currentLoginUser)) {
+            return new ResponseBase(HttpStatus.HTTP_UNAUTHORIZED, "无效的会话,或者会话已过期，请重新登录");
+        }
         List<Long> dbRoleIds = roleService.selectRoleListByUserId(currentLoginUser.getUserId());
         List<Long> currentRoleIds = Arrays.asList(currentLoginUser.getRoleIds().split(","))
             .stream().map(roleId -> Long.valueOf(roleId)).collect(Collectors.toList());
@@ -115,6 +118,6 @@ public class SysUserOnlineController extends BaseController {
         boolean isSame = dbRoleIds.size() == currentRoleIds.size() && dbRoleIds.containsAll(currentRoleIds) && currentRoleIds.containsAll(dbRoleIds);
         Map<String, String> responseDataMap = Maps.newHashMap();
         responseDataMap.put("isChange", String.valueOf(!isSame));
-        return new ResponseBase(isSame ? HttpStatus.HTTP_OK :HttpStatus.HTTP_RESET, isSame ? "当前登录用户角色无更新." : "用户角色改变,请重新登录!", responseDataMap);
+        return new ResponseBase(HttpStatus.HTTP_OK, isSame ? "当前登录用户角色无更新." : "用户角色改变,请重新登录!", responseDataMap);
     }
 }

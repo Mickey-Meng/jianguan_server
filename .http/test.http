@@ -1,0 +1,6 @@
+###
+POST {{host}}/projects/getAppProjectByUser
+Authorization: {{Authorization}}
+
+###
+POST  {{host}}/projects/getAppProjectByUser?Authorization=Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpblR5cGUiOiJsb2dpbiIsImxvZ2luSWQiOiJzeXNfdXNlcjo0Iiwicm5TdHIiOiJKaDNyNkJiZllQRTFDa09ib2FlMEdJdHVNc1E3MjJ4dSJ9.e-ErqmhsswEqgIzuYbZZli3BTakU2ghMfbRf13h9_Bc

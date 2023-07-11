@@ -202,11 +202,14 @@ public class EnterExitServiceImpl extends ServiceImpl<EnterExitMapper, EnterExit
                     pageVo.setConstructDept(constructDept);
 
                     //状态
-                    if (pageVo.getStatus() == 0) {
-                        pageVo.setStatusStr("进行中");
-                    } else {
-                        pageVo.setStatusStr("已完成");
-                    }
+                    switch (pageVo.getStatus()) {
+                        case 0:
+                            pageVo.setStatusStr("审批中");break;
+                        case 1:
+                            pageVo.setStatusStr("已审批");break;
+                        default:
+                            pageVo.setStatusStr("驳回");break;
+                    };
                     //报审类型
                     if (pageVo.getType() == 0) {
                         pageVo.setTypeStr("进场");

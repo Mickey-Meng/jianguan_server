@@ -201,11 +201,14 @@ public class EquipmentEnterServiceImpl extends ServiceImpl<EquipmentEnterMapper,
 //                    pageVo.setSupervisorUnits(jldws);
                     pageVo.setSupervisordpts(jgProjectItemVo.getSupervisorDept());
                     //状态
-                    if (pageVo.getStatus() == 0) {
-                        pageVo.setStatusStr("进行中");
-                    } else {
-                        pageVo.setStatusStr("已完成");
-                    }
+                    switch (pageVo.getStatus()) {
+                        case 0:
+                            pageVo.setStatusStr("审批中");break;
+                        case 1:
+                            pageVo.setStatusStr("已审批");break;
+                        default:
+                            pageVo.setStatusStr("驳回");break;
+                    };
                     //设备信息
                     List<EquipmentInfo> equipmentInfos = equipmentInfoService.getByEnterId(pageVo.getId());
                     pageVo.setEquipmentInfos(equipmentInfos);

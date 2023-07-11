@@ -8,6 +8,7 @@ import com.ruoyi.jianguan.manage.produce.domain.vo.PubProduceVo;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 工序信息Service接口
@@ -55,4 +56,6 @@ public interface IPubProduceService {
     List<PubProduce> getProduceListByTypeId(Long typeId);
 
     Boolean doImportProduces(Long[] ids, PubProduceBo bo);
+
+    Map<String, Object> getFillDataTemplate(Long id);
 }

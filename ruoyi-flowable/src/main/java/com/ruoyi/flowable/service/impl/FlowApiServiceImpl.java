@@ -7,20 +7,16 @@ import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.ruoyi.common.core.domain.object.*;
 import com.ruoyi.common.helper.LoginHelper;
-import com.ruoyi.common.utils.JwtUtil;
 import com.ruoyi.common.utils.MyDateUtil;
 import com.ruoyi.flowable.common.constant.FlowApprovalType;
 import com.ruoyi.flowable.common.constant.FlowConstant;
 import com.ruoyi.flowable.common.constant.FlowTaskStatus;
-import com.ruoyi.flowable.domain.entity.FlowTaskMultiSignAssign;
-import com.ruoyi.flowable.domain.entity.FlowTaskOperation;
-import com.ruoyi.flowable.domain.entity.FlowTaskPostCandidateGroup;
+import com.ruoyi.flowable.domain.entity.*;
 import com.ruoyi.flowable.domain.vo.FlowNextTaskVo;
 import com.ruoyi.flowable.domain.vo.FlowTaskVo;
 import com.ruoyi.flowable.factory.FlowCustomExtFactory;
@@ -28,7 +24,6 @@ import com.ruoyi.flowable.mapper.AuthMapper;
 import com.ruoyi.flowable.model.FlowEntryPublish;
 import com.ruoyi.flowable.model.FlowTaskComment;
 import com.ruoyi.flowable.model.FlowTaskExt;
-import com.ruoyi.flowable.model.FlowTaskHandle;
 import com.ruoyi.flowable.service.*;
 import com.ruoyi.flowable.utils.BaseFlowIdentityExtHelper;
 import lombok.Cleanup;
@@ -106,6 +101,14 @@ public class FlowApiServiceImpl implements FlowApiService {
     private FlowCustomExtFactory flowCustomExtFactory;
     @Autowired
     private AuthMapper authMapper;
+    @Autowired
+    private ActRuTaskService actRuTaskService;
+    @Autowired
+    private ActRuVariableService actRuVariableService;
+    @Autowired
+    private ActHiTaskinstService actHiTaskinstService;
+    @Autowired
+    private ActHiVarinstService actHiVarinstService;
 
 
     @Transactional(rollbackFor = Exception.class)
@@ -222,13 +225,56 @@ public class FlowApiServiceImpl implements FlowApiService {
             JSONObject copyDataJson = this.mergeCopyData(copyData, passCopyData);
             flowMessageService.saveNewCopyMessage(task, copyDataJson);
         }
+        clearScope(task);
         if (taskVariableData != null) {
             taskService.complete(task.getId(), taskVariableData);
         } else {
             taskService.complete(task.getId());
         }
-
         flowMessageService.updateFinishedStatusByTaskId(task.getId());
+        initScope(task);
+    }
+
+    /**
+     * 清理scope数据值，解决taskService.complete方法报错
+     * @param task
+     */
+    private void clearScope(Task task) {
+        // scopeId和scopeType置空
+        ActRuTask actRuTask = new ActRuTask();
+        actRuTask.setProcessInstanceId(task.getProcessInstanceId());
+        actRuTaskService.updateActRuTask(actRuTask);
+        ActRuVariable actRuVariable = new ActRuVariable();
+        actRuVariable.setProcessInstanceId(task.getProcessInstanceId());
+        actRuVariableService.updateActRuVariable(actRuVariable);
+    }
+
+    /**
+     * 重新初始化scopeId和scopeType
+     * @param task
+     */
+    private void initScope(Task task) {
+        ActRuTask actRuTask = new ActRuTask();
+        actRuTask.setScopeId("jianguan");
+        actRuTask.setScopeType("cmmn");
+        actRuTask.setProcessInstanceId(task.getProcessInstanceId());
+        actRuTaskService.updateActRuTask(actRuTask);
+        ActRuVariable actRuVariable = new ActRuVariable();
+        actRuVariable.setScopeId("jianguan");
+        actRuVariable.setScopeType("cmmn");
+        actRuVariable.setProcessInstanceId(task.getProcessInstanceId());
+        actRuVariableService.updateActRuVariable(actRuVariable);
+        ActHiTaskinst actHiTaskinst = new ActHiTaskinst();
+        actHiTaskinst.setScopeId("jianguan");
+        actHiTaskinst.setScopeType("cmmn");
+        actHiTaskinst.setProcessInstanceId(task.getProcessInstanceId());
+        actHiTaskinstService.updateActHiTaskinst(actHiTaskinst);
+        ActHiVarinst actHiVarinst = new ActHiVarinst();
+        actHiVarinst.setScopeId("jianguan");
+        actHiVarinst.setScopeType("cmmn");
+        actHiVarinst.setProcessInstanceId(task.getProcessInstanceId());
+        actHiVarinstService.updateActHiVarinst(actHiVarinst);
+
     }
 
     private JSONObject mergeCopyData(Object copyData, JSONObject passCopyData) {
@@ -488,9 +534,8 @@ public class FlowApiServiceImpl implements FlowApiService {
         return taskService.createTaskQuery().taskId(taskId).singleResult();
     }
 
-    @Override
     public PageInfo<Task> getTaskListByUserName(
-            String username, String definitionKey, String definitionName, String taskName, MyPageParam pageParam) {
+            String username, String definitionKey, String definitionName, String taskName, MyPageParam pageParam, String projectId) {
         TaskQuery query = taskService.createTaskQuery().active();
         if (StrUtil.isNotBlank(definitionKey)) {
             query.processDefinitionKey(definitionKey);
@@ -501,6 +546,7 @@ public class FlowApiServiceImpl implements FlowApiService {
         if (StrUtil.isNotBlank(taskName)) {
             query.taskNameLike("%" + taskName + "%");
         }
+        query.caseVariableValueEquals("projectId", projectId);
         this.buildCandidateCondition(query, username);
         long totalCount = query.count();
         query.orderByTaskCreateTime().desc();
@@ -651,7 +697,7 @@ public class FlowApiServiceImpl implements FlowApiService {
             String beginDate,
             String endDate,
             MyPageParam pageParam,
-            boolean finishedOnly) throws ParseException {
+            boolean finishedOnly, String projectId) throws ParseException {
         HistoricProcessInstanceQuery query = historyService.createHistoricProcessInstanceQuery();
         if (StrUtil.isNotBlank(processDefinitionKey)) {
             query.processDefinitionKey(processDefinitionKey);
@@ -673,6 +719,7 @@ public class FlowApiServiceImpl implements FlowApiService {
         if (finishedOnly) {
             query.finished();
         }
+
         query.orderByProcessInstanceStartTime().desc();
         long totalCount = query.count();
         int firstResult = (pageParam.getPageNum() - 1) * pageParam.getPageSize();
@@ -685,7 +732,7 @@ public class FlowApiServiceImpl implements FlowApiService {
             String processDefinitionName,
             String beginDate,
             String endDate,
-            MyPageParam pageParam) throws ParseException {
+            MyPageParam pageParam, String projectId) throws ParseException {
 //        String loginName = TokenData.takeFromRequest().getLoginName();
         String loginName = LoginHelper.getUsername();
         HistoricTaskInstanceQuery query = historyService.createHistoricTaskInstanceQuery()
@@ -702,6 +749,7 @@ public class FlowApiServiceImpl implements FlowApiService {
             SimpleDateFormat sdf = new SimpleDateFormat(MyDateUtil.COMMON_SHORT_DATETIME_FORMAT);
             query.taskCompletedBefore(sdf.parse(endDate));
         }
+        query.caseVariableValueEquals("projectId", projectId);
         query.orderByHistoricTaskInstanceEndTime().desc();
         long totalCount = query.count();
         int firstResult = (pageParam.getPageNum() - 1) * pageParam.getPageSize();
@@ -980,6 +1028,11 @@ public class FlowApiServiceImpl implements FlowApiService {
             comment.setProcessInstanceId(task.getProcessInstanceId());
             comment.setComment(reason);
             flowTaskCommentService.saveNew(comment);
+            ActRuTask actRuTask = new ActRuTask();
+            actRuTask.setScopeId("jianguan");
+            actRuTask.setScopeType("cmmn");
+            actRuTask.setProcessInstanceId(task.getProcessInstanceId());
+            actRuTaskService.updateActRuTask(actRuTask);
         } catch (Exception e) {
             log.error("Failed to execute moveSingleActivityIdToActivityIds", e);
             return CallResult.error(e.getMessage());

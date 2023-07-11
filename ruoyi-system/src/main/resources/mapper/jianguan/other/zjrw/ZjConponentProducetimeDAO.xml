@@ -791,11 +791,11 @@
     <result column="overdueDays" jdbcType="INTEGER" property="overdueDays" />
     <result column="startDays" jdbcType="INTEGER" property="startDays" />
     <result column="danweigongcheng" jdbcType="VARCHAR" property="danweigongcheng" />
-    <result column="febugongcheng" jdbcType="VARCHAR" property="febugongcheng" />
+    <result column="fenbugongcheng" jdbcType="VARCHAR" property="fenbugongcheng" />
     <result column="zifenbugongcheng" jdbcType="VARCHAR" property="zifenbugongcheng" />
     <result column="fenxianggongcheng" jdbcType="VARCHAR" property="fenxianggongcheng" />
     <result column="goujian" jdbcType="VARCHAR" property="goujian" />
-    <result column="warninglevel" jdbcType="VARCHAR" property="warninglevel" />
+    <result column="conponentlevel" jdbcType="VARCHAR" property="conponentlevel" />
     <result column="jiedianjibie" jdbcType="VARCHAR" property="jiedianjibie" />
     <result column="processwarningLevel" jdbcType="VARCHAR" property="processwarningLevel" />
     <result column="actulendtime" jdbcType="TIMESTAMP" property="actulendtime" />
@@ -815,10 +815,10 @@
     cp.actulendtime,
     TIMESTAMPDIFF(DAY,cp.planendtime,cp.actulendtime) as overdueDays,
     TIMESTAMPDIFF( DAY, cp.plansttime, SYSDATE() ) AS startDays,
-    t.warninglevel,
+    cp.conponentlevel,
     t.w2 AS gongqu,
     t.w3 AS danweigongcheng ,
-    t.w4 as fenbugongchneg,
+    t.w4 as fenbugongcheng,
     t.w5 as zifenbugongcheng,
     t.w6 as fenxianggongcheng ,
     t.w7 as goujian

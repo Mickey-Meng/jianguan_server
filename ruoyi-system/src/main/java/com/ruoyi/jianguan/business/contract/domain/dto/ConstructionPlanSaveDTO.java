@@ -40,6 +40,7 @@ public class ConstructionPlanSaveDTO extends SaveDTO {
      */
     private Date reportTime;
     private String responsiblePerson;
+    private String responsiblePersonId;
     private Date plainStartTime;
     private Date plainEndTime;
     private String name;
@@ -55,6 +56,7 @@ public class ConstructionPlanSaveDTO extends SaveDTO {
      */
     @NotNull(message = "状态 0 审批中 1 审批完成 2 驳回不能为空", groups = {AddGroup.class, EditGroup.class})
     private Integer status;
+    private Integer reportStatus;
 
     /**
      * 项目ID

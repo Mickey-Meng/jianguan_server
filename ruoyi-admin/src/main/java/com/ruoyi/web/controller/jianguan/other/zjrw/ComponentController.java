@@ -1,9 +1,14 @@
 package com.ruoyi.web.controller.jianguan.other.zjrw;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.ruoyi.common.core.domain.BaseTree;
+import com.ruoyi.common.core.domain.entity.SsFProjects;
 import com.ruoyi.common.core.domain.object.ResponseBase;
+import com.ruoyi.common.helper.LoginHelper;
+import com.ruoyi.common.utils.redis.RedisUtils;
 import com.ruoyi.jianguan.common.domain.dto.ComponentProgressDTO;
 import com.ruoyi.jianguan.common.service.ComponentSevice;
+import com.ruoyi.jianguan.common.service.ProjectsService;
 import com.ruoyi.jianguan.common.service.RedisService;
 import com.ruoyi.common.utils.jianguan.zjrw.MyExcelUtil;
 import io.swagger.annotations.Api;
@@ -16,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author ：lin_zhixiong
@@ -127,11 +133,16 @@ public class ComponentController {
         return new ResponseBase("上传成功");
     }
 
+
+    @Autowired
+    private ProjectsService projectsService;
+
     @GetMapping("/getTree")
     @ResponseBody
     @ApiOperation(value="获取项目进度树列表")
     public ResponseBase getTree(@RequestParam(value ="projectId",required = false) Integer projectId,
                                 @RequestParam(value ="type") String type){
+        setProjectId(projectId);
         //当项目id没有传时, 默认为3
         if(ObjectUtils.isEmpty(projectId) || projectId == null){
             projectId = 3;
@@ -140,6 +151,22 @@ public class ComponentController {
             return new ResponseBase(601,"不支持的类型" + type, new BaseTree());
         }
         return componentSevice.getTree(projectId, type);
+    }
+
+    private void setProjectId(Integer projectId) {
+        if(ObjectUtil.isNull(projectId)) {
+            return;
+        }
+        ResponseBase responseBase = projectsService.getProjectInfoById(projectId);
+        if(ObjectUtil.isNull(responseBase) || ObjectUtil.isNull(responseBase.getData())) {
+            return;
+        }
+        Map data = (Map)responseBase.getData();
+        SsFProjects project = (SsFProjects)data.get("project");
+        if(ObjectUtil.isNull(project) || ObjectUtil.isNull(project.getParentid())) {
+            return;
+        }
+        RedisUtils.setCacheObject(LoginHelper.getUserId()+".projectId", String.valueOf(project.getParentid()));
     }
 
     @GetMapping("/getProjectTree")

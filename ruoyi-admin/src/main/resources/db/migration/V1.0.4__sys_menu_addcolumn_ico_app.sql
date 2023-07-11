@@ -1,0 +1,1 @@
+ALTER TABLE sys_menu ADD COLUMN `icon_app` varchar(100) DEFAULT null COMMENT 'app菜单图标';

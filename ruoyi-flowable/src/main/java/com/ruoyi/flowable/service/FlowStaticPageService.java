@@ -20,6 +20,7 @@ public interface FlowStaticPageService {
 
     /**
      * 提交用户Task
+     *
      * @param processInstanceId
      * @param taskId
      * @param flowTaskCommentDto
@@ -27,9 +28,12 @@ public interface FlowStaticPageService {
      * @param masterData
      * @param slaveData
      * @param copyData
+     * @param projectId
      * @return
      */
-    ResponseResult<String> submitUserTask(String processInstanceId, String taskId, FlowTaskCommentDto flowTaskCommentDto, JSONObject taskVariableData, JSONObject masterData, JSONObject slaveData, JSONObject copyData);
+    ResponseResult<String> submitUserTask(String processInstanceId, String taskId, FlowTaskCommentDto flowTaskCommentDto,
+                                          JSONObject taskVariableData, JSONObject masterData, JSONObject slaveData,
+                                          JSONObject copyData, String projectId);
 
     /**
      * 主动驳回

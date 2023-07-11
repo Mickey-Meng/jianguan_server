@@ -203,6 +203,7 @@ sms:
 # 临时文件
 temporary:
   file: D:\TemporaryFile
+  template: D:\TemporaryFile\template
 
 zhuji:
   video: D:\TemporaryFile\Video

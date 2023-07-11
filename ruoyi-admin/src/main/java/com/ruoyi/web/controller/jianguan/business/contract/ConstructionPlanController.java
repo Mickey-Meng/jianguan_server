@@ -30,6 +30,11 @@ public class ConstructionPlanController {
     @PostMapping(value = "/addOrUpdate", produces = "application/json;charset=UTF-8")
     @ApiOperation(value = "新增或者更新")
     public ResponseBase addOrUpdate(@RequestBody @ApiParam(name = "saveDto") ConstructionPlanSaveDTO saveDto) {
+        saveDto.setReportStatus(-1);
+        String responsiblePerson = saveDto.getResponsiblePerson();
+        String[] split = responsiblePerson.split("&");
+        saveDto.setResponsiblePerson(split[1]);
+        saveDto.setResponsiblePersonId(split[0]);
         return constructionPlanService.addOrUpdate(saveDto);
     }
 

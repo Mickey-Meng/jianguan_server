@@ -62,8 +62,9 @@ public class FlowAuthOperationController {
             @MyRequestBody String processDefinitionKey,
             @MyRequestBody String processDefinitionName,
             @MyRequestBody String taskName,
-            @MyRequestBody(required = true) MyPageParam pageParam) {
-        ResponseResult<PageInfo<FlowTaskVo>> taskPageInfo = flowOperationController.listRuntimeTask(processDefinitionKey, processDefinitionName, taskName, pageParam);
+            @MyRequestBody(required = true) MyPageParam pageParam,
+            @MyRequestBody String projectId) {
+        ResponseResult<PageInfo<FlowTaskVo>> taskPageInfo = flowOperationController.listRuntimeTask(processDefinitionKey, processDefinitionName, taskName, pageParam, projectId);
         List<FlowTaskVo> flowTaskVos = taskPageInfo.getData().getList();
         if (Objects.nonNull(flowTaskVos) && !flowTaskVos.isEmpty()) {
             List<String> userNames = flowTaskVos.stream().map(FlowTaskVo::getProcessInstanceInitiator).collect(Collectors.toList());
@@ -94,8 +95,9 @@ public class FlowAuthOperationController {
             @MyRequestBody String processDefinitionName,
             @MyRequestBody String beginDate,
             @MyRequestBody String endDate,
-            @MyRequestBody(required = true) MyPageParam pageParam) throws ParseException {
-        ResponseResult<PageInfo<Map<String, Object>>> taskPageInfo = flowOperationController.listHistoricTask(processDefinitionName, beginDate, endDate, pageParam);
+            @MyRequestBody(required = true) MyPageParam pageParam,
+            @MyRequestBody String projectId) throws ParseException {
+        ResponseResult<PageInfo<Map<String, Object>>> taskPageInfo = flowOperationController.listHistoricTask(processDefinitionName, beginDate, endDate, pageParam, projectId);
         List<Map<String, Object>> flowTaskVos = taskPageInfo.getData().getList();
         if (Objects.nonNull(flowTaskVos) && !flowTaskVos.isEmpty()) {
             List<String> userNames = new ArrayList<>();
@@ -127,8 +129,9 @@ public class FlowAuthOperationController {
             @MyRequestBody String processDefinitionName,
             @MyRequestBody String beginDate,
             @MyRequestBody String endDate,
-            @MyRequestBody(required = true) MyPageParam pageParam) throws ParseException {
-        ResponseResult<PageInfo<Map<String, Object>>> taskPageInfo = flowOperationController.listHistoricProcessInstance(processDefinitionName, beginDate, endDate, pageParam);
+            @MyRequestBody(required = true) MyPageParam pageParam,
+            @MyRequestBody String projectId) throws ParseException {
+        ResponseResult<PageInfo<Map<String, Object>>> taskPageInfo = flowOperationController.listHistoricProcessInstance(processDefinitionName, beginDate, endDate, pageParam, projectId);
         List<Map<String, Object>> flowTaskVos = taskPageInfo.getData().getList();
         if (Objects.nonNull(flowTaskVos) && !flowTaskVos.isEmpty()) {
             List<String> userNames = new ArrayList<>();
@@ -211,9 +214,10 @@ public class FlowAuthOperationController {
                                                        @MyRequestBody String startUser,
                                                        @MyRequestBody String beginDate,
                                                        @MyRequestBody String endDate,
-                                                       @MyRequestBody(required = true) MyPageParam pageParam) throws ParseException {
+                                                       @MyRequestBody(required = true) MyPageParam pageParam,
+                                                       @MyRequestBody String projectId) throws ParseException {
         ResponseResult<MyPageData<Map<String, Object>>> myPageDataResponseResult = flowOperationController.
-                listAllHistoricProcessInstance(processDefinitionName, startUser, beginDate, endDate, pageParam);
+                listAllHistoricProcessInstance(processDefinitionName, startUser, beginDate, endDate, pageParam, projectId);
         List<String> instanceIds = Lists.newArrayList();
         List<Map<String, Object>> dataList = myPageDataResponseResult.getData().getDataList();
         if (Objects.nonNull(dataList)) {

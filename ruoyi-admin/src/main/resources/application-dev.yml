@@ -48,6 +48,10 @@ spring:
           driverClassName: com.mysql.cj.jdbc.Driver
           # jdbc 所有参数配置参考 https://lionli.blog.csdn.net/article/details/122018562
           # rewriteBatchedStatements=true 批处理优化 大幅提升批量插入更新删除性能(对数据库有性能损耗 使用批量操作应考虑性能问题)
+#          url: jdbc:mysql://112.30.143.209:23307/jianguan3?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8&autoReconnect=true&rewriteBatchedStatements=true&nullCatalogMeansCurrent=true
+#          username: root
+#          password: Jg123456.
+#          url: jdbc:mysql://112.30.143.209:9001/jianguan3?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8&autoReconnect=true&rewriteBatchedStatements=true&nullCatalogMeansCurrent=true
           url: jdbc:mysql://150.158.139.18:8306/jianguan3?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8&autoReconnect=true&rewriteBatchedStatements=true&nullCatalogMeansCurrent=true
           username: root
           password: 123456
@@ -203,6 +207,7 @@ sms:
 # 临时文件
 temporary:
   file: D:\TemporaryFile
+  template: D:\TemporaryFile\template
 
 zhuji:
   video: D:\TemporaryFile\Video

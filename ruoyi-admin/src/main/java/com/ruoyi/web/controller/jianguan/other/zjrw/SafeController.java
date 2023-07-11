@@ -65,11 +65,11 @@ public class SafeController {
     @GetMapping("/uploadAddr")
     @ResponseBody
     @ApiOperation(value="监理上传安全检查")
-    public ResponseBase uploadAddr(@RequestParam(name="id",required = false) Integer id){
-        if(ObjectUtils.isEmpty(id)){
+    public ResponseBase uploadAddr(@RequestParam(value = "projectId",required = false) Integer projectId){
+        if(ObjectUtils.isEmpty(projectId)){
             return safeService.getQu();
         }
-        return safeService.getProject(id);
+        return safeService.getProject(projectId);
     }
 
     @GetMapping("/getSafeEvent")

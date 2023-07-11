@@ -33,6 +33,7 @@ public class ConstructionPlan extends NewBaseEntity {
      */
     private String reportPeople;
     private String responsiblePerson;
+    private String responsiblePersonId;
     private Date plainStartTime;
     private Date plainEndTime;
     private String name;
@@ -45,6 +46,8 @@ public class ConstructionPlan extends NewBaseEntity {
      * 状态 0 审批中 1 审批完成 2 驳回
      */
     private Integer status;
+    //上报工作流状态 0 审批中 1 审批完成 2 驳回
+    private Integer reportStatus;
     /**
      * 删除标志（0代表存在 2代表删除）
      */

@@ -8,12 +8,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 import com.ruoyi.common.annotation.DisableDataFilter;
 import com.ruoyi.common.annotation.MyRequestBody;
-import com.ruoyi.common.core.domain.entity.SsFUsers;
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.core.domain.object.*;
 import com.ruoyi.common.enums.ErrorCodeEnum;
 import com.ruoyi.common.helper.LoginHelper;
-import com.ruoyi.common.utils.JwtUtil;
 import com.ruoyi.common.utils.MyPageUtil;
 import com.ruoyi.flowable.common.constant.*;
 import com.ruoyi.flowable.domain.vo.FlowTaskCommentVo;
@@ -413,12 +411,13 @@ public class FlowOperationController {
             @MyRequestBody String processDefinitionKey,
             @MyRequestBody String processDefinitionName,
             @MyRequestBody String taskName,
-            @MyRequestBody(required = true) MyPageParam pageParam) {
+            @MyRequestBody(required = true) MyPageParam pageParam,
+            @MyRequestBody String projectId) {
 //        String username = TokenData.takeFromRequest().getLoginName();
         String username = LoginHelper.getUsername();
         log.info("name=" + username);
         PageInfo<Task> pageData = flowApiService.getTaskListByUserName(
-                username, processDefinitionKey, processDefinitionName, taskName, pageParam);
+                username, processDefinitionKey, processDefinitionName, taskName, pageParam, projectId);
         List<FlowTaskVo> flowTaskVoList = flowApiService.convertToFlowTaskList(pageData.getList());
         PageInfo<FlowTaskVo> taskPageInfo = new PageInfo<>(flowTaskVoList);
         taskPageInfo.setTotal(pageData.getTotal());
@@ -652,9 +651,10 @@ public class FlowOperationController {
             @MyRequestBody String processDefinitionName,
             @MyRequestBody String beginDate,
             @MyRequestBody String endDate,
-            @MyRequestBody(required = true) MyPageParam pageParam) throws ParseException {
+            @MyRequestBody(required = true) MyPageParam pageParam,
+            @MyRequestBody String projectId) throws ParseException {
         MyPageData<HistoricTaskInstance> pageData =
-                flowApiService.getHistoricTaskInstanceFinishedList(processDefinitionName, beginDate, endDate, pageParam);
+                flowApiService.getHistoricTaskInstanceFinishedList(processDefinitionName, beginDate, endDate, pageParam, projectId);
         List<Map<String, Object>> resultList = new LinkedList<>();
         pageData.getDataList().forEach(instance -> resultList.add(BeanUtil.beanToMap(instance)));
         List<HistoricTaskInstance> taskInstanceList = pageData.getDataList();
@@ -705,11 +705,12 @@ public class FlowOperationController {
             @MyRequestBody String processDefinitionName,
             @MyRequestBody String beginDate,
             @MyRequestBody String endDate,
-            @MyRequestBody(required = true) MyPageParam pageParam) throws ParseException {
+            @MyRequestBody(required = true) MyPageParam pageParam,
+            @MyRequestBody String projectId) throws ParseException {
 //        String loginName = TokenData.takeFromRequest().getLoginName();
         String loginName = LoginHelper.getUsername();
         MyPageData<HistoricProcessInstance> pageData = flowApiService.getHistoricProcessInstanceList(
-                null, processDefinitionName, loginName, beginDate, endDate, pageParam, true);
+                null, processDefinitionName, loginName, beginDate, endDate, pageParam, true, projectId);
         List<Map<String, Object>> resultList = new LinkedList<>();
         pageData.getDataList().forEach(instance -> resultList.add(BeanUtil.beanToMap(instance)));
         //分页
@@ -736,9 +737,10 @@ public class FlowOperationController {
             @MyRequestBody String startUser,
             @MyRequestBody String beginDate,
             @MyRequestBody String endDate,
-            @MyRequestBody(required = true) MyPageParam pageParam) throws ParseException {
+            @MyRequestBody(required = true) MyPageParam pageParam,
+            @MyRequestBody String projectId) throws ParseException {
         MyPageData<HistoricProcessInstance> pageData = flowApiService.getHistoricProcessInstanceList(
-                null, processDefinitionName, startUser, beginDate, endDate, pageParam, false);
+                null, processDefinitionName, startUser, beginDate, endDate, pageParam, false, projectId);
         List<Map<String, Object>> resultList = new LinkedList<>();
         pageData.getDataList().forEach(instance -> resultList.add(BeanUtil.beanToMap(instance)));
         return ResponseResult.success(MyPageUtil.makeResponseData(resultList, pageData.getTotalCount()));
@@ -851,6 +853,19 @@ public class FlowOperationController {
     public ResponseResult<Void> handDeleteProcessInstance(@MyRequestBody(required = true) String processInstanceId) {
         flowApiService.stopProcessInstance(processInstanceId, "手动删除",false);
         flowApiService.deleteProcessInstance(processInstanceId);
+        return ResponseResult.success();
+    }
+
+
+    /**
+     * 删除流程实例。
+     *
+     * @param processInstanceId 流程实例Id。
+     * @return 执行结果应答。
+     */
+    @PostMapping("/handDeleteCopyProcessInstance")
+    public ResponseResult<Void> handDeleteCopyProcessInstance(@MyRequestBody(required = true) String processInstanceId) {
+        flowMessageService.removeByProcessInstanceId(processInstanceId);
         return ResponseResult.success();
     }
 

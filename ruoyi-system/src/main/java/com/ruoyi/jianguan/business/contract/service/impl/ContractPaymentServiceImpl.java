@@ -86,6 +86,7 @@ public class ContractPaymentServiceImpl extends ServiceImpl<ContractPaymentMappe
                 flowTaskComment.setApprovalType("save");
                 flowTaskComment.setComment("合同付款单创建");
                 JSONObject taskVariableData = new JSONObject(auditUser);
+
                 flowStaticPageService.startAndTakeUserTask(processDefinitionKey, flowTaskComment, taskVariableData, null, null, saveDto.getCopyData(), businessKey);
             } catch (Exception e) {
                 log.error("流程启动失败！e=" + e.getMessage());

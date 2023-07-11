@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.flowable.mapper.ActHiTaskinstMapper">
+
+
+    <update id="updateActHiTaskinst">
+        update ACT_HI_TASKINST set SCOPE_ID_ = #{actHiTaskinst.scopeId}, SCOPE_TYPE_ = #{actHiTaskinst.scopeType} where PROC_INST_ID_ = #{actHiTaskinst.processInstanceId}
+    </update>
+
+</mapper>

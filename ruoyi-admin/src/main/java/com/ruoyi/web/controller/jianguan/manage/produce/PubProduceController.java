@@ -139,4 +139,18 @@ public class PubProduceController extends BaseController {
     public R<Void> edit(@PathVariable Long[] ids, @RequestBody PubProduceBo bo) {
         return toAjax(iPubProduceService.doImportProduces(ids, bo));
     }
+
+    /**
+     * 获取填充数据后的模板
+     * @param id
+     * @return
+     */
+    @SaCheckPermission("jg:produce:query")
+    @GetMapping("/getFillDataTemplate/{id}")
+    public R<Map<String, Object>> getFillDataTemplate(@NotNull(message = "主键不能为空")
+                                   @PathVariable Long id) {
+        Map<String, Object> templateDataMap = Maps.newHashMap();
+        templateDataMap = iPubProduceService.getFillDataTemplate(id);
+        return R.ok(templateDataMap);
+    }
 }

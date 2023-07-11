@@ -598,6 +598,7 @@ public class ProjectsService {
             SsFProjectsTree projectsTree = new SsFProjectsTree();
             if (projects.size() > 0){
                 for (SsFProjects project : projects) {
+
                     //获取标段的父级id以及自身id(2级, 3级)
                     projectIds.add(project.getId());
                     projectIds.add(project.getParentid());

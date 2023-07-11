@@ -53,16 +53,25 @@ public class ConstructionPlanServiceImpl extends ServiceImpl<ConstructionPlanMap
             isStartFlow = true;
             constructionPlan.setId(IdUtil.nextLongId());
         }
+        if (Objects.isNull(saveDto.getReportStatus())) {
+            isStartFlow = true;
+        }
         // 初始化审批状态：审批中
         // 编辑操作不修改审批状态
         if(ObjUtil.isNull(saveDto.getId())) {
             constructionPlan.setStatus(0);
+        }
+        if(ObjUtil.isNull(saveDto.getReportStatus())) {
+            constructionPlan.setReportStatus(0);
         }
         //附件
         constructionPlan.setAttachment(JSON.toJSONString(saveDto.getAttachment()));
         boolean saveOrUpdate = this.saveOrUpdate(constructionPlan);
         if (saveOrUpdate && isStartFlow) {
             String processDefinitionKey = BimFlowKey.constructionPlan.getName();
+            if (null!=saveDto.getStatus()&&1 == saveDto.getStatus()) {
+                processDefinitionKey = BimFlowKey.constructionPlanReport.getName();
+            }
             String businessKey = constructionPlan.getId().toString();
             //设置流程的审批人
             Map<String, Object> auditUser = saveDto.getAuditUser();
