@@ -1,5 +1,6 @@
 package com.ruoyi.jianguan.common.domain.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -90,4 +91,6 @@ public class Item implements Serializable {
      * 项目code
      */
     private String projectcode;
+
+
 }

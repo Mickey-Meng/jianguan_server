@@ -157,7 +157,7 @@ public class ProjectOpenServiceImpl extends ServiceImpl<ProjectOpenMapper, Proje
                     //添加施工单位
                     pageVo.setBuildSectionNames(buildSection);
                     //状态
-                    pageVo.setStatusStr(pageVo.getStatus() == 0 ? "进行中" : "已完成");
+                    pageVo.setStatusStr(pageVo.getStatus() == 0 ? "审批中" : "已审批");
                     //天数
                     long days = pageVo.getContractEndDate().until(pageVo.getContractOpenDate(), ChronoUnit.DAYS);
                     pageVo.setDays(Integer.parseInt(String.valueOf(days)));

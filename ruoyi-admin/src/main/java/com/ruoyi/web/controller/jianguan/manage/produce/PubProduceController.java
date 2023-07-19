@@ -1,11 +1,16 @@
 package com.ruoyi.web.controller.jianguan.manage.produce;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.Maps;
 import com.ruoyi.common.core.domain.entity.SysDept;
+import com.ruoyi.common.utils.file.FileUtils;
 import com.ruoyi.jianguan.manage.produce.domain.bo.PubProduceBo;
 import com.ruoyi.jianguan.manage.produce.domain.entity.PubProduce;
 import com.ruoyi.jianguan.manage.produce.domain.vo.PubProduceVo;
@@ -16,6 +21,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.*;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
+import org.apache.ibatis.annotations.Param;
+import org.apache.poi.util.IOUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.annotation.Validated;
 import com.ruoyi.common.annotation.RepeatSubmit;
@@ -147,10 +154,22 @@ public class PubProduceController extends BaseController {
      */
     @SaCheckPermission("jg:produce:query")
     @GetMapping("/getFillDataTemplate/{id}")
-    public R<Map<String, Object>> getFillDataTemplate(@NotNull(message = "主键不能为空")
-                                   @PathVariable Long id) {
-        Map<String, Object> templateDataMap = Maps.newHashMap();
-        templateDataMap = iPubProduceService.getFillDataTemplate(id);
-        return R.ok(templateDataMap);
+    public void getFillDataTemplate(@NotNull(message = "主键不能为空") @PathVariable Long id,
+                              @RequestParam("templateUrl") String templateUrl, HttpServletResponse response) throws IOException {
+        Map<String, String> templateDataMap = iPubProduceService.getFillDataTemplate(id, templateUrl);
+        ExcelUtil.resetResponse(templateDataMap.get("templateName"), response);
+        InputStream fileInputStream = null;
+        try {
+            fileInputStream = new FileInputStream(templateDataMap.get("templatePath"));
+            IOUtils.copy(fileInputStream, response.getOutputStream());
+            fileInputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
+        } finally {
+            if (fileInputStream != null) {
+                fileInputStream.close();
+            }
+        }
     }
 }

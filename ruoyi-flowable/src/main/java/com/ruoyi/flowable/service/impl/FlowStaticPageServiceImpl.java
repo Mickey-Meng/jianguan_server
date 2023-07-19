@@ -343,6 +343,7 @@ public class FlowStaticPageServiceImpl implements FlowStaticPageService {
         variableMap.put(FlowConstant.PROC_INSTANCE_INITIATOR_VAR, loginName);
         variableMap.put(FlowConstant.PROC_INSTANCE_START_USER_NAME_VAR, loginName);
         String projectId = (String)RedisUtils.getCacheObject(LoginHelper.getUserId() + ".projectId");
+        log.info("startAndTakeFirstByProcessKey.projectId: {}", (String)RedisUtils.getCacheObject(LoginHelper.getUserId() + ".projectId"));
         variableMap.put("projectId", projectId);
         Authentication.setAuthenticatedUserId(loginName);
         // 根据当前流程的主版本，启动一个流程实例，同时将businessKey参数设置为主表主键值。

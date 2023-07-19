@@ -192,7 +192,7 @@ public class ExcelUtil {
     /**
      * 重置响应体
      */
-    private static void resetResponse(String sheetName, HttpServletResponse response) throws UnsupportedEncodingException {
+    public static void resetResponse(String sheetName, HttpServletResponse response) throws UnsupportedEncodingException {
         String filename = encodingFilename(sheetName);
         response.reset();
         FileUtils.setAttachmentResponseHeader(response, filename);

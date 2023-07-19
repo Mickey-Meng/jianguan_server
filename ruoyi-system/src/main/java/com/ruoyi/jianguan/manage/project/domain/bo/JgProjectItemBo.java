@@ -170,4 +170,5 @@ public class JgProjectItemBo extends BaseEntity {
      * 产值进度
      */
     private float productionProgress;
+
 }

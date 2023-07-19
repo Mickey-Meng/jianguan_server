@@ -113,9 +113,9 @@ public class QualityDetection extends NewBaseEntity {
     private Integer draftFlag;
 
     /**
-     * 状态 0 进行中 1已完成
+     * 状态 0 审批中 1已审批
      */
-    @ApiModelProperty(value = "状态 0 进行中 1已完成")
+    @ApiModelProperty(value = "状态 0 审批中 1已审批")
     private Integer status;
 
 }

@@ -13,6 +13,7 @@ import com.ruoyi.jianguan.common.service.RedisService;
 import com.ruoyi.common.utils.jianguan.zjrw.MyExcelUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +34,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/component")
 @Api(value="构件管理")
+@Slf4j
 public class ComponentController {
 
     @Autowired
@@ -154,19 +156,26 @@ public class ComponentController {
     }
 
     private void setProjectId(Integer projectId) {
+        log.info("ComponentController.setProjectId.projectId: {}", projectId);
         if(ObjectUtil.isNull(projectId)) {
             return;
         }
         ResponseBase responseBase = projectsService.getProjectInfoById(projectId);
+        log.info("ComponentController.setProjectId.responseBase: {}", responseBase);
         if(ObjectUtil.isNull(responseBase) || ObjectUtil.isNull(responseBase.getData())) {
             return;
         }
         Map data = (Map)responseBase.getData();
         SsFProjects project = (SsFProjects)data.get("project");
+        log.info("ComponentController.setProjectId.project: {}", project);
         if(ObjectUtil.isNull(project) || ObjectUtil.isNull(project.getParentid())) {
             return;
         }
         RedisUtils.setCacheObject(LoginHelper.getUserId()+".projectId", String.valueOf(project.getParentid()));
+
+        Object cacheObject = RedisUtils.getCacheObject(LoginHelper.getUserId() + ".projectId");
+
+        log.info("ComponentController.setProjectId.cacheObject: {}", (String)cacheObject);
     }
 
     @GetMapping("/getProjectTree")

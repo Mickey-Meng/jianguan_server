@@ -490,7 +490,9 @@ public class QualityService {
 //        if(!ObjectUtils.isEmpty(singleProjectId)){
 //            List<ZjQualityEvent> zjQualityEvent = zjQualityEventDAO.getAllStatusSafeByProjectcode(singleProjectId, projectId);
             // yangaogao 改为查询该项目向下，所有的质量管理事件
-            List<ZjQualityEvent> zjQualityEvent = zjQualityEventDAO.getAllStatusQualityByProjectcode(projectId);
+            List<ZjQualityEventDTO> zjQualityEvent = zjQualityEventDAO.getAllStatusQualityByProjectcode(projectId);
+
+
             return new ResponseBase(200,"查询成功",zjQualityEvent);
 //        }
         /*List<ZjQualityEvent> zjSafeEventList = Lists.newArrayList();

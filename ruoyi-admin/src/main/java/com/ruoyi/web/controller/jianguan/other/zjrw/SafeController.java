@@ -126,17 +126,15 @@ public class SafeController {
     @ApiOperation(value="监理人查询所有安全检查事件")
     public ResponseBase getAllStatusSafeEvent(@RequestParam(value = "projectId", required = false)Integer projectId,
                                               @RequestParam(value = "singleProjectId", required = false)Integer singleProjectId){
-        if (projectId == null || projectId.equals("")){
-            projectId = 3;
-        }
+
         return safeService.getAllStatusSafeEvent(singleProjectId, projectId);
     }
 
     @GetMapping("/getDoneSafeEvent")
     @ResponseBody
     @ApiOperation(value="监理方查询已办安全检查事件")
-    public ResponseBase getDoneSafeEvent(){
-        return safeService.getDoneSafeEvent();
+    public ResponseBase getDoneSafeEvent(@RequestParam(value = "projectId", required = false)Integer projectId){
+        return safeService.getDoneSafeEvent(projectId);
     }
 
 

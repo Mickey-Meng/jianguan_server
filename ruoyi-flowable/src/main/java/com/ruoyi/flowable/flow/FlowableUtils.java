@@ -594,7 +594,7 @@ public class FlowableUtils {
      * @param bpmnModel 流程模型
      * @param unfinishedTaskSet 未结束的任务节点
      * @param finishedSequenceFlowSet 已经完成的连线
-     * @param finishedTaskSet 已完成的任务节点
+     * @param finishedTaskSet 已审批的任务节点
      * @return
      */
     public static Set<String> dfsFindRejects(BpmnModel bpmnModel, Set<String> unfinishedTaskSet, Set<String> finishedSequenceFlowSet, Set<String> finishedTaskSet) {

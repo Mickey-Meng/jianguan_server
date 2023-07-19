@@ -1160,6 +1160,14 @@ public class FlowApiServiceImpl implements FlowApiService {
             if (Objects.nonNull(task)) {
                 //查询流程实例信息
                 ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceBusinessKey(businessKey).singleResult();
+
+                ActRuTask actRuTask = new ActRuTask();
+                actRuTask.setProcessInstanceId(processInstance.getProcessInstanceId());
+                actRuTaskService.updateActRuTask(actRuTask);
+                ActRuVariable actRuVariable = new ActRuVariable();
+                actRuVariable.setProcessInstanceId(processInstance.getProcessInstanceId());
+                actRuVariableService.updateActRuVariable(actRuVariable);
+
                 this.stopProcessInstance(processInstance.getId(), "删除", false);
                 this.deleteProcessInstance(processInstance.getId());
                 return ResponseBase.success();

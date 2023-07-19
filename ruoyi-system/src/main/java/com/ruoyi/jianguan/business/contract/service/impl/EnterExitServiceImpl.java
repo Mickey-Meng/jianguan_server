@@ -186,7 +186,7 @@ public class EnterExitServiceImpl extends ServiceImpl<EnterExitMapper, EnterExit
     public PageInfo<EnterExitPageVo> getPageInfo(EnterExitPageDTO pageDto) {
         //分页查询
         PageHelper.startPage(pageDto.getPageNum(), pageDto.getPageSize());
-        List<EnterExitPageVo> pageVoList = enterExitMapper.getPageInfo(pageDto);
+            List<EnterExitPageVo> pageVoList = enterExitMapper.getPageInfo(pageDto);
         //状态转换
         if (Objects.nonNull(pageVoList) && !pageVoList.isEmpty()) {
             //通过项目id获取施工单位 监理单位等

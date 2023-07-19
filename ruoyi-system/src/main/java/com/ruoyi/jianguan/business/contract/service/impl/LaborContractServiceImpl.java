@@ -160,6 +160,17 @@ public class LaborContractServiceImpl extends ServiceImpl<LaborContractMapper, L
         //拟分包工程名称 处理
         if (Objects.nonNull(pageVos) && !pageVos.isEmpty()) {
             pageVos.forEach(pageVo -> {
+
+                //状态
+                switch (pageVo.getStatus()) {
+                    case 0:
+                        pageVo.setStatusStr("审批中");break;
+                    case 1:
+                        pageVo.setStatusStr("已审批");break;
+                    default:
+                        pageVo.setStatusStr("驳回");break;
+                };
+
                 String information = pageVo.getInformation();
                 if (StringUtils.isNotEmptyAndNull(information)) {
                     List<LaborContractSaveDTO.Information> infoList = JSONArray.parseArray(information, LaborContractSaveDTO.Information.class);

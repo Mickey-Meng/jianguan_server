@@ -38,7 +38,11 @@ public interface ZjQualityEventDAO {
     @Select("select * from zj_quality_event where  uploadid = #{userid}  and status = 3")
     List<ZjQualityEvent> getDoneSafeEventByModify(@Param("userid")Integer userid);
 
-    @Select("select * from zj_quality_event where  uploadid = #{userid}  and status = 1 and projectId = #{projectId}")
+
+
+    @Select("select zqe.*, sf1.`NAME` as gongquname,sf2.name as singleProjectName  " +
+            "from zj_quality_event zqe  ,ss_f_projects sf1 ,ss_f_projects sf2 " +
+            "where zqe.gongquid = sf1.id  and zqe.singleProjectId = sf2.id  and uploadid =  #{userid}  and status = 1 and projectId = #{projectId}")
     List<ZjQualityEvent> getDelaySafeEventByModify(@Param("userid")Integer userid,
                                                    @Param("projectId")Integer project);
 
@@ -87,8 +91,10 @@ public interface ZjQualityEventDAO {
             "where b.userid = #{userid}")
     Integer getRole(@Param("userid") Integer userid);*/
 
-    @Select("select * from zj_quality_event where projectid = #{projectdoce}")
-    List<ZjQualityEvent> getAllStatusQualityByProjectcode(@Param("projectdoce") Integer projectdoce);
+    @Select("select zqe.*, sf1.`NAME` as gongquname,sf2.name as singleProjectName  " +
+            "from zj_quality_event zqe  ,ss_f_projects sf1 ,ss_f_projects sf2 " +
+            "where zqe.gongquid = sf1.id  and zqe.singleProjectId = sf2.id  and  projectId = #{projectId}")
+    List<ZjQualityEventDTO> getAllStatusQualityByProjectcode(@Param("projectId") Integer projectId);
 
     List<ZjQualityEvent> getGQByUserId(@Param("modifyid")Integer modifyid);
 

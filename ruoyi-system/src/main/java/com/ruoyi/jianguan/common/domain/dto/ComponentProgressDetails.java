@@ -30,7 +30,7 @@ public class ComponentProgressDetails implements Serializable {
     @ApiModelProperty(value = "实际结束时间")
     private Date actualEndTime;
 
-    @ApiModelProperty(value = "施工状态：0-未开工，1-开工未完成，2-已完成")
+    @ApiModelProperty(value = "施工状态：0-未开工，1-开工未完成，2-已审批")
     private Integer status;
 
     public Date getPlanStartTime() {

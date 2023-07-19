@@ -40,10 +40,7 @@
            zz_supervision_patrol a
         left join ss_f_projects p on p.ID = a.build_section and p.GROUPLEVEL = 3
         left join sys_user u on a.create_user_id = u.user_id
-        where a.project_id = #{pageDto.projectId}  and a.build_section = #{pageDto.buildSection}
-        <if test="pageDto.buildSection != null">
-            and a.build_section >= #{pageDto.buildSection}
-        </if>
+        where   a.build_section = #{pageDto.buildSection}
         <if test="pageDto.startDateStart != null and pageDto.startDateStart != ''">
             and a.start_date >= #{pageDto.startDateStart}
         </if>

@@ -814,7 +814,7 @@
     cp.actulsttime,
     cp.actulendtime,
     TIMESTAMPDIFF(DAY,cp.planendtime,cp.actulendtime) as overdueDays,
-    TIMESTAMPDIFF( DAY, cp.plansttime, SYSDATE() ) AS startDays,
+    TIMESTAMPDIFF( DAY, SYSDATE(), cp.plansttime ) AS startDays,
     cp.conponentlevel,
     t.w2 AS gongqu,
     t.w3 AS danweigongcheng ,

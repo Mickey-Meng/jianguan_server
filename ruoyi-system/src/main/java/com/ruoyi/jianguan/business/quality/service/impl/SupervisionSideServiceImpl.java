@@ -162,7 +162,7 @@ public class SupervisionSideServiceImpl extends ServiceImpl<SupervisionSideMappe
         if (Objects.nonNull(pageVoList) && !pageVoList.isEmpty()) {
             pageVoList.forEach(pageVo -> {
                 //状态
-                pageVo.setStatusStr(pageVo.getStatus() == 0 ? "进行中" : "已完成");
+                pageVo.setStatusStr(pageVo.getStatus() == 0 ? "审批中" : "已审批");
                 //旁站监理项目
                 pageVo.setSideProjectName(SideProjectEnum.getEnum(pageVo.getSideProjectId()).getDes());
             });

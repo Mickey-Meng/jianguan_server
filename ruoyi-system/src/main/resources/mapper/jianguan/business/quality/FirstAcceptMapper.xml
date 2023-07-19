@@ -52,7 +52,7 @@
         select a.*,p.name as buildSectionName,u.nick_name as createName,u.nick_name as createUserName from  zz_first_accept a
         left join ss_f_projects p on p.ID = a.build_section and p.GROUPLEVEL = 3
         left join sys_user u on a.create_user_id = u.user_id
-        where a.project_id = #{pageDto.projectId} and a.build_section = #{pageDto.buildSection}
+        where   a.build_section = #{pageDto.buildSection}
         <if test="pageDto.firstProjectName != null and pageDto.firstProjectName != ''">
             and a.first_project_name  like concat('%',#{pageDto.firstProjectName},'%')
         </if>

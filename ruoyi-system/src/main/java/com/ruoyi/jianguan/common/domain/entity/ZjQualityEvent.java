@@ -146,6 +146,27 @@ public class ZjQualityEvent implements Serializable {
 
     private String copyUsers;
 
+
+    private String singleProjectName;
+
+    private String gongquname;
+
+    public String getSingleProjectName() {
+        return singleProjectName;
+    }
+
+    public void setSingleProjectName(String singleProjectName) {
+        this.singleProjectName = singleProjectName;
+    }
+
+    public String getGongquname() {
+        return gongquname;
+    }
+
+    public void setGongquname(String gongquname) {
+        this.gongquname = gongquname;
+    }
+
     private static final long serialVersionUID = 1L;
 
     public Integer getId() {

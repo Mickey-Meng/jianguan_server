@@ -57,5 +57,5 @@ public interface IPubProduceService {
 
     Boolean doImportProduces(Long[] ids, PubProduceBo bo);
 
-    Map<String, Object> getFillDataTemplate(Long id);
+    Map<String, String> getFillDataTemplate(Long id, String templateUrl);
 }

@@ -25,7 +25,7 @@ public class WfViewerVo {
     private Set<String> finishedTaskSet;
 
     /**
-     * 已完成
+     * 已审批
      */
     private Set<String> finishedSequenceFlowSet;
 

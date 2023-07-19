@@ -34,7 +34,7 @@ public class PersonListenService {
         log.info("监听到有 '人员报审' 流程完成!");
         PersonDTO person = personListenDAO.getByProcessId(processInstanceId);
         if(person != null){
-            //设置2为已完成流程
+            //设置2为已审批流程
             personListenDAO.updateContractStatus(2, processInstanceId);
         }
     }

@@ -42,14 +42,14 @@ public interface FlowMessageService extends IBaseService<FlowMessage, Long> {
     void saveNewCopyMessage(Task task, JSONObject copyDataJson);
 
     /**
-     * 更新指定运行时任务Id的消费为已完成状态。
+     * 更新指定运行时任务Id的消费为已审批状态。
      *
      * @param taskId 运行时任务Id。
      */
     void updateFinishedStatusByTaskId(String taskId);
 
     /**
-     * 更新指定流程实例Id的消费为已完成状态。
+     * 更新指定流程实例Id的消费为已审批状态。
      *
      * @param processInstanceId 流程实例IdId。
      */

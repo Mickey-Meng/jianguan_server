@@ -322,18 +322,18 @@ public interface FlowApiService {
             boolean finishedOnly,String projectId) throws ParseException;
 
     /**
-     * 获取流程实例的已完成历史任务列表。
+     * 获取流程实例的已审批历史任务列表。
      *
      * @param processInstanceId 流程实例Id。
-     * @return 流程实例已完成的历史任务列表。
+     * @return 流程实例已审批的历史任务列表。
      */
     List<HistoricActivityInstance> getHistoricActivityInstanceList(String processInstanceId);
 
     /**
-     * 获取流程实例的已完成历史任务列表，同时按照每个活动实例的开始时间升序排序。
+     * 获取流程实例的已审批历史任务列表，同时按照每个活动实例的开始时间升序排序。
      *
      * @param processInstanceId 流程实例Id。
-     * @return 流程实例已完成的历史任务列表。
+     * @return 流程实例已审批的历史任务列表。
      */
     List<HistoricActivityInstance> getHistoricActivityInstanceListOrderByStartTime(String processInstanceId);
 

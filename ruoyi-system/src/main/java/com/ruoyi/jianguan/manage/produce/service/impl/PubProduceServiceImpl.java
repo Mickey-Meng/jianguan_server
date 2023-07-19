@@ -23,6 +23,7 @@ import com.ruoyi.jianguan.manage.produce.domain.vo.PubProduceVo;
 import com.ruoyi.jianguan.manage.produce.mapper.PubProduceMapper;
 import com.ruoyi.jianguan.manage.produce.service.IPubProduceService;
 import com.ruoyi.system.domain.SysOss;
+import liquibase.pro.packaged.S;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -154,7 +155,7 @@ public class PubProduceServiceImpl implements IPubProduceService {
 
 
     @Override
-    public Map<String, Object> getFillDataTemplate(Long id) {
+    public Map<String, String> getFillDataTemplate(Long id , String originalTemplateUrl) {
         Map<String, Object> fillDataMap = Maps.newHashMap();
         fillDataMap.put("supervisorCompany", "中国软件");
         fillDataMap.put("unitProject", "路基工程");
@@ -166,12 +167,12 @@ public class PubProduceServiceImpl implements IPubProduceService {
         fillDataMap.put("selfCheckRemarks", "自我评价:优秀");
         fillDataMap.put("supervisorReview", "监理自评:优秀+");
         // 原始模板
-        String originalTemplateUrl = "http://112.30.143.209:9002/hefei/2023/07/11/a7b57b59974a4d5a8c9682236b2906c2.xlsx";
-        String fileName = "混凝土排水管安装浙路(JS)101施工放样现场记录(监抽)";
-        String fillDataTemplate = this.tempTemplateFilePath + System.getProperty("file.separator") + ExcelUtil.encodingFilename(fileName);
+        String templateOriginalName = "混凝土排水管安装浙路(JS)101施工放样现场记录(监抽)";
+        String fillDataTemplateName = ExcelUtil.encodingFilename(templateOriginalName);
+        String fillDataTemplatePath = this.tempTemplateFilePath + System.getProperty("file.separator") + fillDataTemplateName;
         try (ExcelWriter excelWriter = EasyExcel
-                .write(fillDataTemplate)
-                .withTemplate(HttpUtil.downloadFileFromUrl(originalTemplateUrl, this.tempTemplateFilePath + System.getProperty("file.separator") + fileName + ".xlsx"))
+                .write(fillDataTemplatePath)
+                .withTemplate(HttpUtil.downloadFileFromUrl(originalTemplateUrl, this.tempTemplateFilePath + System.getProperty("file.separator") + templateOriginalName + ".xlsx"))
                 .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy()).build()) {
             WriteSheet writeSheet = EasyExcel.writerSheet().build();
             // 这里注意 入参用了forceNewRow 代表在写入list的时候不管list下面有没有空行 都会创建一行，然后下面的数据往后移动。默认 是false，会直接使用下一行，如果没有则创建。
@@ -181,9 +182,9 @@ public class PubProduceServiceImpl implements IPubProduceService {
             FillConfig fillConfig = FillConfig.builder().forceNewRow(Boolean.FALSE).build();
             excelWriter.fill(Lists.newArrayList(fillDataMap), fillConfig, writeSheet);
 
-            Map<String, Object> templateDataMap = Maps.newHashMap();
-            templateDataMap.put("templateName", fileName);
-            templateDataMap.put("templatePath", fillDataTemplate);
+            Map<String, String> templateDataMap = Maps.newHashMap();
+            templateDataMap.put("templateName", fillDataTemplateName);
+            templateDataMap.put("templatePath", fillDataTemplatePath);
             return templateDataMap;
         } catch (Exception e) {
             e.printStackTrace();

@@ -1104,8 +1104,8 @@ public class ProduceService {
                 }
             }
         }
-        log.debug("同步工序记录表与构建进度表数据已完成！");
-        return new ResponseBase(200, "同步工序记录表与构建进度表数据已完成！");
+        log.debug("同步工序记录表与构建进度表数据已审批！");
+        return new ResponseBase(200, "同步工序记录表与构建进度表数据已审批！");
     }
 
     @Transactional

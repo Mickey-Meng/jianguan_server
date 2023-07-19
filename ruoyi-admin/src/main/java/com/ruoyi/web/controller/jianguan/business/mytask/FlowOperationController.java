@@ -14,6 +14,8 @@ import com.ruoyi.common.enums.ErrorCodeEnum;
 import com.ruoyi.common.helper.LoginHelper;
 import com.ruoyi.common.utils.MyPageUtil;
 import com.ruoyi.flowable.common.constant.*;
+import com.ruoyi.flowable.domain.entity.ActRuTask;
+import com.ruoyi.flowable.domain.entity.ActRuVariable;
 import com.ruoyi.flowable.domain.vo.FlowTaskCommentVo;
 import com.ruoyi.flowable.domain.vo.FlowTaskVo;
 import com.ruoyi.flowable.domain.vo.TaskInfoVo;
@@ -87,6 +89,10 @@ public class FlowOperationController {
     private HistoryService historyService;
     @Autowired
     private FlowablePluginExecutor flowablePluginExecutor;
+    @Autowired
+    private ActRuTaskService actRuTaskService;
+    @Autowired
+    private ActRuVariableService actRuVariableService;
 
     /**
      * 根据指定流程的主版本，发起一个流程实例。
@@ -851,6 +857,12 @@ public class FlowOperationController {
      */
     @PostMapping("/handDeleteProcessInstance")
     public ResponseResult<Void> handDeleteProcessInstance(@MyRequestBody(required = true) String processInstanceId) {
+        ActRuTask actRuTask = new ActRuTask();
+        actRuTask.setProcessInstanceId(processInstanceId);
+        actRuTaskService.updateActRuTask(actRuTask);
+        ActRuVariable actRuVariable = new ActRuVariable();
+        actRuVariable.setProcessInstanceId(processInstanceId);
+        actRuVariableService.updateActRuVariable(actRuVariable);
         flowApiService.stopProcessInstance(processInstanceId, "手动删除",false);
         flowApiService.deleteProcessInstance(processInstanceId);
         return ResponseResult.success();

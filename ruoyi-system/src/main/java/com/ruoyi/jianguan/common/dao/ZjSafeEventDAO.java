@@ -31,20 +31,31 @@ public interface ZjSafeEventDAO {
 
     int updateByPrimaryKey(ZjSafeEvent record);
 
-    @Select("select * from zj_safe_event where status = 0 and  ( modifyid = #{userid} or uploadid = #{userid}  ) " +
-            " and projectId = #{projectId}")
+/*    @Select("select * from zj_safe_event where status = 0 and  ( modifyid = #{userid} or uploadid = #{userid}  ) " +
+            " and projectId = #{projectId}")*/
+
+    @Select(" select zqe.*, sf1.`NAME` as gongquname,sf2.name as singleProjectName from zj_safe_event zqe  ,ss_f_projects sf1 ,ss_f_projects sf2 " +
+    "where  zqe.status = 0 and zqe.gongquid = sf1.id  and zqe.singleProjectId = sf2.id  and  projectId = #{projectId} and  ( modifyid = #{userid} or uploadid = #{userid}  )")
     List<ZjSafeEvent> getSafeEventByModify(@Param("userid") Integer userid,
                                            @Param("projectId")Integer projectId);
 
 
-    @Select("select * from zj_safe_event where  uploadid = #{userid}  and status = 3")
-    List<ZjSafeEvent> getDoneSafeEventByModify(@Param("userid")Integer userid);
 
-    @Select("select * from zj_safe_event where  uploadid = #{userid}  and status = 1")
+    @Select(" select zqe.*, sf1.`NAME` as gongquname,sf2.name as singleProjectName from zj_safe_event zqe  ,ss_f_projects sf1 ,ss_f_projects sf2 " +
+            "where    zqe.gongquid = sf1.id  and zqe.singleProjectId = sf2.id  and  projectId = #{projectId} and  uploadid = #{userid}  and status = 3 )")
+    List<ZjSafeEvent> getDoneSafeEventByModify(@Param("userid")Integer userid,
+                                               @Param("projectId")Integer projectId);
+
+
+    @Select(" select zqe.*, sf1.`NAME` as gongquname,sf2.name as singleProjectName from zj_safe_event zqe  ,ss_f_projects sf1 ,ss_f_projects sf2 " +
+            "where  zqe.status = 0 and zqe.gongquid = sf1.id  and zqe.singleProjectId = sf2.id  and  projectId = #{projectId} and  status = 1 )")
     List<ZjSafeEvent> getDelaySafeEventByModify(@Param("userid")Integer userid,
                                                 @Param("projectId")Integer projectId);
 
-    @Select("select * from zj_safe_event where  uploadid = #{userid}  and status = 2 and projectId = #{projectId}")
+
+
+    @Select(" select zqe.*, sf1.`NAME` as gongquname,sf2.name as singleProjectName from zj_safe_event zqe  ,ss_f_projects sf1 ,ss_f_projects sf2 " +
+            "where    zqe.gongquid = sf1.id  and zqe.singleProjectId = sf2.id  and  projectId = #{projectId} and  uploadid = #{userid}  and status = 2 ")
     List<ZjSafeEvent> getNotDoneSafeEvent(@Param("userid")Integer userid,
                                           @Param("projectId")Integer projectId);
 
@@ -60,7 +71,9 @@ public interface ZjSafeEventDAO {
     List<ZjSafeEvent> getGongquData(@Param("projectid")String projectid);
 
 
-    @Select("select * from zj_safe_event where gongquid in  ( ${userid} ) and projectId = #{projectId}")
+//    @Select("select * from zj_safe_event where gongquid in  ( ${userid} ) and projectId = #{projectId}")
+    @Select(" select zqe.*, sf1.`NAME` as gongquname,sf2.name as singleProjectName from zj_safe_event zqe  ,ss_f_projects sf1 ,ss_f_projects sf2 " +
+            "where    zqe.gongquid = sf1.id  and zqe.singleProjectId = sf2.id  and  projectId = #{projectId} and    gongquid in  ( ${userid} )  ")
     List<ZjSafeEvent> getAllStatusSafeByModify(@Param("userid") String userid,
                                                @Param("projectId")Integer projectId);
 

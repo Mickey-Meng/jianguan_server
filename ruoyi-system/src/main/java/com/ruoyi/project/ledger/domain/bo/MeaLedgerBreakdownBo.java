@@ -36,7 +36,7 @@ public class MeaLedgerBreakdownBo extends TreeEntity<MeaLedgerBreakdownBo> {
     /**
      * 台账分解编号
      */
-    @NotBlank(message = "台账分解编号不能为空", groups = { AddGroup.class, EditGroup.class })
+//    @NotBlank(message = "台账分解编号不能为空", groups = { AddGroup.class, EditGroup.class })
     private String tzfjbh;
 
     /**

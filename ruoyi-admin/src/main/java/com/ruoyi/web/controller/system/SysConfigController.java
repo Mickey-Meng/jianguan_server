@@ -56,7 +56,6 @@ public class SysConfigController extends BaseController {
      *
      * @param configId 参数ID
      */
-    @SaCheckPermission("system:config:query")
     @GetMapping(value = "/{configId}")
     public R<SysConfig> getInfo(@PathVariable Long configId) {
         return R.ok(configService.selectConfigById(configId));

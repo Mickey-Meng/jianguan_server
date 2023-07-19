@@ -326,3 +326,6 @@ zhuji:
   scope: DataCenterV2
   grantType: client_credentials
   ycApiurl: https://proj.bim-ace.com:10207/services/api/data-center/dustValue/last
+
+temporary:
+  template: 111

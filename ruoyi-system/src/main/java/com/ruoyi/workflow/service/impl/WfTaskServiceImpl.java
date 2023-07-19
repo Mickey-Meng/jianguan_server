@@ -580,12 +580,12 @@ public class WfTaskServiceImpl extends FlowServiceFactory implements IWfTaskServ
         // 获取流程发布Id信息
         String processDefinitionId = allActivityInstanceList.get(0).getProcessDefinitionId();
         BpmnModel bpmnModel = repositoryService.getBpmnModel(processDefinitionId);
-        // 查询所有已完成的元素
+        // 查询所有已审批的元素
         List<HistoricActivityInstance> finishedElementList = allActivityInstanceList.stream()
             .filter(item -> ObjectUtil.isNotNull(item.getEndTime())).collect(Collectors.toList());
-        // 所有已完成的连线
+        // 所有已审批的连线
         Set<String> finishedSequenceFlowSet = new HashSet<>();
-        // 所有已完成的任务节点
+        // 所有已审批的任务节点
         Set<String> finishedTaskSet = new HashSet<>();
         finishedElementList.forEach(item -> {
             if (BpmnXMLConstants.ELEMENT_SEQUENCE_FLOW.equals(item.getActivityType())) {

@@ -177,4 +177,6 @@ public class JgProjectItem {
      */
     @TableField("production_progress")
     private float productionProgress;
+
+
 }

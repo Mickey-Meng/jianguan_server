@@ -105,7 +105,7 @@ public class ConponentScheduleService {
                     if(zjConponentProcessWarningDTO.getPlanendtime()!= null && zjConponentProcessWarningDTO.getPlanendtime().before(new Date())){// 已经过了 计划结束时间，
                         zjConponentProcessWarningDTO.setStatus(3);// 逾期未完工
                     }else if (zjConponentProcessWarningDTO.getStartDays() != null && zjConponentProcessWarningDTO.getStartDays() <= levelDays) {
-                        zjConponentProcessWarningDTO.setStatus(0);// 需要预警
+                        zjConponentProcessWarningDTO.setStatus(4);// 需要预警
                     }
                 }
                 listVo.add(zjConponentProcessWarningDTO);

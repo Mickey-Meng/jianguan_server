@@ -213,7 +213,7 @@ public class SubitemOpenServiceImpl extends ServiceImpl<SubitemOpenMapper, Subit
 //                pageVo.setBuildUnits(constructDept);
                 pageVo.setConstructdpts(constructDept);
                 //状态
-                pageVo.setStatusStr(pageVo.getStatus() == 0 ? "进行中" : "已完成");
+                pageVo.setStatusStr(pageVo.getStatus() == 0 ? "审批中" : "已审批");
             });
         }
         return new PageInfo<>(pageVoList);

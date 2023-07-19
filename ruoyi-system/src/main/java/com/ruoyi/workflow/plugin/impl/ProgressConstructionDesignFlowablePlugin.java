@@ -17,7 +17,7 @@ import java.util.Objects;
  * @author G.X.L
  */
 @Slf4j
-@Component("progressConstructionDesign")
+@Component("progressConstructionDesign1")
 public class ProgressConstructionDesignFlowablePlugin implements FlowablePlugin {
 
     @Autowired

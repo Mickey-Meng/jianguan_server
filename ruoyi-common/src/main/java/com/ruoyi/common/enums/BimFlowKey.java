@@ -135,7 +135,7 @@ public enum BimFlowKey {
     /**
      * 进度管理-施工图设计
      */
-    progressConstructionDesign("进度管理-施工图设计", "progressConstructionDesign"),
+    progressConstructionDesign("进度管理-施工图设计", "progressConstructionDesign1"),
 
 
 
@@ -145,6 +145,7 @@ public enum BimFlowKey {
     constructionPrototype("施工样板", "constructionPrototype"),
     constructionPlan("施工方案计划", "constructionPlan"),
     constructionPlanReport("施工方案计划上报", "constructionPlanReport"),
+    materialBrandReport("材料品牌报审", "materialBrandReport"),
 
     dailyReport("每日晨检", "dailyReport");
 

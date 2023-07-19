@@ -17,12 +17,12 @@ public class ZjConponentProcessWarningDTO implements Serializable {
     private Integer id;
 
     /**
-     *  0  达到预警天数
+     *  4  达到预警天数
      *  1  正常完工
      *  2  逾期完工
      *  3  逾期未完工
      */
-    private int status;
+    private Integer status;
     /**
      * 构件id
      */

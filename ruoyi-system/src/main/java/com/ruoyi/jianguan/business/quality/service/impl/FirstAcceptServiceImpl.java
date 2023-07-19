@@ -192,7 +192,7 @@ public class FirstAcceptServiceImpl extends ServiceImpl<FirstAcceptMapper, First
         if (Objects.nonNull(pageVoList) && !pageVoList.isEmpty()) {
             pageVoList.forEach(pageVo -> {
                 //状态
-                pageVo.setStatusStr(pageVo.getStatus() == 0 ? "进行中" : "已完成");
+                pageVo.setStatusStr(pageVo.getStatus() == 0 ? "审批中" : "已审批");
             });
         }
         return new PageInfo<>(pageVoList);

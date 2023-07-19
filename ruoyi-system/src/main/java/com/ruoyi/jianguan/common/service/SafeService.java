@@ -244,9 +244,9 @@ public class SafeService {
     }
 
 
-    public ResponseBase getDoneSafeEvent() {
+    public ResponseBase getDoneSafeEvent(Integer projectId) {
         Integer userid = LoginHelper.getUserId().intValue();
-        List<ZjSafeEvent> zjSafeEventList = zjSafeEventDAO.getDoneSafeEventByModify(userid);
+        List<ZjSafeEvent> zjSafeEventList = zjSafeEventDAO.getDoneSafeEventByModify(userid,projectId);
         if(zjSafeEventList.size()==0){
             return new ResponseBase(300,"暂无数据");
         }

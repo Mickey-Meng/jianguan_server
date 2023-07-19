@@ -8,6 +8,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.enums.BimFlowKey;
 import com.ruoyi.jianguan.business.quality.domain.dto.SupervisionOrderPageDTO;
 import com.ruoyi.jianguan.business.quality.domain.dto.SupervisionOrderSaveDTO;
@@ -23,6 +24,7 @@ import com.ruoyi.common.core.domain.object.ResponseBase;
 import com.ruoyi.flowable.domain.dto.FlowTaskCommentDto;
 import com.ruoyi.flowable.service.FlowStaticPageService;
 import com.ruoyi.common.core.sequence.util.IdUtil;
+import com.ruoyi.system.mapper.SysUserMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -49,6 +51,11 @@ public class SupervisionOrderServiceImpl extends ServiceImpl<SupervisionOrderMap
 
     @Autowired
     private SupervisionOrderMapper supervisionOrderMapper;
+
+    @Autowired
+    private   SysUserMapper baseMapper;
+
+
 
     /**
      * 新增或者更新监理指令数据
@@ -140,6 +147,8 @@ public class SupervisionOrderServiceImpl extends ServiceImpl<SupervisionOrderMap
         vo.setReplyPhotoAttachment(JSONArray.parseArray(supervisionOrder.getReplyPhotoAttachment(), FileModel.class));
         //其他附件
         vo.setReplyOtherAttachment(JSONArray.parseArray(supervisionOrder.getReplyOtherAttachment(), FileModel.class));
+        SysUser s = baseMapper.selectUserById(supervisionOrder.getCreateUserId().longValue());
+        vo.setCreateUserName( s.getUserName());
         return vo;
     }
 
@@ -158,7 +167,7 @@ public class SupervisionOrderServiceImpl extends ServiceImpl<SupervisionOrderMap
         if (Objects.nonNull(pageVoList) && !pageVoList.isEmpty()) {
             pageVoList.forEach(pageVo -> {
                 //状态
-                pageVo.setStatusStr(pageVo.getStatus() == 0 ? "进行中" : "已完成");
+                pageVo.setStatusStr(pageVo.getStatus() == 0 ? "审批中" : "已审批");
             });
         }
         return new PageInfo<>(pageVoList);

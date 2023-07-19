@@ -139,9 +139,7 @@ public class QualityController {
     @ApiOperation(value="监理人查询所有质量检查事件")
     public ResponseBase getAllStatusQualityEvent(@RequestParam(value = "projectId", required = false)Integer projectId,
                                                  @RequestParam(value = "singleProjectId", required = false)Integer singleProjectId){
-        if (projectId == null || projectId.equals("")){
-            projectId = 3;
-        }
+
         return qualityService.getAllStatusQualityEvent(projectId, singleProjectId);
     }
 

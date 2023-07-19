@@ -118,7 +118,7 @@ public class FlowMessage {
     private String taskAssignee;
 
     /**
-     * 任务是否已完成。
+     * 任务是否已审批。
      */
     @TableField(value = "task_finished")
     private Boolean taskFinished;

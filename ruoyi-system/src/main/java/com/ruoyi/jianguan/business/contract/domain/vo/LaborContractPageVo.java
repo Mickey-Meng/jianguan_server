@@ -73,8 +73,13 @@ public class LaborContractPageVo extends NewBaseVo {
     private LocalDate startDate;
 
     /**
-     * 状态 0 进行中 1 已完成 2 驳回
+     * 状态 0 审批中 1 已审批 2 驳回
      */
-    @ApiModelProperty(value = "状态 0 进行中 1 已完成 2驳回")
+    @ApiModelProperty(value = "状态 0 审批中 1 已审批 2驳回")
     private Integer status;
+    /**
+     * 状态
+     */
+    @ApiModelProperty(value = "状态")
+    private String statusStr;
 }

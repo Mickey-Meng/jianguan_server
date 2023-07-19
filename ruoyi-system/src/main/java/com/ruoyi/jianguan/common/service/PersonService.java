@@ -691,7 +691,6 @@ public class PersonService {
 
             personDAO.delPersonSubByGid(gid);
             for (PersonSub personSub : subDTO.getPersonSubs()) {
-                personDAO.delPersonSubByGid(personSub.getGid());
                 personSub.setId(null);
                 personSub.setGid(gid);
                 personDAO.addPersonSub(personSub);
@@ -1150,7 +1149,7 @@ public class PersonService {
                     //增加变更后人员id
                     personChangeDAO.insertUserRole(afterPersonId, afterPersonRoleId);
                 }
-                //如果之前状态不是1，说明该流程为已完成
+                //如果之前状态不是1，说明该流程为已审批
                 personChangeDAO.delChange(id, projectId);
                 ZjPersonChangeFile changeFile = personChangeDAO.getFileByGid(id);
                 if (changeFile != null) {

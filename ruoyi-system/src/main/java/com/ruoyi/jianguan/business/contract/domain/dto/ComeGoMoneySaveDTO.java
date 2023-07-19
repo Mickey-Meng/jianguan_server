@@ -89,9 +89,9 @@ public class ComeGoMoneySaveDTO extends SaveDTO {
 
 
     /**
-     * 状态 0 进行中 1 已完成
+     * 状态 0 审批中 1 已审批
      */
-    @ApiModelProperty(value = "状态 0 进行中 1 已完成")
+    @ApiModelProperty(value = "状态 0 审批中 1 已审批")
     private Integer status;
 
 

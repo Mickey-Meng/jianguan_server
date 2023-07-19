@@ -17,7 +17,7 @@ public class ComponentProducetimeDTO {
 
     private String mouldid;
 
-    @ApiModelProperty(value = "构件进度状态值：0-未开工，1-开工中，2-已完成")
+    @ApiModelProperty(value = "构件进度状态值：0-未开工，1-开工中，2-已审批")
     private Integer status;
 
     private String layername;
