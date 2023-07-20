@@ -7,6 +7,9 @@ import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.metadata.fill.FillConfig;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.ruoyi.common.utils.DateUtils;
@@ -17,6 +20,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.ruoyi.common.utils.poi.ExcelUtil;
+import com.ruoyi.common.utils.poi.LuckySheetUtil;
 import com.ruoyi.jianguan.manage.produce.domain.bo.PubProduceBo;
 import com.ruoyi.jianguan.manage.produce.domain.entity.PubProduce;
 import com.ruoyi.jianguan.manage.produce.domain.vo.PubProduceVo;
@@ -25,11 +29,16 @@ import com.ruoyi.jianguan.manage.produce.service.IPubProduceService;
 import com.ruoyi.system.domain.SysOss;
 import liquibase.pro.packaged.S;
 import lombok.RequiredArgsConstructor;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 工序信息Service业务层处理
@@ -192,6 +201,34 @@ public class PubProduceServiceImpl implements IPubProduceService {
         return null;
     }
 
+    /**
+     * 保存填写的模板文件
+     * @param id
+     * @param luckySheetJson
+     * @return
+     * @throws IOException
+     */
+    @Override
+    public boolean saveFillDataTemplate(Long id, String luckySheetJson) throws IOException {
+        JSONObject jsonObject = (JSONObject) JSON.parse(luckySheetJson);
+        JSONArray luckySheetJsonArray = jsonObject.getJSONArray("data");
+        List<JSONObject> jsonObjectList = luckySheetJsonArray.stream()
+                .map(luckySheetJsonObject -> (JSONObject) luckySheetJsonObject).collect(Collectors.toList());
+        String fillDataTemplatePath = this.tempTemplateFilePath + System.getProperty("file.separator") + ExcelUtil.encodingFilename(jsonObject.get("title").toString());
+        OutputStream outputStream = null;
+        try {
+            outputStream = new FileOutputStream(fillDataTemplatePath);
+            LuckySheetUtil.createWorkbook(outputStream, true, jsonObjectList);
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
+        } finally {
+            if (outputStream != null) {
+                outputStream.close();
+            }
+        }
+    }
     /**
      * 先重置构建类型原关联数据
      * @param bo

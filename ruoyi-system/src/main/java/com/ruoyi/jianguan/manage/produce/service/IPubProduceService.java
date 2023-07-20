@@ -6,6 +6,7 @@ import com.ruoyi.jianguan.manage.produce.domain.bo.PubProduceBo;
 import com.ruoyi.jianguan.manage.produce.domain.entity.PubProduce;
 import com.ruoyi.jianguan.manage.produce.domain.vo.PubProduceVo;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -58,4 +59,6 @@ public interface IPubProduceService {
     Boolean doImportProduces(Long[] ids, PubProduceBo bo);
 
     Map<String, String> getFillDataTemplate(Long id, String templateUrl);
+
+    boolean saveFillDataTemplate(Long id, String luckySheetJson) throws IOException;
 }

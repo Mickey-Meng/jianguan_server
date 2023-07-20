@@ -162,14 +162,24 @@ public class PubProduceController extends BaseController {
         try {
             fileInputStream = new FileInputStream(templateDataMap.get("templatePath"));
             IOUtils.copy(fileInputStream, response.getOutputStream());
-            fileInputStream.close();
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException(e.getMessage());
         } finally {
             if (fileInputStream != null) {
                 fileInputStream.close();
+                // 删除生成的待填写模板文件
+                FileUtils.del(templateDataMap.get("templatePath"));
             }
         }
+    }
+
+    @SaCheckPermission("jg:produce:save")
+    @Log(title = "保存编辑后的模板数据" , businessType = BusinessType.INSERT)
+    @RepeatSubmit()
+    @PostMapping("/saveFillDataTemplate/{id}")
+    public R<Void> saveFillDataTemplate(@NotNull(message = "主键不能为空") @PathVariable Long id,
+                                       @Validated(AddGroup.class) @RequestBody String LuckySheetJson) throws IOException {
+        return toAjax(iPubProduceService.saveFillDataTemplate(id, LuckySheetJson));
     }
 }
