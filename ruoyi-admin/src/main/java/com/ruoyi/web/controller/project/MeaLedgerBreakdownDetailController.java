@@ -176,7 +176,13 @@ public class MeaLedgerBreakdownDetailController extends BaseController {
     @RepeatSubmit()
     @PutMapping()
     public R<Void> edit(@Validated(EditGroup.class) @RequestBody MeaLedgerBreakdownDetailBo bo) {
-        return toAjax(iMeaLedgerBreakdownDetailService.updateByBo(bo) ? 1 : 0);
+        Boolean b = iMeaLedgerBreakdownDetailService.updateByBo(bo);
+        String process_1670392865296 = processService.getProcessByKey("Process_1689909730690");
+        if(StrUtil.isBlank(process_1670392865296)){
+            return R.fail("流程图未定义");
+        }
+        processService.startMeaProcess(process_1670392865296,formKey,bo.getId().toString(), bo);
+        return toAjax( b ? 1 : 0);
     }
 
     /**

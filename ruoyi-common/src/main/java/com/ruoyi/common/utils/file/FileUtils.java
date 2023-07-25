@@ -3,9 +3,14 @@ package com.ruoyi.common.utils.file;
 import cn.hutool.core.io.FileUtil;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.apache.commons.fileupload.disk.DiskFileItem;
+import org.apache.poi.util.IOUtils;
+import org.springframework.http.MediaType;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
@@ -48,5 +53,17 @@ public class FileUtils extends FileUtil {
     public static String percentEncode(String s) throws UnsupportedEncodingException {
         String encode = URLEncoder.encode(s, StandardCharsets.UTF_8.toString());
         return encode.replaceAll("\\+", "%20");
+    }
+
+    public static MultipartFile getMultipartFile(File file) throws IOException {
+        final DiskFileItem diskFileItem = new DiskFileItem("file", MediaType.MULTIPART_FORM_DATA_VALUE, true, file.getName(), 100000000, file.getParentFile());
+        try(InputStream inputStream = new FileInputStream(file);
+            OutputStream outputStream = diskFileItem.getOutputStream()) {
+            IOUtils.copy(inputStream, outputStream);
+            return new CommonsMultipartFile(diskFileItem);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
+        }
     }
 }

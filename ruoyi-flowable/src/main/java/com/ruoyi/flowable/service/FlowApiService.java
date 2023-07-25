@@ -2,10 +2,8 @@ package com.ruoyi.flowable.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
-import com.ruoyi.common.core.domain.object.CallResult;
-import com.ruoyi.common.core.domain.object.MyPageData;
-import com.ruoyi.common.core.domain.object.MyPageParam;
-import com.ruoyi.common.core.domain.object.ResponseBase;
+import com.ruoyi.common.core.domain.object.*;
+import com.ruoyi.flowable.domain.vo.FlowTaskCommentVo;
 import com.ruoyi.flowable.domain.vo.FlowTaskVo;
 import com.ruoyi.flowable.model.FlowTaskComment;
 import org.flowable.bpmn.model.BpmnModel;
@@ -20,6 +18,7 @@ import org.flowable.engine.runtime.ProcessInstance;
 import org.flowable.task.api.Task;
 import org.flowable.task.api.TaskInfo;
 import org.flowable.task.api.history.HistoricTaskInstance;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.xml.stream.XMLStreamException;
 import java.text.ParseException;
@@ -388,6 +387,8 @@ public interface FlowApiService {
      */
     void deleteProcessInstance(String processInstanceId);
 
+    void stopAndDeleteProcessInstance(String processInstanceId);
+
     /**
      * 获取任务的指定本地变量。
      *
@@ -435,4 +436,13 @@ public interface FlowApiService {
     Object getProcessNodeExecutors(String processDefinitionId, String processInstanceId);
 
     ResponseBase deleteProcessInstanceByBusinessKey(String businessKey);
+
+
+    ResponseResult<PageInfo<FlowTaskVo>> listRunTiemTask(String processDefinitionKey, String processDefinitionName, String taskName, MyPageParam pageParam, String projectId);
+
+    ResponseBase runTimeTasks(String processDefinitionKey, String processDefinitionName, String taskName, MyPageParam pageParam, String projectId);
+
+    ResponseResult<List<FlowTaskCommentVo>> flowTaskComments(String processInstanceId);
+
+    ResponseResult<List<FlowTaskCommentVo>> listFlowTaskComment(String processInstanceId);
 }

@@ -33,7 +33,7 @@
 
     <select id="getPageInfo" parameterType="com.ruoyi.flowable.domain.dto.FlowAuditEntryPageDTO" resultType="com.ruoyi.flowable.domain.entity.FlowAuditEntry">
         select a.* from  zz_flow_audit_entry a
-        where a.project_id = #{pageDto.projectId} and a.build_section = #{pageDto.buildSection}
+        where   a.build_section = #{pageDto.buildSection}
         <if test="pageDto.flowKey != null and pageDto.flowKey != ''">
             and a.flow_key  like concat('%',#{pageDto.flowKey},'%')
         </if>

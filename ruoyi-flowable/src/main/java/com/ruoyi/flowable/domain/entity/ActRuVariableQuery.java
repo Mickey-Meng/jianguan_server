@@ -17,8 +17,7 @@ import org.flowable.variable.api.types.VariableType;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
-@TableName("ACT_RU_VARIABLE")
-public class ActRuVariable extends NewBaseEntity {
+public class ActRuVariableQuery extends NewBaseEntity {
 
     private static final long serialVersionUID = 1L;
 

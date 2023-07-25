@@ -50,7 +50,7 @@
         left join ss_f_projects p on p.ID = a.build_section and p.GROUPLEVEL = 3
         left join ss_f_projects f on f.ID = a.project_id and p.GROUPLEVEL = 2
         left join sys_user u on a.create_user_id = u.user_id
-        where a.project_id = #{pageDto.projectId} and a.build_section = #{pageDto.buildSection}
+        where   a.build_section = #{pageDto.buildSection}
         <if test="pageDto.createStartTime != null and pageDto.createStartTime != ''">
             and a.create_time >= #{pageDto.createStartTime}
         </if>

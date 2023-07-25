@@ -1,5 +1,6 @@
 package com.ruoyi.flowable.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.map.MapUtil;
@@ -13,11 +14,13 @@ import com.google.common.collect.Lists;
 import com.ruoyi.common.core.domain.object.*;
 import com.ruoyi.common.helper.LoginHelper;
 import com.ruoyi.common.utils.MyDateUtil;
+import com.ruoyi.common.utils.redis.RedisUtils;
 import com.ruoyi.flowable.common.constant.FlowApprovalType;
 import com.ruoyi.flowable.common.constant.FlowConstant;
 import com.ruoyi.flowable.common.constant.FlowTaskStatus;
 import com.ruoyi.flowable.domain.entity.*;
 import com.ruoyi.flowable.domain.vo.FlowNextTaskVo;
+import com.ruoyi.flowable.domain.vo.FlowTaskCommentVo;
 import com.ruoyi.flowable.domain.vo.FlowTaskVo;
 import com.ruoyi.flowable.factory.FlowCustomExtFactory;
 import com.ruoyi.flowable.mapper.AuthMapper;
@@ -57,6 +60,7 @@ import org.flowable.task.api.TaskInfo;
 import org.flowable.task.api.TaskQuery;
 import org.flowable.task.api.history.HistoricTaskInstance;
 import org.flowable.task.api.history.HistoricTaskInstanceQuery;
+import org.flowable.task.service.impl.TaskQueryImpl;
 import org.flowable.variable.api.history.HistoricVariableInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -536,7 +540,15 @@ public class FlowApiServiceImpl implements FlowApiService {
 
     public PageInfo<Task> getTaskListByUserName(
             String username, String definitionKey, String definitionName, String taskName, MyPageParam pageParam, String projectId) {
-        TaskQuery query = taskService.createTaskQuery().active();
+        if(StrUtil.isBlank(projectId)) {
+            projectId = (String) RedisUtils.getCacheObject(LoginHelper.getUserId() + ".projectId");
+        }
+        ActRuVariableQuery actRuVariableQuery = new ActRuVariableQuery();
+        actRuVariableQuery.setName("projectId");
+        actRuVariableQuery.setTextValue(projectId);
+        List<ActRuVariable> actRuVariables = actRuVariableService.findActRuVariable(actRuVariableQuery);
+        List<String> processInstanceIds = actRuVariables.stream().map(ActRuVariable::getProcessInstanceId).distinct().collect(Collectors.toList());
+        TaskQueryImpl query = (TaskQueryImpl)taskService.createTaskQuery().active();
         if (StrUtil.isNotBlank(definitionKey)) {
             query.processDefinitionKey(definitionKey);
         }
@@ -546,7 +558,7 @@ public class FlowApiServiceImpl implements FlowApiService {
         if (StrUtil.isNotBlank(taskName)) {
             query.taskNameLike("%" + taskName + "%");
         }
-        query.caseVariableValueEquals("projectId", projectId);
+        query.processInstanceIdIn(processInstanceIds);
         this.buildCandidateCondition(query, username);
         long totalCount = query.count();
         query.orderByTaskCreateTime().desc();
@@ -843,6 +855,18 @@ public class FlowApiServiceImpl implements FlowApiService {
         historyService.deleteHistoricProcessInstance(processInstanceId);
         flowWorkOrderService.removeByProcessInstanceId(processInstanceId);
         flowMessageService.removeByProcessInstanceId(processInstanceId);
+    }
+
+    @Override
+    public void stopAndDeleteProcessInstance(String processInstanceId) {
+        ActRuTask actRuTask = new ActRuTask();
+        actRuTask.setProcessInstanceId(processInstanceId);
+        actRuTaskService.updateActRuTask(actRuTask);
+        ActRuVariable actRuVariable = new ActRuVariable();
+        actRuVariable.setProcessInstanceId(processInstanceId);
+        actRuVariableService.updateActRuVariable(actRuVariable);
+        stopProcessInstance(processInstanceId, "手动删除",false);
+        deleteProcessInstance(processInstanceId);
     }
 
     @Override
@@ -1769,4 +1793,69 @@ public class FlowApiServiceImpl implements FlowApiService {
         }
         return inChildProcess;
     }
+
+    @Autowired
+    private UserService userService;
+
+    public ResponseBase runTimeTasks(String processDefinitionKey, String processDefinitionName, String taskName, MyPageParam pageParam, String projectId) {
+        ResponseResult<PageInfo<FlowTaskVo>> taskPageInfo = listRunTiemTask(processDefinitionKey, processDefinitionName, taskName, pageParam, projectId);
+        List<FlowTaskVo> flowTaskVos = taskPageInfo.getData().getList();
+        if (Objects.nonNull(flowTaskVos) && !flowTaskVos.isEmpty()) {
+            List<String> userNames = flowTaskVos.stream().map(FlowTaskVo::getProcessInstanceInitiator).collect(Collectors.toList());
+            Map<String, String> names = userService.getNamesByUserName(userNames);
+            if (Objects.nonNull(names) && !names.isEmpty()) {
+                flowTaskVos.forEach(flowTaskVo -> flowTaskVo.
+                        setProcessInstanceInitiatorName(names.getOrDefault(flowTaskVo.getProcessInstanceInitiator(), flowTaskVo.getProcessInstanceInitiator())));
+            }
+        }
+        PageInfo<FlowTaskVo> taskPage = new PageInfo<>(flowTaskVos);
+        taskPage.setTotal(taskPageInfo.getData().getTotal());
+        taskPage.setPageNum(pageParam.getPageNum());
+        taskPage.setPageSize(pageParam.getPageSize());
+        return ResponseBase.success(taskPage);
+    }
+
+    public ResponseResult<PageInfo<FlowTaskVo>> listRunTiemTask (
+            String processDefinitionKey,
+            String processDefinitionName,
+            String taskName,
+            MyPageParam pageParam,
+            String projectId){
+        String username = LoginHelper.getUsername();
+        log.info("name=" + username);
+        PageInfo<Task> pageData = getTaskListByUserName(
+                username, processDefinitionKey, processDefinitionName, taskName, pageParam, projectId);
+        List<FlowTaskVo> flowTaskVoList = convertToFlowTaskList(pageData.getList());
+        PageInfo<FlowTaskVo> taskPageInfo = new PageInfo<>(flowTaskVoList);
+        taskPageInfo.setTotal(pageData.getTotal());
+        taskPageInfo.setPageNum(pageParam.getPageNum());
+        taskPageInfo.setPageSize(pageParam.getPageSize());
+        return ResponseResult.success(taskPageInfo);
+    }
+
+    public ResponseResult<List<FlowTaskCommentVo>> flowTaskComments(String processInstanceId) {
+        ResponseResult<List<FlowTaskCommentVo>> listResponseResult = listFlowTaskComment(processInstanceId);
+        List<FlowTaskCommentVo> data = listResponseResult.getData();
+        if (Objects.nonNull(data) && !data.isEmpty()) {
+            List<String> userNames = new ArrayList<>();
+            data.forEach(flowTaskVo -> userNames.add(flowTaskVo.getCreateLoginName()));
+            Map<String, String> names = userService.getNamesByUserName(userNames);
+            if (Objects.nonNull(names) && !names.isEmpty()) {
+                data.forEach(flowTaskVo -> flowTaskVo.
+                        setCreateName(names.getOrDefault(flowTaskVo.getCreateLoginName(), flowTaskVo.getCreateLoginName())));
+            }
+        }
+        return ResponseResult.success(data);
+    }
+
+    public ResponseResult<List<FlowTaskCommentVo>> listFlowTaskComment(String processInstanceId) {
+        List<FlowTaskComment> flowTaskCommentList =
+                flowTaskCommentService.getFlowTaskCommentList(processInstanceId);
+        List<FlowTaskCommentVo> flowTaskCommentVos = BeanUtil.copyToList(flowTaskCommentList, FlowTaskCommentVo.class);
+        // TODO: 2023/4/19 临时解决内部类问题
+//        List<FlowTaskCommentVo> resultList = FlowTaskComment.FlowTaskCommentModelMapper.INSTANCE.fromModelList(flowTaskCommentList);
+        return ResponseResult.success(flowTaskCommentVos);
+    }
+
+
 }

@@ -1,15 +1,11 @@
 package com.ruoyi.jianguan.common.service;
 
-import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.ruoyi.common.config.zjrw.ZhuJiAPIConfig;
 import com.ruoyi.common.core.dao.SsFUserGroupDAO;
 import com.ruoyi.common.core.dao.SsFUsersDAO;
 import com.ruoyi.common.core.domain.dto.PersonDTO;
@@ -22,26 +18,26 @@ import com.ruoyi.common.core.domain.model.ZjPersonChangeFile;
 import com.ruoyi.common.core.domain.model.ZjPersonLeave;
 import com.ruoyi.common.core.domain.object.MyPageParam;
 import com.ruoyi.common.core.domain.object.ResponseBase;
+import com.ruoyi.common.core.domain.object.ResponseResult;
 import com.ruoyi.common.helper.LoginHelper;
 import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.common.utils.jianguan.zjrw.DateUtils;
+import com.ruoyi.common.utils.jianguan.zjrw.RestApiUtils;
+import com.ruoyi.common.utils.jianguan.zjrw.httputils.HttpHeader;
+import com.ruoyi.common.utils.jianguan.zjrw.httputils.HttpParamers;
+import com.ruoyi.common.utils.jianguan.zjrw.httputils.HttpUtils;
+import com.ruoyi.common.utils.redis.RedisUtils;
 import com.ruoyi.flowable.domain.vo.FlowKeysVo;
-import com.ruoyi.flowable.domain.vo.FlowTaskVo;
+import com.ruoyi.flowable.domain.vo.FlowTaskCommentVo;
 import com.ruoyi.flowable.service.FlowApiService;
 import com.ruoyi.flowable.service.FlowStaticPageService;
+import com.ruoyi.jianguan.business.contract.dao.PersonDAO;
+import com.ruoyi.jianguan.business.contract.dao.ZjPersonFenceDAO;
 import com.ruoyi.jianguan.common.dao.*;
 import com.ruoyi.jianguan.common.domain.dto.PersonGroupTree;
 import com.ruoyi.jianguan.common.domain.dto.PersonSubDTO;
 import com.ruoyi.jianguan.common.domain.dto.TaskCommentReturn;
 import com.ruoyi.jianguan.common.domain.entity.*;
-
-import com.ruoyi.common.utils.jianguan.zjrw.DateUtils;
-import com.ruoyi.common.utils.JwtUtil;
-import com.ruoyi.common.utils.jianguan.zjrw.RestApiUtils;
-import com.ruoyi.common.utils.jianguan.zjrw.httputils.HttpHeader;
-import com.ruoyi.common.utils.jianguan.zjrw.httputils.HttpParamers;
-import com.ruoyi.common.utils.jianguan.zjrw.httputils.HttpUtils;
-import com.ruoyi.jianguan.business.contract.dao.PersonDAO;
-import com.ruoyi.jianguan.business.contract.dao.ZjPersonFenceDAO;
 import org.flowable.engine.HistoryService;
 import org.flowable.engine.RuntimeService;
 import org.flowable.engine.TaskService;
@@ -54,8 +50,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -747,7 +743,7 @@ public class PersonService {
         }
         //调用流程接口发起流程
         String token = getRequest().getHeader("Authorization");// 从 http 请求头中取出 token
-        long userid = LoginHelper.getUserId();
+        long userId = LoginHelper.getUserId();
         //流程定义的key
         String processKey = personChange.getProcessDefinitionKey();
         String businessKey = UUID.randomUUID().toString();
@@ -755,7 +751,7 @@ public class PersonService {
         HttpParamers param = HttpParamers.httpPostParamers();
         param.addParam("processKey", processKey);
         param.addParam("businessKey", businessKey);
-        param.addParam("userId", userid);
+        param.addParam("userId", userId);
 
         Map<String, Object> maps = Maps.newHashMap();
         if (personChange.getVariables() != null && !personChange.getVariables().equals("")) {
@@ -764,29 +760,34 @@ public class PersonService {
         param.addParam("variables", maps);
         HttpHeader header = new HttpHeader();
         header.addParam("token", token);
-        //调用接口
-        String response = ZhuJiAPIConfig.createProcess(businessKey, param, header);
-        //接口返回的数据
-        PersonReturnModel returnModel = JSONObject.parseObject(response, PersonReturnModel.class);
-        log.info("returnModel: " + returnModel);
-        if (returnModel.isSuccess()) {
-            personChange.setStatus(1);
-            personChange.setOrder(1);
-            personChange.setProcessInstanceId(returnModel.getData());
-            personChange.setBusinessKey(businessKey);
+        try {
+            ProcessInstance processInstance = flowStaticPageService.startProcess(processKey, businessKey, userId, maps);
+            //调用接口
+//            String response = ZhuJiAPIConfig.createProcess(businessKey, param, header);
+            //接口返回的数据
+//            PersonReturnModel returnModel = JSONObject.parseObject(response, PersonReturnModel.class);
+//            log.info("returnModel: " + returnModel);
+//            if (returnModel.isSuccess()) {
+                personChange.setStatus(1);
+                personChange.setOrder(1);
+                personChange.setProcessInstanceId(processInstance.getProcessInstanceId());
+                personChange.setBusinessKey(businessKey);
 
-            personChangeDAO.newPersonChange(personChange);
-            Integer id = personChangeDAO.getLastInsertId();
-            if (personChange.getFiles() != null && personChange.getFiles().size() > 0) {
-                for (ZjPersonChangeFile file : personChange.getChangeFiles()) {
-                    file.setGid(id);
-                    personChangeDAO.addPersonFile(file);
+                personChangeDAO.newPersonChange(personChange);
+                Integer id = personChangeDAO.getLastInsertId();
+                if (personChange.getFiles() != null && personChange.getFiles().size() > 0) {
+                    for (ZjPersonChangeFile file : personChange.getChangeFiles()) {
+                        file.setGid(id);
+                        personChangeDAO.addPersonFile(file);
+                    }
                 }
-            }
-            return new ResponseBase(200, "提交人员变更成功!", returnModel.getData());
+                return new ResponseBase(200, "提交人员变更成功!", processInstance.getProcessInstanceId());
+//            }
+        } catch (Exception e) {
+            e.printStackTrace();
+//            throw new RuntimeException(e);
         }
-        return new ResponseBase(200, "提交人员变更失败!", returnModel.getErrorCode() + ", " + returnModel.getErrorMessage());
-
+        return new ResponseBase(200, "提交人员变更失败!", null);
     }
 
     public ResponseBase getPersonChange(Integer projectId) {
@@ -1180,14 +1181,14 @@ public class PersonService {
             String processKey = personLeave.getProcessDefinitionKey();
             String businessKey = UUID.randomUUID().toString();
             String token = getRequest().getHeader("Authorization");// 从 http 请求头中取出 token
-            long userid = LoginHelper.getUserId();
+            long userId = LoginHelper.getUserId();
 
             HttpHeader header = new HttpHeader();
             header.addParam("token", token);
 
             Map<String, Object> maps = Maps.newHashMap();
             HttpParamers param = HttpParamers.httpPostParamers();
-            param.addParam("userId", userid);
+            param.addParam("userId", userId);
             param.addParam("processKey", processKey);
             param.addParam("businessKey", businessKey);
             if (personLeave.getVariables() != null && !personLeave.getVariables().equals("")) {
@@ -1195,22 +1196,23 @@ public class PersonService {
             }
             param.addParam("variables", maps);
             //调用接口
-            String response = ZhuJiAPIConfig.createProcess(businessKey, param, header);
+            ProcessInstance processInstance = flowStaticPageService.startProcess(processKey, businessKey, userId, maps);
+
+//            String response = ZhuJiAPIConfig.createProcess(businessKey, param, header);
             //接口返回的数据
-            PersonReturnModel returnModel = JSONObject.parseObject(response, PersonReturnModel.class);
-            if (returnModel.isSuccess()) {
+//            PersonReturnModel returnModel = JSONObject.parseObject(response, PersonReturnModel.class);
+//            if (returnModel.isSuccess()) {
                 personLeave.setSubDate(new Date());
                 personLeave.setStatus(1);
                 personLeave.setOrder(1);
-                personLeave.setProcessInstanceId(returnModel.getData());
+                personLeave.setProcessInstanceId(processInstance.getProcessInstanceId());
                 personLeave.setBusinessKey(businessKey);
                 //往请假表插入数据
                 personLeaveDAO.newPersonLeave(personLeave);
 
                 //再调用startAndTakeUserTask接口发送每个流程节点审批人
-                return new ResponseBase(200, "提交请假流程成功!", returnModel.getData());
-            }
-            return new ResponseBase(200, "提交请假流程失败！");
+                return new ResponseBase(200, "提交请假流程成功!", processInstance.getProcessInstanceId());
+//            }
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseBase(200, "提交流程失败! " + e.getMessage());
@@ -1816,6 +1818,9 @@ public class PersonService {
         return processInstanceId;
     }
 
+    @Resource
+    private FlowApiService flowApiService;
+
     /**
      * 获取所有该用户的流程
      *
@@ -1829,18 +1834,20 @@ public class PersonService {
         param.addParam("taskHandleStatus", 1);
         param.addParam("taskName", "");
 
-        PageParam pageParam = new PageParam();
+        MyPageParam pageParam = new MyPageParam();
         pageParam.setPageNum(1);
         pageParam.setPageSize(1000);
-        pageParam.setTotalPage(1);
+//        pageParam.setTotalPage(1);
 
         param.addParam("pageParam", pageParam);
 
         HttpHeader header = new HttpHeader();
         header.addParam("token", token);
+        String projectId = (String) RedisUtils.getCacheObject(LoginHelper.getUserId() + ".projectId");
+        ResponseBase responseBase = flowApiService.runTimeTasks("", "", "", pageParam, projectId);
 
-        String response = ZhuJiAPIConfig.getListRuntimeTask(param, header);
-
+//        String response = ZhuJiAPIConfig.getListRuntimeTask(param, header);
+        String response = JSONObject.toJSONString(responseBase);
         JSONObject jsonObject = JSONObject.parseObject(response);
         String data = jsonObject.getString("data");
         JSONObject jsonData = JSONObject.parseObject(data);
@@ -1862,8 +1869,8 @@ public class PersonService {
         return null;
     }
 
-    @Value("${zhujiapi.host}")
-    private String host;
+//    @Value("${zhujiapi.host}")
+//    private String host;
 
     /**
      * 通过processInstanceId获取流程信息
@@ -1873,13 +1880,17 @@ public class PersonService {
      * @return
      */
     private TaskCommentReturn taskCommentReturn(String processInstanceId, String token) {
-        String post = "/ZhuJiApi/admin/flow/flowOperation/listFlowTaskComment";
-        String url = host + post;
+//        String post = "/ZhuJiApi/admin/flow/flowOperation/listFlowTaskComment";
+//        String url = host + post;
+//
+//        Map<String, Object> maps = Maps.newHashMap();
+//        maps.put("processInstanceId", processInstanceId);
+//        String response = HttpUtils.sendGet(url, maps, token);
 
-        Map<String, Object> maps = Maps.newHashMap();
-        maps.put("processInstanceId", processInstanceId);
+        ResponseResult<List<FlowTaskCommentVo>> listResponseResult = flowApiService.flowTaskComments(processInstanceId);
 
-        String response = HttpUtils.sendGet(url, maps, token);
+        String response = JSONObject.toJSONString(listResponseResult);
+
         JSONObject jsonObject = JSONObject.parseObject(response);
         if (ObjectUtil.isEmpty(jsonObject)){
             return null;
@@ -1950,51 +1961,51 @@ public class PersonService {
         return ResponseBase.success(vo);
     }
 
-    private ProcessListHistoryReturn listHistoricTask(String businessKey, String token) {
-        String post = "/ZhuJiApi/admin/flow/flowOperation/listHistoricTask";
-
-        HttpParamers param = HttpParamers.httpPostParamers();
-        param.addParam("beginDate", "");
-        param.addParam("endDate", "");
-        param.addParam("processDefinitionName", "");
-
-        PageParam pageParam = new PageParam();
-        pageParam.setPageNum(1);
-        pageParam.setPageSize(100);
-        pageParam.setTotalPage(1);
-
-        param.addParam("pageParam", pageParam);
-
-        HttpHeader header = new HttpHeader();
-        header.addParam("token", token);
-
-        String response = ZhuJiAPIConfig.getListHistoricTask(post, param, header);
-        JSONObject jsonObject = JSONObject.parseObject(response);
-        String data = jsonObject.getString("data");
-        ProcessListHistoryReturn listHistoricTask1 = new ProcessListHistoryReturn();
-        if (data == null && data.equals("")) {
-            return listHistoricTask1;
-        }
-        JSONObject jsonData = JSONObject.parseObject(data);
-        JSONArray jsonArray = jsonData.getJSONArray("list");
-
-        List<ProcessListHistoryReturn> listHistoricTasks = Lists.newArrayList();
-        if (jsonArray.size() > 0) {
-            for (int i = 0; i < jsonArray.size(); i++) {
-                JSONObject object = (JSONObject) jsonArray.get(i);
-                ProcessListHistoryReturn listHistoricTask =
-                        (ProcessListHistoryReturn) JSONObject.toJavaObject(object, ProcessListHistoryReturn.class);
-                listHistoricTasks.add(listHistoricTask);
-            }
-
-            for (ProcessListHistoryReturn listHistoricTask : listHistoricTasks) {
-                if (listHistoricTask.getBusinessKey().equals(businessKey)) {
-                    return listHistoricTask;
-                }
-            }
-        }
-        return null;
-    }
+//    private ProcessListHistoryReturn listHistoricTask(String businessKey, String token) {
+//        String post = "/ZhuJiApi/admin/flow/flowOperation/listHistoricTask";
+//
+//        HttpParamers param = HttpParamers.httpPostParamers();
+//        param.addParam("beginDate", "");
+//        param.addParam("endDate", "");
+//        param.addParam("processDefinitionName", "");
+//
+//        PageParam pageParam = new PageParam();
+//        pageParam.setPageNum(1);
+//        pageParam.setPageSize(100);
+//        pageParam.setTotalPage(1);
+//
+//        param.addParam("pageParam", pageParam);
+//
+//        HttpHeader header = new HttpHeader();
+//        header.addParam("token", token);
+//
+//        String response = ZhuJiAPIConfig.getListHistoricTask(post, param, header);
+//        JSONObject jsonObject = JSONObject.parseObject(response);
+//        String data = jsonObject.getString("data");
+//        ProcessListHistoryReturn listHistoricTask1 = new ProcessListHistoryReturn();
+//        if (data == null && data.equals("")) {
+//            return listHistoricTask1;
+//        }
+//        JSONObject jsonData = JSONObject.parseObject(data);
+//        JSONArray jsonArray = jsonData.getJSONArray("list");
+//
+//        List<ProcessListHistoryReturn> listHistoricTasks = Lists.newArrayList();
+//        if (jsonArray.size() > 0) {
+//            for (int i = 0; i < jsonArray.size(); i++) {
+//                JSONObject object = (JSONObject) jsonArray.get(i);
+//                ProcessListHistoryReturn listHistoricTask =
+//                        (ProcessListHistoryReturn) JSONObject.toJavaObject(object, ProcessListHistoryReturn.class);
+//                listHistoricTasks.add(listHistoricTask);
+//            }
+//
+//            for (ProcessListHistoryReturn listHistoricTask : listHistoricTasks) {
+//                if (listHistoricTask.getBusinessKey().equals(businessKey)) {
+//                    return listHistoricTask;
+//                }
+//            }
+//        }
+//        return null;
+//    }
 
     /**
      * 获取历史流程
@@ -2003,51 +2014,51 @@ public class PersonService {
      * @param token
      * @return
      */
-    private ListHistoryProcessInstance listHistoryProcessInstance(String businessKey, String token) {
-        String post = "/ZhuJiApi/admin/flow/flowOperation/listHistoricProcessInstance";
-
-        HttpParamers param = HttpParamers.httpPostParamers();
-        param.addParam("beginDate", "");
-        param.addParam("endDate", "");
-
-        PageParam pageParam = new PageParam();
-        pageParam.setPageSize(100);
-        pageParam.setTotalPage(1);
-        pageParam.setPageNum(1);
-
-        param.addParam("pageParam", pageParam);
-        param.addParam("processDefinitionName", "");
-
-        HttpHeader header = new HttpHeader();
-        header.addParam("token", token);
-
-        String response = ZhuJiAPIConfig.getListHistoricTask(post, param, header);
-        JSONObject jsonObject = JSONObject.parseObject(response);
-        String data = jsonObject.getString("data");
-        ListHistoryProcessInstance processReturn1 = new ListHistoryProcessInstance();
-        if (data == null && data.equals("")) {
-            return processReturn1;
-        }
-        JSONObject jsonData = JSONObject.parseObject(data);
-        JSONArray jsonArray = jsonData.getJSONArray("list");
-
-        List<ListHistoryProcessInstance> processReturns = Lists.newArrayList();
-        if (jsonArray.size() > 0) {
-            for (int i = 0; i < jsonArray.size(); i++) {
-                JSONObject object = (JSONObject) jsonArray.get(i);
-                ListHistoryProcessInstance listHistoricTask =
-                        (ListHistoryProcessInstance) JSONObject.toJavaObject(object, ListHistoryProcessInstance.class);
-                processReturns.add(listHistoricTask);
-            }
-
-            for (ListHistoryProcessInstance processReturn : processReturns) {
-                if (processReturn.getBusinessKey().equals(businessKey)) {
-                    return processReturn;
-                }
-            }
-        }
-        return null;
-    }
+//    private ListHistoryProcessInstance listHistoryProcessInstance(String businessKey, String token) {
+//        String post = "/ZhuJiApi/admin/flow/flowOperation/listHistoricProcessInstance";
+//
+//        HttpParamers param = HttpParamers.httpPostParamers();
+//        param.addParam("beginDate", "");
+//        param.addParam("endDate", "");
+//
+//        PageParam pageParam = new PageParam();
+//        pageParam.setPageSize(100);
+//        pageParam.setTotalPage(1);
+//        pageParam.setPageNum(1);
+//
+//        param.addParam("pageParam", pageParam);
+//        param.addParam("processDefinitionName", "");
+//
+//        HttpHeader header = new HttpHeader();
+//        header.addParam("token", token);
+//
+//        String response = ZhuJiAPIConfig.getListHistoricTask(post, param, header);
+//        JSONObject jsonObject = JSONObject.parseObject(response);
+//        String data = jsonObject.getString("data");
+//        ListHistoryProcessInstance processReturn1 = new ListHistoryProcessInstance();
+//        if (data == null && data.equals("")) {
+//            return processReturn1;
+//        }
+//        JSONObject jsonData = JSONObject.parseObject(data);
+//        JSONArray jsonArray = jsonData.getJSONArray("list");
+//
+//        List<ListHistoryProcessInstance> processReturns = Lists.newArrayList();
+//        if (jsonArray.size() > 0) {
+//            for (int i = 0; i < jsonArray.size(); i++) {
+//                JSONObject object = (JSONObject) jsonArray.get(i);
+//                ListHistoryProcessInstance listHistoricTask =
+//                        (ListHistoryProcessInstance) JSONObject.toJavaObject(object, ListHistoryProcessInstance.class);
+//                processReturns.add(listHistoricTask);
+//            }
+//
+//            for (ListHistoryProcessInstance processReturn : processReturns) {
+//                if (processReturn.getBusinessKey().equals(businessKey)) {
+//                    return processReturn;
+//                }
+//            }
+//        }
+//        return null;
+//    }
 
     /**
      * 停止并删除流程
@@ -2057,79 +2068,83 @@ public class PersonService {
      * @return
      */
     private PersonReturnModel stopProcessInstance(String processInstanceId, String token) {
-        //终止流程接口地址
-        String post1 = "/ZhuJiApi/admin/flow/flowOperation/stopProcessInstance";
-        //删除流程接口地址
-        String post2 = "/ZhuJiApi/admin/flow/flowOperation/deleteProcessInstance";
-
-        HttpParamers param1 = HttpParamers.httpPostParamers();
-        param1.addParam("processInstanceId", processInstanceId);
-        param1.addParam("stopReason", "终止流程, 需删除该流程数据!");
-
-        HttpHeader header1 = new HttpHeader();
-        header1.addParam("token", token);
-
-        String response1 = ZhuJiAPIConfig.getListHistoricTask(post1, param1, header1);
-        PersonReturnModel personReturnModel = JSONObject.parseObject(response1, PersonReturnModel.class);
         PersonReturnModel personReturnModel1 = new PersonReturnModel();
-
-        HttpParamers param2 = HttpParamers.httpPostParamers();
-        param2.addParam("processInstanceId", processInstanceId);
-
-        HttpHeader header2 = new HttpHeader();
-        header2.addParam("token", token);
-
-        if (personReturnModel.isSuccess()) {
-            String response2 = ZhuJiAPIConfig.getListHistoricTask(post2, param2, header2);
-            personReturnModel1 = JSONObject.parseObject(response2, PersonReturnModel.class);
-        } else if (personReturnModel.getErrorMessage().contains("前流程尚未开始或已经结束")) {
-            String response2 = ZhuJiAPIConfig.getListHistoricTask(post2, param2, header2);
-            personReturnModel1 = JSONObject.parseObject(response2, PersonReturnModel.class);
-        }
+        personReturnModel1.setSuccess(true);
+        flowApiService.stopAndDeleteProcessInstance(processInstanceId);
+//        flowApiService.stopAndDeleteProcessInstance(processInstanceId);
+//        //终止流程接口地址
+//        String post1 = "/ZhuJiApi/admin/flow/flowOperation/stopProcessInstance";
+//        //删除流程接口地址
+//        String post2 = "/ZhuJiApi/admin/flow/flowOperation/deleteProcessInstance";
+//
+//        HttpParamers param1 = HttpParamers.httpPostParamers();
+//        param1.addParam("processInstanceId", processInstanceId);
+//        param1.addParam("stopReason", "终止流程, 需删除该流程数据!");
+//
+//        HttpHeader header1 = new HttpHeader();
+//        header1.addParam("token", token);
+//
+//        String response1 = ZhuJiAPIConfig.getListHistoricTask(post1, param1, header1);
+//        PersonReturnModel personReturnModel = JSONObject.parseObject(response1, PersonReturnModel.class);
+//        PersonReturnModel personReturnModel1 = new PersonReturnModel();
+//
+//        HttpParamers param2 = HttpParamers.httpPostParamers();
+//        param2.addParam("processInstanceId", processInstanceId);
+//
+//        HttpHeader header2 = new HttpHeader();
+//        header2.addParam("token", token);
+//
+//        if (personReturnModel.isSuccess()) {
+//            String response2 = ZhuJiAPIConfig.getListHistoricTask(post2, param2, header2);
+//            personReturnModel1 = JSONObject.parseObject(response2, PersonReturnModel.class);
+//        } else if (personReturnModel.getErrorMessage().contains("前流程尚未开始或已经结束")) {
+//            String response2 = ZhuJiAPIConfig.getListHistoricTask(post2, param2, header2);
+//            personReturnModel1 = JSONObject.parseObject(response2, PersonReturnModel.class);
+//        }
         return personReturnModel1;
     }
 
-    private ListCopyMessage listCopyMessage(String businessKey, String token) {
-        //抄送列表地址
-        String post = "/ZhuJiApi/admin/flow/flowMessage/listCopyMessage";
-
-        HttpHeader header = new HttpHeader();
-        header.addParam("token", token);
-
-        HttpParamers param = HttpParamers.httpPostParamers();
-
-        PageParam pageParam = new PageParam();
-        pageParam.setPageNum(1);
-        pageParam.setPageSize(1000);
-        pageParam.setTotalPage(1);
-        param.addParam("pageParam", pageParam);
-
-        String response = ZhuJiAPIConfig.getListHistoricTask(post, param, header);
-
-        JSONObject jsonObject = JSONObject.parseObject(response);
-        String isSuccess = jsonObject.getString("success");
-        if (isSuccess.equals("true")) {
-            String data = jsonObject.getString("data");
-            JSONObject jsonData = JSONObject.parseObject(data);
-            JSONArray jsonArray = jsonData.getJSONArray("dataList");
-
-            List<ListCopyMessage> copyMessages = Lists.newArrayList();
-            for (int i = 0; i < jsonArray.size(); i++) {
-                JSONObject object = (JSONObject) jsonArray.get(i);
-                ListCopyMessage copyMessage =
-                        (ListCopyMessage) JSONObject.toJavaObject(object, ListCopyMessage.class);
-
-                copyMessages.add(copyMessage);
-            }
-
-            for (ListCopyMessage copyMessage : copyMessages) {
-                if (copyMessage.getBusinessKey().equals(businessKey)) {
-                    return copyMessage;
-                }
-            }
-        }
-        return null;
-    }
+//    private ListCopyMessage listCopyMessage(String businessKey, String token) {
+//        //抄送列表地址
+//        String post = "/ZhuJiApi/admin/flow/flowMessage/listCopyMessage";
+//
+//        HttpHeader header = new HttpHeader();
+//        header.addParam("token", token);
+//
+//        HttpParamers param = HttpParamers.httpPostParamers();
+//
+//        PageParam pageParam = new PageParam();
+//        pageParam.setPageNum(1);
+//        pageParam.setPageSize(1000);
+//        pageParam.setTotalPage(1);
+//        param.addParam("pageParam", pageParam);
+//
+//        String response = ZhuJiAPIConfig.getListHistoricTask(post, param, header);
+//
+//        JSONObject jsonObject = JSONObject.parseObject(response);
+//        String isSuccess = jsonObject.getString("success");
+//        if (isSuccess.equals("true")) {
+//            String data = jsonObject.getString("data");
+//            JSONObject jsonData = JSONObject.parseObject(data);
+//            JSONArray jsonArray = jsonData.getJSONArray("dataList");
+//
+//            List<ListCopyMessage> copyMessages = Lists.newArrayList();
+//            for (int i = 0; i < jsonArray.size(); i++) {
+//                JSONObject object = (JSONObject) jsonArray.get(i);
+//                ListCopyMessage copyMessage =
+//                        (ListCopyMessage) JSONObject.toJavaObject(object, ListCopyMessage.class);
+//
+//                copyMessages.add(copyMessage);
+//            }
+//
+//            for (ListCopyMessage copyMessage : copyMessages) {
+//                if (copyMessage.getBusinessKey().equals(businessKey)) {
+//                    return copyMessage;
+//                }
+//            }
+//        }
+//        return null;
+//    }
 
 
     private Integer getRoleIdByRoleType(Integer roleType){

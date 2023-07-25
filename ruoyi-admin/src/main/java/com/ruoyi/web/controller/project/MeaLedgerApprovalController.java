@@ -26,6 +26,7 @@ import com.ruoyi.workflow.service.IWfProcessService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -133,12 +134,13 @@ public class MeaLedgerApprovalController extends BaseController {
     @RepeatSubmit()
     @ApiOperation("台账报审上报")
     @PostMapping("/up")
+    @Transactional
     public R<Void> up(@Validated(AddGroup.class) @RequestBody List<MeaLedgerApprovalBo> bos) {
         if(CollUtil.isEmpty(bos)){
             return R.fail("数据不能为空");
         }
-        String process_1669973630070 = processService.getProcessByKey("Process_1671867751905");
-        if(StrUtil.isBlank(process_1669973630070)){
+        String process_ = processService.getProcessByKey("Process_1690014418614");
+        if(StrUtil.isBlank(process_)){
             return R.fail("流程图未定义");
         }
         for(MeaLedgerApprovalBo bo:bos){
@@ -146,7 +148,7 @@ public class MeaLedgerApprovalController extends BaseController {
         }
         List<MeaLedgerApprovalBreakDownVo> boInfo=iMeaLedgerApprovalService.getInfoData(bos);
         MeaLedgerApprovalBo meaLedgerApprovalBo = bos.get(0);
-        processService.startMeaProcess(process_1669973630070,formKey,meaLedgerApprovalBo.getSqqc(), boInfo);
+        processService.startMeaProcess(process_,formKey,meaLedgerApprovalBo.getSqqc(), boInfo);
 
         List<MeaLedgerBreakdownDetailBo> meaLedgerBreakdownDetails = new ArrayList<>();
         // 批量查询台账分解明细

@@ -62,4 +62,8 @@ public class QualityDetectionPageVo extends NewBaseVo {
      */
     @ApiModelProperty(value = "检测结果")
     private Set<String> testResult;
+
+
+    @ApiModelProperty(value = "审核状态")
+    private String statusStr;
 }

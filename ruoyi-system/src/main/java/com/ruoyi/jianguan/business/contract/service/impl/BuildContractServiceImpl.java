@@ -158,7 +158,22 @@ public class BuildContractServiceImpl extends ServiceImpl<BuildContractMapper, B
         //分页查询
         PageHelper.startPage(pageDto.getPageNum(), pageDto.getPageSize());
         List<BuildContractPageVo> buildContracts = buildContractMapper.getPageInfo(pageDto);
-        return new PageInfo<>(buildContracts);
+        buildContracts.forEach(pageVo -> {
+            //状态
+            switch (pageVo.getStatus()) {
+                case 0:
+                    pageVo.setStatusStr("审批中");
+                    break;
+                case 1:
+                    pageVo.setStatusStr("已审批");
+                    break;
+                default:
+                    pageVo.setStatusStr("驳回");
+                    break;
+            }
+
+        });
+         return new PageInfo<>(buildContracts);
     }
 
     /**

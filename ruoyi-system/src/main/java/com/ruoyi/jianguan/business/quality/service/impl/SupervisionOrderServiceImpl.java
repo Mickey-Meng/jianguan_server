@@ -148,7 +148,7 @@ public class SupervisionOrderServiceImpl extends ServiceImpl<SupervisionOrderMap
         //其他附件
         vo.setReplyOtherAttachment(JSONArray.parseArray(supervisionOrder.getReplyOtherAttachment(), FileModel.class));
         SysUser s = baseMapper.selectUserById(supervisionOrder.getCreateUserId().longValue());
-        vo.setCreateUserName( s.getUserName());
+        vo.setCreateUserName( s.getNickName());
         return vo;
     }
 

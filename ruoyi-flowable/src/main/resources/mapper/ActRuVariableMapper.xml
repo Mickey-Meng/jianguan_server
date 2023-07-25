@@ -8,4 +8,8 @@
         update ACT_RU_VARIABLE set SCOPE_ID_ = #{actRuVariable.scopeId}, SCOPE_TYPE_ = #{actRuVariable.scopeType}  where PROC_INST_ID_ = #{actRuVariable.processInstanceId}
     </update>
 
+
+    <select id="findActRuVariable" parameterType="com.ruoyi.flowable.domain.entity.ActRuVariableQuery" resultType="com.ruoyi.flowable.domain.entity.ActRuVariable">
+        select t.PROC_INST_ID_ processInstanceId from act_ru_variable t where t.NAME_ = #{actRuVariableQuery.name} and t.TEXT_ = #{actRuVariableQuery.textValue}
+    </select>
 </mapper>

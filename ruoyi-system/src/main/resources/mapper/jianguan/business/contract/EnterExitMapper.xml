@@ -30,10 +30,11 @@
     </sql>
 
     <select id="getPageInfo" parameterType="com.ruoyi.jianguan.business.contract.domain.dto.EnterExitPageDTO" resultType="com.ruoyi.jianguan.business.contract.domain.vo.EnterExitPageVo">
-        select a.*,s.name as buildSectionName,u.nick_name as createUserName  from zz_enter_exit a
+        select a.*,p.name as projectName,s.name as buildSectionName,u.nick_name as createUserName  from zz_enter_exit a
         left join ss_f_projects s on a.build_section = s.ID and s.GROUPLEVEL = 3
+        LEFT JOIN ss_f_projects p ON s.PARENTID = p.ID
         left join sys_user u on a.create_user_id = u.user_id
-        where a.project_id = #{pageDto.projectId} and a.build_section = #{pageDto.buildSection}
+        where   a.build_section = #{pageDto.buildSection}
         <if test="pageDto.buildSectionName != null and pageDto.buildSectionName != ''">
             and s.`name` like concat('%',#{pageDto.buildSectionName},'%')
         </if>

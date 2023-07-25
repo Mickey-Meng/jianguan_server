@@ -159,12 +159,14 @@ public class BuildPlanServiceImpl extends ServiceImpl<BuildPlanMapper, BuildPlan
         //属性转换
         if (Objects.nonNull(pageVoList) && !pageVoList.isEmpty()) {
             pageVoList.forEach(pageVo -> {
-                Integer status = pageVo.getStatus();
-                if (0 == status) {
-                    pageVo.setStatusStr("审批中");
-                } else {
-                    pageVo.setStatusStr("已生效");
-                }
+                switch (pageVo.getStatus()) {
+                    case 0:
+                        pageVo.setStatusStr("审批中");break;
+                    case 1:
+                        pageVo.setStatusStr("已审批");break;
+                    default:
+                        pageVo.setStatusStr("驳回");break;
+                };
             });
         }
         return new PageInfo<>(pageVoList);

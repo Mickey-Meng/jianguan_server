@@ -34,7 +34,7 @@
         select a.*,u.nick_name as createUserName from
         zz_supervision_notice a
         left join sys_user u on a.create_user_id = u.user_id
-        where a.project_id = #{pageDto.projectId} and a.build_section = #{pageDto.buildSection}
+        where   a.build_section = #{pageDto.buildSection}
         <if test="pageDto.title != null and pageDto.title != ''">
             and a.title like concat('%',#{pageDto.title},'%')
         </if>

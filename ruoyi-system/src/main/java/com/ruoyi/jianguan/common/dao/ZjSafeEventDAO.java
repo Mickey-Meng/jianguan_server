@@ -42,13 +42,13 @@ public interface ZjSafeEventDAO {
 
 
     @Select(" select zqe.*, sf1.`NAME` as gongquname,sf2.name as singleProjectName from zj_safe_event zqe  ,ss_f_projects sf1 ,ss_f_projects sf2 " +
-            "where    zqe.gongquid = sf1.id  and zqe.singleProjectId = sf2.id  and  projectId = #{projectId} and  uploadid = #{userid}  and status = 3 )")
+            "where    zqe.gongquid = sf1.id  and zqe.singleProjectId = sf2.id  and  projectId = #{projectId} and  uploadid = #{userid}  and status = 3 ")
     List<ZjSafeEvent> getDoneSafeEventByModify(@Param("userid")Integer userid,
                                                @Param("projectId")Integer projectId);
 
 
     @Select(" select zqe.*, sf1.`NAME` as gongquname,sf2.name as singleProjectName from zj_safe_event zqe  ,ss_f_projects sf1 ,ss_f_projects sf2 " +
-            "where  zqe.status = 0 and zqe.gongquid = sf1.id  and zqe.singleProjectId = sf2.id  and  projectId = #{projectId} and  status = 1 )")
+            "where  zqe.status = 1 and zqe.gongquid = sf1.id  and zqe.singleProjectId = sf2.id  and  projectId = #{projectId} ")
     List<ZjSafeEvent> getDelaySafeEventByModify(@Param("userid")Integer userid,
                                                 @Param("projectId")Integer projectId);
 
@@ -105,7 +105,8 @@ public interface ZjSafeEventDAO {
 
     List<ZjSafeEvent> getByGQ(@Param("gqid") Integer gqid, @Param("sttime") Date sttime, @Param("endtime") Date endtime);
 
-    @Select("select * from zj_safe_event where singleProjectId = #{projectid} and projectId = #{projectId}")
+    @Select("select zqe.* ,sf1.`NAME` as gongquname,sf2.name as singleProjectName  from zj_safe_event zqe  ,ss_f_projects sf1 ,ss_f_projects sf2  " +
+            "where  zqe.gongquid = sf1.id  and zqe.singleProjectId = sf2.id  and singleProjectId = #{projectid} and projectId = #{projectId}")
     List<ZjSafeEvent> getAllStatusSafeByProjectcode(@Param("projectid") Integer projectid,
                                                        @Param("projectId")Integer projectId);
 

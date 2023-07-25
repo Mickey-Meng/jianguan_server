@@ -204,6 +204,17 @@ public class QualityDetectionServiceImpl extends ServiceImpl<QualityDetectionMap
                                 }
                             }
                         });
+
+                        //状态
+                        switch (qualityDetection.getStatus()) {
+                            case 0:
+                                qualityDetection.setStatusStr("审批中");break;
+                            case 1:
+                                qualityDetection.setStatusStr("已审批");break;
+                            default:
+                                qualityDetection.setStatusStr("驳回");break;
+                        };
+
                         qualityDetection.setMaterialsName(materialsName);
                         qualityDetection.setProjectParts(projectParts);
                         qualityDetection.setMaterialSpecification(materialSpecification);

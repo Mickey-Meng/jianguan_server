@@ -420,17 +420,20 @@ public class FlowOperationController {
             @MyRequestBody(required = true) MyPageParam pageParam,
             @MyRequestBody String projectId) {
 //        String username = TokenData.takeFromRequest().getLoginName();
-        String username = LoginHelper.getUsername();
-        log.info("name=" + username);
-        PageInfo<Task> pageData = flowApiService.getTaskListByUserName(
-                username, processDefinitionKey, processDefinitionName, taskName, pageParam, projectId);
-        List<FlowTaskVo> flowTaskVoList = flowApiService.convertToFlowTaskList(pageData.getList());
-        PageInfo<FlowTaskVo> taskPageInfo = new PageInfo<>(flowTaskVoList);
-        taskPageInfo.setTotal(pageData.getTotal());
-        taskPageInfo.setPageNum(pageParam.getPageNum());
-        taskPageInfo.setPageSize(pageParam.getPageSize());
-        return ResponseResult.success(taskPageInfo);
+        return flowApiService.listRunTiemTask(processDefinitionKey, processDefinitionName, taskName, pageParam, projectId);
+//        String username = LoginHelper.getUsername();
+//        log.info("name=" + username);
+//        PageInfo<Task> pageData = flowApiService.getTaskListByUserName(
+//                username, processDefinitionKey, processDefinitionName, taskName, pageParam, projectId);
+//        List<FlowTaskVo> flowTaskVoList = flowApiService.convertToFlowTaskList(pageData.getList());
+//        PageInfo<FlowTaskVo> taskPageInfo = new PageInfo<>(flowTaskVoList);
+//        taskPageInfo.setTotal(pageData.getTotal());
+//        taskPageInfo.setPageNum(pageParam.getPageNum());
+//        taskPageInfo.setPageSize(pageParam.getPageSize());
+//        return ResponseResult.success(taskPageInfo);
     }
+
+
 
     /**
      * 返回当前用户待办的任务数量。
@@ -566,13 +569,9 @@ public class FlowOperationController {
      */
     @GetMapping("/listFlowTaskComment")
     public ResponseResult<List<FlowTaskCommentVo>> listFlowTaskComment(@RequestParam String processInstanceId) {
-        List<FlowTaskComment> flowTaskCommentList =
-                flowTaskCommentService.getFlowTaskCommentList(processInstanceId);
-        List<FlowTaskCommentVo> flowTaskCommentVos = BeanUtil.copyToList(flowTaskCommentList, FlowTaskCommentVo.class);
-        // TODO: 2023/4/19 临时解决内部类问题
-//        List<FlowTaskCommentVo> resultList = FlowTaskComment.FlowTaskCommentModelMapper.INSTANCE.fromModelList(flowTaskCommentList);
-        return ResponseResult.success(flowTaskCommentVos);
+        return flowApiService.listFlowTaskComment(processInstanceId);
     }
+
 
     /**
      * 获取指定流程定义的流程图。

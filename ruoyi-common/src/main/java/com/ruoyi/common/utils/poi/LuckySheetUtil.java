@@ -2,6 +2,9 @@ package com.ruoyi.common.utils.poi;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.ruoyi.common.utils.file.FileUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFPalette;
@@ -12,8 +15,7 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.*;
 
 /**
@@ -840,6 +842,52 @@ public class LuckySheetUtil {
         } catch (Exception ex) {
             log.error("String:{};Error:{}", str, ex.getMessage());
             return null;
+        }
+    }
+
+    public static Map<String, List<Map<Integer, List<String>>>> getWorkbookContents(String fillDataTemplatePath) throws IOException {
+        File excelFile = new File(fillDataTemplatePath);
+        if (!excelFile.exists()){
+            throw new IOException("文件不存在!");
+        }
+        Map<String, List<Map<Integer,List<String>>>> workbookContentsMap = null;
+        InputStream inputStream = null;
+        try {
+            workbookContentsMap = Maps.newHashMap();
+            inputStream = new FileInputStream(excelFile);
+            // 读取excel
+            XSSFWorkbook workbook = new XSSFWorkbook(inputStream);
+            Iterator<Sheet> sheetIterator = workbook.sheetIterator();
+            while (sheetIterator.hasNext()) {
+                Sheet currentSheet = sheetIterator.next();
+                List<Map<Integer, List<String>>> currentSheetContents = Lists.newArrayList();
+                // 循环读取每一行数据
+                for (int rowNumber = 0; rowNumber < currentSheet.getPhysicalNumberOfRows(); rowNumber++) {
+                    Row currentRow = currentSheet.getRow(rowNumber);
+                    // 读取每一列数据
+                    List<String> currentRowValueList = Lists.newArrayList();
+                    for (int cellNumber = 0; cellNumber < currentRow.getPhysicalNumberOfCells(); cellNumber++) {
+                        Cell currentCell = currentRow.getCell(cellNumber);
+                        currentCell.setCellType(CellType.STRING);
+                        if (Objects.equals(currentCell.getStringCellValue(), "")) {
+                            continue;
+                        }
+                        currentRowValueList.add(currentCell.getStringCellValue());
+                    }
+                    Map<Integer, List<String>> currentRowValueMap = Maps.newHashMap();
+                    currentRowValueMap.put(currentRow.getRowNum() + 1, currentRowValueList);
+                    currentSheetContents.add(currentRowValueMap);
+                }
+                workbookContentsMap.put(currentSheet.getSheetName(), currentSheetContents);
+            }
+            return workbookContentsMap;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
+        } finally {
+            if (inputStream != null) {
+                inputStream.close();
+            }
         }
     }
 }

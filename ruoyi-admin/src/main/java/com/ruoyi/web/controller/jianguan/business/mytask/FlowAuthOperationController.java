@@ -8,6 +8,7 @@ import com.ruoyi.common.core.domain.object.ResponseBase;
 import com.ruoyi.common.core.domain.object.ResponseResult;
 import com.ruoyi.flowable.domain.vo.FlowTaskCommentVo;
 import com.ruoyi.flowable.domain.vo.FlowTaskVo;
+import com.ruoyi.flowable.service.FlowApiService;
 import com.ruoyi.flowable.service.FlowAuditEntryService;
 import com.ruoyi.flowable.service.UserService;
 import io.swagger.annotations.Api;
@@ -19,6 +20,7 @@ import org.flowable.variable.api.history.HistoricVariableInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.text.ParseException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -47,6 +49,10 @@ public class FlowAuthOperationController {
 
     @Autowired
     private FlowAuditEntryService flowAuditEntryService;
+
+
+    @Resource
+    private FlowApiService flowApiService;
 
     /**
      * 返回当前用户待办的任务列表。
@@ -81,6 +87,8 @@ public class FlowAuthOperationController {
         return ResponseBase.success(taskPage);
     }
 
+
+
     /**
      * 获取当前用户的已办理的审批任务列表。
      *
@@ -97,22 +105,7 @@ public class FlowAuthOperationController {
             @MyRequestBody String endDate,
             @MyRequestBody(required = true) MyPageParam pageParam,
             @MyRequestBody String projectId) throws ParseException {
-        ResponseResult<PageInfo<Map<String, Object>>> taskPageInfo = flowOperationController.listHistoricTask(processDefinitionName, beginDate, endDate, pageParam, projectId);
-        List<Map<String, Object>> flowTaskVos = taskPageInfo.getData().getList();
-        if (Objects.nonNull(flowTaskVos) && !flowTaskVos.isEmpty()) {
-            List<String> userNames = new ArrayList<>();
-            flowTaskVos.forEach(flowTaskVo -> userNames.add(String.valueOf(flowTaskVo.get("startUser"))));
-            Map<String, String> names = userService.getNamesByUserName(userNames);
-            if (Objects.nonNull(names) && !names.isEmpty()) {
-                flowTaskVos.forEach(flowTaskVo -> flowTaskVo.
-                        put("startUserName", names.getOrDefault(String.valueOf(flowTaskVo.get("startUser")), String.valueOf(flowTaskVo.get("startUser")))));
-            }
-        }
-        PageInfo<Map<String, Object>> taskPage = new PageInfo<>(flowTaskVos);
-        taskPage.setTotal(taskPageInfo.getData().getTotal());
-        taskPage.setPageNum(pageParam.getPageNum());
-        taskPage.setPageSize(pageParam.getPageSize());
-        return ResponseBase.success(taskPage);
+        return flowApiService.runTimeTasks(processDefinitionName, beginDate, endDate, pageParam, projectId);
     }
 
     /**
@@ -157,19 +150,10 @@ public class FlowAuthOperationController {
      */
     @GetMapping("/listFlowTaskComment")
     public ResponseResult<List<FlowTaskCommentVo>> listFlowTaskComment(@RequestParam String processInstanceId) {
-        ResponseResult<List<FlowTaskCommentVo>> listResponseResult = flowOperationController.listFlowTaskComment(processInstanceId);
-        List<FlowTaskCommentVo> data = listResponseResult.getData();
-        if (Objects.nonNull(data) && !data.isEmpty()) {
-            List<String> userNames = new ArrayList<>();
-            data.forEach(flowTaskVo -> userNames.add(flowTaskVo.getCreateLoginName()));
-            Map<String, String> names = userService.getNamesByUserName(userNames);
-            if (Objects.nonNull(names) && !names.isEmpty()) {
-                data.forEach(flowTaskVo -> flowTaskVo.
-                        setCreateName(names.getOrDefault(flowTaskVo.getCreateLoginName(), flowTaskVo.getCreateLoginName())));
-            }
-        }
-        return ResponseResult.success(data);
+        return flowApiService.flowTaskComments(processInstanceId);
     }
+
+
 
 
     /**

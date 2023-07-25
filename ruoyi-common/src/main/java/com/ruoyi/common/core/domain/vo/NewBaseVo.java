@@ -52,8 +52,14 @@ public class NewBaseVo extends Model implements Serializable {
     private Date updateTime;
 
     /**
-     * 更新人id
+     * 流程状态
      */
     @ApiModelProperty(value = "审批状态 0：审批中 1: 审批完成 2:驳回")
     private Integer status;
+
+    /**
+     * 流程状态
+     */
+    @ApiModelProperty(value = "审批状态 0：审批中 1: 审批完成 2:驳回")
+    private String statusStr;
 }

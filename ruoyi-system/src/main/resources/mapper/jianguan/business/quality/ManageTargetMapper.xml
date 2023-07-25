@@ -32,7 +32,7 @@
         select a.*,p.name as projectName,u.nick_name as createUserName from  zz_manage_target a
         left join ss_f_projects p on p.ID = a.project_id and p.GROUPLEVEL = 2
         left join sys_user u on a.create_user_id = u.user_id
-        where a.project_id = #{pageDto.projectId} and a.build_section = #{pageDto.buildSection}
+        where   a.build_section = #{pageDto.buildSection}
         <if test="pageDto.draftFlag != null">
             and a.draft_flag = #{pageDto.draftFlag}
         </if>

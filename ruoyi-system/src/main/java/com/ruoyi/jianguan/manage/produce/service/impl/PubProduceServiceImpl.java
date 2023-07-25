@@ -19,6 +19,7 @@ import com.ruoyi.common.core.domain.PageQuery;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.ruoyi.common.utils.file.FileUtils;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.common.utils.poi.LuckySheetUtil;
 import com.ruoyi.jianguan.manage.produce.domain.bo.PubProduceBo;
@@ -27,6 +28,7 @@ import com.ruoyi.jianguan.manage.produce.domain.vo.PubProduceVo;
 import com.ruoyi.jianguan.manage.produce.mapper.PubProduceMapper;
 import com.ruoyi.jianguan.manage.produce.service.IPubProduceService;
 import com.ruoyi.system.domain.SysOss;
+import com.ruoyi.system.service.ISysOssService;
 import liquibase.pro.packaged.S;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -54,6 +56,8 @@ public class PubProduceServiceImpl implements IPubProduceService {
     private String tempTemplateFilePath;
 
     private final PubProduceMapper baseMapper;
+
+    private final ISysOssService sysOssService;
 
     /**
      * 查询工序信息
@@ -216,9 +220,22 @@ public class PubProduceServiceImpl implements IPubProduceService {
                 .map(luckySheetJsonObject -> (JSONObject) luckySheetJsonObject).collect(Collectors.toList());
         String fillDataTemplatePath = this.tempTemplateFilePath + System.getProperty("file.separator") + ExcelUtil.encodingFilename(jsonObject.get("title").toString());
         OutputStream outputStream = null;
+        SysOss sysOss = null;
         try {
+            String sheetName = "第1页";
+            int commentsRowNumber = 28;
+            // 1、保存填写后的模板数据至磁盘
             outputStream = new FileOutputStream(fillDataTemplatePath);
             LuckySheetUtil.createWorkbook(outputStream, true, jsonObjectList);
+            // 2、磁盘文件获取审批意见内容
+            Map<String, List<Map<Integer,List<String>>>> workbookContents = LuckySheetUtil.getWorkbookContents(fillDataTemplatePath);
+            Optional<List<String>> approvalComments = workbookContents.get(sheetName).stream().filter(rowMap -> rowMap.containsKey(commentsRowNumber)).map(rowMap -> rowMap.get(commentsRowNumber)).findFirst();
+            if (approvalComments.isPresent()) {
+                System.out.println(approvalComments.get().get(0)); // 自检说明:自我评价 优秀
+                System.out.println(approvalComments.get().get(1)); // 监理检评:监理自评 优秀+
+            }
+            // 3、磁盘文件上传至文件服务器
+            sysOssService.upload(FileUtils.getMultipartFile(FileUtils.file(fillDataTemplatePath)));
             return true;
         } catch (IOException e) {
             e.printStackTrace();
@@ -226,6 +243,10 @@ public class PubProduceServiceImpl implements IPubProduceService {
         } finally {
             if (outputStream != null) {
                 outputStream.close();
+                if (!Objects.isNull(sysOss)) {
+                    // 上传成功后删除生成的磁盘文件
+                    FileUtils.del(fillDataTemplatePath);
+                }
             }
         }
     }

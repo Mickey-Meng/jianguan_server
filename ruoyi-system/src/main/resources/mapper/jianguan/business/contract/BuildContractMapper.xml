@@ -48,7 +48,7 @@
         from zz_build_contract a
           left join ss_f_projects p on a.build_section = p.ID and p.GROUPLEVEL = 3
           left join sys_user u on a.create_user_id = u.user_id
-          where a.project_id = #{pageDto.projectId} and  a.build_section = #{pageDto.buildSection}
+          where    a.build_section = #{pageDto.buildSection}
         <if test="pageDto.contractCode != null and pageDto.contractCode != ''">
             and a.contract_code like concat('%',#{pageDto.contractCode},'%')
         </if>

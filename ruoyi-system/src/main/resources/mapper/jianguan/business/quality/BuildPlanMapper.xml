@@ -38,7 +38,7 @@
         left join ss_f_projects p on a.project_id = p.ID and p.GROUPLEVEL = 2
         left join ss_f_projects s on a.project_id = s.PARENTID and s.GROUPLEVEL = 3
         left join   sys_user u on a.create_user_id = u.user_id
-          where a.project_id = #{pageDto.projectId} and  a.build_section = #{pageDto.buildSection}
+          where    a.build_section = #{pageDto.buildSection}
         <if test="pageDto.buildPlanName != null and pageDto.buildPlanName != ''">
             and a.build_plan_name like concat('%',#{pageDto.buildPlanName},'%')
         </if>

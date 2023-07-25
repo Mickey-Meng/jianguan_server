@@ -68,7 +68,7 @@
         left join sys_user e on e.user_id = a.build_user
         left join sys_user r on r.user_id = a.check_user
         left join sys_user x on a.create_user_id = x.user_id
-        where a.project_id = #{pageDto.projectId} and a.build_section = #{pageDto.buildSection}
+        where   a.build_section = #{pageDto.buildSection}
         <if test="pageDto.buildSectionName != null and pageDto.buildSectionName != ''">
             and s.name like concat('%',#{pageDto.buildSectionName},'%')
         </if>
