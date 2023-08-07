@@ -13,4 +13,6 @@ import com.ruoyi.project.approval.domain.vo.MeaLedgerApprovalNoVo;
  */
 public interface MeaLedgerApprovalNoMapper extends BaseMapperPlus<MeaLedgerApprovalNoMapper, MeaLedgerApprovalNo, MeaLedgerApprovalNoVo> {
 
+    MeaLedgerApprovalNoVo getMax();
+
 }

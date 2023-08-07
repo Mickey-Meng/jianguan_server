@@ -110,10 +110,9 @@ spring:
       uri: mongodb://${server.host}:27017
       database: admin
   redis:
-    host: ${server.host}
-    port: 26379
+    host: 150.158.139.18
+    port: 31419
     database: 2
-    # 密码(如没有密码请注释掉)
     # password:
     timeout: 10s
     ssl: false

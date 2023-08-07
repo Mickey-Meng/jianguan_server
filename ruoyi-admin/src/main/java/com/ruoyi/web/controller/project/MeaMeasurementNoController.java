@@ -83,6 +83,11 @@ public class MeaMeasurementNoController extends BaseController {
         return R.ok(iMeaMeasurementNoService.queryById(id));
     }
 
+    @GetMapping("/getMaxInfo")
+    public R<MeaMeasurementNoVo> getMaxInfo() {
+        return R.ok(iMeaMeasurementNoService.queryMax());
+    }
+
     /**
      * 新增中间计量期数管理
      */
@@ -112,7 +117,7 @@ public class MeaMeasurementNoController extends BaseController {
     public R<Void> lockingMeaMeasurementNoTest(@PathVariable String meaMeasurementNo) {
 
             String b =  iMeaMeasurementNoService.lockingByJlqcbh(meaMeasurementNo);
-            b = "有以下计量凭证流程未结束： " + b;
+            b = "有以下计量凭证流程未结束，不能锁定： " + b;
             if(StringUtils.isEmpty(b)) return  R.ok("1");
             else return R.ok(b);
     }

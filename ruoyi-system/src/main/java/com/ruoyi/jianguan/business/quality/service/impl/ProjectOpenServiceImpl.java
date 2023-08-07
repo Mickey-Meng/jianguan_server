@@ -151,18 +151,20 @@ public class ProjectOpenServiceImpl extends ServiceImpl<ProjectOpenMapper, Proje
         List<ProjectOpenPageVo> pageVoList = projectOpenMapper.getPageInfo(pageDto);
         //非空
         if (Objects.nonNull(pageVoList) && !pageVoList.isEmpty()) {
-            Set<String> buildSection = projectsService.getBuildSectionByProjectId(pageDto.getProjectId());
-            if (Objects.nonNull(buildSection) && !buildSection.isEmpty()) {
                 pageVoList.forEach(pageVo -> {
-                    //添加施工单位
-                    pageVo.setBuildSectionNames(buildSection);
                     //状态
-                    pageVo.setStatusStr(pageVo.getStatus() == 0 ? "审批中" : "已审批");
+                    switch (pageVo.getStatus()) {
+                        case 0:
+                            pageVo.setStatusStr("审批中");break;
+                        case 1:
+                            pageVo.setStatusStr("已审批");break;
+                        default:
+                            pageVo.setStatusStr("驳回");break;
+                    };
                     //天数
                     long days = pageVo.getContractEndDate().until(pageVo.getContractOpenDate(), ChronoUnit.DAYS);
                     pageVo.setDays(Integer.parseInt(String.valueOf(days)));
                 });
-            }
         }
         return new PageInfo<>(pageVoList);
     }

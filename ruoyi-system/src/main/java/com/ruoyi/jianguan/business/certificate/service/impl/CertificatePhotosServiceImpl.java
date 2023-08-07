@@ -5,6 +5,8 @@ import cn.hutool.core.util.ObjUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -12,6 +14,9 @@ import com.ruoyi.common.core.domain.entity.FileModel;
 import com.ruoyi.common.core.domain.object.ResponseBase;
 import com.ruoyi.common.core.sequence.util.IdUtil;
 import com.ruoyi.common.enums.BimFlowKey;
+import com.ruoyi.common.helper.LoginHelper;
+import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.common.utils.JwtUtil;
 import com.ruoyi.flowable.domain.dto.FlowTaskCommentDto;
 import com.ruoyi.flowable.service.FlowStaticPageService;
 import com.ruoyi.jianguan.business.certificate.domain.dto.CertificatePhotosPageDTO;
@@ -22,12 +27,14 @@ import com.ruoyi.jianguan.business.certificate.domain.vo.PlanCertificatePhotosVo
 import com.ruoyi.jianguan.business.certificate.domain.vo.ProgressCertificatePhotosVo;
 import com.ruoyi.jianguan.business.certificate.mapper.CertificatePhotosMapper;
 import com.ruoyi.jianguan.business.certificate.service.CertificatePhotosService;
+import com.ruoyi.jianguan.business.constructionDesign.domain.entity.ConstructionDesign;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -183,5 +190,21 @@ public class CertificatePhotosServiceImpl extends ServiceImpl<CertificatePhotosM
             }
         });
         return new PageInfo<>(progressCertificatePhotosPageVos);
+    }
+
+    @Override
+    public List<CertificatePhotos> getExpiryRemindersList(String name) {
+        LambdaQueryWrapper<CertificatePhotos> lqw = Wrappers.lambdaQuery();
+        // 结束日期小于等于当前日期、结束日期大于等于当前日期-5、未审批完成的数据、当前登录用户等于责任人
+        lqw.le(CertificatePhotos::getEndTime, DateUtils.getNowDate());
+        lqw.ge(CertificatePhotos::getEndTime, DateUtils.addDays(new Date(), -5));
+        lqw.eq(CertificatePhotos::getOwnerId, LoginHelper.getUserId());
+        lqw.ne(CertificatePhotos::getPlanStatus, 1).or().ne(CertificatePhotos::getProgressStatus, 1);
+        List<CertificatePhotos> expiryRemindersList = certificatePhotosMapper.selectList(lqw);
+        if (Objects.equals(name, BimFlowKey.progressCertificatePhotos.getName())) {
+            expiryRemindersList = expiryRemindersList.stream().filter(certificatePhotos -> (certificatePhotos.getProgressStatus() != 0) && Objects.isNull(certificatePhotos.getAttachment()))
+                    .collect(Collectors.toList());
+        }
+        return expiryRemindersList;
     }
 }

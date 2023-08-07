@@ -25,7 +25,6 @@ import com.ruoyi.common.utils.jianguan.zjrw.DateUtils;
 import com.ruoyi.common.utils.jianguan.zjrw.RestApiUtils;
 import com.ruoyi.common.utils.jianguan.zjrw.httputils.HttpHeader;
 import com.ruoyi.common.utils.jianguan.zjrw.httputils.HttpParamers;
-import com.ruoyi.common.utils.jianguan.zjrw.httputils.HttpUtils;
 import com.ruoyi.common.utils.redis.RedisUtils;
 import com.ruoyi.flowable.domain.vo.FlowKeysVo;
 import com.ruoyi.flowable.domain.vo.FlowTaskCommentVo;
@@ -47,7 +46,6 @@ import org.flowable.task.api.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -258,33 +256,29 @@ public class PersonService {
             if (count1 <= 0) {
                 return new ResponseBase(200, "该项目id无数据!");
             }
-            String token = getRequest().getHeader("Authorization");
-            if (token == null) {
-                return new ResponseBase(200, "token验证失败!");
-            }
+//            String token = getRequest().getHeader("Authorization");
+//            if (token == null) {
+//                return new ResponseBase(200, "token验证失败!");
+//            }
             PersonDTO personDTO = personDAO.selectByPrimaryKey(id);
             if (personDTO == null) {
                 return new ResponseBase(200, "没有找到有效的合同报审数据!");
             }
             String processInstanceId = personDTO.getTaskId();
             //调用停止接口 admin/flow/flowOperation/stopProcessInstance
-            PersonReturnModel personReturnModel = stopProcessInstance(processInstanceId, token);
-            if (personReturnModel.isSuccess()) {
-                //true 的话,说明流程删除成功!   再删除对应的业务数据
-                personDAO.delContractById(id, projectId);
-                // 删除zj_person_people_sub对应的合同人员数据
-                List<PersonSub> personSubs = personDAO.getAllPersonSubById(id);
-                if (personSubs.size() > 0) {
-                    for (PersonSub personSub : personSubs) {
-                        if (personSub.getPeoplePic() != null && !personSub.getPeoplePic().equals("")) {
-                            fileMapper.delete(personSub.getPeoplePic());
-                        }
+            flowApiService.deleteProcessInstance(processInstanceId);
+            personDAO.delContractById(id, projectId);
+            // 删除zj_person_people_sub对应的合同人员数据
+            List<PersonSub> personSubs = personDAO.getAllPersonSubById(id);
+            if (personSubs.size() > 0) {
+                for (PersonSub personSub : personSubs) {
+                    if (personSub.getPeoplePic() != null && !personSub.getPeoplePic().equals("")) {
+                        fileMapper.delete(personSub.getPeoplePic());
                     }
                 }
-                personDAO.delPersonSubByGid(id);
-                return new ResponseBase(200, "删除合同成功!");
             }
-            return new ResponseBase(200, "删除合同报审失败!", personReturnModel.getErrorMessage());
+            personDAO.delPersonSubByGid(id);
+            return new ResponseBase(200, "删除合同成功!");
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseBase(200, "删除合同报审失败!", e.getStackTrace());
@@ -319,6 +313,11 @@ public class PersonService {
         }
         Integer userId = LoginHelper.getUserId().intValue();
         List<PersonSubDTO> personSubDTOS = Lists.newArrayList();
+        Set<String> roleKey = LoginHelper.getLoginUser().getRolePermission();
+        //add by yangaogao 20230731  管理员可以查看所有数据
+        if (roleKey.contains("gly") || roleKey.contains("admin")){
+            userId = null;
+        }
         List<PersonDTO> persons = personDAO.getAllPersonByUseridAndProjectId(userId, projectId);
 
         //调用接口获取数据
@@ -768,7 +767,7 @@ public class PersonService {
 //            PersonReturnModel returnModel = JSONObject.parseObject(response, PersonReturnModel.class);
 //            log.info("returnModel: " + returnModel);
 //            if (returnModel.isSuccess()) {
-                personChange.setStatus(1);
+                personChange.setStatus(0);
                 personChange.setOrder(1);
                 personChange.setProcessInstanceId(processInstance.getProcessInstanceId());
                 personChange.setBusinessKey(businessKey);
@@ -800,8 +799,12 @@ public class PersonService {
         }
         Integer userId = LoginHelper.getUserId().intValue();
         String token = getRequest().getHeader("Authorization");// 从 http 请求头中取出 token
-
-        List<ZjPersonChange> personChanges = personChangeDAO.getChangeByUserId(userId);
+        Set<String> roleKey = LoginHelper.getLoginUser().getRolePermission();
+        //add by yangaogao 20230731  管理员可以查看所有数据
+        if (roleKey.contains("gly") || roleKey.contains("admin")){
+            userId = null;
+        }
+        List<ZjPersonChange> personChanges = personChangeDAO.getChangeByUserId(userId,projectId);
         if (personChanges.size() > 0) {
             for (ZjPersonChange personChange : personChanges) {
                 Map<String, String> maps = new WeakHashMap();
@@ -1110,6 +1113,15 @@ public class PersonService {
         return new ResponseBase(200, "查询成功!", personChanges);
     }
 
+    public ZjPersonChange selectByBusinessKey(String businessId) {
+        return personChangeDAO.selectByBusinessKey(businessId);
+    }
+
+    public void updatePersonChangeStatus(Integer status, Integer id) {
+        personChangeDAO.updatePersonChangeStatus(status, id);
+    }
+
+
     public ResponseBase delChange(Integer id, Integer projectId) {
         try {
             if (projectId <= 0) {
@@ -1119,48 +1131,53 @@ public class PersonService {
             if (count1 <= 0) {
                 return new ResponseBase(200, "该项目id无数据!");
             }
-            String token = getRequest().getHeader("Authorization");
+//            String token = getRequest().getHeader("Authorization");
             ZjPersonChange personChange = personChangeDAO.selectByPrimaryKey(id);
             if (personChange == null) {
                 return new ResponseBase(200, "没有找到有效的人员变更数据!");
             }
             ////获取变更前人员id
-            Integer beforePersonId = personChange.getBeforePersonId();
+//            Integer beforePersonId = personChange.getBeforePersonId();
             //获取变更后人员id
-            Integer afterPersonId = personChange.getAfterPersonId();
+//            Integer afterPersonId = personChange.getAfterPersonId();
             //获取变更前人员对应岗位(角色)id
-            SsFUserRole beforePersonRole = personChangeDAO.getByUserid(beforePersonId);
-            Integer beforePersonRoleId = beforePersonRole.getRoleid();
+//            SsFUserRole beforePersonRole = personChangeDAO.getByUserid(beforePersonId);
+//            Integer beforePersonRoleId = beforePersonRole.getRoleid();
             //获取变更后人员对应岗位（角色）id
-            SsFUserRole afterPersonRole = personChangeDAO.getByUserid(afterPersonId);
-            Integer afterPersonRoleId = afterPersonRole.getRoleid();
+//            SsFUserRole afterPersonRole = personChangeDAO.getByUserid(afterPersonId);
+//            Integer afterPersonRoleId = afterPersonRole.getRoleid();
             //在调用停止之前获取到该条数据状态
-            Integer status = personChange.getStatus();
+//            Integer status = personChange.getStatus();
             String processInstanceId = personChange.getProcessInstanceId();
             //调用停止接口 admin/flow/flowOperation/stopProcessInstance
-            PersonReturnModel personReturnModel = stopProcessInstance(processInstanceId, token);
-            if (personReturnModel.isSuccess()) {
+            flowApiService.deleteProcess(processInstanceId);
+//            PersonReturnModel personReturnModel = stopProcessInstance(processInstanceId, token);
+//            if (personReturnModel.isSuccess()) {
                 //true 的话,说明流程删除成功!   再删除对应的业务数据
                 // 因删除之前先要终止流程，而终止流程会强制完成该流程，导致触发变更完成，
                 // 所以先把变更完成的还原
-                if (status == 1){
+//                if (status == 1){
                     //说明该流程为强制完成的
                     //修改变更前人员id为老角色
-                    personChangeDAO.updateUserRole(beforePersonId, afterPersonId, beforePersonRoleId);
+//                    personChangeDAO.updateUserRole(beforePersonId, afterPersonId, beforePersonRoleId);
                     //增加变更后人员id
-                    personChangeDAO.insertUserRole(afterPersonId, afterPersonRoleId);
-                }
+//                    personChangeDAO.insertUserRole(afterPersonId, afterPersonRoleId);
+//                }
                 //如果之前状态不是1，说明该流程为已审批
                 personChangeDAO.delChange(id, projectId);
-                ZjPersonChangeFile changeFile = personChangeDAO.getFileByGid(id);
+            List<ZjPersonChangeFile> personChangeFiles = personChangeDAO.getFileIdsByGid(id);
+            for (ZjPersonChangeFile changeFile : personChangeFiles) {
+//                ZjPersonChangeFile changeFile = personChangeDAO.getFileByGid(id);
                 if (changeFile != null) {
                     String fileId = changeFile.getFileId();
                     fileMapper.delete(fileId);
                     personChangeDAO.delPersonFile(id);
                 }
-                return new ResponseBase(200, "删除人员变更成功!");
             }
-            return new ResponseBase(200, "删除人员变更失败!", personReturnModel.getErrorMessage());
+
+                return new ResponseBase(200, "删除人员变更成功!");
+//            }
+//            return new ResponseBase(200, "删除人员变更失败!", personReturnModel.getErrorMessage());
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseBase(200, "删除人员变更失败!", e.getStackTrace());
@@ -1203,7 +1220,7 @@ public class PersonService {
 //            PersonReturnModel returnModel = JSONObject.parseObject(response, PersonReturnModel.class);
 //            if (returnModel.isSuccess()) {
                 personLeave.setSubDate(new Date());
-                personLeave.setStatus(1);
+                personLeave.setStatus(0);
                 personLeave.setOrder(1);
                 personLeave.setProcessInstanceId(processInstance.getProcessInstanceId());
                 personLeave.setBusinessKey(businessKey);
@@ -1227,9 +1244,14 @@ public class PersonService {
         if (count1 <= 0) {
             return new ResponseBase(200, "该项目id无数据!");
         }
-        Integer id = LoginHelper.getUserId().intValue();
+        Integer leavePersonId = LoginHelper.getUserId().intValue();
         String token = getRequest().getHeader("Authorization");// 从 http 请求头中取出 token
-        List<ZjPersonLeave> personLeaves = personLeaveDAO.getById(id);
+        Set<String> roleKey = LoginHelper.getLoginUser().getRolePermission();
+
+        if (roleKey.contains("gly") || roleKey.contains("admin")){
+            leavePersonId = null;
+        }
+        List<ZjPersonLeave> personLeaves = personLeaveDAO.getByUserId(leavePersonId);
         if (personLeaves.size() > 0) {
             for (ZjPersonLeave personLeave : personLeaves) {
                 Map<String, String> maps = Maps.newHashMap();

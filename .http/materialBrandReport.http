@@ -1,0 +1,30 @@
+###
+GET {{host}}/web/api/v1/material_brand_report/detail/id?id=1687700804661678080
+Authorization: {{Authorization}}
+
+###
+POST {{host}}/web/api/v1/material_brand_report/addOrUpdate
+Authorization: {{Authorization}}
+Content-Type: application/json
+
+{
+  "content": "test_94a4ea761893",
+  "reportPeople": "test_c47de31f0898"
+
+}
+
+###
+POST {{host}}/web/api/v1/material_brand_report/page
+Authorization: {{Authorization}}
+Content-Type: application/json
+
+{
+  "status": 0,
+  "pageNum": 1,
+  "projectId": 1,
+  "pageSize": 5
+}
+
+###
+GET {{host}}/web/api/v1/material_brand_report/list
+Authorization: {{Authorization}}

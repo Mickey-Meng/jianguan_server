@@ -101,16 +101,16 @@ public class MeaLedgerChangeDetailBo extends BaseEntity {
     private BigDecimal shje;
 
     /**
-     * 修正数量
+     * 变更数量
      */
-//    @NotNull(message = "修正数量不能为空", groups = { AddGroup.class, EditGroup.class })
-    private BigDecimal xzsl;
+//    @NotNull(message = "变更数量不能为空", groups = { AddGroup.class, EditGroup.class })
+    private BigDecimal bgsl;
 
     /**
-     * 修正金额
+     * 变更金额
      */
-//    @NotNull(message = "修正金额不能为空", groups = { AddGroup.class, EditGroup.class })
-    private BigDecimal xzje;
+//    @NotNull(message = "变更金额不能为空", groups = { AddGroup.class, EditGroup.class })
+    private BigDecimal bgje;
 
     /**
      * 已计量数量

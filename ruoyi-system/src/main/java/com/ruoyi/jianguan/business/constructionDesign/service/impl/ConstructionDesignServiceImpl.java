@@ -5,6 +5,8 @@ import cn.hutool.core.util.ObjUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -12,8 +14,13 @@ import com.ruoyi.common.core.domain.entity.FileModel;
 import com.ruoyi.common.core.domain.object.ResponseBase;
 import com.ruoyi.common.core.sequence.util.IdUtil;
 import com.ruoyi.common.enums.BimFlowKey;
+import com.ruoyi.common.helper.LoginHelper;
+import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.common.utils.JwtUtil;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.flowable.domain.dto.FlowTaskCommentDto;
 import com.ruoyi.flowable.service.FlowStaticPageService;
+import com.ruoyi.jianguan.business.certificate.domain.entity.CertificatePhotos;
 import com.ruoyi.jianguan.business.constructionDesign.domain.dto.ConstructionDesignPageDTO;
 import com.ruoyi.jianguan.business.constructionDesign.domain.dto.PlanConstructionDesignSaveDTO;
 import com.ruoyi.jianguan.business.constructionDesign.domain.dto.ProgressConstructionDesignSaveDTO;
@@ -22,12 +29,14 @@ import com.ruoyi.jianguan.business.constructionDesign.domain.vo.PlanConstruction
 import com.ruoyi.jianguan.business.constructionDesign.domain.vo.ProgressConstructionDesignVo;
 import com.ruoyi.jianguan.business.constructionDesign.mapper.ConstructionDesignMapper;
 import com.ruoyi.jianguan.business.constructionDesign.service.ConstructionDesignService;
+import com.ruoyi.jianguan.manage.project.domain.entity.JgProjectInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -184,5 +193,21 @@ public class ConstructionDesignServiceImpl extends ServiceImpl<ConstructionDesig
             }
         });
         return new PageInfo<>(progressConstructionDesignPageVos);
+    }
+
+    @Override
+    public List<ConstructionDesign> getExpiryRemindersList(String name) {
+        LambdaQueryWrapper<ConstructionDesign> lqw = Wrappers.lambdaQuery();
+        // 结束日期小于等于当前日期、结束日期大于等于当前日期-5、未审批完成的数据、当前登录用户等于责任人
+        lqw.le(ConstructionDesign::getEndTime, DateUtils.getNowDate());
+        lqw.ge(ConstructionDesign::getEndTime, DateUtils.addDays(new Date(), -5));
+        lqw.eq(ConstructionDesign::getOwnerId, LoginHelper.getUserId());
+        lqw.ne(ConstructionDesign::getPlanStatus, 1).or().ne(ConstructionDesign::getProgressStatus, 1);
+        List<ConstructionDesign> expiryRemindersList = constructionDesignMapper.selectList(lqw);
+        if (Objects.equals(name, BimFlowKey.progressConstructionDesign.getName())) {
+            expiryRemindersList = expiryRemindersList.stream().filter(constructionDesign -> (constructionDesign.getProgressStatus() != 0) && Objects.isNull(constructionDesign.getAttachment()))
+                    .collect(Collectors.toList());
+        }
+        return expiryRemindersList;
     }
 }

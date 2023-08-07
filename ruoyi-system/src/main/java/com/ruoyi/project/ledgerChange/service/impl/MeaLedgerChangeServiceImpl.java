@@ -138,10 +138,11 @@ public class MeaLedgerChangeServiceImpl implements IMeaLedgerChangeService {
     @Transactional(rollbackFor = Exception.class)
     public Boolean save(MeaLedgerChangeAndDetailBo bo) {
         MeaLedgerChange add = BeanUtil.toBean(bo, MeaLedgerChange.class);
-      String bgbh = bo.getBgbh();
+        String bgbh = bo.getBgbh();
         validEntityBeforeSave(add);
         add.setBgbh(bgbh);
         add.setReviewCode("0");
+        add.setSqrq(new Date());
         boolean flag = baseMapper.insert(add) > 0;
         if (flag) {
             bo.setId(add.getId());

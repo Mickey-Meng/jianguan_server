@@ -77,13 +77,13 @@ public class MeaContractBill extends TreeEntity<MeaContractBill> {
      */
     private BigDecimal shje;
     /**
-     * 修正数量
+     * 变更数量
      */
-    private BigDecimal xzsl;
+    private BigDecimal bgsl;
     /**
-     * 修正金额
+     * 变更金额
      */
-    private BigDecimal xzje;
+    private BigDecimal bgje;
     /**
      * 总数量
      */

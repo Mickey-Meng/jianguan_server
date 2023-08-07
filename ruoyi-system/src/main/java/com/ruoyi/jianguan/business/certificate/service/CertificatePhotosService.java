@@ -10,6 +10,8 @@ import com.ruoyi.jianguan.business.certificate.domain.entity.CertificatePhotos;
 import com.ruoyi.jianguan.business.certificate.domain.vo.PlanCertificatePhotosVo;
 import com.ruoyi.jianguan.business.certificate.domain.vo.ProgressCertificatePhotosVo;
 
+import java.util.List;
+
 
 /**
  * 计划管理-证照管理Service接口
@@ -60,4 +62,6 @@ public interface CertificatePhotosService extends IService<CertificatePhotos> {
     ProgressCertificatePhotosVo getProgressInfoById(Long id);
 
     ResponseBase updateUploadFile(ProgressCertificatePhotosSaveDTO saveDto);
+
+    List<CertificatePhotos> getExpiryRemindersList(String name);
 }

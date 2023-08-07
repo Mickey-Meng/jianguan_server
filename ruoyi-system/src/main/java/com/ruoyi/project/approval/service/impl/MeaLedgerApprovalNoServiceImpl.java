@@ -40,6 +40,11 @@ public class MeaLedgerApprovalNoServiceImpl implements IMeaLedgerApprovalNoServi
         return baseMapper.selectVoById(id);
     }
 
+    @Override
+    public MeaLedgerApprovalNoVo queryMax() {
+        return baseMapper.getMax();
+    }
+
     /**
      * 查询期数管理列表
      */

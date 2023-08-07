@@ -92,7 +92,7 @@ public class MeaLedgerBreakdownDetailInfoVo {
      * 变更分解数量
      */
     @ExcelProperty(value = "变更分解数量")
-    private Long bgfjsl;
+    private BigDecimal bgfjsl;
     /**
      * 复核数量
      */

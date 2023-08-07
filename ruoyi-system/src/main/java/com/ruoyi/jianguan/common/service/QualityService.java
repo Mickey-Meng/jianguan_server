@@ -202,7 +202,7 @@ public class QualityService {
             return new ResponseBase(200,"暂无数据", map);
         }
 
-        // 填充项目名称喝工区名称
+        // 填充项目名称和工区名称
         List<Integer> projectIds = zjSafeEventList.stream().map(ZjQualityEvent::getProjectId).collect(Collectors.toList());
         List<Integer> gongquIds = zjSafeEventList.stream().map(ZjQualityEvent::getGongquid).collect(Collectors.toList());
         projectIds.addAll(gongquIds);

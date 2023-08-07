@@ -18,7 +18,9 @@ import org.flowable.task.service.delegate.DelegateTask;
 import org.flowable.task.service.delegate.TaskListener;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author jing-zhang
@@ -63,45 +65,32 @@ public class LedgerChangeEndEvent implements TaskListener {
                     qw.eq("zmh",meaLedgerChangeDetail.getZmh());
                     MeaLedgerBreakdownDetail meaLedgerBreakdownDetail = meaLedgerBreakdownDetailMapper.selectOne(qw);*/
                    /* if(meaLedgerBreakdownDetail!=null){
-                        meaLedgerBreakdownDetail.setBgsl(meaLedgerChangeDetail.getXzsl());
+                        meaLedgerBreakdownDetail.setBgsl(meaLedgerChangeDetail.getBgsl());
                         meaLedgerBreakdownDetailMapper.updateById(meaLedgerBreakdownDetail);*/
                         QueryWrapper<MeaContractBill> contractBillQueryWrapper=new QueryWrapper<>();
                         contractBillQueryWrapper.eq("zmh",meaLedgerChangeDetail.getZmh());
-                        contractBillQueryWrapper.eq("is_change","0");
-                        MeaContractBill meaContractBill = contractBillMapper.selectOne(contractBillQueryWrapper);
-                        if(meaContractBill!=null){
-                            /*if(meaContractBill.getXzje()==null){
-                                meaContractBill.setXzje(meaLedgerChangeDetail.getXzje());// 修正金额
-                            }else {
-                                meaContractBill.setXzje(meaContractBill.getXzje().add(meaLedgerChangeDetail.getXzje()));
-                            }
-                            if(meaContractBill.getXzsl()==null){
-                                meaContractBill.setXzsl(meaLedgerChangeDetail.getXzsl());
-                            }else {
-                                meaContractBill.setXzsl(meaContractBill.getXzsl().add(meaLedgerChangeDetail.getXzsl()));
-                            }
-                            if(meaContractBill.getZsl()==null){
-                                meaContractBill.setZsl(meaLedgerChangeDetail.getShsl());
-                            }else {
-                                meaContractBill.setZsl(meaContractBill.getZsl().add(meaLedgerChangeDetail.getShsl()));
-                            }
-                            if(meaContractBill.getZje()==null){
-                                meaContractBill.setZje(meaLedgerChangeDetail.getShje());
-                            }else {
-                                meaContractBill.setZje(meaContractBill.getZje().add(meaLedgerChangeDetail.getShje()));
-                            }
-                            contractBillMapper.updateById(meaContractBill);*/
-                            meaContractBill.setId(null);
-                            meaContractBill.setXzje(meaLedgerChangeDetail.getXzje());// 修正金额
-                            meaContractBill.setXzsl(meaLedgerChangeDetail.getXzsl());
-                         /*   meaContractBill.setZsl(meaContractBill.getZsl().add(meaLedgerChangeDetail.getXzsl()));
-                            meaContractBill.setZje(meaContractBill.getZje().add(meaLedgerChangeDetail.getXzje()));*/
-                            meaContractBill.setIsChange("1");//标识为变更清单
+//                        MeaContractBill meaContractBill = contractBillMapper.selectOne(contractBillQueryWrapper);
+                        List<MeaContractBill> meaContractBills = contractBillMapper.selectList(contractBillQueryWrapper);
+                        // #510   yangaogao  20230731  1.之前是否有变更记录 ，如果有则再原数据记录上累加 数量和金额，否则插入一条新数据,标识为 变更清单数据
+                        Optional<MeaContractBill> meaContractBillChange =  meaContractBills.stream().filter(item -> item.getIsChange().equals(1)).findFirst();
+                        if(meaContractBillChange != null && meaContractBillChange.isPresent() ){
+                            MeaContractBill meaContractBill = meaContractBillChange.get();
+                            meaContractBill.setBgje(meaLedgerChangeDetail.getBgje().add(meaContractBill.getBgje()));// 变更金额
+                            meaContractBill.setBgsl(meaLedgerChangeDetail.getBgsl().add(meaContractBill.getBgsl()));
                             contractBillMapper.insert(meaContractBill);
+                        }else{
+                            Optional<MeaContractBill> meaContractBillNoChange =  meaContractBills.stream().filter(item -> item.getIsChange().equals("0")).findFirst();
+                            MeaContractBill meaContractBill1 = meaContractBillNoChange.get();
+                            meaContractBill1.setId(null);
+                            meaContractBill1.setBgje(meaLedgerChangeDetail.getBgje());// 变更金额
+                            meaContractBill1.setBgsl(meaLedgerChangeDetail.getBgsl());
+                            meaContractBill1.setIsChange("1");//标识为变更清单
+                            contractBillMapper.insert(meaContractBill1);
                         }
                     }
                 }
                 meaLedgerChange.setReviewCode("2");
+                meaLedgerChange.setSprq(new Date());
                 meaLedgerChangeMapper.updateById(meaLedgerChange);
             }
 //        }

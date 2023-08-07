@@ -20,6 +20,8 @@ import java.util.List;
  * @version 1.0.0
  * @date 2022/12/2 18:30
  */
+
+@Component
 public class BreakDownEndEvent implements TaskListener {
 
     @Override

@@ -85,6 +85,8 @@ public class MeaLedgerChangeAndDetailBo extends BaseEntity implements Serializab
 //    @NotNull(message = "申请日期不能为空", groups = { AddGroup.class, EditGroup.class })
     private Date sqrq;
 
+    private Date sprq;
+
     /**
      * 变更金额
      */

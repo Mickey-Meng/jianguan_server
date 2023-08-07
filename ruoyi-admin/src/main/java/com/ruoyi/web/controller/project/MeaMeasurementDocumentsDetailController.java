@@ -54,7 +54,10 @@ public class MeaMeasurementDocumentsDetailController extends BaseController {
         if (CollUtil.isNotEmpty(rows)) {
             rows.forEach(detail -> {
                 detail.setBqjlje(detail.getBqjlsl().multiply(detail.getMeaLedgerBreakdownDetail().getHtdj()).setScale(2, BigDecimal.ROUND_HALF_UP));
-                detail.setLjjlje(detail.getMeaLedgerBreakdownDetail().getYjlsl().multiply(detail.getMeaLedgerBreakdownDetail().getHtdj()).setScale(2, BigDecimal.ROUND_HALF_UP));
+                BigDecimal shuliang = detail.getMeaLedgerBreakdownDetail().getYjlsl();
+                BigDecimal danjia = detail.getMeaLedgerBreakdownDetail().getHtdj();
+                BigDecimal amount = shuliang.multiply(danjia);
+                detail.setLjjlje(amount.setScale(2, BigDecimal.ROUND_HALF_UP));
             });
         }
         return meaMeasurementDocumentsDetailVoTableDataInfo;

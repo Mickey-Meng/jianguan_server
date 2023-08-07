@@ -1,14 +1,20 @@
 package com.ruoyi.web.controller.jianguan.other.zlsk.strestservice.userauth.controller;
 
 import com.ruoyi.web.controller.jianguan.other.zlsk.stframebase.controller.StControllerBase;
-import com.ruoyi.web.controller.jianguan.other.zlsk.stsupporter.stctk.model.EntityList;
-import com.ruoyi.web.controller.jianguan.other.zlsk.stsupporter.stctk.model.STData;
 import com.ruoyi.web.controller.jianguan.other.zlsk.strestservice.userauth.model.*;
 import com.ruoyi.web.controller.jianguan.other.zlsk.strestservice.userauth.service.*;
-import org.springframework.beans.factory.annotation.*;
-import javax.servlet.http.*;
-import java.util.*;
-import org.springframework.web.bind.annotation.*;
+import com.ruoyi.web.controller.jianguan.other.zlsk.stsupporter.stctk.model.EntityList;
+import com.ruoyi.web.controller.jianguan.other.zlsk.stsupporter.stctk.model.STData;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping({ "/userauth" })
@@ -162,8 +168,8 @@ public class STUserAuthController extends StControllerBase
     }
 
     @RequestMapping({ "/selectRole" })
-    public STData<EntityList<Map<String, Object>>> selectRole(final Roles role) {
-        return (STData<EntityList<Map<String, Object>>>)new STData((Object)this.roleService.select(role));
+    public EntityList<Map<String, Object>> selectRole(final Roles role) {
+        return this.roleService.select(role);
     }
 
     @RequestMapping({ "/insertRole" })

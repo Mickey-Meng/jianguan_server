@@ -67,12 +67,11 @@ public class MeaContractBillServiceImpl implements IMeaContractBillService {
         lqw.eq(bo.getHtdj() != null, MeaContractBill::getHtdj, bo.getHtdj());
         lqw.eq(bo.getXzdj() != null, MeaContractBill::getXzdj, bo.getXzdj());
         lqw.eq(bo.getHtsl() != null, MeaContractBill::getHtsl, bo.getHtsl());
-        lqw.eq(bo.getXzsl() != null, MeaContractBill::getXzsl, bo.getXzsl());
-        lqw.eq(bo.getXzje() != null, MeaContractBill::getXzje, bo.getXzje());
+        lqw.eq(bo.getBgsl() != null, MeaContractBill::getBgsl, bo.getBgsl());
+        lqw.eq(bo.getBgje() != null, MeaContractBill::getBgje, bo.getBgje());
         lqw.eq(bo.getZsl() != null, MeaContractBill::getZsl, bo.getZsl());
         lqw.eq(bo.getZje() != null, MeaContractBill::getZje, bo.getZje());
         lqw.orderByAsc(MeaContractBill::getZmh);
-        List s = baseMapper.selectVoList(lqw);
         return baseMapper.selectVoList(lqw);
     }
 
@@ -90,8 +89,8 @@ public class MeaContractBillServiceImpl implements IMeaContractBillService {
         lqw.eq(bo.getHtje() != null, MeaContractBill::getHtje, bo.getHtje());
         lqw.eq(bo.getShsl() != null, MeaContractBill::getShsl, bo.getShsl());
         lqw.eq(bo.getShje() != null, MeaContractBill::getShje, bo.getShje());
-        lqw.eq(bo.getXzsl() != null, MeaContractBill::getXzsl, bo.getXzsl());
-        lqw.eq(bo.getXzje() != null, MeaContractBill::getXzje, bo.getXzje());
+        lqw.eq(bo.getBgsl() != null, MeaContractBill::getBgsl, bo.getBgsl());
+        lqw.eq(bo.getBgje() != null, MeaContractBill::getBgje, bo.getBgje());
         lqw.eq(bo.getZsl() != null, MeaContractBill::getZsl, bo.getZsl());
         lqw.eq(bo.getZje() != null, MeaContractBill::getZje, bo.getZje());
         lqw.eq(StringUtils.isNotBlank(bo.getStatus()), MeaContractBill::getStatus, bo.getStatus());
@@ -164,7 +163,7 @@ public class MeaContractBillServiceImpl implements IMeaContractBillService {
     @Override
     public List<MeaContractBillVo> treeList(MeaContractBillBo bo) {
         LambdaQueryWrapper<MeaContractBill> lqw = new LambdaQueryWrapper<>();
-        lqw.isNull(true, MeaContractBill::getHtdj);
+//        lqw.isNull(true, MeaContractBill::getHtdj);
         lqw.orderByAsc(MeaContractBill::getZmh);
         return baseMapper.selectVoList(lqw);
     }

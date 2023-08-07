@@ -2,17 +2,11 @@ package com.ruoyi.web.controller.jianguan.business.contract;
 
 import com.github.pagehelper.PageInfo;
 import com.ruoyi.common.core.domain.object.ResponseBase;
-import com.ruoyi.jianguan.business.contract.domain.dto.ConstructionPlanPageDTO;
-import com.ruoyi.jianguan.business.contract.domain.dto.ConstructionPlanSaveDTO;
 import com.ruoyi.jianguan.business.contract.domain.dto.MaterialBrandReportPageDTO;
 import com.ruoyi.jianguan.business.contract.domain.dto.MaterialBrandReportSaveDTO;
-import com.ruoyi.jianguan.business.contract.domain.entity.ConstructionPlan;
 import com.ruoyi.jianguan.business.contract.domain.entity.MaterialBrandReport;
-import com.ruoyi.jianguan.business.contract.domain.vo.ConstructionPlanDetailVo;
-import com.ruoyi.jianguan.business.contract.domain.vo.ConstructionPlanPageVo;
 import com.ruoyi.jianguan.business.contract.domain.vo.MaterialBrandReportDetailVo;
 import com.ruoyi.jianguan.business.contract.domain.vo.MaterialBrandReportPageVo;
-import com.ruoyi.jianguan.business.contract.service.ConstructionPlanService;
 import com.ruoyi.jianguan.business.contract.service.MaterialBrandReportService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -42,7 +36,7 @@ public class MaterialBrandReportController {
             saveDto.setMaterialCategoryCode(split[0]);
             saveDto.setMaterialCategory(split[1]);
         }
-        return materialBrandReportService.addOrUpdate(saveDto);
+        return materialBrandReportService.addOrUpdate(saveDto,"1");
     }
 
     @GetMapping(value = "/id", produces = "application/json;charset=UTF-8")

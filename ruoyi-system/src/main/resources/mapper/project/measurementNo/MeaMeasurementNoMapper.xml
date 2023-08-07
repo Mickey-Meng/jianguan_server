@@ -20,6 +20,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updateTime" column="update_time"/>
         <result property="remark" column="remark"/>
     </resultMap>
-
+    <select id="getMax" resultType="com.ruoyi.project.measurementNo.domain.vo.MeaMeasurementNoVo">
+        select * from mea_measurement_no order by jlqsbh desc limit 1;
+    </select>
 
 </mapper>

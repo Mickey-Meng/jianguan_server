@@ -116,6 +116,11 @@ public class FlowStaticPageServiceImpl implements FlowStaticPageService {
         if(taskVariableData == null) {
             taskVariableData = new JSONObject();
         }
+        projectId = (String)RedisUtils.getCacheObject(LoginHelper.getUserId() + ".projectId");
+        if(StrUtil.isBlank(projectId)) {
+            throw new RuntimeException("未获取到项目ID，请重新选择项目");
+        }
+        log.info("startAndTakeFirstByProcessKey.projectId: {}", (String)RedisUtils.getCacheObject(LoginHelper.getUserId() + ".projectId"));
         taskVariableData.put("projectId", projectId);
 
         FlowTaskComment flowTaskComment = BeanUtil.copyProperties(flowTaskCommentDto, FlowTaskComment.class);
@@ -343,6 +348,9 @@ public class FlowStaticPageServiceImpl implements FlowStaticPageService {
         variableMap.put(FlowConstant.PROC_INSTANCE_INITIATOR_VAR, loginName);
         variableMap.put(FlowConstant.PROC_INSTANCE_START_USER_NAME_VAR, loginName);
         String projectId = (String)RedisUtils.getCacheObject(LoginHelper.getUserId() + ".projectId");
+        if(StrUtil.isBlank(projectId)) {
+            throw new RuntimeException("未获取到项目ID，请重新选择项目");
+        }
         log.info("startAndTakeFirstByProcessKey.projectId: {}", (String)RedisUtils.getCacheObject(LoginHelper.getUserId() + ".projectId"));
         variableMap.put("projectId", projectId);
         Authentication.setAuthenticatedUserId(loginName);
@@ -372,16 +380,16 @@ public class FlowStaticPageServiceImpl implements FlowStaticPageService {
     private ActRuVariableService actRuVariableService;
 
     private void updateRuntimeTaskAndVariable(ProcessInstance processInstance) {
-        ActRuTask actRuTask = new ActRuTask();
-        actRuTask.setScopeId("jianguan");
-        actRuTask.setScopeType("cmmn");
-        actRuTask.setProcessInstanceId(processInstance.getId());
-        actRuTaskService.updateActRuTask(actRuTask);
-        ActRuVariable actRuVariable = new ActRuVariable();
-        actRuVariable.setProcessInstanceId(processInstance.getId());
-        actRuVariable.setScopeId("jianguan");
-        actRuVariable.setScopeType("cmmn");
-        actRuVariableService.updateActRuVariable(actRuVariable);
+//        ActRuTask actRuTask = new ActRuTask();
+//        actRuTask.setScopeId("jianguan");
+//        actRuTask.setScopeType("cmmn");
+//        actRuTask.setProcessInstanceId(processInstance.getId());
+//        actRuTaskService.updateActRuTask(actRuTask);
+//        ActRuVariable actRuVariable = new ActRuVariable();
+//        actRuVariable.setProcessInstanceId(processInstance.getId());
+//        actRuVariable.setScopeId("jianguan");
+//        actRuVariable.setScopeType("cmmn");
+//        actRuVariableService.updateActRuVariable(actRuVariable);
     }
 
     @Transactional(rollbackFor = Exception.class)

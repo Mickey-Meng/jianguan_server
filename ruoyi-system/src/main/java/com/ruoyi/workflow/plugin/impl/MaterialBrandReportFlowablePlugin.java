@@ -55,6 +55,8 @@ public class MaterialBrandReportFlowablePlugin implements FlowablePlugin {
             MaterialBrandReport materialBrandReport = new MaterialBrandReport();
             BeanUtil.copyProperties(materialBrandReportDetailVo, materialBrandReport, false);
             materialBrandReport.setAttachment(null);
+            materialBrandReport.setAttachment1(null);
+            materialBrandReport.setAttachment2(null);
             materialBrandReportService.updateById(materialBrandReport);
         }
     }

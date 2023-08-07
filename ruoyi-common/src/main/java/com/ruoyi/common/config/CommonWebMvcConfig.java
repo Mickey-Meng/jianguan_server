@@ -55,7 +55,8 @@ public class CommonWebMvcConfig implements WebMvcConfigurer {
 		FastJsonConfig fastJsonConfig = new FastJsonConfig();
 		fastJsonConfig.setSerializerFeatures(
 				SerializerFeature.PrettyFormat,
-				SerializerFeature.DisableCircularReferenceDetect,
+//				解决循环依赖对象报错问题
+//				SerializerFeature.DisableCircularReferenceDetect,
 				SerializerFeature.IgnoreNonFieldGetter);
 		fastJsonConfig.setDateFormat(MyDateUtil.COMMON_SHORT_DATETIME_FORMAT);
 		fastJsonConfig.setSerializeFilters(new ValueFilter() {

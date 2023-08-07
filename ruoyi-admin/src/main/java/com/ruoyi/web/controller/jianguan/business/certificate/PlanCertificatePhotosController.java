@@ -2,8 +2,10 @@ package com.ruoyi.web.controller.jianguan.business.certificate;
 
 import com.github.pagehelper.PageInfo;
 import com.ruoyi.common.core.domain.object.ResponseBase;
+import com.ruoyi.common.enums.BimFlowKey;
 import com.ruoyi.jianguan.business.certificate.domain.dto.CertificatePhotosPageDTO;
 import com.ruoyi.jianguan.business.certificate.domain.dto.PlanCertificatePhotosSaveDTO;
+import com.ruoyi.jianguan.business.certificate.domain.entity.CertificatePhotos;
 import com.ruoyi.jianguan.business.certificate.domain.vo.PlanCertificatePhotosVo;
 import com.ruoyi.jianguan.business.certificate.service.CertificatePhotosService;
 import io.swagger.annotations.Api;
@@ -13,6 +15,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 /**
@@ -73,4 +78,15 @@ public class PlanCertificatePhotosController {
         return certificatePhotosService.getPlanInfoById(id);
     }
 
+    /**
+     * 获取到期提醒数据列表
+     * @return
+     */
+    @GetMapping("/getExpiryRemindersList")
+    @ResponseBody
+    @ApiOperation(value = "获取到期提醒数据")
+    public ResponseBase getExpiryRemindersList(){
+        List<CertificatePhotos> expiryRemindersList = certificatePhotosService.getExpiryRemindersList(BimFlowKey.planCertificatePhotos.getName());
+        return ResponseBase.success(expiryRemindersList.stream().map(CertificatePhotos::getName).collect(Collectors.joining()));
+    }
 }

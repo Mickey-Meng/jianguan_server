@@ -20,5 +20,7 @@
         <result property="remark" column="remark"/>
     </resultMap>
 
-
+    <select id="getMax" resultType="com.ruoyi.project.approval.domain.vo.MeaLedgerApprovalNoVo">
+        select * from mea_ledger_approval_no order by sqqc desc limit 1;
+    </select>
 </mapper>

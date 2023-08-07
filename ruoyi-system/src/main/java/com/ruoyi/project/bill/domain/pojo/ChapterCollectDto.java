@@ -9,7 +9,7 @@ import lombok.Data;
 
 public class ChapterCollectDto {
     private String htdj;
-    private String xzje;
+    private String bgje;
     private String shje;
     private String zmmc;
     private String zmh;

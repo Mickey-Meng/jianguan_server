@@ -79,7 +79,7 @@ public class MeaLedgerChangeVo {
      */
     @ExcelProperty(value = "申请日期")
     private Date sqrq;
-
+    private Date sprq;
     /**
      * 变更金额
      */

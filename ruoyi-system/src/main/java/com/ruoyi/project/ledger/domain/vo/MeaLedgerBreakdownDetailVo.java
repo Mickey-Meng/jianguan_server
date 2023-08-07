@@ -94,7 +94,7 @@ public class MeaLedgerBreakdownDetailVo {
      */
     @ExcelProperty(value = "变更分解数量")
     @ApiModelProperty(value = "变更分解数量", required = true)
-    private Long bgfjsl;
+    private BigDecimal bgfjsl;
     /**
      * 复核数量
      */

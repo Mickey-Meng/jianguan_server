@@ -104,16 +104,16 @@ public class MeaContractBillVo {
     private BigDecimal shje;
 
     /**
-     * 修正数量
+     * 变更数量
      */
-    @ExcelProperty(value = "修正数量")
-    private BigDecimal xzsl;
+    @ExcelProperty(value = "变更数量")
+    private BigDecimal bgsl;
 
     /**
-     * 修正金额
+     * 变更金额
      */
-    @ExcelProperty(value = "修正金额")
-    private BigDecimal xzje;
+    @ExcelProperty(value = "变更金额")
+    private BigDecimal bgje;
 
     /**
      * 总数量

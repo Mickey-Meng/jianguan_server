@@ -18,8 +18,8 @@
         <result property="htje" column="htje"/>
         <result property="shsl" column="shsl"/>
         <result property="shje" column="shje"/>
-        <result property="xzsl" column="xzsl"/>
-        <result property="xzje" column="xzje"/>
+        <result property="bgsl" column="bgsl"/>
+        <result property="bgje" column="bgje"/>
         <result property="zsl" column="zsl"/>
         <result property="zje" column="zje"/>
         <result property="status" column="status"/>
@@ -34,7 +34,7 @@
     <select id="chapter_collect" resultType="com.ruoyi.project.bill.domain.pojo.ChapterCollectDto">
         SELECT
             htdj,
-            xzje,
+            bgje,
             shje,
             zmmc,
             zhangmuhao AS zmh,
@@ -44,7 +44,7 @@
             (
                 SELECT
                     sum( b.htdj ) AS htdj,
-                    sum( b.xzje ) AS xzje,
+                    sum( b.bgje ) AS bgje,
                     sum( b.shje ) AS shje,
                     b.zmmc,
                     b.zmh,

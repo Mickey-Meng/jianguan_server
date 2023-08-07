@@ -11,8 +11,8 @@ public class ChapterCollectVo {
 
     @ApiModelProperty(value = "合同单价", required = true)
     private String htdj;
-    @ApiModelProperty(value = "修正金额", required = true)
-    private String xzje;
+    @ApiModelProperty(value = "变更金额", required = true)
+    private String bgje;
     @ApiModelProperty(value = "审核金额", required = true)
     private String shje;
     @ApiModelProperty(value = "账目名称", required = true)

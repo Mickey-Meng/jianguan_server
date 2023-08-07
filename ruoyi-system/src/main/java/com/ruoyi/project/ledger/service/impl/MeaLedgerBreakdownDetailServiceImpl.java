@@ -12,6 +12,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ruoyi.common.core.domain.PageQuery;
 import com.ruoyi.common.core.page.TableDataInfo;
+import com.ruoyi.common.utils.BeanCopyUtils;
 import com.ruoyi.project.approval.domain.MeaLedgerApproval;
 import com.ruoyi.project.approval.mapper.MeaLedgerApprovalMapper;
 import com.ruoyi.project.bill.domain.MeaContractBill;
@@ -66,7 +67,7 @@ public class MeaLedgerBreakdownDetailServiceImpl implements IMeaLedgerBreakdownD
      */
     @Override
     public TableDataInfo<MeaLedgerBreakdownDetailVo> queryPageList(MeaLedgerBreakdownDetailBo bo,String queryType, PageQuery pageQuery) {
-        if(StrUtil.isNotBlank(bo.getReviewCode())){
+     /*   if(StrUtil.isNotBlank(bo.getReviewCode())){
             if(bo.getReviewCode().equals("2")){
                 QueryWrapper<MeaLedgerApproval> queryWrapper=new QueryWrapper<>();
                 queryWrapper.eq("review_code","2");
@@ -75,8 +76,8 @@ public class MeaLedgerBreakdownDetailServiceImpl implements IMeaLedgerBreakdownD
                     return TableDataInfo.build(new ArrayList<>());
                 }
             }
-        }
-        LambdaQueryWrapper<MeaLedgerBreakdownDetail> lqw = buildQueryWrapper(bo,queryType);
+        }*/
+        LambdaQueryWrapper<MeaLedgerBreakdownDetail> lqw = buildQueryWrapper4jiliang(bo,queryType);
         Page<MeaLedgerBreakdownDetailVo> result = baseMapper.selectVoPage(pageQuery.build(), lqw);
         return TableDataInfo.build(result);
     }
@@ -87,6 +88,7 @@ public class MeaLedgerBreakdownDetailServiceImpl implements IMeaLedgerBreakdownD
     @Override
     public List<MeaLedgerBreakdownDetailVo> queryList(MeaLedgerBreakdownDetailBo bo) {
         LambdaQueryWrapper<MeaLedgerBreakdownDetail> lqw = buildQueryWrapper(bo,"r");
+        lqw.eq(MeaLedgerBreakdownDetail::getYjlsl,0);
         return baseMapper.selectVoList(lqw);
     }
 
@@ -113,7 +115,6 @@ public class MeaLedgerBreakdownDetailServiceImpl implements IMeaLedgerBreakdownD
         lqw.eq(StringUtils.isNotBlank(bo.getZmh()), MeaLedgerBreakdownDetail::getZmh, bo.getZmh());
         lqw.eq(StringUtils.isNotBlank(bo.getZmmc()), MeaLedgerBreakdownDetail::getZmmc, bo.getZmmc());
         lqw.eq(StringUtils.isNotBlank(bo.getDw()), MeaLedgerBreakdownDetail::getDw, bo.getDw());
-//        lqw.eq(StringUtils.isNotBlank(bo.getReviewCode()), MeaLedgerBreakdownDetail::getReviewCode, bo.getReviewCode());
         lqw.eq(bo.getHtdj() != null, MeaLedgerBreakdownDetail::getHtdj, bo.getHtdj());
         lqw.eq(bo.getSjsl() != null, MeaLedgerBreakdownDetail::getSjsl, bo.getSjsl());
         lqw.eq(bo.getFjsl() != null, MeaLedgerBreakdownDetail::getFjsl, bo.getFjsl());
@@ -125,7 +126,24 @@ public class MeaLedgerBreakdownDetailServiceImpl implements IMeaLedgerBreakdownD
         lqw.eq(StringUtils.isNotBlank(bo.getFjlx()), MeaLedgerBreakdownDetail::getFjlx, bo.getFjlx());
         lqw.eq(StringUtils.isNotBlank(bo.getStatus()), MeaLedgerBreakdownDetail::getStatus, bo.getStatus());
         lqw.eq(StringUtils.isNotBlank(bo.getReviewCode()), MeaLedgerBreakdownDetail::getReviewCode, bo.getReviewCode());
-        if(StrUtil.isNotBlank(bo.getReviewCode())){
+        // add by gaoxinlong 20230307  【增加子目号排序】
+        lqw.orderByAsc(MeaLedgerBreakdownDetail::getZmh);
+        return lqw;
+    }
+
+
+
+    private LambdaQueryWrapper<MeaLedgerBreakdownDetail> buildQueryWrapper4jiliang(MeaLedgerBreakdownDetailBo bo,String queryType) {
+        LambdaQueryWrapper<MeaLedgerBreakdownDetail> lqw = Wrappers.lambdaQuery();
+        lqw.eq(StringUtils.isNotBlank(bo.getBdbh()), MeaLedgerBreakdownDetail::getBdbh, bo.getBdbh());
+        lqw.eq(StringUtils.isNotBlank(bo.getIsChange()), MeaLedgerBreakdownDetail::getIsChange, bo.getIsChange());
+        if ("e".equalsIgnoreCase(queryType)){
+            lqw.eq(StringUtils.isNotBlank(bo.getTzfjbh()), MeaLedgerBreakdownDetail::getTzfjbh, bo.getTzfjbh());
+        }else if("r".equalsIgnoreCase(queryType)){
+            lqw.likeRight(StringUtils.isNotBlank(bo.getTzfjbh()), MeaLedgerBreakdownDetail::getTzfjbh, bo.getTzfjbh());
+        }
+        lqw.eq(StringUtils.isNotBlank(bo.getReviewCode()), MeaLedgerBreakdownDetail::getReviewCode, bo.getReviewCode());
+     /*   if(StrUtil.isNotBlank(bo.getReviewCode())){
             if(bo.getReviewCode().equals("2")){
                 QueryWrapper<MeaLedgerApproval> queryWrapper=new QueryWrapper<>();
                 queryWrapper.eq("review_code","2");
@@ -135,12 +153,11 @@ public class MeaLedgerBreakdownDetailServiceImpl implements IMeaLedgerBreakdownD
                     lqw.in(MeaLedgerBreakdownDetail::getTzfjbh,collect);
                 }
             }
-        }
+        }*/
         // add by gaoxinlong 20230307  【增加子目号排序】
         lqw.orderByAsc(MeaLedgerBreakdownDetail::getZmh);
         return lqw;
     }
-
     /**
      * 新增台账分解明细
      */
@@ -149,7 +166,8 @@ public class MeaLedgerBreakdownDetailServiceImpl implements IMeaLedgerBreakdownD
         MeaLedgerBreakdownDetail add = BeanUtil.toBean(bo, MeaLedgerBreakdownDetail.class);
         validEntityBeforeSave(add);
         add.setId(null);
-        add.setReviewCode("1");
+        add.setReviewCode("0"); //modify yangaogao 20230731  取消台账分解审批流程，因此默认为审批通过  20230803
+
         boolean flag = baseMapper.insert(add) > 0;
         if (flag) {
             bo.setId(add.getId());
@@ -208,7 +226,8 @@ public class MeaLedgerBreakdownDetailServiceImpl implements IMeaLedgerBreakdownD
         queryWrapper1.eq("status",'0');
         List<MeaLedgerBreakdown> meaLedgerBreakdowns = meaLedgerBreakdownMapper.selectList(queryWrapper1);
         ArrayList<String> list = new ArrayList<>();
-        List<String> childrenCode = getChildrenCode(meaLedgerBreakdown.getTzfjbhParent(), meaLedgerBreakdowns, list);
+        List<String> childrenCode = getChildrenCode(meaLedgerBreakdown.getTzfjbh(), meaLedgerBreakdowns, list);
+//        List<String> childrenCode = getChildrenCode(meaLedgerBreakdown.getTzfjbhParent(), meaLedgerBreakdowns, list);
         String level="";
         if(CollUtil.isNotEmpty(childrenCode)){
             for(String key:childrenCode){
@@ -255,8 +274,18 @@ public class MeaLedgerBreakdownDetailServiceImpl implements IMeaLedgerBreakdownD
                 }
             }
         }
+        QueryWrapper<MeaContractBill> queryWrapper1=new QueryWrapper<>();
+        queryWrapper1.eq("status","0");
+        queryWrapper1.eq("is_change","0");// add by yangaogao 20220223  新增变更清单，因为一个子目号可能对应多条数据了，但查询仅是为了获取其中一些数据，跟是否变更无关，因此取那条合同清单即可。
+        List<MeaContractBill> meaContractBills = meaContractBillMapper.selectList(queryWrapper1);
+        Map<String, MeaContractBill>  meaContractBillMap  =new HashMap<>();
+        for(MeaContractBill meaContractBill:meaContractBills){
+            meaContractBillMap.put(meaContractBill.getZmh(),meaContractBill);
+        }
+
         List<MeaLedgerBreakdownDetailInfoVo> meaLedgerBreakdownDetailInfoVos=new ArrayList<>();
         LambdaQueryWrapper<MeaLedgerBreakdownDetail> lqw = buildQueryWrapper(bo,_QUERY_TYPE_DEFAULT);
+        lqw.isNotNull(MeaLedgerBreakdownDetail::getFjsl);
         Page<MeaLedgerBreakdownDetailVo> result = baseMapper.selectVoPage(pageQuery.build(), lqw);
         Map<String, List<MeaLedgerBreakdownDetailVo>> stringListMap=new LinkedHashMap<>();
         if(CollUtil.isNotEmpty(result.getRecords())){
@@ -265,20 +294,33 @@ public class MeaLedgerBreakdownDetailServiceImpl implements IMeaLedgerBreakdownD
             queryWrapper.eq("status","0");
             List<MeaContractBill> meaLedgerBreakdowns = meaContractBillMapper.selectList(queryWrapper);
             for(MeaLedgerBreakdownDetailVo meaLedgerBreakdownDetailVo:records){
-                QueryWrapper<MeaContractBill> queryWrapper1=new QueryWrapper<>();
+               /* QueryWrapper<MeaContractBill> queryWrapper1=new QueryWrapper<>();
                 queryWrapper1.eq("zmh",meaLedgerBreakdownDetailVo.getZmh());
                 queryWrapper1.eq("status","0");
                 queryWrapper1.eq("is_change","0");// add by yangaogao 20220223  新增变更清单，因为一个子目号可能对应多条数据了，但查询仅是为了获取其中一些数据，跟是否变更无关，因此取那条合同清单即可。
-                MeaContractBill meaLedgerBreakdown = meaContractBillMapper.selectOne(queryWrapper1);
+                MeaContractBill meaLedgerBreakdown = meaContractBillMapper.selectOne(queryWrapper1);*/
+                MeaContractBill meaLedgerBreakdown = meaContractBillMap.get(meaLedgerBreakdownDetailVo.getZmh());
                 if(meaLedgerBreakdown==null){
                     continue;
                 }
+
+                //获取当前分解明细对应的根部清单，因为
                 MeaContractBill maximumParent2 = getMaximumParent2(meaLedgerBreakdowns, meaLedgerBreakdown);
                 if(maximumParent2!=null){
-                    String key=maximumParent2.getZmh()+"-"+maximumParent2.getZmmc();
+                    String key=maximumParent2.getZmh()+"-"+maximumParent2.getZmmc(); //拼接子目号和字母名称，作为map的key存入缓存
                     if(stringListMap.containsKey(key)){
                         List<MeaLedgerBreakdownDetailVo> meaLedgerBreakdownDetailVos = stringListMap.get(key);
-                        meaLedgerBreakdownDetailVos.add(meaLedgerBreakdownDetailVo);
+                        //判断当前台账分解清单中，子目号是否已经存入到清单根节点对应的list中，如果已经存在，则累加当前子目号对应的分解数量即可。
+                        Optional<MeaLedgerBreakdownDetailVo> meaLedgerBreakdownDetailVo1 = meaLedgerBreakdownDetailVos.stream().filter(item -> item.getZmh().equals(meaLedgerBreakdownDetailVo.getZmh())).findFirst();
+                        if (null != meaLedgerBreakdownDetailVo1  && meaLedgerBreakdownDetailVo1.isPresent()){
+                            MeaLedgerBreakdownDetailVo m = new MeaLedgerBreakdownDetailVo();
+                            BeanCopyUtils.copy(meaLedgerBreakdownDetailVo1.get(),m);
+                            m.setFjsl(meaLedgerBreakdownDetailVo1.get().getFjsl().add(meaLedgerBreakdownDetailVo.getFjsl()));
+                            meaLedgerBreakdownDetailVos.remove(meaLedgerBreakdownDetailVo1.get());
+                            meaLedgerBreakdownDetailVos.add(m);
+                        }else{
+                            meaLedgerBreakdownDetailVos.add(meaLedgerBreakdownDetailVo);
+                        }
                     }else {
                         List<MeaLedgerBreakdownDetailVo> meaLedgerBreakdownDetailVos =new ArrayList<>();
                         meaLedgerBreakdownDetailVos.add(meaLedgerBreakdownDetailVo);
@@ -306,6 +348,7 @@ public class MeaLedgerBreakdownDetailServiceImpl implements IMeaLedgerBreakdownD
         page.setPages(result.getPages());
         return TableDataInfo.build(page);
     }
+    //获取当前工程里清单对象对应的根目录
     public MeaContractBill getMaximumParent2(List<MeaContractBill> deptAll, MeaContractBill deptChild) {
         if (ObjectUtil.isNotEmpty(deptChild)) {
             String parentId = deptChild.getZmhParent();

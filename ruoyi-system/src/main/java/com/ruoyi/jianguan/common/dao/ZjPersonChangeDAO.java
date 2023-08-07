@@ -25,6 +25,9 @@ public interface ZjPersonChangeDAO {
     @Select("select * from zj_person_change where id = #{id}")
     ZjPersonChange selectByPrimaryKey(@Param("id")Integer id);
 
+    @Select("select * from zj_person_change where businessKey = #{businessKey}")
+    ZjPersonChange selectByBusinessKey(@Param("businessKey")String businessKey);
+
     @Delete("delete from zj_person_change where id = #{id} and projectChildId = #{projectId}")
     void delChange(@Param("id")Integer id,
                    @Param("projectId")Integer projectId);
@@ -44,8 +47,11 @@ public interface ZjPersonChangeDAO {
     ZjPersonChangeFile getFileByGid(@Param("gid")Integer gid);
 
     //todo group by subDate desc
-    @Select("select * from zj_person_change where recordId = #{id} and status = 1 ")
-    List<ZjPersonChange> getChangeByUserId(@Param("id")Integer id);
+    @Select("<script> select * from zj_person_change where  projectChildId = #{projectId}  " +
+            "<if test='id != null and id != \"\"'> and recordId = #{id} </if> " +
+            " order by id desc  </script>")
+    List<ZjPersonChange> getChangeByUserId(@Param("id")Integer id,@Param("projectId")Integer projectId);
+
 
     @Select("select * from zj_person_change where projectChildId = #{projectId} order by subDate desc")
     List<ZjPersonChange> getAllChangeByProjectId(@Param("projectId")Integer projectId);
@@ -74,7 +80,7 @@ public interface ZjPersonChangeDAO {
     Integer getCountActHiActinstByProcessId(@Param("processId")String processInstanceId);
 
     //todo group by subDate desc
-    @Select("select * from zj_person_change where status = 2 ")
+    @Select("select * from zj_person_change where status = 1 ")
     List<ZjPersonChange> getAllFisishChanges();
 
     @Select("select a.* from zj_person_change a " +
@@ -108,6 +114,11 @@ public interface ZjPersonChangeDAO {
     int updateUserRole(@Param("before")Integer beforeuserid,
                        @Param("after")Integer afteruserid,
                        @Param("roleId")Integer roleid);
+
+    @Update("update zj_person_change set status = #{status} where id = #{id}")
+    int updatePersonChangeStatus(@Param("status")Integer status,
+                       @Param("id")Integer id);
+
 
     @Insert("insert into ss_f_user_role values(#{userId}, #{roleId}, now(), 1, 0)")
     int insertUserRole(@Param("userId")Integer userid,

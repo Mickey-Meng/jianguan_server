@@ -71,7 +71,7 @@ public class MeaLedgerBreakdownDetail extends BaseEntity {
     /**
      * 变更分解数量
      */
-    private Long bgfjsl;
+    private BigDecimal bgfjsl;
     /**
      * 复核数量
      */

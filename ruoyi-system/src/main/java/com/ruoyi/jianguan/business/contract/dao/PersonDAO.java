@@ -77,7 +77,9 @@ public interface PersonDAO {
     @Select("select *, create_user_id as createUserId from zj_person where recordId = #{userid} order by create_time desc")
     List<PersonDTO> getAllPersonByUserid(@Param("userid") Integer userid);
 
-    @Select("select *, create_user_id as createUserId from zj_person where recordId = #{userid} and projectId = #{projectId} order by create_time desc")
+    @Select("<script>  select *, create_user_id as createUserId from zj_person where  projectId = #{projectId} " +
+            "<if test='userid != null and userid != \"\"'> and recordId = #{userid} </if> " +
+            " order by create_time desc </script>")
     List<PersonDTO> getAllPersonByUseridAndProjectId(@Param("userid") Integer userid, @Param("projectId") Integer projectId);
 
     @Select("select * from zj_person where handle = #{userid}")

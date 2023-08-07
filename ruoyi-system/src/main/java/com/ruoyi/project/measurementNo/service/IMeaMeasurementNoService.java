@@ -23,6 +23,8 @@ public interface IMeaMeasurementNoService {
      */
     MeaMeasurementNoVo queryById(String id);
 
+    MeaMeasurementNoVo queryMax();
+
     /**
      * 查询中间计量期数管理列表
      */

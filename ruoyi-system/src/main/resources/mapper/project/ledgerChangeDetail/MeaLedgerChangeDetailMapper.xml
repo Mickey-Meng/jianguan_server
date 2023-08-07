@@ -18,8 +18,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="htje" column="htje"/>
         <result property="shsl" column="shsl"/>
         <result property="shje" column="shje"/>
-        <result property="xzsl" column="xzsl"/>
-        <result property="xzje" column="xzje"/>
+        <result property="bgsl" column="bgsl"/>
+        <result property="bgje" column="bgje"/>
         <result property="yjlsl" column="yjlsl"/>
         <result property="status" column="status"/>
         <result property="createBy" column="create_by"/>

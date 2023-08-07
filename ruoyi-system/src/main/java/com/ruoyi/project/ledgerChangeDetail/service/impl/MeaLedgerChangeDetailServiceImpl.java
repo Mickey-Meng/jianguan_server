@@ -73,8 +73,8 @@ public class MeaLedgerChangeDetailServiceImpl implements IMeaLedgerChangeDetailS
         lqw.eq(bo.getHtje() != null, MeaLedgerChangeDetail::getHtje, bo.getHtje());
         lqw.eq(bo.getShsl() != null, MeaLedgerChangeDetail::getShsl, bo.getShsl());
         lqw.eq(bo.getShje() != null, MeaLedgerChangeDetail::getShje, bo.getShje());
-        lqw.eq(bo.getXzsl() != null, MeaLedgerChangeDetail::getXzsl, bo.getXzsl());
-        lqw.eq(bo.getXzje() != null, MeaLedgerChangeDetail::getXzje, bo.getXzje());
+        lqw.eq(bo.getBgsl() != null, MeaLedgerChangeDetail::getBgsl, bo.getBgsl());
+        lqw.eq(bo.getBgje() != null, MeaLedgerChangeDetail::getBgje, bo.getBgje());
         lqw.eq(bo.getYjlsl() != null, MeaLedgerChangeDetail::getYjlsl, bo.getYjlsl());
         lqw.eq(StringUtils.isNotBlank(bo.getStatus()), MeaLedgerChangeDetail::getStatus, bo.getStatus());
         return lqw;

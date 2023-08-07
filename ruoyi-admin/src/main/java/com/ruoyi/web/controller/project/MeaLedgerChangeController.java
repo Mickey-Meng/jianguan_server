@@ -21,6 +21,7 @@ import com.ruoyi.project.ledgerChangeDetail.domain.bo.MeaLedgerChangeDetailBo;
 import com.ruoyi.workflow.service.IWfProcessService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -102,18 +103,18 @@ public class MeaLedgerChangeController extends BaseController {
     @Log(title = "台账变更/工程变更(一对多表单)", businessType = BusinessType.INSERT)
     @RepeatSubmit()
     @PostMapping("/save")
+    @Transactional
     public R<Void> save(@Validated(AddGroup.class) @RequestBody MeaLedgerChangeAndDetailBo bo) {
-        String process_1669973630070 = processService.getProcessByKey("Process_1670752946540");
-        if(StrUtil.isBlank(process_1669973630070)){
+        String Process_1690622335686 = processService.getProcessByKey("Process_1690622335686");
+        if(StrUtil.isBlank(Process_1690622335686)){
             return R.fail("流程图未定义");
         }
         String UUId = UUID.randomUUID().toString().replace("-", "");
         bo.setBgbh(UUId);
         Boolean aBoolean=iMeaLedgerChangeService.save(bo);
 
-
         if(aBoolean){
-            processService.startMeaProcess(process_1669973630070,formKey,bo.getBgbh(), bo);
+            processService.startMeaProcess(Process_1690622335686,formKey,bo.getBgbh(), bo);
         }
         return toAjax(aBoolean ? 1 : 0);
 

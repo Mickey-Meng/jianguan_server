@@ -146,6 +146,8 @@ public enum BimFlowKey {
     constructionPlan("施工方案计划", "constructionPlan"),
     constructionPlanReport("施工方案计划上报", "constructionPlanReport"),
     materialBrandReport("材料品牌报审", "materialBrandReport"),
+    materialSampleConfirmation("材料样板确认", "materialSampleConfirmation"),
+    aterialAcceptance("材料进厂验收", "aterialAcceptance"),
 
     dailyReport("每日晨检", "dailyReport");
 

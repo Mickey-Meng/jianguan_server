@@ -147,28 +147,6 @@ public class MeaLedgerBreakdownDetailController extends BaseController {
 
 
     /**
-     * 新增台账报审
-     */
-    @Log(title = "台账分解明细审批", businessType = BusinessType.INSERT)
-    @RepeatSubmit()
-    @ApiOperation("台账分解明细审批")
-    @PostMapping("/upBreakdownDetail")
-    public R<Void> upBreakdownDetail(@Validated(AddGroup.class) @RequestBody List<MeaLedgerBreakdownDetailBo> bos) {
-        if(CollUtil.isEmpty(bos)){
-            return R.fail("数据不能为空");
-        }
-        String process_1670392865296 = processService.getProcessByKey("Process_1670392865296");
-        if(StrUtil.isBlank(process_1670392865296)){
-            return R.fail("流程图未定义");
-        }
-        for(MeaLedgerBreakdownDetailBo bo:bos){
-            processService.startMeaProcess(process_1670392865296,formKey,bo.getId().toString(), bo);
-        }
-        return R.ok();
-    }
-
-
-    /**
      * 修改台账分解明细
      */
     @SaCheckPermission("ledgerDetail:ledgerBreakdownDetail:edit")
@@ -176,12 +154,15 @@ public class MeaLedgerBreakdownDetailController extends BaseController {
     @RepeatSubmit()
     @PutMapping()
     public R<Void> edit(@Validated(EditGroup.class) @RequestBody MeaLedgerBreakdownDetailBo bo) {
+        bo.setReviewCode("0");
         Boolean b = iMeaLedgerBreakdownDetailService.updateByBo(bo);
-        String process_1670392865296 = processService.getProcessByKey("Process_1689909730690");
+       /*
+       20230731 yangaogao  台账分解功能，取消流程审批
+       String process_1670392865296 = processService.getProcessByKey("Process_1689909730690");
         if(StrUtil.isBlank(process_1670392865296)){
             return R.fail("流程图未定义");
         }
-        processService.startMeaProcess(process_1670392865296,formKey,bo.getId().toString(), bo);
+        processService.startMeaProcess(process_1670392865296,formKey,bo.getId().toString(), bo);*/
         return toAjax( b ? 1 : 0);
     }
 

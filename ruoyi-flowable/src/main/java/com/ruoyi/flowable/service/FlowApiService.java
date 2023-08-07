@@ -380,6 +380,8 @@ public interface FlowApiService {
      */
     CallResult stopProcessInstance(String processInstanceId, String stopReason, boolean forCancel);
 
+    void deleteProcess(String processInstanceId);
+
     /**
      * 删除流程实例。
      *

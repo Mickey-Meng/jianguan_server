@@ -21,6 +21,7 @@ public interface IMeaLedgerApprovalNoService {
      * 查询期数管理
      */
     MeaLedgerApprovalNoVo queryById(String id);
+    MeaLedgerApprovalNoVo queryMax();
 
     /**
      * 查询期数管理列表

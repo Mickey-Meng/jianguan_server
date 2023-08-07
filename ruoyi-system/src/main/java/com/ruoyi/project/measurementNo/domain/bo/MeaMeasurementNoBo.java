@@ -62,7 +62,6 @@ public class MeaMeasurementNoBo extends BaseEntity {
     /**
      * 默认日期
      */
-    @NotNull(message = "默认日期不能为空", groups = { AddGroup.class, EditGroup.class })
     private Date mrrq;
 
     /**

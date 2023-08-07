@@ -4,6 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -236,7 +237,7 @@ public class FlowApiServiceImpl implements FlowApiService {
             taskService.complete(task.getId());
         }
         flowMessageService.updateFinishedStatusByTaskId(task.getId());
-        initScope(task);
+//        initScope(task);
     }
 
     /**
@@ -258,26 +259,26 @@ public class FlowApiServiceImpl implements FlowApiService {
      * @param task
      */
     private void initScope(Task task) {
-        ActRuTask actRuTask = new ActRuTask();
-        actRuTask.setScopeId("jianguan");
-        actRuTask.setScopeType("cmmn");
-        actRuTask.setProcessInstanceId(task.getProcessInstanceId());
-        actRuTaskService.updateActRuTask(actRuTask);
-        ActRuVariable actRuVariable = new ActRuVariable();
-        actRuVariable.setScopeId("jianguan");
-        actRuVariable.setScopeType("cmmn");
-        actRuVariable.setProcessInstanceId(task.getProcessInstanceId());
-        actRuVariableService.updateActRuVariable(actRuVariable);
-        ActHiTaskinst actHiTaskinst = new ActHiTaskinst();
-        actHiTaskinst.setScopeId("jianguan");
-        actHiTaskinst.setScopeType("cmmn");
-        actHiTaskinst.setProcessInstanceId(task.getProcessInstanceId());
-        actHiTaskinstService.updateActHiTaskinst(actHiTaskinst);
-        ActHiVarinst actHiVarinst = new ActHiVarinst();
-        actHiVarinst.setScopeId("jianguan");
-        actHiVarinst.setScopeType("cmmn");
-        actHiVarinst.setProcessInstanceId(task.getProcessInstanceId());
-        actHiVarinstService.updateActHiVarinst(actHiVarinst);
+//        ActRuTask actRuTask = new ActRuTask();
+//        actRuTask.setScopeId("jianguan");
+//        actRuTask.setScopeType("cmmn");
+//        actRuTask.setProcessInstanceId(task.getProcessInstanceId());
+//        actRuTaskService.updateActRuTask(actRuTask);
+//        ActRuVariable actRuVariable = new ActRuVariable();
+//        actRuVariable.setScopeId("jianguan");
+//        actRuVariable.setScopeType("cmmn");
+//        actRuVariable.setProcessInstanceId(task.getProcessInstanceId());
+//        actRuVariableService.updateActRuVariable(actRuVariable);
+//        ActHiTaskinst actHiTaskinst = new ActHiTaskinst();
+//        actHiTaskinst.setScopeId("jianguan");
+//        actHiTaskinst.setScopeType("cmmn");
+//        actHiTaskinst.setProcessInstanceId(task.getProcessInstanceId());
+//        actHiTaskinstService.updateActHiTaskinst(actHiTaskinst);
+//        ActHiVarinst actHiVarinst = new ActHiVarinst();
+//        actHiVarinst.setScopeId("jianguan");
+//        actHiVarinst.setScopeType("cmmn");
+//        actHiVarinst.setProcessInstanceId(task.getProcessInstanceId());
+//        actHiVarinstService.updateActHiVarinst(actHiVarinst);
 
     }
 
@@ -549,6 +550,9 @@ public class FlowApiServiceImpl implements FlowApiService {
         List<ActRuVariable> actRuVariables = actRuVariableService.findActRuVariable(actRuVariableQuery);
         List<String> processInstanceIds = actRuVariables.stream().map(ActRuVariable::getProcessInstanceId).distinct().collect(Collectors.toList());
         TaskQueryImpl query = (TaskQueryImpl)taskService.createTaskQuery().active();
+        if (CollUtil.isEmpty(processInstanceIds)) {
+            return new PageInfo<>();
+        }
         if (StrUtil.isNotBlank(definitionKey)) {
             query.processDefinitionKey(definitionKey);
         }
@@ -849,10 +853,18 @@ public class FlowApiServiceImpl implements FlowApiService {
         return CallResult.ok();
     }
 
+    public void deleteProcess(String processInstanceId) {
+        stopProcessInstance(processInstanceId, "手动删除",false);
+        deleteProcessInstance(processInstanceId);
+    }
+
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void deleteProcessInstance(String processInstanceId) {
-        historyService.deleteHistoricProcessInstance(processInstanceId);
+        HistoricProcessInstance historicProcessInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
+        if(ObjectUtil.isNotNull(historicProcessInstance)) {
+            historyService.deleteHistoricProcessInstance(processInstanceId);
+        }
         flowWorkOrderService.removeByProcessInstanceId(processInstanceId);
         flowMessageService.removeByProcessInstanceId(processInstanceId);
     }
@@ -1052,11 +1064,11 @@ public class FlowApiServiceImpl implements FlowApiService {
             comment.setProcessInstanceId(task.getProcessInstanceId());
             comment.setComment(reason);
             flowTaskCommentService.saveNew(comment);
-            ActRuTask actRuTask = new ActRuTask();
-            actRuTask.setScopeId("jianguan");
-            actRuTask.setScopeType("cmmn");
-            actRuTask.setProcessInstanceId(task.getProcessInstanceId());
-            actRuTaskService.updateActRuTask(actRuTask);
+//            ActRuTask actRuTask = new ActRuTask();
+//            actRuTask.setScopeId("jianguan");
+//            actRuTask.setScopeType("cmmn");
+//            actRuTask.setProcessInstanceId(task.getProcessInstanceId());
+//            actRuTaskService.updateActRuTask(actRuTask);
         } catch (Exception e) {
             log.error("Failed to execute moveSingleActivityIdToActivityIds", e);
             return CallResult.error(e.getMessage());

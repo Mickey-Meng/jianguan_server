@@ -29,7 +29,9 @@ public interface ZjQualityEventDAO {
 
     int updateByPrimaryKey(ZjQualityEvent record);
 
-    @Select("select * from zj_quality_event where status = 0 and (modifyid = #{userid} or uploadid = #{userid}) " +
+    @Select("select zqe.*, sf1.`NAME` as gongquname,sf2.name as singleProjectName  " +
+            "from zj_quality_event zqe  ,ss_f_projects sf1 ,ss_f_projects sf2 " +
+            "where zqe.gongquid = sf1.id  and zqe.singleProjectId = sf2.id   and  status = 0 and (modifyid = #{userid} or uploadid = #{userid}) " +
             " and projectId = #{projectId}")
     List<ZjQualityEvent> getSafeEventByModify(@Param("userid") Integer userid,
                                               @Param("projectId")Integer projectId);

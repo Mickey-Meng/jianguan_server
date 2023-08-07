@@ -51,6 +51,11 @@ public class MeaMeasurementNoServiceImpl implements IMeaMeasurementNoService {
         return baseMapper.selectVoById(id);
     }
 
+    @Override
+    public MeaMeasurementNoVo queryMax() {
+        return baseMapper.getMax();
+    }
+
     /**
      * 查询中间计量期数管理列表
      */
@@ -125,7 +130,7 @@ public class MeaMeasurementNoServiceImpl implements IMeaMeasurementNoService {
             LambdaQueryWrapper<MeaMeasurementNo> lqwMeaMeasurementNo = Wrappers.lambdaQuery();
             lqwMeaMeasurementNo.eq(StringUtils.isNotBlank(jlqcbh), MeaMeasurementNo::getJlqsbh, jlqcbh);
             MeaMeasurementNo meaMeasurementNo = baseMapper.selectOne(lqwMeaMeasurementNo);
-            meaMeasurementNo.setStatus("1");//修改未已锁定
+            meaMeasurementNo.setStatus("1");//修改为已锁定
             baseMapper.updateById(meaMeasurementNo);
         }
         return sName;

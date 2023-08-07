@@ -842,10 +842,11 @@ public class FlowOperationController {
      */
     @PostMapping("/deleteProcessInstance")
     public ResponseResult<Void> deleteProcessInstance(@MyRequestBody(required = true) String processInstanceId) {
-        flowApiService.stopProcessInstance(processInstanceId, "手动删除",false);
-        flowApiService.deleteProcessInstance(processInstanceId);
+        flowApiService.deleteProcess(processInstanceId);
         return ResponseResult.success();
     }
+
+    
 
 
     /**

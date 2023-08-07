@@ -24,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -149,8 +150,11 @@ public class MeaMeasurementDocumentsServiceImpl implements IMeaMeasurementDocume
             List<MeaMeasurementDocumentsDetailBo> detailBos = bo.getDetailBos();
             for(MeaMeasurementDocumentsDetailBo meaMeasurementDocumentsDetailBo:detailBos){
                 MeaMeasurementDocumentsDetail bean = BeanUtil.toBean(meaMeasurementDocumentsDetailBo, MeaMeasurementDocumentsDetail.class);
+                bean.setId(null);
                 bean.setPzbh(add.getId());
-                baseDetailMapper.insert(bean);
+                if(bean.getBqjlsl().compareTo(BigDecimal.ZERO) > 0){
+                    baseDetailMapper.insert(bean);
+                }
             }
         }
         return flag;

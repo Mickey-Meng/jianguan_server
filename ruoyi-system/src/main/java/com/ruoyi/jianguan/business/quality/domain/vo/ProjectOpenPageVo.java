@@ -42,7 +42,7 @@ public class ProjectOpenPageVo extends NewBaseVo {
      * 施工标段名称
      */
     @ApiModelProperty(value = "施工标段名称")
-    private Set<String> buildSectionNames;
+    private String buildSectionName;
 
 
     /**

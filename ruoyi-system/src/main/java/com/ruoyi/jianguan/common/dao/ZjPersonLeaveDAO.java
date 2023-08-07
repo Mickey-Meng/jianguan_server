@@ -35,9 +35,14 @@ public interface ZjPersonLeaveDAO {
 
     void updatePersonLeave(ZjPersonLeave personLeave);
 
-    //todo group by subDate desc
-    @Select("select * from zj_person_leave where leavePersonId = #{id} and status = 1 ")
+    @Select("select * from zj_person_leave where leavePersonId = #{id} order by id desc")
     List<ZjPersonLeave> getById(@Param("id")Integer id);
+
+    List<ZjPersonLeave> getByUserId(@Param("leavePersonId")Integer leavePersonId);
+
+    @Select("select * from zj_person_leave where businessKey = #{businessKey} ")
+    ZjPersonLeave getByBusinessKey(@Param("businessKey")String businessKey);
+
 
     @Select("select count(1) from zj_person_leave where processInstanceId = #{processId}")
     Integer getCountByProcessId(@Param("processId")String processId);
@@ -46,7 +51,7 @@ public interface ZjPersonLeaveDAO {
     ZjPersonLeave getLeaveByProcessId(@Param("processId")String processId);
 
     //todo group by subDate desc
-    @Select("select * from zj_person_leave where status = 2 ")
+    @Select("select * from zj_person_leave where status = 1 ")
     List<ZjPersonLeave> getAllFinishLeaves();
 
     @Select("select * from zj_person_leave order by subDate desc")

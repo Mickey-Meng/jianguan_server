@@ -1,6 +1,5 @@
 package com.ruoyi.jianguan.business.contract.service.impl;
 
-import cn.hutool.core.util.ObjUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -44,34 +43,43 @@ public class MaterialBrandReportServiceImpl extends ServiceImpl<MaterialBrandRep
 
 
     @Override
-    public ResponseBase addOrUpdate(MaterialBrandReportSaveDTO saveDto) {
+    public ResponseBase addOrUpdate(MaterialBrandReportSaveDTO saveDto,String type) {
         //属性copy
         MaterialBrandReport materialBrandReport = new MaterialBrandReport();
         BeanUtils.copyProperties(saveDto, materialBrandReport);
         boolean isStartFlow = false;
-        if (Objects.isNull(saveDto.getId())) {
+        if ("1".equals(type)&&Objects.isNull(saveDto.getId())) {
             isStartFlow = true;
             materialBrandReport.setId(IdUtil.nextLongId());
-        }
-//        if (Objects.isNull(saveDto.getReportStatus())) {
-//            isStartFlow = true;
-//        }
-        // 初始化审批状态：审批中
-        // 编辑操作不修改审批状态
-        if (ObjUtil.isNull(saveDto.getId())) {
             materialBrandReport.setStatus(0);
+            materialBrandReport.setStatus1(-1);
+            materialBrandReport.setStatus2(-1);
+            materialBrandReport.setAttachment(JSON.toJSONString(saveDto.getAttachment()));
+
         }
-//        if(ObjUtil.isNull(saveDto.getReportStatus())) {
-//            materialBrandReport.setReportStatus(0);
-//        }
-        //附件
-        materialBrandReport.setAttachment(JSON.toJSONString(saveDto.getAttachment()));
+        if ("2".equals(type)&&-1==(saveDto.getStatus1())) {
+            isStartFlow = true;
+            materialBrandReport.setStatus1(0);
+            materialBrandReport.setStatus2(-1);
+            materialBrandReport.setAttachment1(JSON.toJSONString(saveDto.getAttachment()));
+            materialBrandReport.setAttachment(null);
+
+        }
+        if ("3".equals(type)&&-1==(saveDto.getStatus2())) {
+            isStartFlow = true;
+            materialBrandReport.setStatus2(0);
+            materialBrandReport.setAttachment2(JSON.toJSONString(saveDto.getAttachment()));
+            materialBrandReport.setAttachment(null);
+        }
         boolean saveOrUpdate = this.saveOrUpdate(materialBrandReport);
         if (saveOrUpdate && isStartFlow) {
             String processDefinitionKey = BimFlowKey.materialBrandReport.getName();
-//            if (null!=saveDto.getStatus()&&1 == saveDto.getStatus()) {
-//                processDefinitionKey = BimFlowKey.materialBrandReportReport.getName();
-//            }
+            if ("2".equals(type)) {
+                processDefinitionKey = BimFlowKey.materialSampleConfirmation.getName();
+            }
+            if ("3".equals(type)) {
+                processDefinitionKey = BimFlowKey.aterialAcceptance.getName();
+            }
             String businessKey = materialBrandReport.getId().toString();
             //设置流程的审批人
             Map<String, Object> auditUser = saveDto.getAuditUser();
@@ -104,6 +112,8 @@ public class MaterialBrandReportServiceImpl extends ServiceImpl<MaterialBrandRep
         MaterialBrandReportDetailVo vo = new MaterialBrandReportDetailVo();
         BeanUtils.copyProperties(materialBrandReport, vo);
         vo.setAttachment(JSONArray.parseArray(materialBrandReport.getAttachment(), FileModel.class));
+        vo.setAttachment1(JSONArray.parseArray(materialBrandReport.getAttachment1(), FileModel.class));
+        vo.setAttachment2(JSONArray.parseArray(materialBrandReport.getAttachment2(), FileModel.class));
         return vo;
     }
 

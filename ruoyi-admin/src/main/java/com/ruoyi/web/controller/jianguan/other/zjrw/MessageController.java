@@ -1,11 +1,21 @@
 package com.ruoyi.web.controller.jianguan.other.zjrw;
 
+import com.google.common.collect.Maps;
 import com.ruoyi.common.core.domain.object.ResponseBase;
+import com.ruoyi.common.enums.BimFlowKey;
+import com.ruoyi.jianguan.business.certificate.domain.entity.CertificatePhotos;
+import com.ruoyi.jianguan.business.certificate.service.CertificatePhotosService;
+import com.ruoyi.jianguan.business.constructionDesign.domain.entity.ConstructionDesign;
+import com.ruoyi.jianguan.business.constructionDesign.service.ConstructionDesignService;
 import com.ruoyi.jianguan.common.service.MessageService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @version : 1.0
@@ -20,6 +30,11 @@ public class MessageController {
 
     @Autowired
     MessageService messageService;
+
+    @Autowired
+    private CertificatePhotosService certificatePhotosService;
+    @Autowired
+    private ConstructionDesignService constructionDesignService;
 
     @PostMapping("getMessage1")
     @ResponseBody
@@ -41,5 +56,19 @@ public class MessageController {
     @ApiOperation(value = "被抄送者已读工序")
     public ResponseBase readProduce(@RequestParam(value = "id", required = true)Integer id){
         return messageService.readProduce(id);
+    }
+
+    @GetMapping("/getExpiryRemindersList")
+    @ResponseBody
+    @ApiOperation(value = "获取到期提醒数据")
+    public ResponseBase getExpiryRemindersList(){
+        Map<String, Object> dataMap = Maps.newHashMap();
+        List<CertificatePhotos> certificatePhotosExpiryRemindersList = certificatePhotosService.getExpiryRemindersList(null);
+        List<ConstructionDesign> constructionDesignExpiryRemindersList = constructionDesignService.getExpiryRemindersList(null);
+        dataMap.put("certificatePhotos", certificatePhotosExpiryRemindersList.stream().map(CertificatePhotos::getName).collect(Collectors.joining(",")));
+        dataMap.put("certificatePhotosCount", certificatePhotosExpiryRemindersList.size());
+        dataMap.put("constructionDesign", constructionDesignExpiryRemindersList.stream().map(ConstructionDesign::getName).collect(Collectors.joining(",")));
+        dataMap.put("constructionDesignCount", constructionDesignExpiryRemindersList.size());
+        return ResponseBase.success(dataMap);
     }
 }

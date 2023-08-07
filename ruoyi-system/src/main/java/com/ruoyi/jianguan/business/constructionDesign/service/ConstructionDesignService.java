@@ -10,6 +10,8 @@ import com.ruoyi.jianguan.business.constructionDesign.domain.entity.Construction
 import com.ruoyi.jianguan.business.constructionDesign.domain.vo.PlanConstructionDesignVo;
 import com.ruoyi.jianguan.business.constructionDesign.domain.vo.ProgressConstructionDesignVo;
 
+import java.util.List;
+
 
 /**
  * 计划管理-施工图管理Service接口
@@ -60,4 +62,11 @@ public interface ConstructionDesignService extends IService<ConstructionDesign> 
     ProgressConstructionDesignVo getProgressInfoById(Long id);
 
     ResponseBase updateUploadFile(ProgressConstructionDesignSaveDTO saveDto);
+
+    /**
+     * 查询到期的施工图设计数据
+     * @param name
+     * @return
+     */
+    List<ConstructionDesign> getExpiryRemindersList(String name);
 }

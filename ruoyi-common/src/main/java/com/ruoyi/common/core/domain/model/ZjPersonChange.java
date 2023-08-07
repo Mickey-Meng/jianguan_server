@@ -1,8 +1,9 @@
 package com.ruoyi.common.core.domain.model;
 
-import cn.hutool.core.io.file.FileMode;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.ruoyi.common.core.domain.entity.FileModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -17,6 +18,7 @@ import java.util.Objects;
  * @author ChenZhiWei
  * @since 2022-05-26
  */
+@Data
 public class ZjPersonChange implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -155,7 +157,7 @@ public class ZjPersonChange implements Serializable {
      * 附件集合，以逗号分开
      */
     @ApiModelProperty(value = "附件集合，以逗号分开")
-    private List<FileMode> files;
+    private List<FileModel> files;
 
     /**
      * 状态
@@ -202,6 +204,10 @@ public class ZjPersonChange implements Serializable {
     @ApiModelProperty(value = "流程key")
     private String flowKey;
 
+    /**
+     * 附件
+     */
+    private String attachment;
 
     public String getTaskId() {
         return taskId;
@@ -415,13 +421,6 @@ public class ZjPersonChange implements Serializable {
         this.changeReason = changeReason;
     }
 
-    public List<FileMode> getFiles() {
-        return files;
-    }
-
-    public void setFiles(List<FileMode> files) {
-        this.files = files;
-    }
 
     public Integer getStatus() {
         return status;

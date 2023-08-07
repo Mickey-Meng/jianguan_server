@@ -17,6 +17,7 @@ import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.project.approval.domain.bo.MeaLedgerApprovalNoBo;
 import com.ruoyi.project.approval.domain.vo.MeaLedgerApprovalNoVo;
 import com.ruoyi.project.approval.service.IMeaLedgerApprovalNoService;
+import com.ruoyi.project.measurementNo.domain.vo.MeaMeasurementNoVo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -115,5 +116,11 @@ public class MeaLedgerApprovalNoController extends BaseController {
     public R<Void> remove(@NotEmpty(message = "主键不能为空")
                           @PathVariable String[] ids) {
         return toAjax(iMeaLedgerApprovalNoService.deleteWithValidByIds(Arrays.asList(ids), true) ? 1 : 0);
+    }
+
+
+    @GetMapping("/getMaxInfo")
+    public R<MeaLedgerApprovalNoVo> getMaxInfo() {
+        return R.ok(iMeaLedgerApprovalNoService.queryMax());
     }
 }
