@@ -49,8 +49,8 @@ public class ProgressConstructionDesignFlowablePlugin implements FlowablePlugin 
      */
     private void updateStatus(ProcessInstance processInstance, Integer status) {
         String businessKey = processInstance.getBusinessKey();
-
-        ProgressConstructionDesignVo progressConstructionDesignVo = constructionDesignService.getProgressInfoById(Long.parseLong(businessKey));
+        String id = businessKey.indexOf("_") > 0 ? businessKey.substring(0, businessKey.indexOf("_")) : businessKey;
+        ProgressConstructionDesignVo progressConstructionDesignVo = constructionDesignService.getProgressInfoById(Long.parseLong(id));
         log.info("ProgressConstructionDesignFlowablePlugin.progressConstructionDesignVo: {}", progressConstructionDesignVo);
         if (Objects.nonNull(progressConstructionDesignVo)) {
             ConstructionDesign constructionDesign = new ConstructionDesign();

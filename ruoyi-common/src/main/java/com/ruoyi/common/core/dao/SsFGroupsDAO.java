@@ -119,6 +119,7 @@ public interface SsFGroupsDAO {
      * @param id
      * @return
      */
-    @Select("select * from ss_f_groups where id = #{id}")
+    @Select("select  sd.dept_id as id, sd.dept_name as name, sd.dept_code as code ,sd.parent_id as parentid,sd.dept_level as grouplevel " +
+            " from sys_dept sd  where sd.dept_id = #{id}")
     SsFGroups getGroupInfoById(Integer id);
 }

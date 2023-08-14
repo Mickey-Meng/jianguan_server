@@ -219,7 +219,6 @@ public class FenceService {
             for (String strPostId2 : strPostIds1) {
                 Integer id = Integer.parseInt(strPostId2);
                 String name = fenceDAO.getPostNameByPostId(id);
-
                 PostDTO postDTO = new PostDTO();
                 postDTO.setPostId(id);
                 postDTO.setPostName(name);

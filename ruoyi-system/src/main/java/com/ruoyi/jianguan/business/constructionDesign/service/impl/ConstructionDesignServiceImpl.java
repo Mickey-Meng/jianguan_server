@@ -81,7 +81,7 @@ public class ConstructionDesignServiceImpl extends ServiceImpl<ConstructionDesig
         boolean saveOrUpdate = this.saveOrUpdate(constructionDesign);
         if (saveOrUpdate && isStartFlow) {
             String processDefinitionKey = BimFlowKey.planConstructionDesign.getName();
-            String businessKey = constructionDesign.getId().toString();
+            String businessKey = constructionDesign.getId() + "_" + processDefinitionKey;
             //设置流程的审批人
             Map<String, Object> auditUser = saveDto.getAuditUser();
             if (auditUser.isEmpty()) {
@@ -111,7 +111,7 @@ public class ConstructionDesignServiceImpl extends ServiceImpl<ConstructionDesig
         boolean saveOrUpdate = this.saveOrUpdate(constructionDesign);
         if (saveOrUpdate) {
             String processDefinitionKey = BimFlowKey.progressConstructionDesign.getName();
-            String businessKey = constructionDesign.getId().toString();
+            String businessKey = constructionDesign.getId() + "_" + processDefinitionKey;
             //设置流程的审批人
             Map<String, Object> auditUser = saveDto.getAuditUser();
             if (auditUser.isEmpty()) {

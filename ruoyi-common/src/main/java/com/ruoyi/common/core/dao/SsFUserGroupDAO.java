@@ -222,22 +222,30 @@ public interface SsFUserGroupDAO {
         " where d.code = 'jiashedanweijihe' ")
     List<SsFUsers> getJSDWUsers();*/
 
+    @Select("select  count(su.user_id) from sys_user su where su.dept_id = #{groupId} and su.del_flag=0")
+    int getGroupCount(@Param("groupId")Integer groupId);
+
+/*
+
     @Select("select count(a.id) from ss_f_users a " +
         " left join ss_f_user_group b on a.id = b.userid " +
         " left join ss_f_groups c on b.groupid = c.id " +
         " where a.ststate = 1 and c.id = #{groupId}")
     int getGroupCount(@Param("groupId")Integer groupId);
+*/
 
     Integer getAllCount(@Param("list") List<Integer> groupIds);
 
     List<ClockInCensusReturn> getCensusList(@Param("list")List<Integer> units);
 
-    @Select("select a.id from ss_f_users a " +
-        " left join ss_f_user_group b on a.id = b.userid " +
-        " left join ss_f_groups c on b.groupid = c.id " +
-        " where c.id = #{groupId}")
+    @Select("select su.user_id from sys_user su where su.dept_id = #{groupId} and su.del_flag=0")
     List<Integer> getAllIds(Integer groupId);
-
+    /*  yangaogao 20230811  改为sys_user表，
+        @Select("select a.id from ss_f_users a " +
+            " left join ss_f_user_group b on a.id = b.userid " +
+            " left join ss_f_groups c on b.groupid = c.id " +
+            " where c.id = #{groupId}")
+    List<Integer> getAllIds(Integer groupId);*/
     Integer getAllUserCountByGroupIds(@Param("list") List<Integer> groupIds);
 
     Integer getAllUserOnDutyByGroupIds(@Param("list") List<Integer> groupIds);

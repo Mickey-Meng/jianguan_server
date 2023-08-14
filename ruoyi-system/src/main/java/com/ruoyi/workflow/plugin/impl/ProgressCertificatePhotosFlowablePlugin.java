@@ -50,8 +50,8 @@ public class ProgressCertificatePhotosFlowablePlugin implements FlowablePlugin {
      */
     private void updateStatus(ProcessInstance processInstance, Integer status) {
         String businessKey = processInstance.getBusinessKey();
-
-        ProgressCertificatePhotosVo progressCertificatePhotosVo = certificatePhotosService.getProgressInfoById(Long.parseLong(businessKey));
+        String id = businessKey.indexOf("_") > 0 ? businessKey.substring(0, businessKey.indexOf("_")) : businessKey;
+        ProgressCertificatePhotosVo progressCertificatePhotosVo = certificatePhotosService.getProgressInfoById(Long.parseLong(id));
         log.info("ProgressCertificatePhotosFlowablePlugin.progressCertificatePhotosVo: {}", progressCertificatePhotosVo);
         if (Objects.nonNull(progressCertificatePhotosVo)) {
             CertificatePhotos certificatePhotos = new CertificatePhotos();

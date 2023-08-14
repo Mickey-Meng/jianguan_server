@@ -35,6 +35,12 @@ public class SysUser extends BaseEntity {
     private Long userId;
 
     /**
+     * 用户ID集合
+     */
+    private List<Long> userIds;
+
+
+    /**
      * 部门ID
      */
     private Long deptId;

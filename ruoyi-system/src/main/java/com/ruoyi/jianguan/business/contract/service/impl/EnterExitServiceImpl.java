@@ -106,10 +106,11 @@ public class EnterExitServiceImpl extends ServiceImpl<EnterExitMapper, EnterExit
         if(ObjUtil.isNull(saveDto.getId())) {
             enterExit.setStatus(0);
         }
+        List<EnterExitUser> enterExitUsers = saveDto.getEnterExitUsers();
+        enterExit.setNum(enterExitUsers.size());
         //保存进退场记录
         boolean saveOrUpdate = this.saveOrUpdate(enterExit);
         //保存人员清单
-        List<EnterExitUser> enterExitUsers = saveDto.getEnterExitUsers();
         if (Objects.nonNull(enterExitUsers) && !enterExitUsers.isEmpty()) {
             //新增赋值id
             if (isSave) {

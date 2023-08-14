@@ -128,6 +128,10 @@ public class MeaLedgerApprovalBreakDownVo {
     @ExcelProperty(value = "变更数量")
     private BigDecimal bgsl;
 
+    @ExcelProperty(value = "变更分解数量")
+    private BigDecimal bgfjsl;
+
+
     /**
      * 复核数量
      */

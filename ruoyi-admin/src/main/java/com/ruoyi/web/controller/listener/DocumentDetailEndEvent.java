@@ -1,6 +1,7 @@
 package com.ruoyi.web.controller.listener;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.ruoyi.common.core.service.ConfigService;
 import com.ruoyi.project.bill.domain.MeaContractBill;
@@ -21,6 +22,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.annotation.Resource;
 import javax.servlet.ServletContextListener;
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -72,6 +74,10 @@ public class DocumentDetailEndEvent implements ServletContextListener,TaskListen
 
                     if(meaLedgerBreakdownDetail!=null){
                         if(meaLedgerBreakdownDetail.getYjlsl()!=null){
+                            // todo 临时解决Bqjlsl为空导致工作流-审批报错问题
+                            if(ObjectUtil.isNull(meaMeasurementDocumentsDetail.getBqjlsl())) {
+                                meaMeasurementDocumentsDetail.setBqjlsl(new BigDecimal("0.0"));
+                            }
                             meaLedgerBreakdownDetail.setYjlsl(meaLedgerBreakdownDetail.getYjlsl().add(meaMeasurementDocumentsDetail.getBqjlsl()));
                         }else {
                             meaLedgerBreakdownDetail.setYjlsl(meaMeasurementDocumentsDetail.getBqjlsl());

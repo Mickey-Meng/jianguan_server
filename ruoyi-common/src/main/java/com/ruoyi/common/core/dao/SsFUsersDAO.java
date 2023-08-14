@@ -112,17 +112,17 @@ public interface SsFUsersDAO extends BaseDaoMapper<SsFUsers> {
     @Select("select `username` from ss_f_users_copy where id =#{id}")
     String getCopyNameByUserId(@Param("id") Integer id);
 
-    @Select("SELECT" +
+    @Select("SELECT " +
             "su.user_id AS id," +
             "su.user_name AS username," +
             "su.`password` AS pwd," +
             "su.nick_name AS NAME," +
             "su.create_time AS sttime," +
             "su.`status` AS ststate " +
-            "FROM" +
+            "FROM " +
             "sys_user su " +
             "WHERE " +
-            "su.status = 1 and " +
+            "su.del_flag = 0 and " +
             "su.user_id = #{id}")
     SsFUsers getUsingInfoByUserId(Integer id);
 

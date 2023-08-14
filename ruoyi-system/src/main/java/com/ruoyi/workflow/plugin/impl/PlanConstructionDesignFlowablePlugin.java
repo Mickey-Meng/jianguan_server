@@ -50,7 +50,8 @@ public class PlanConstructionDesignFlowablePlugin implements FlowablePlugin {
      */
     private void updateStatus(ProcessInstance processInstance, Integer status) {
         String businessKey = processInstance.getBusinessKey();
-        PlanConstructionDesignVo planConstructionDesignVo = constructionDesignService.getPlanInfoById(Long.parseLong(businessKey));
+        String id = businessKey.indexOf("_") > 0 ? businessKey.substring(0, businessKey.indexOf("_")) : businessKey;
+        PlanConstructionDesignVo planConstructionDesignVo = constructionDesignService.getPlanInfoById(Long.parseLong(id));
         log.info("PlanConstructionDesignFlowablePlugin.planConstructionDesignVo: {}", planConstructionDesignVo);
         if (Objects.nonNull(planConstructionDesignVo)) {
             ConstructionDesign constructionDesign = new ConstructionDesign();

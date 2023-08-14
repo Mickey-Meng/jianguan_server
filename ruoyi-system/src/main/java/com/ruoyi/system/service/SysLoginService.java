@@ -33,6 +33,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import java.time.Duration;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -301,6 +302,8 @@ public class SysLoginService {
         this.checkLogin(LoginType.PASSWORD, loginBody.getUsername(), () -> !BCrypt.checkpw(loginBody.getPassword(), user.getPassword()));
         // 此处可根据登录用户的数据不同 自行创建 loginUser
         List<Long> roleIds = user.getRoles().stream().map(SysRole::getRoleId).collect(Collectors.toList());
+        Set set = sysMenuService.selectMenuList(user.getUserId()).stream().map(SysMenu::getMenuCode).collect(Collectors.toSet());
+        set.remove(null);
         LoginUser loginUser = LoginUser.builder()
             .userId(user.getUserId())
             .deptId(user.getDeptId())
@@ -308,7 +311,7 @@ public class SysLoginService {
             .username(user.getUserName())
             .nickName(user.getNickName())
             .userType(user.getUserType())
-            .menuPermission(sysMenuService.selectMenuList(user.getUserId()).stream().map(SysMenu::getMenuCode).collect(Collectors.toSet()))
+            .menuPermission(set)
             .rolePermission(permissionService.getRolePermission(user))
             .roles(BeanUtil.copyToList(user.getRoles(), RoleDTO.class))
             .roleIds(roleIds.stream().map(roleId -> String.valueOf(roleId)).collect(Collectors.joining(",")))

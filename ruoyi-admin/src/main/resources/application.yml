@@ -89,7 +89,7 @@ spring:
     # 国际化资源文件路径
     basename: i18n/messages
   profiles:
-    active: local
+    active: dev
   main:
     allow-circular-references: true # 允许循环依赖，因为项目是三层架构，无法避免这个情况。
   # 文件上传

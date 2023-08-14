@@ -36,7 +36,8 @@ public interface ZjPersonClockinDAO {
     List<ZjPersonClockin> getAllByProjectId(@Param("projectId")Integer projectId);
 
     //todo group by a.clockTime desc
-    @Select("select a.* from zj_person_clockin a " +
+    @Select(" SELECT   zpc.*,   zpf.clockAddrName AS fenceAddrName   FROM   zj_person_clockin zpc " +
+            " left join zj_person_fence zpf on  zpc.gid = zpf.id   " +
             " LEFT JOIN ss_f_user_role b ON a.attendancePersonId = b.USERID " +
             " LEFT JOIN ss_f_roles c ON b.ROLEID = c.id " +
             " LEFT JOIN ss_f_roles d ON c.parentid = d.id " +
@@ -45,7 +46,9 @@ public interface ZjPersonClockinDAO {
                                                      @Param("roleId")Integer roleId);
 
     //todo group by clockTime desc
-    @Select("select * from zj_person_clockin where state = 1 and projectId = #{projectId}" +
+    @Select(" SELECT   zpc.*,   zpf.clockAddrName AS fenceAddrName   FROM   zj_person_clockin zpc " +
+            "left join   zj_person_fence zpf on  zpc.gid = zpf.id   " +
+            "where  state = 1 and projectId = #{projectId}" +
             " and clockTime >= #{startTime} and clockTime <= #{endTime} ")
     List<ZjPersonClockin> getAllByProjectIdInTime(@Param("projectId")Integer projectId,
                                                   @Param("startTime")String startTime,

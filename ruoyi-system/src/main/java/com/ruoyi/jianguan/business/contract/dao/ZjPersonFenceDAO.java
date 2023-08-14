@@ -69,7 +69,7 @@ public interface ZjPersonFenceDAO {
     @Select("select * from zj_person_fence_time where postId = #{postId}")
     List<ZjPersonFenceTime> getFenceTimeByPostId(@Param("postId")Integer postId);
 
-    @Select("select name as postName from ss_f_roles where id = #{postId}")
+    @Select("select role_name as postName from sys_role where role_id = #{postId}")
     String getPostNameByPostId(@Param("postId")Integer postId);
 
 

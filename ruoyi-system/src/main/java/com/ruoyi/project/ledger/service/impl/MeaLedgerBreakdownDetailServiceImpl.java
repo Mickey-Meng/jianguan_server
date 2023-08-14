@@ -88,7 +88,7 @@ public class MeaLedgerBreakdownDetailServiceImpl implements IMeaLedgerBreakdownD
     @Override
     public List<MeaLedgerBreakdownDetailVo> queryList(MeaLedgerBreakdownDetailBo bo) {
         LambdaQueryWrapper<MeaLedgerBreakdownDetail> lqw = buildQueryWrapper(bo,"r");
-        lqw.eq(MeaLedgerBreakdownDetail::getYjlsl,0);
+//        lqw.eq(MeaLedgerBreakdownDetail::getYjlsl,0);
         return baseMapper.selectVoList(lqw);
     }
 

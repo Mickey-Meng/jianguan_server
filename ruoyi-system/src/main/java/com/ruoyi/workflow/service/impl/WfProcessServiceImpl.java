@@ -59,6 +59,7 @@ import org.flowable.task.api.TaskQuery;
 import org.flowable.task.api.history.HistoricTaskInstance;
 import org.flowable.task.api.history.HistoricTaskInstanceQuery;
 import org.flowable.variable.api.history.HistoricVariableInstance;
+import org.flowable.variable.api.persistence.entity.VariableInstance;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -365,6 +366,31 @@ public class WfProcessServiceImpl extends FlowServiceFactory implements IWfProce
         int offset = pageQuery.getPageSize() * (pageQuery.getPageNum() - 1);
         List<Task> taskList = taskQuery.listPage(offset, pageQuery.getPageSize());
         List<WfTaskVo> flowList = new ArrayList<>();
+        Set<String> processDefinitionIds = taskList.stream().map(Task::getProcessDefinitionId).collect(Collectors.toSet());
+
+        Set<String> processInstanceIds = taskList.stream().map(Task::getProcessInstanceId).collect(Collectors.toSet());
+
+        List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery().processDefinitionIds(processDefinitionIds).list();
+
+        Map<String, ProcessDefinition> processDefinitionMap = processDefinitions.stream().collect(Collectors.toMap(ProcessDefinition::getId, processDefinition -> processDefinition));
+
+        List<HistoricProcessInstance> historicProcessInstances = historyService.createHistoricProcessInstanceQuery().processInstanceIds(processInstanceIds).list();
+        Map<String, HistoricProcessInstance> historicProcessInstanceMap = historicProcessInstances.stream().collect(Collectors.toMap(HistoricProcessInstance::getId, historicProcessInstance -> historicProcessInstance));
+
+        List<Long> userIds = historicProcessInstances.stream().map(historicProcessInstance -> Long.parseLong(historicProcessInstance.getStartUserId())).collect(Collectors.toList());
+        SysUser user = new SysUser();
+        user.setUserIds(userIds);
+        List<SysUser> sysUsers = userService.selectUserList(user);
+        Map<String, SysUser> userMap = sysUsers.stream().collect(Collectors.toMap(sysUser -> String.valueOf(sysUser.getUserId()), sysUser -> sysUser));
+
+//        List<HistoricTaskInstance> historicTaskInstances = historyService.createHistoricTaskInstanceQuery().includeProcessVariables().finished().processInstanceIdIn(processInstanceIds).list();
+
+        Set<String> taskIds = taskList.stream().map(Task::getId).collect(Collectors.toSet());
+
+        List<VariableInstance> variableInstances = taskService.getVariableInstancesLocalByTaskIds(taskIds);
+        Map<String, List<VariableInstance>> variableInstanceMap = variableInstances.stream().collect(Collectors.groupingBy(VariableInstance::getTaskId));
+
+
         for (Task task : taskList) {
             WfTaskVo flowTask = new WfTaskVo();
             // 当前流程信息
@@ -374,25 +400,20 @@ public class WfProcessServiceImpl extends FlowServiceFactory implements IWfProce
             flowTask.setProcDefId(task.getProcessDefinitionId());
             flowTask.setTaskName(task.getName());
             // 流程定义信息
-            ProcessDefinition pd = repositoryService.createProcessDefinitionQuery()
-                .processDefinitionId(task.getProcessDefinitionId())
-                .singleResult();
+            ProcessDefinition pd = processDefinitionMap.get(task.getProcessDefinitionId());
             flowTask.setDeployId(pd.getDeploymentId());
             flowTask.setProcDefName(pd.getName());
             flowTask.setProcDefVersion(pd.getVersion());
             flowTask.setProcInsId(task.getProcessInstanceId());
-
+            HistoricProcessInstance historicProcessInstance = historicProcessInstanceMap.get(task.getProcessInstanceId());
             // 流程发起人信息
-            HistoricProcessInstance historicProcessInstance = historyService.createHistoricProcessInstanceQuery()
-                .processInstanceId(task.getProcessInstanceId())
-                .singleResult();
-            SysUser startUser = userService.selectUserById(Long.parseLong(historicProcessInstance.getStartUserId()));
+            SysUser startUser = userMap.get(historicProcessInstance.getStartUserId());
             flowTask.setStartUserId(startUser.getNickName());
             flowTask.setStartUserName(startUser.getNickName());
             flowTask.setStartDeptName(startUser.getDept().getDeptName());
 
             // 流程变量
-            flowTask.setProcVars(this.getProcessVariables(task.getId()));
+            flowTask.setProcVars(variableInstanceMap.get(task.getId()));
 
             flowList.add(flowTask);
         }

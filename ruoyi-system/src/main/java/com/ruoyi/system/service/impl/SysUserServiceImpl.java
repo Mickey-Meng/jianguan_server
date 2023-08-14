@@ -73,6 +73,9 @@ public class SysUserServiceImpl implements ISysUserService {
         Map<String, Object> params = user.getParams();
         QueryWrapper<SysUser> wrapper = Wrappers.query();
             wrapper.eq(ObjectUtil.isNotNull(user.getUserId()), "u.user_id", user.getUserId())
+            .and(CollUtil.isNotEmpty(user.getUserIds()), w -> {
+                w.in("u.user_id", user.getUserIds());
+            })
             .like(StringUtils.isNotBlank(user.getUserName()), "u.user_name", user.getUserName())
             .like(StringUtils.isNotBlank(user.getNickName()), "u.nick_name", user.getNickName())
             .eq(StringUtils.isNotBlank(user.getStatus()), "u.status", user.getStatus())

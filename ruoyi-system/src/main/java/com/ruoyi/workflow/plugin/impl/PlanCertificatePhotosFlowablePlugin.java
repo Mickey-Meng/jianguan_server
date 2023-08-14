@@ -53,8 +53,8 @@ public class PlanCertificatePhotosFlowablePlugin implements FlowablePlugin {
      */
     private void updateStatus(ProcessInstance processInstance, Integer status) {
         String businessKey = processInstance.getBusinessKey();
-
-        PlanCertificatePhotosVo planCertificatePhotosVo = certificatePhotosService.getPlanInfoById(Long.parseLong(businessKey));
+        String id = businessKey.indexOf("_") > 0 ? businessKey.substring(0, businessKey.indexOf("_")) : businessKey;
+        PlanCertificatePhotosVo planCertificatePhotosVo = certificatePhotosService.getPlanInfoById(Long.parseLong(id));
         log.info("PlanCertificatePhotosFlowablePlugin.planCertificatePhotosVo: {}", planCertificatePhotosVo);
         if (Objects.nonNull(planCertificatePhotosVo)) {
             CertificatePhotos certificatePhotos = new CertificatePhotos();

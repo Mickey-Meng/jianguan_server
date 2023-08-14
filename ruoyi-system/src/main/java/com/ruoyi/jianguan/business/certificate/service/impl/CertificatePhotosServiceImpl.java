@@ -79,7 +79,7 @@ public class CertificatePhotosServiceImpl extends ServiceImpl<CertificatePhotosM
         boolean saveOrUpdate = this.saveOrUpdate(certificatePhotos);
         if (saveOrUpdate && isStartFlow) {
             String processDefinitionKey = BimFlowKey.planCertificatePhotos.getName();
-            String businessKey = certificatePhotos.getId().toString();
+            String businessKey = certificatePhotos.getId() + "_" + processDefinitionKey;
             //设置流程的审批人
             Map<String, Object> auditUser = saveDto.getAuditUser();
             if (auditUser.isEmpty()) {
@@ -109,7 +109,7 @@ public class CertificatePhotosServiceImpl extends ServiceImpl<CertificatePhotosM
         boolean saveOrUpdate = this.saveOrUpdate(certificatePhotos);
         if (saveOrUpdate) {
             String processDefinitionKey = BimFlowKey.progressCertificatePhotos.getName();
-            String businessKey = certificatePhotos.getId().toString();
+            String businessKey = certificatePhotos.getId() + "_" + processDefinitionKey;
             //设置流程的审批人
             Map<String, Object> auditUser = saveDto.getAuditUser();
             if (auditUser.isEmpty()) {

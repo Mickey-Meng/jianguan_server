@@ -266,7 +266,7 @@ public class PersonService {
             }
             String processInstanceId = personDTO.getTaskId();
             //调用停止接口 admin/flow/flowOperation/stopProcessInstance
-            flowApiService.deleteProcessInstance(processInstanceId);
+            flowApiService.deleteProcess(processInstanceId);
             personDAO.delContractById(id, projectId);
             // 删除zj_person_people_sub对应的合同人员数据
             List<PersonSub> personSubs = personDAO.getAllPersonSubById(id);
@@ -1581,13 +1581,13 @@ public class PersonService {
             }
 
         }
-        for (ZjPersonClockin clockin : clockInList) {
+    /*    for (ZjPersonClockin clockin : clockInList) {
             Integer id = clockin.getGid();
             if (id != null) {
                 String fenceAddrName = fenceDAO.getAddrNameById(id);
                 clockin.setFenceAddrName(fenceAddrName);
             }
-        }
+        }*/
         return new ResponseBase(200, "查询成功", clockInList);
     }
 

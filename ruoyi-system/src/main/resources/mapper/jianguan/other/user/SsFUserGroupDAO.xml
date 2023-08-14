@@ -73,9 +73,8 @@
   </delete>
 
   <select id="getUserByGroupsIds" resultMap="userMap">
-    select a.* from ss_f_users a
-    LEFT JOIN ss_f_user_group b ON a.id = b.userid
-    where b.groupid in
+    select a.* from sys_user a
+    where a.dept_id in
     <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
       #{item}
     </foreach>
@@ -90,10 +89,8 @@
   </delete>
 
   <select id="getAllCount" parameterType="string" resultType="integer">
-    select count(a.id) from ss_f_users a
-        left join ss_f_user_group b on a.id = b.userid
-        left join ss_f_groups c on b.groupid = c.id
-        where a.ststate = 1 and c.id in
+    select count(su.user_id) from sys_user su
+        where su.del_flag=0  and su.user_id in
         <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
           #{item}
         </foreach>
@@ -110,36 +107,31 @@
   </resultMap>
 
   <select id="getCensusList" resultMap="ClockInCensusReturnMap">
-    select
-        c.id as userId, c.name as userName, c.ststate,
-        e.id as roleId, e.name as roleName, a.id as unitId,
-        a.name as unitName
-    from ss_f_groups a
-        LEFT JOIN ss_f_user_group b on a.id = b.groupid
-        LEFT JOIN ss_f_users c on b.USERID = c.id
-        LEFT JOIN ss_f_user_role d on c.id = d.USERID
-        LEFT JOIN ss_f_roles e on d.roleid = e.id
-    where a.id in
+          select
+          c.user_id as userId, c.user_name as userName,
+          e.role_id as roleId, e.role_name as roleName, a.dept_id as unitId,
+          a.dept_name as unitName
+          from sys_dept a
+          LEFT JOIN sys_user c on a.dept_id = c.dept_id
+          LEFT JOIN sys_user_role d on c.user_id = d.user_id
+          LEFT JOIN sys_role e on d.role_id = e.role_id
+          where a.dept_id in
         <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
           #{item}
         </foreach>
   </select>
 
   <select id="getAllUserCountByGroupIds" resultType="integer">
-    select count(a.id) from ss_f_users a
-        left join ss_f_user_group b on a.id = b.userid
-        left join ss_f_groups c on b.groupid = c.id
-    where c.id in
+    select count(a.dept_id) from sys_User a
+    where a.dept_id in
     <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
       #{item}
     </foreach>
   </select>
 
   <select id="getAllUserOnDutyByGroupIds" resultType="integer">
-    select count(a.id) from ss_f_users a
-    left join ss_f_user_group b on a.id = b.userid
-    left join ss_f_groups c on b.groupid = c.id
-    where a.ststate = 1 and c.id in
+    select count(a.user_id) from sys_User a
+    where a.del_flag = 0 and a.user_id in
     <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
       #{item}
     </foreach>

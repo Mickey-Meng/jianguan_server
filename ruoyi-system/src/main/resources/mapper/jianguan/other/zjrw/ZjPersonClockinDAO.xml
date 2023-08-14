@@ -77,13 +77,10 @@
     </update>
 
     <select id="getGroupClockInfo" resultMap="BaseResultMap">
-        select
-            a.*
-        from zj_person_clockin a
-            left join ss_f_users b on a.attendancePersonId = b.id
-            left join ss_f_user_group c on b.id = c.userid
-            left join ss_f_groups d on c.groupid = d.id
-        where b.ststate = 1 and d.id = #{groupId}
+        select a.* from zj_person_clockin a
+                            left join sys_user b on a.attendancePersonId = b.user_id
+                            left join sys_dept d on b.dept_id = d.dept_id
+        where b.del_flag = 0 and d.dept_id = #{groupId}
         and a.clockTime &gt;= #{start} and a.clockTime &lt;= #{end}
     </select>
 </mapper>
