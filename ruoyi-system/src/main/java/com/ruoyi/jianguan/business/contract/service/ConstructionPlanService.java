@@ -9,6 +9,8 @@ import com.ruoyi.jianguan.business.contract.domain.entity.ConstructionPlan;
 import com.ruoyi.jianguan.business.contract.domain.vo.ConstructionPlanDetailVo;
 import com.ruoyi.jianguan.business.contract.domain.vo.ConstructionPlanPageVo;
 
+import java.util.List;
+
 
 public interface ConstructionPlanService extends IService<ConstructionPlan> {
 
@@ -23,5 +25,5 @@ public interface ConstructionPlanService extends IService<ConstructionPlan> {
     PageInfo<ConstructionPlanPageVo> getPageInfo(ConstructionPlanPageDTO pageDto);
 
 
-
+    List<ConstructionPlan> getExpiryRemindersList(String name);
 }

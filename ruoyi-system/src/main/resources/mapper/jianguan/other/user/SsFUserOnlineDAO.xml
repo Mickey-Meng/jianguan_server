@@ -38,7 +38,7 @@
                  LEFT JOIN sys_role b ON a.role = b.role_id
                  LEFT JOIN sys_role c ON b.parent_id = c.role_id
                  LEFT JOIN sys_user_role d ON a.userid = d.role_id
-        WHERE c.role_id = (SELECT role_id FROM sys_role WHERE role_key in
+        WHERE c.role_id in (SELECT role_id FROM sys_role WHERE role_key in
         <foreach collection="roleKeys" index="index" item="item" open="(" separator="," close=")">
             #{item}
         </foreach>
@@ -54,7 +54,7 @@
                  LEFT JOIN sys_role b ON a.role = b.role_id
                  LEFT JOIN sys_role c ON b.parent_id = c.role_id
                  LEFT JOIN sys_user_role d ON a.userid = d.role_id
-        WHERE c.role_id = (SELECT role_id FROM sys_role WHERE role_key in
+        WHERE c.role_id in (SELECT role_id FROM sys_role WHERE role_key in
         <foreach collection="roleKeys" index="index" item="item" open="(" separator="," close=")">
             #{item}
         </foreach>
@@ -73,7 +73,7 @@
         LEFT JOIN sys_role c ON b.parent_id = c.role_id
         LEFT JOIN sys_user_role d ON a.userid = d.role_id
         WHERE
-        c.role_id = ( SELECT role_id FROM sys_role WHERE role_key in
+        c.role_id in ( SELECT role_id FROM sys_role WHERE role_key in
         <foreach collection="roleKeys" index="index" item="item" open="(" separator="," close=")">
             #{item}
         </foreach>

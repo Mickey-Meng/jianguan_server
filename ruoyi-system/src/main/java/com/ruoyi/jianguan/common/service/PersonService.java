@@ -247,6 +247,11 @@ public class PersonService {
         return new ResponseBase(200, "查询成功!", users);
     }
 
+    public ResponseBase getUserByRoleKey(String roleKey, Integer projectId) {
+        List<SsFUsers> users = personDAO.getByRoleKeyAndProjectId(roleKey, projectId);
+        return new ResponseBase(200, "查询成功!", users);
+    }
+
     public ResponseBase delContract(Integer id, Integer projectId) {
         try {
             if (projectId <= 0) {
@@ -1581,13 +1586,7 @@ public class PersonService {
             }
 
         }
-    /*    for (ZjPersonClockin clockin : clockInList) {
-            Integer id = clockin.getGid();
-            if (id != null) {
-                String fenceAddrName = fenceDAO.getAddrNameById(id);
-                clockin.setFenceAddrName(fenceAddrName);
-            }
-        }*/
+
         return new ResponseBase(200, "查询成功", clockInList);
     }
 
@@ -1696,18 +1695,6 @@ public class PersonService {
                     List<PersonSub> subs = personDAO.getPersonByGidAndName(person.getId(),subName);
                     subDTO.setPersonSubs(subs);
                 }
-
-
-
-                //这里的taskId为processInstanceId
-//                TaskCommentReturn commentReturn = taskCommentReturn(person.getTaskId(), token);
-//                if (commentReturn != null) {
-//                    Map<String, String> getIds = personDAO.getIdsByProcessInstanceId(person.getTaskId());
-//                    maps.put("processInstanceId", person.getTaskId());
-//                    maps.put("taskId", commentReturn.getTaskId());
-//                    maps.put("processDefinitionId", getIds.get("processDefinitionId"));
-//                }
-//                person.setMaps(maps);
                 personSubDTOS.add(subDTO);
             }
         }

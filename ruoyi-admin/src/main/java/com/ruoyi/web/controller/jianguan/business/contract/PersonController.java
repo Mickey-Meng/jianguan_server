@@ -80,7 +80,12 @@ public class PersonController {
                                       @RequestParam(value = "projectId", required = false) Integer projectId){
         return personService.getUserByRole(roleid, projectId);
     }
-
+    @GetMapping("/getUserByRoleKey")
+    @ApiOperation(value = "通过角色编码查询用户")
+    public ResponseBase getUserByRoleKey(@RequestParam(value = "roleKey") String roleKey,
+                                      @RequestParam(value = "projectId") Integer projectId){
+        return personService.getUserByRoleKey(roleKey, projectId);
+    }
     @PostMapping("/getPersonRole")
     @ApiOperation(value = "获取人员部门角色权限关联关系")
     public ResponseBase getPersonRole(){

@@ -122,7 +122,13 @@ public class SupervisionNoticeServiceImpl extends ServiceImpl<SupervisionNoticeM
         if (Objects.nonNull(supervisionNotices) && !supervisionNotices.isEmpty()) {
             supervisionNotices.forEach(supervisionNotice -> {
                 //状态
-                supervisionNotice.setStatusStr(supervisionNotice.getStatus() == 0 ? "审批中" : "已审批");
+                if(supervisionNotice.getStatus() == 0) {
+                    supervisionNotice.setStatusStr("审批中");
+                } else if(supervisionNotice.getStatus() == 1) {
+                    supervisionNotice.setStatusStr("已审批");
+                }else {
+                    supervisionNotice.setStatusStr("已驳回");
+                }
             });
         }
         return new PageInfo<>(supervisionNotices);

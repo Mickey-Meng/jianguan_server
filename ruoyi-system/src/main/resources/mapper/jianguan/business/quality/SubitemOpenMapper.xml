@@ -62,7 +62,7 @@
         select a.*,p.name as projectName,u.nick_name as liveUserName,e.nick_name as buildUserName ,r.nick_name as checkUserName
         ,x.nick_name as createUserName from
         zz_subitem_open a
-        left join ss_f_projects p on p.ID = a.project_id and p.GROUPLEVEL = 2
+        left join ss_f_projects p on p.ID = a.build_section and p.GROUPLEVEL = 2
         left join ss_f_projects s on s.ID = a.build_section and p.GROUPLEVEL = 3
         left join sys_user u on a.live_user = u.user_id
         left join sys_user e on e.user_id = a.build_user

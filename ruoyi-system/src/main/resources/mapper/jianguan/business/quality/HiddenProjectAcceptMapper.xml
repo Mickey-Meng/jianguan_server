@@ -38,8 +38,9 @@
 
     <!-- 分页查询隐蔽工程验收记录数据 -->
     <select id="getPageInfo" parameterType="com.ruoyi.jianguan.business.quality.domain.dto.HiddenProjectAcceptPageDTO" resultType="com.ruoyi.jianguan.business.quality.domain.vo.HiddenProjectAcceptPageVo">
+
         SELECT
-        pb.NAME AS projectName,
+        pj.NAME AS projectName,
         pb.`NAME` AS buildSectionName,
         a.*,
         pb.CONTRACTNUM AS contractCode,
@@ -47,6 +48,7 @@
         FROM
         zz_hidden_project_accept a
         LEFT JOIN ss_f_projects pb ON pb.id = a.build_section
+        LEFT JOIN ss_f_projects pj ON pb.PARENTID = pj.id
         LEFT JOIN sys_user u ON a.create_user_id = u.user_id
         where   a.build_section = #{pageDto.buildSection}
         <if test="pageDto.projectCode != null and pageDto.projectCode != ''">

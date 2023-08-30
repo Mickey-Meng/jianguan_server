@@ -7,6 +7,8 @@ import com.ruoyi.jianguan.business.certificate.domain.entity.CertificatePhotos;
 import com.ruoyi.jianguan.business.certificate.service.CertificatePhotosService;
 import com.ruoyi.jianguan.business.constructionDesign.domain.entity.ConstructionDesign;
 import com.ruoyi.jianguan.business.constructionDesign.service.ConstructionDesignService;
+import com.ruoyi.jianguan.business.contract.domain.entity.ConstructionPlan;
+import com.ruoyi.jianguan.business.contract.service.ConstructionPlanService;
 import com.ruoyi.jianguan.common.service.MessageService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -35,6 +37,8 @@ public class MessageController {
     private CertificatePhotosService certificatePhotosService;
     @Autowired
     private ConstructionDesignService constructionDesignService;
+    @Autowired
+    private ConstructionPlanService constructionPlanService;
 
     @PostMapping("getMessage1")
     @ResponseBody
@@ -65,10 +69,14 @@ public class MessageController {
         Map<String, Object> dataMap = Maps.newHashMap();
         List<CertificatePhotos> certificatePhotosExpiryRemindersList = certificatePhotosService.getExpiryRemindersList(null);
         List<ConstructionDesign> constructionDesignExpiryRemindersList = constructionDesignService.getExpiryRemindersList(null);
+        List<ConstructionPlan> constructionPlanExpiryRemindersList = constructionPlanService.getExpiryRemindersList(null);
         dataMap.put("certificatePhotos", certificatePhotosExpiryRemindersList.stream().map(CertificatePhotos::getName).collect(Collectors.joining(",")));
         dataMap.put("certificatePhotosCount", certificatePhotosExpiryRemindersList.size());
         dataMap.put("constructionDesign", constructionDesignExpiryRemindersList.stream().map(ConstructionDesign::getName).collect(Collectors.joining(",")));
         dataMap.put("constructionDesignCount", constructionDesignExpiryRemindersList.size());
+
+        dataMap.put("constructionPlan", constructionPlanExpiryRemindersList.stream().map(ConstructionPlan::getName).collect(Collectors.joining(",")));
+        dataMap.put("constructionPlanCount", constructionDesignExpiryRemindersList.size());
         return ResponseBase.success(dataMap);
     }
 }

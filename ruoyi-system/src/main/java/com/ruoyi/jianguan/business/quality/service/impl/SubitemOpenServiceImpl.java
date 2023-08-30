@@ -160,9 +160,9 @@ public class SubitemOpenServiceImpl extends ServiceImpl<SubitemOpenMapper, Subit
         //属性copy
         SubitemOpenDetailVo vo = new SubitemOpenDetailVo();
         BeanUtils.copyProperties(subitemOpen, vo);
-        vo.setLiveUserName(liveUser.getNickName());
-        vo.setBuildUserName(buildUser.getNickName());
-        vo.setCheckUserName(checkUser.getNickName());
+        vo.setLiveUserName(liveUser== null? null:liveUser.getNickName());
+        vo.setBuildUserName(buildUser == null? null: buildUser.getNickName());
+        vo.setCheckUserName(checkUser == null? null: checkUser.getNickName());
 
         //标准试验审批表附件
         vo.setExperimentAttachment(JSONArray.parseArray(subitemOpen.getExperimentAttachment(), FileModel.class));
@@ -213,7 +213,13 @@ public class SubitemOpenServiceImpl extends ServiceImpl<SubitemOpenMapper, Subit
 //                pageVo.setBuildUnits(constructDept);
                 pageVo.setConstructdpts(constructDept);
                 //状态
-                pageVo.setStatusStr(pageVo.getStatus() == 0 ? "审批中" : "已审批");
+                if(pageVo.getStatus() == 0) {
+                    pageVo.setStatusStr("审批中");
+                } else if(pageVo.getStatus() == 1) {
+                    pageVo.setStatusStr("已审批");
+                }else {
+                    pageVo.setStatusStr("已驳回");
+                }
             });
         }
         return new PageInfo<>(pageVoList);

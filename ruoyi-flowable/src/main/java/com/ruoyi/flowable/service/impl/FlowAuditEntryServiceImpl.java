@@ -1,6 +1,5 @@
 package com.ruoyi.flowable.service.impl;
 
-import cn.hutool.core.bean.BeanUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -13,8 +12,6 @@ import com.ruoyi.common.core.domain.entity.SsFUsers;
 import com.ruoyi.common.core.domain.object.ResponseBase;
 import com.ruoyi.common.core.domain.object.ResponseResult;
 import com.ruoyi.common.core.sequence.util.IdUtil;
-import com.ruoyi.common.utils.jianguan.BeanCopyUtils;
-import com.ruoyi.flowable.service.UserService;
 import com.ruoyi.flowable.domain.dto.FlowAuditEntryPageDTO;
 import com.ruoyi.flowable.domain.dto.FlowAuditEntrySaveDTO;
 import com.ruoyi.flowable.domain.entity.FlowAuditEntry;
@@ -22,10 +19,7 @@ import com.ruoyi.flowable.domain.vo.FlowAuditEntryDetailVo;
 import com.ruoyi.flowable.mapper.FlowAuditEntryMapper;
 import com.ruoyi.flowable.model.FlowEntry;
 import com.ruoyi.flowable.model.FlowTaskExt;
-import com.ruoyi.flowable.service.FlowApiService;
-import com.ruoyi.flowable.service.FlowAuditEntryService;
-import com.ruoyi.flowable.service.FlowEntryService;
-import com.ruoyi.flowable.service.FlowTaskExtService;
+import com.ruoyi.flowable.service.*;
 import io.netty.util.internal.StringUtil;
 import lombok.SneakyThrows;
 import org.apache.commons.compress.utils.Lists;
@@ -99,9 +93,9 @@ public class FlowAuditEntryServiceImpl extends ServiceImpl<FlowAuditEntryMapper,
                 flowAuditEntrie.setCopyUserId(copyUserIds);
                 if (Objects.nonNull(copyUserIds) && !copyUserIds.isEmpty()) {
                     List<SsFUsersDTO> ssFUsersDTOList  = new ArrayList<>();
-                    List<SsFUsers> ssFUsersList  = userService.getUsersByIds(userIds);
+                    List<SsFUsers> ssFUsersList  = userService.getUsersByIds(copyUserIds);
                     ssFUsersDTOList = com.ruoyi.common.utils.BeanCopyUtils.copyList(ssFUsersList,SsFUsersDTO.class);
-                    flowAuditEntrie.setUserInfo(ssFUsersDTOList);
+                    flowAuditEntrie.setCopyUserInfo(ssFUsersDTOList);
                 }
             });
             return detailVos.stream().collect(Collectors.groupingBy(FlowAuditEntryDetailVo::getTypeName));

@@ -82,14 +82,15 @@ public class MongController {
     @ApiOperation(value = "下载文件", notes = "下载文件")
     @GetMapping(value = "/download")
     @ResponseBody
-    public ResponseBase download(@RequestParam(name = "fileid") String fileId, HttpServletResponse response, HttpServletRequest request) {
+    public ResponseBase download(@RequestParam(name = "fileid") String fileId,@RequestParam(name = "fileName",required = false) String fileName, HttpServletResponse response, HttpServletRequest request) {
         if (!StringUtils.hasLength(fileId)) {
             return new ResponseBase(500, "文件ID不能为空");
         }
         String[] split = fileId.split("\\.");
         try {
-            fileService.download(split[0], response,request);
+            fileService.download(split[0], response,request,fileName);
         } catch (Exception e) {
+            e.printStackTrace();
             return new ResponseBase(400, e.getMessage());
         }
         return null;

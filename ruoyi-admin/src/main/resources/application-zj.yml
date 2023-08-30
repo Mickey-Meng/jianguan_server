@@ -46,39 +46,9 @@ spring:
         # 主库数据源
         master:
           driverClassName: com.mysql.cj.jdbc.Driver
-          # jdbc 所有参数配置参考 https://lionli.blog.csdn.net/article/details/122018562
-          # rewriteBatchedStatements=true 批处理优化 大幅提升批量插入更新删除性能(对数据库有性能损耗 使用批量操作应考虑性能问题)
-#          url: jdbc:mysql://112.30.143.209:23307/jianguan3?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8&autoReconnect=true&rewriteBatchedStatements=true&nullCatalogMeansCurrent=true
-#          username: root
-#          password: Jg123456.
-#          url: jdbc:mysql://112.30.143.209:9001/jianguan3?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8&autoReconnect=true&rewriteBatchedStatements=true&nullCatalogMeansCurrent=true
-          url: jdbc:mysql://118.195.226.5:23306/zhuji3?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8&autoReconnect=true&rewriteBatchedStatements=true&nullCatalogMeansCurrent=true
+          url: jdbc:mysql://150.158.139.18:8306/zhuji3?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8&autoReconnect=true&rewriteBatchedStatements=true&nullCatalogMeansCurrent=true
           username: root
           password: 123456
-        # 从库数据源
-        slave:
-          lazy: true
-          driverClassName: com.mysql.cj.jdbc.Driver
-          url:
-          username:
-          password:
-#        oracle:
-#          driverClassName: oracle.jdbc.OracleDriver
-#          url: jdbc:oracle:thin:@//localhost:1521/XE
-#          username: ROOT
-#          password: root
-#          druid:
-#            validationQuery: SELECT 1 FROM DUAL
-#        postgres:
-#          driverClassName: org.postgresql.Driver
-#          url: jdbc:postgresql://localhost:5432/postgres?useUnicode=true&characterEncoding=utf8&useSSL=true&autoReconnect=true&reWriteBatchedInserts=true
-#          username: root
-#          password: root
-#        sqlserver:
-#          driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
-#          url: jdbc:sqlserver://localhost:1433;DatabaseName=tempdb;SelectMethod=cursor;rewriteBatchedStatements=true
-#          username: SA
-#          password: root
       druid:
         # 初始连接数
         initialSize: 5
@@ -134,14 +104,11 @@ spring:
     # mongodb配置
     mongodb:
       uri: mongodb://112.30.143.210:27017
-      database: zjroad
-#    mongodb:
-#      uri: mongodb://150.158.139.18:8886
-#      database: admin
+      database: zjroad_test
   redis:
     host: 150.158.139.18
     port: 31419
-    database: 1
+    database: 3
     # password:
     timeout: 10s
     ssl: false
@@ -223,5 +190,5 @@ weather:
   location_id: 330681
 
 jianguan:
-  jmreportUrl: "http://150.158.139.18:8088/"
-  serverBaseUrl: "http://150.158.139.18:26666/"
+  jmreportUrl: "http://118.195.226.5:8088/"
+  serverBaseUrl: "http://118.195.226.5:26666/"

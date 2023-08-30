@@ -34,7 +34,7 @@
         select distinct a.*  from zz_enter_exit_user a
         left join zz_enter_exit b on a.enter_exit_id = b.id
         left join ss_f_projects s on b.build_section = s.ID and s.GROUPLEVEL = 3
-        where b.project_id = #{pageDto.projectId} and a.type = #{pageDto.type}
+        where b.build_section = #{pageDto.projectId} and a.type = #{pageDto.type}
         <if test="pageDto.buildSectionName != null and pageDto.buildSectionName != ''">
             and s.`name` like concat('%',#{pageDto.buildSectionName},'%')
         </if>

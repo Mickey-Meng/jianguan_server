@@ -447,6 +447,35 @@ public class ProjectsService {
         return new ResponseBase(200, "查询成功!", users);
     }
 
+    public ResponseBase getUserByRoleKey(Integer projectId, String roleKey){
+        if (projectId <= 0){
+            return new ResponseBase(200, "请输入有效的项目id!");
+        }
+        Integer count1 = projectsDAO.getCountById(projectId);
+        if (count1 <= 0){
+            return new ResponseBase(200, "该项目id无数据!");
+        }
+
+        Integer count2 = projectsDAO.getRoleCountById(projectId);
+        if (count2 <= 0){
+            return new ResponseBase(200, "该角色id无数据!");
+        }
+        SsFProjects project = projectsDAO.getProjectById(projectId);
+        List<Integer> groupids = Arrays.stream(project.getGroupid().split(","))
+                .map(Integer::parseInt)
+                .collect(Collectors.toList());
+
+        List<Integer> userIds = Lists.newArrayList();
+
+        for (Integer groupid : groupids) {
+            List<Integer> userids = ssFUserGroupDAO.getUserIdsByGroupsIds(groupid);
+            userIds.addAll(userids);
+        }
+
+        List<SsFUsers> users = ssFUserRoleDAO.getUsersByRoleKey(roleKey);
+
+        return new ResponseBase(200, "查询成功!", users);
+    }
     public ResponseBase getRoleByUserId(Integer projectId, Integer userid){
         if (projectId <= 0){
             return new ResponseBase(200, "请输入有效的项目id!");

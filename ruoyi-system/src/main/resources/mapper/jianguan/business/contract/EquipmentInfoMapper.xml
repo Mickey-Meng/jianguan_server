@@ -26,7 +26,7 @@
     <select id="getPageInfo" resultMap="BaseResultMap" parameterType="com.ruoyi.jianguan.business.contract.domain.dto.EquipmentInfoPageDTO">
         select a.* from zz_equipment_info a
         left join zz_equipment_enter p on a.enter_id = p.id
-        where p.project_id = #{pageDto.projectId} and p.build_section = #{pageDto.buildSection}
+        where  p.build_section = #{pageDto.buildSection}
         <if test="pageDto.equipmentType != null and pageDto.equipmentType != ''">
             and a.equipment_type like concat('%',#{pageDto.equipmentType},'%')
         </if>

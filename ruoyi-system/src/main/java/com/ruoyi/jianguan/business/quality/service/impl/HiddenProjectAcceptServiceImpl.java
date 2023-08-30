@@ -168,7 +168,13 @@ public class HiddenProjectAcceptServiceImpl extends ServiceImpl<HiddenProjectAcc
                 //循环属性
                 acceptList.forEach(accept -> {
                     //状态
-                    accept.setStatusStr(accept.getStatus() == 0 ? "审批中" : "已审批");
+                    if(accept.getStatus() == 0) {
+                        accept.setStatusStr("审批中");
+                    } else if(accept.getStatus() == 1) {
+                        accept.setStatusStr("已审批");
+                    }else {
+                        accept.setStatusStr("已驳回");
+                    }
                     accept.setConstructdpts(jgProjectItemVo.getConstructDept());
                     accept.setSupervisorDepts(jgProjectItemVo.getSupervisorDept());
 

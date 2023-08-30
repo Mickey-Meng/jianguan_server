@@ -92,6 +92,7 @@ ComeGoMoneyServiceImpl extends ServiceImpl<ComeGoMoneyMapper, ComeGoMoney> imple
         }
         comeGoMoney.setUpdateUserId(LoginHelper.getUserId().intValue());
         comeGoMoney.setUpdateTime(new Date());
+        comeGoMoney.setStatus(1);
         //保存
         boolean saveOrUpdate = this.saveOrUpdate(comeGoMoney);
         //保存成功且新增

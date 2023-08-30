@@ -41,7 +41,7 @@
     <select id="getPageInfo" parameterType="com.ruoyi.jianguan.business.quality.domain.dto.ProjectOpenPageDTO"
             resultType="com.ruoyi.jianguan.business.quality.domain.vo.ProjectOpenPageVo">
         select a.*,p.name as projectName,s.NAME as buildSectionName,u.nick_name as createUserName from  zz_project_open a
-        left join ss_f_projects p on p.ID = a.project_id
+        left join ss_f_projects p on p.ID = a.build_section
         left join ss_f_projects s on a.build_section = s.ID
         left join sys_user u on a.create_user_id = u.user_id
         where   a.build_section = #{pageDto.buildSection}

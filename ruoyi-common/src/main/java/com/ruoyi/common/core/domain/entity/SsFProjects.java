@@ -22,6 +22,12 @@ public class SsFProjects implements Serializable {
      */
     private String name;
 
+
+    /**
+     * 项目名称
+     */
+    private String projectname;
+
     /**
      * 编码
      */
@@ -218,6 +224,13 @@ public class SsFProjects implements Serializable {
         this.projectpic = projectpic;
     }
 
+    public String getProjectname() {
+        return projectname;
+    }
+
+    public void setProjectname(String projectname) {
+        this.projectname = projectname;
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

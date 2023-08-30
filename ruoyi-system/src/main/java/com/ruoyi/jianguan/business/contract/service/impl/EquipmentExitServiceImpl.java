@@ -160,7 +160,14 @@ public class EquipmentExitServiceImpl extends ServiceImpl<EquipmentExitMapper, E
         //设备信息
         vo.setEquipmentInfo(JSONArray.parseArray(equipmentExit.getEquipmentInfo(), EquipmentInfo.class));
         //状态信息
-        vo.setStatusStr(equipmentExit.getStatus() == 0 ? "审批中" : "已审批");
+        //状态
+        if(equipmentExit.getStatus() == 0) {
+            vo.setStatusStr("审批中");
+        } else if(equipmentExit.getStatus() == 1) {
+            vo.setStatusStr("已审批");
+        }else {
+            vo.setStatusStr("已驳回");
+        }
         vo.setAttachment(JSONArray.parseArray(equipmentExit.getAttachment(), FileModel.class));
         return vo;
     }

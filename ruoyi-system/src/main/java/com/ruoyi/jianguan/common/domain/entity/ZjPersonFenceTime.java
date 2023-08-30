@@ -1,10 +1,12 @@
 package com.ruoyi.jianguan.common.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.ruoyi.jianguan.common.domain.dto.PostDTO;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -37,14 +39,14 @@ public class ZjPersonFenceTime implements Serializable {
      */
     @JsonFormat(pattern = "HH:mm:ss", timezone = "GMT+8")
     @ApiModelProperty(value = "打卡开始时间")
-    private Date clockInStartTime;
+    private String clockInStartTime;
 
     /**
      * 打卡结束时间
      */
     @JsonFormat(pattern = "HH:mm:ss", timezone = "GMT+8")
     @ApiModelProperty(value = "打卡结束时间")
-    private Date clockInEndTime;
+    private String clockInEndTime;
 
     /**
      * 打卡时常
@@ -111,19 +113,19 @@ public class ZjPersonFenceTime implements Serializable {
         this.posts = posts;
     }
 
-    public Date getClockInStartTime() {
+    public String getClockInStartTime() {
         return clockInStartTime;
     }
 
-    public void setClockInStartTime(Date clockInStartTime) {
+    public void setClockInStartTime(String clockInStartTime) {
         this.clockInStartTime = clockInStartTime;
     }
 
-    public Date getClockInEndTime() {
+    public String getClockInEndTime() {
         return clockInEndTime;
     }
 
-    public void setClockInEndTime(Date clockInEndTime) {
+    public void setClockInEndTime(String clockInEndTime) {
         this.clockInEndTime = clockInEndTime;
     }
 

@@ -45,6 +45,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.groups.Default;
 import javax.xml.stream.XMLStreamException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 工作流操作控制器类。
@@ -207,19 +208,19 @@ public class FlowEntryController {
         flowTypePageDTO.setPageSize(1000);
         flowTypePageDTO.setPageNum(1);
         PageInfo<FlowTypeDetailVo> pageInfo = flowTypeService.getPageInfo(flowTypePageDTO);
-        if (ObjectUtil.isNull(pageInfo) || CollUtil.isEmpty(pageInfo.getList()) || pageInfo.getList().size() != 1) {
-            FlowType flowType = new FlowType();
-            flowType.setFlowKey(flowEntry.getProcessDefinitionKey());
-            flowType.setFlowName(flowEntry.getProcessDefinitionName());
-            flowType.setDeletedFlag(1);
-            flowType.setCreateUserId(LoginHelper.getUserId().intValue());
-            flowType.setCreateTime(new Date());
-            flowTypeService.addOrUpdate(flowType);
-            return ResponseResult.success();
+        if (ObjectUtil.isNotNull(pageInfo) || CollUtil.isNotEmpty(pageInfo.getList())) {
+            flowTypeService.removeBatchByIds(pageInfo.getList().stream().map(FlowTypeDetailVo::getId).collect(Collectors.toList()));
+            for (FlowTypeDetailVo flowTypeDetailVo : pageInfo.getList()) {
+                FlowType flowType = new FlowType();
+                flowType.setFlowKey(flowEntry.getProcessDefinitionKey());
+                flowType.setFlowName(flowTypeDetailVo.getFlowName());
+                flowType.setDeletedFlag(1);
+                flowType.setCreateUserId(LoginHelper.getUserId().intValue());
+                flowType.setCreateTime(new Date());
+                flowTypeService.addOrUpdate(flowType);
+            }
         }
-
         flowAuditEntryService.removeByFlowKey(flowEntry.getProcessDefinitionKey());
-
 //        重新发布工作流
 //          1、typeId清理zz_flow_audit_entry表数据
 //          2、调用生成节点功能，重新生成节点

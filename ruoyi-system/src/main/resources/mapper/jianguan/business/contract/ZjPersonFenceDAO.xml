@@ -61,10 +61,10 @@
                 `postId` = #{postId,jdbcType=INTEGER},
             </if>
             <if test="clockInStartTime != null">
-                `clockInStartTime` = #{clockInStartTime,jdbcType=TIMESTAMP},
+                `clockInStartTime` = #{clockInStartTime,jdbcType=VARCHAR},
             </if>
             <if test="clockInEndTime != null">
-                `clockInEndTime` = #{clockInEndTime,jdbcType=TIMESTAMP},
+                `clockInEndTime` = #{clockInEndTime,jdbcType=VARCHAR},
             </if>
             <if test="clockInOften != null">
                 `clockInOften` = #{clockInOften,jdbcType=INTEGER},

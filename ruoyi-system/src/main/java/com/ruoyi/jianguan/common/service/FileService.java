@@ -13,6 +13,8 @@ import com.ruoyi.jianguan.common.dao.ZjFileDAO;
 import com.ruoyi.jianguan.common.domain.dto.ZjFileDTO;
 import com.ruoyi.jianguan.common.domain.entity.ZjFile;
 import com.ruoyi.common.utils.jianguan.zjrw.FileDownLoadUtils;
+import com.ruoyi.system.domain.SysOss;
+import com.ruoyi.system.service.ISysOssService;
 import net.coobird.thumbnailator.Thumbnails;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.poi.util.IOUtils;
@@ -46,6 +48,8 @@ public class FileService {
 
     @Autowired
     GridFSBucket gridFSBucket;
+    @Autowired
+    ISysOssService iSysOssService;
 
     @Autowired
     private FileMapper fileMapper;
@@ -169,32 +173,34 @@ public class FileService {
     }
 
     public ResponseBase uploadVideo(MultipartHttpServletRequest request) {
-        try {
-            List<Map<String, String>> result = Lists.newArrayList();
-            Map<String, String> maps = Maps.newHashMap();
-            MultiValueMap<String, MultipartFile> multiFileMap = request.getMultiFileMap();
-            //拿到文件名
-            Iterator<String> fileNames = request.getFileNames();
-            while (fileNames.hasNext()) {
-                List<MultipartFile> multipartFiles = multiFileMap.get(fileNames.next());
-                for (MultipartFile file : multipartFiles) {
-                    //获取上传文件的原名
-                    String name = file.getOriginalFilename();
-                    File file1 = new File(videoUrl);
-                    if (!file1.exists()) {
-                        file1.mkdirs();
-                    }
-                    FileCopyUtils.copy(file.getBytes(), new File(videoUrl + File.separator + name));
-                    maps.put("fileUrl", videoUrl + "/" + name);
-                    maps.put("fileName", name);
-                    result.add(maps);
-                }
+        List<Map<String, String>> result = Lists.newArrayList();
+        Map<String, String> maps = Maps.newHashMap();
+        MultiValueMap<String, MultipartFile> multiFileMap = request.getMultiFileMap();
+        //拿到文件名
+        Iterator<String> fileNames = request.getFileNames();
+        while (fileNames.hasNext()) {
+            List<MultipartFile> multipartFiles = multiFileMap.get(fileNames.next());
+            for (MultipartFile file : multipartFiles) {
+                SysOss oss = iSysOssService.upload(file);
+//                Map<String, String> map = new HashMap<>(2);
+//                map.put("url", oss.getUrl());
+//                map.put("fileName", oss.getOriginalName());
+//                map.put("ossId", oss.getOssId().toString());
+
+
+//                    //获取上传文件的原名
+//                    String name = file.getOriginalFilename();
+//                    File file1 = new File(videoUrl);
+//                    if (!file1.exists()) {
+//                        file1.mkdirs();
+//                    }
+//                    FileCopyUtils.copy(file.getBytes(), new File(videoUrl + File.separator + name));
+                maps.put("fileUrl", oss.getUrl());
+                maps.put("fileName", oss.getOriginalName());
+                result.add(maps);
             }
-            return new ResponseBase(200, "上传成功!", result);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return new ResponseBase(200, e.getMessage(), e.getStackTrace());
         }
+        return new ResponseBase(200, "上传成功!", result);
     }
 
     public ResponseBase previewVideo(String url, HttpServletRequest request, HttpServletResponse response) {
@@ -223,11 +229,15 @@ public class FileService {
         }
     }
 
-    public void download(String fileId, HttpServletResponse response, HttpServletRequest request) throws Exception {
+    public void download(String fileId, HttpServletResponse response, HttpServletRequest request, String fileName) throws Exception {
         GridFSFile gridFSFile = fileMapper.find(fileId);
         byte[] bytes = Base64.decodeBase64(gridFSFile.getFilename());
-        String fileName = new String(bytes);
-
+        if (null == fileName) {
+            fileName = new String(bytes);
+        }else {
+            String replace = fileName.replace("-", "+").replace("_", "/");
+            fileName = new String(Base64.decodeBase64(replace));
+        }
         //针对IE或者以IE为内核的浏览器：
         if (request.getHeader("User-Agent").toUpperCase().contains("MSIE") ||
                 request.getHeader("User-Agent").toUpperCase().contains("TRIDENT")

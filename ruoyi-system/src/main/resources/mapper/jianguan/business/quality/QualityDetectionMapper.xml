@@ -42,10 +42,10 @@
             and JSON_CONTAINS(`detection_info`, JSON_OBJECT('detectionResult', #{pageDto.detectionResult}))
         </if>
         <if test="pageDto.createStartTime != null">
-            and build_section >= #{pageDto.createStartTime}
+            and a.create_time >= #{pageDto.createStartTime}
         </if>
         <if test="pageDto.createEndTime != null">
-            and build_section &lt;= #{pageDto.createEndTime}
+            and a.create_time &lt;= #{pageDto.createEndTime}
         </if>
         <if test="pageDto.draftFlag != null">
             and draft_flag = #{pageDto.draftFlag}

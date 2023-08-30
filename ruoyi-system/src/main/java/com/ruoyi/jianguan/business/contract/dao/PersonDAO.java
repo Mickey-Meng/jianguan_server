@@ -119,6 +119,8 @@ public interface PersonDAO {
 
     List<SsFUsers> getByRoleIdAndProjectId(@Param("roleId") Integer roleid,
                                @Param("projectId")Integer projectId);
+    List<SsFUsers> getByRoleKeyAndProjectId(@Param("roleKey") String roleKey,
+                               @Param("projectId")Integer projectId);
 
     List<SsFUsers> getByRoleId(@Param("roleid") Integer roleid,
                                @Param("list")List<Integer> groupId);
@@ -158,7 +160,7 @@ public interface PersonDAO {
     String getHisInstanceIdByBusinessKey(String key);
 
     // #118 modify mengzhengbin 20230405 修改：group by subDate desc 改为 order by subDate desc。 [S]
-    @Select("select * from zj_person where status = 1  and  projectId = #{projectId} order by subDate desc")
+    @Select("select * from zj_person where status = 2  and  projectId = #{projectId} order by subDate desc")
     List<PersonDTO> getAllFinishContracts( @Param("projectId")Integer projectId);
     // #118 --[E]
 
@@ -176,7 +178,7 @@ public interface PersonDAO {
             "LEFT JOIN sys_user_role b ON a.recordId = b.user_id " +
             "LEFT JOIN sys_role c ON b.role_id = c.role_id " +
             "LEFT JOIN sys_role d ON c.parent_id = d.role_id  " +
-            " where d.role_id =  #{roleId} and a.status = 1 and  projectId = #{projectId} order by a.subDate")
+            " where d.role_id =  #{roleId} and a.status = 2 and  projectId = #{projectId} order by a.subDate")
     List<PersonDTO> getContractByRoleId(@Param("roleId")Integer roleId,@Param("projectId")Integer projectId);
 
     @Select("SELECT a.*  FROM " +

@@ -120,6 +120,13 @@ public class ProjectsController {
         return projectsService.getUserByRoleId(projectid, roleid);
     }
 
+    @PostMapping(value = "/getUserByRoleKey")
+    @ApiOperation(value = "通过角色id获取用户信息")
+    public ResponseBase getUserByRoleKey(@RequestParam(value = "projectid")Integer projectid,
+                                        @RequestParam(value = "roleKey")String roleKey){
+        return projectsService.getUserByRoleKey(projectid, roleKey);
+    }
+
     @PostMapping(value = "/getRoleByUserId")
     @ApiOperation(value = "通过用户id获取角色信息")
     public ResponseBase getRoleByUserId(@RequestParam(value = "projectid")Integer projectid,

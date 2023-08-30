@@ -145,10 +145,7 @@ public class ComponentController {
     public ResponseBase getTree(@RequestParam(value ="projectId",required = false) Integer projectId,
                                 @RequestParam(value ="type") String type){
         setProjectId(projectId);
-        //当项目id没有传时, 默认为3
-        if(ObjectUtils.isEmpty(projectId) || projectId == null){
-            projectId = 3;
-        }
+
         if(!type.equals("QL") && !type.equals("SD") && !type.equals("LM")){
             return new ResponseBase(601,"不支持的类型" + type, new BaseTree());
         }

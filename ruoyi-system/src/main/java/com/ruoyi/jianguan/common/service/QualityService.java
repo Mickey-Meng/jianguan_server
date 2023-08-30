@@ -484,41 +484,35 @@ public class QualityService {
             return new ResponseBase(200, "请输入有效的项目id!");
         }
         Integer count1 = projectsDAO.getCountById(projectId);
-        if (count1 <= 0){
+        if (count1 <= 0) {
             return new ResponseBase(200, "该项目id无数据!");
         }
-//        if(!ObjectUtils.isEmpty(singleProjectId)){
-//            List<ZjQualityEvent> zjQualityEvent = zjQualityEventDAO.getAllStatusSafeByProjectcode(singleProjectId, projectId);
-            // yangaogao 改为查询该项目向下，所有的质量管理事件
-            List<ZjQualityEventDTO> zjQualityEvent = zjQualityEventDAO.getAllStatusQualityByProjectcode(projectId);
-
-
-            return new ResponseBase(200,"查询成功",zjQualityEvent);
-//        }
-        /*List<ZjQualityEvent> zjSafeEventList = Lists.newArrayList();
+        if (!ObjectUtils.isEmpty(singleProjectId)) {
+            List<ZjQualityEvent> zjQualityEvent = zjQualityEventDAO.getAllStatusSafeByProjectcode(singleProjectId, projectId);
+            return new ResponseBase(200, "查询成功", zjQualityEvent);
+        }
+        List<ZjQualityEvent> zjSafeEventList = Lists.newArrayList();
 
         Integer userId = LoginHelper.getUserId().intValue();
 
-        if (projectId == 3){
-            List<Integer> gongqus = ssFUserGroupDAO.getGroupsByUserId(userId);
-            List<Integer> allGroups = ssFUserGroupDAO.getAllGroups();
-            if (gongqus.size() > 0){
-                if (gongqus.contains(2)){
-                    gongqus.clear();
-                    gongqus = allGroups;
-                }
-                StringBuilder sb = new StringBuilder();
-                for (Integer i : gongqus) {
-                    sb.append(i).append(",");
-                }
-                String abc = sb.substring(0, sb.toString().length() - 1);
-                zjSafeEventList = zjQualityEventDAO.getAllStatusQualityByModify(abc);
-                if(zjSafeEventList.size()==0){
-                    return new ResponseBase(300,"暂无数据");
-                }
+        List<Integer> gongqus = ssFUserGroupDAO.getGroupsByUserId(userId);
+//      20230828 yangaogao  List<Integer> allGroups = ssFUserGroupDAO.getAllGroups();
+        if (gongqus.size() > 0) {
+           /* if (gongqus.contains(2)) {
+                gongqus.clear();
+                gongqus = allGroups;
+            }*/
+            StringBuilder sb = new StringBuilder();
+            for (Integer i : gongqus) {
+                sb.append(i).append(",");
             }
-        }*/
-//        return new ResponseBase(200,"查询成功",zjSafeEventList);
+            String abc = sb.substring(0, sb.toString().length() - 1);
+            zjSafeEventList = zjQualityEventDAO.getAllStatusQualityByModify(abc);
+            if (zjSafeEventList.size() == 0) {
+                return new ResponseBase(300, "暂无数据");
+            }
+        }
+        return new ResponseBase(200, "查询成功", zjSafeEventList);
     }
 
     public ResponseBase getAllSafeEvent(Integer projectId, Integer singleProjectId) {

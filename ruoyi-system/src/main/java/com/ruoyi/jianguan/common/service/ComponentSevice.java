@@ -333,10 +333,11 @@ public class ComponentSevice {
             }
 
             BaseTree baseTree1 = CacheProject.toBeBaseTree(gqConponent);
-
+            // 获取该工区下属的所有 单位工程信息
             List<SsFGroups> projects = ssFGroupsDao.getByParentIdType(gongQuId, type);
             List<BaseTree> gqList = Lists.newArrayList();
             for (SsFGroups project : projects) {
+                // 获取单位工程信息
                 ZjFGroupsProjects projectCodeByProjectId = zjFGroupsProjectsDAO.getProjectCodeByProjectId(project.getId());
                 BaseTree conponentProject = CacheProject.PROJECTCACHE.get(projectCodeByProjectId.getProjectid());
                 gqList.add(conponentProject);

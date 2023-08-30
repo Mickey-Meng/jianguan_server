@@ -362,7 +362,7 @@ public class CountService {
                     });
 
                     map.put("act", new CountData(planAllSum, actAllSum, actmap));
-                    map.put("plan", new CountData(planAllSum, actAllSum, actmap));
+                    map.put("plan", new CountData(planAllSum, actAllSum, planmap));
                     return new ResponseBase(200, "查询成功", map);
                 } else {
                     //有开始与结束时间

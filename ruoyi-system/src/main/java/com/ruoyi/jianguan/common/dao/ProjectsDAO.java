@@ -178,8 +178,9 @@ public interface ProjectsDAO {
             " where d.conponentcode = #{code}")
     Integer getProjectIdByCode(@Param("code")String code);
 
-    @Select("select a.* from ss_f_projects a " +
+    @Select("select a.*, d.name as projectname from ss_f_projects a " +
             " left join ss_f_projects b on a.id = b.parentid " +
+            " left join ss_f_projects d on d.id = a.parentid " +
             " left join ss_f_user_project c on b.id = c.GROUPID " +
             " where c.USERID = #{userId} group by a.name ORDER BY a.STORDER asc")
     List<SsFProjects> getSectionProjectsIdByUserId(@Param("userId")Integer userId);

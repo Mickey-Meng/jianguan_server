@@ -4,6 +4,8 @@ import cn.hutool.core.util.ObjUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -11,8 +13,11 @@ import com.ruoyi.common.core.domain.entity.FileModel;
 import com.ruoyi.common.core.domain.object.ResponseBase;
 import com.ruoyi.common.core.sequence.util.IdUtil;
 import com.ruoyi.common.enums.BimFlowKey;
+import com.ruoyi.common.helper.LoginHelper;
+import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.flowable.domain.dto.FlowTaskCommentDto;
 import com.ruoyi.flowable.service.FlowStaticPageService;
+import com.ruoyi.jianguan.business.constructionDesign.domain.entity.ConstructionDesign;
 import com.ruoyi.jianguan.business.contract.domain.dto.ConstructionPlanPageDTO;
 import com.ruoyi.jianguan.business.contract.domain.dto.ConstructionPlanSaveDTO;
 import com.ruoyi.jianguan.business.contract.domain.entity.ConstructionPlan;
@@ -26,9 +31,11 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -113,5 +120,21 @@ public class ConstructionPlanServiceImpl extends ServiceImpl<ConstructionPlanMap
         PageHelper.startPage(pageDto.getPageNum(), pageDto.getPageSize());
         List<ConstructionPlanPageVo> constructionPlanPageVos = constructionPlanMapper.getPageInfo(pageDto);
         return new PageInfo<>(constructionPlanPageVos);
+    }
+
+    @Override
+    public List<ConstructionPlan> getExpiryRemindersList(String name) {
+        LambdaQueryWrapper<ConstructionPlan> lqw = Wrappers.lambdaQuery();
+        // 结束日期小于等于当前日期、结束日期大于等于当前日期-5、未审批完成的数据、当前登录用户等于责任人
+        lqw.le(ConstructionPlan::getPlainEndTime, DateUtils.getNowDate());
+        lqw.ge(ConstructionPlan::getPlainEndTime, DateUtils.addDays(new Date(), -5));
+        lqw.eq(ConstructionPlan::getResponsiblePersonId, LoginHelper.getUserId());
+        lqw.ne(ConstructionPlan::getStatus, 1).or().ne(ConstructionPlan::getReportStatus, 1);
+        List<ConstructionPlan> expiryRemindersList = constructionPlanMapper.selectList(lqw);
+        if (Objects.equals(name, BimFlowKey.constructionPlanReport.getName())) {
+            expiryRemindersList = expiryRemindersList.stream().filter(constructionPlan -> (constructionPlan.getReportStatus() != 0) && Objects.isNull(constructionPlan.getAttachment()))
+                    .collect(Collectors.toList());
+        }
+        return expiryRemindersList;
     }
 }

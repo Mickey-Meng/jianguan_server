@@ -165,7 +165,13 @@ public class QualityActivityServiceImpl extends ServiceImpl<QualityActivityMappe
 //                pageVo.setBuildUnits(sgdws);
                 pageVo.setConstructdpts(constructDept);
                 //状态
-                pageVo.setStatusStr(pageVo.getStatus() == 0 ? "审批中" : "已审批");
+                if(pageVo.getStatus() == 0) {
+                    pageVo.setStatusStr("审批中");
+                } else if(pageVo.getStatus() == 1) {
+                    pageVo.setStatusStr("已审批");
+                }else {
+                    pageVo.setStatusStr("已驳回");
+                }
             });
         }
         return new PageInfo<>(pageVoList);

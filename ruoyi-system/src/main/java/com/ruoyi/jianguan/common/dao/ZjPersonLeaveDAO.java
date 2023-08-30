@@ -51,7 +51,7 @@ public interface ZjPersonLeaveDAO {
     ZjPersonLeave getLeaveByProcessId(@Param("processId")String processId);
 
     //todo group by subDate desc
-    @Select("select * from zj_person_leave where status = 1 ")
+    @Select("select * from zj_person_leave where status = 1 order by startTime desc")
     List<ZjPersonLeave> getAllFinishLeaves();
 
     @Select("select * from zj_person_leave order by subDate desc")
@@ -89,7 +89,7 @@ public interface ZjPersonLeaveDAO {
                                                   @Param("pageSize")Integer pageSize);
 
     @Select("select * from zj_person_leave where " +
-            " leavePersonId = #{userId} and `status` = 2")
+            " leavePersonId = #{userId} and `status` = 2 order by startTime desc" )
     ZjPersonLeave getFinishLeaveByUserId(@Param("userId")Integer userId);
 
     /**

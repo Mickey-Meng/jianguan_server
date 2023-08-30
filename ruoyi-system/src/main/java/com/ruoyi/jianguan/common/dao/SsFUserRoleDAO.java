@@ -35,6 +35,22 @@ public interface SsFUserRoleDAO {
             "from sys_user su LEFT JOIN  sys_user_role sur on su.user_id= sur.user_id" +
             "where sur.role_id = #{roleid}")
     List<SsFUsers> getUsersByRoleid(@Param("roleid")Integer roleid);
+
+
+    @Select("select su.user_id as id," +
+            "su.user_name as  username," +
+            "su.nick_name as NAME," +
+            "su.user_name as usercode," +
+            "su.create_time as sttime," +
+            "su.`status` as ststate," +
+            "0 as  storder," +
+            "null as ugid " +
+            "from sys_user su LEFT JOIN  sys_user_role sur on su.user_id= sur.user_id " +
+            "left join sys_role sr on sur.role_id = sr.role_id" +
+
+            "where sr.role_key  = #{roleKey}")
+    List<SsFUsers> getUsersByRoleKey(@Param("roleKey")String roleKey);
+
 /*
     @Select("select a.id, a.username, a.name,a.usercode, " +
             "a.sttime, a.ststate, a.storder, a.ugid " +
