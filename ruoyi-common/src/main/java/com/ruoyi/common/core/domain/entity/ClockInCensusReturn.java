@@ -2,6 +2,8 @@ package com.ruoyi.common.core.domain.entity;
 
 import io.swagger.annotations.ApiModelProperty;
 
+import java.util.Date;
+
 /**
  * @author : Chen_ZhiWei
  * @Date : Create file in 2022/9/2 14:57
@@ -18,6 +20,9 @@ public class ClockInCensusReturn {
 
     @ApiModelProperty(value = "用户账号状态: 0-冻结, 1-启用")
     private Integer ststate;
+
+    @ApiModelProperty(value = "更新时间")
+    private Date userUpdateTime;
 
     @ApiModelProperty(value = "单位id")
     private Integer unitId;
@@ -42,6 +47,14 @@ public class ClockInCensusReturn {
 
     @ApiModelProperty(value = "考勤状态: 1-已打卡, 2-未打卡, 3-请休假")
     private Integer clockInState;
+
+    public Date getUserUpdateTime() {
+        return userUpdateTime;
+    }
+
+    public void setUserUpdateTime(Date userUpdateTime) {
+        this.userUpdateTime = userUpdateTime;
+    }
 
     public Integer getUserId() {
         return userId;

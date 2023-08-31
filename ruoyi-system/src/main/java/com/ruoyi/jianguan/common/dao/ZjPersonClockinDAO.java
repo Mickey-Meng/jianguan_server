@@ -109,4 +109,13 @@ public interface ZjPersonClockinDAO {
     List<ZjPersonClockin> getGroupClockInfo(@Param("start") String start,
                                          @Param("end") String end,
                                          @Param("groupId")Integer groupId);
+
+    /**
+     * 根据开始、结束时间查询ZjPersonClockin对象列表数据
+     * @param startDateTime
+     * @param endDateTime
+     * @return
+     */
+    @Select("select * from zj_person_clockin where clockTime >= #{startTime} and clockTime <= #{endTime} ")
+    List<ZjPersonClockin> getPersonClockinListByDate(String startDateTime, String endDateTime);
 }

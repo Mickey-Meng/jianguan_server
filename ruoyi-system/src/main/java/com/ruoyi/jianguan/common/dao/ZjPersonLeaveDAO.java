@@ -138,4 +138,12 @@ public interface ZjPersonLeaveDAO {
 
     @Select("select * from zj_person_leave where status = #{state} order by subDate desc")
     List<ZjPersonLeave> getAllLeavesByState(Integer state);
+
+    /**
+     * 查询大于指定开始日期的请假数据
+     * @param startDateTime
+     * @return
+     */
+    @Select("select * from zj_person_leave where  `status` in (2, 3) and startTime >= #{startTime}")
+    List<ZjPersonLeave> getPersonLeaveListByStartDate(String startDateTime);
 }

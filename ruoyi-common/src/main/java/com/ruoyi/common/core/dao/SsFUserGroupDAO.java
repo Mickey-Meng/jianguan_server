@@ -250,4 +250,10 @@ public interface SsFUserGroupDAO {
 
     Integer getAllUserOnDutyByGroupIds(@Param("list") List<Integer> groupIds);
 
+    /**
+     * 针对getCensusList的优化
+     * @param units
+     * @return
+     */
+    List<ClockInCensusReturn> getClockInCensusList(List<Integer> units);
 }

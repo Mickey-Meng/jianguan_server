@@ -1,6 +1,8 @@
 package com.ruoyi.jianguan.common.service;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.date.DateTime;
+import cn.hutool.core.date.DateUtil;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.ruoyi.common.core.dao.SsFGroupsDAO;
@@ -36,7 +38,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
@@ -1187,7 +1191,7 @@ public class CountService {
             List<ClockInCensusReturn> leaveList = Lists.newArrayList();
 
             if (data.get("unitType") == null || data.get("unitType").equals("")) {
-                censusList = processClockInCensus(projectId, units, strDate);
+                censusList = processClockInCensus_New(projectId, units, strDate);
                 for (ClockInCensusReturn censusReturn : censusList) {
                     if (censusReturn.getClockInState() == 1) {
                         clockInList.add(censusReturn);
@@ -1216,7 +1220,7 @@ public class CountService {
                 if (unitType == 1) {
                     units.clear();
                     units.add(SGId);
-                    censusList = processClockInCensus(projectId, units, strDate);
+                    censusList = processClockInCensus_New(projectId, units, strDate);
                     for (ClockInCensusReturn censusReturn : censusList) {
                         if (censusReturn.getClockInState() == 1) {
                             clockInList.add(censusReturn);
@@ -1242,7 +1246,7 @@ public class CountService {
                 } else if (unitType == 2){
                     units.clear();
                     units.add(JLId);
-                    censusList = processClockInCensus(projectId, units, strDate);
+                    censusList = processClockInCensus_New(projectId, units, strDate);
                     for (ClockInCensusReturn censusReturn : censusList) {
                         if (censusReturn.getClockInState() == 1) {
                             clockInList.add(censusReturn);
@@ -1268,7 +1272,7 @@ public class CountService {
                 } else if (unitType == 3){
                     units.clear();
                     units.add(QZId);
-                    censusList = processClockInCensus(projectId, units, strDate);
+                    censusList = processClockInCensus_New(projectId, units, strDate);
                     for (ClockInCensusReturn censusReturn : censusList) {
                         if (censusReturn.getClockInState() == 1) {
                             clockInList.add(censusReturn);
@@ -1349,7 +1353,7 @@ public class CountService {
             List<Map<String, Object>> dataExcel = Lists.newArrayList();
 
             if (unitType == null || unitType.equals("")) {
-                censusList = processClockInCensus(projectId, units, date);
+                censusList = processClockInCensus_New(projectId, units, date);
                 for (ClockInCensusReturn censusReturn : censusList) {
                     if (censusReturn.getClockInState() == 1) {
                         clockInList.add(censusReturn);
@@ -1419,7 +1423,7 @@ public class CountService {
                 if (unitType == 1) {
                     units.clear();
                     units.add(SGId);
-                    censusList = processClockInCensus(projectId, units, date);
+                    censusList = processClockInCensus_New(projectId, units, date);
                     for (ClockInCensusReturn censusReturn : censusList) {
                         if (censusReturn.getClockInState() == 1) {
                             clockInList.add(censusReturn);
@@ -1487,7 +1491,7 @@ public class CountService {
                 } else if (unitType == 2){
                     units.clear();
                     units.add(JLId);
-                    censusList = processClockInCensus(projectId, units, date);
+                    censusList = processClockInCensus_New(projectId, units, date);
                     for (ClockInCensusReturn censusReturn : censusList) {
                         if (censusReturn.getClockInState() == 1) {
                             clockInList.add(censusReturn);
@@ -1555,7 +1559,7 @@ public class CountService {
                 } else if (unitType == 3){
                     units.clear();
                     units.add(QZId);
-                    censusList = processClockInCensus(projectId, units, date);
+                    censusList = processClockInCensus_New(projectId, units, date);
                     for (ClockInCensusReturn censusReturn : censusList) {
                         if (censusReturn.getClockInState() == 1) {
                             clockInList.add(censusReturn);
@@ -1768,5 +1772,109 @@ public class CountService {
             }
         }
         return censusList;
+    }
+
+    /**
+     * 优化点：
+     * 1、减少数据库IO操作->规避循环里操作数据库
+     * 2、合并部分SQL查询语句
+     * 3、重构代码结构，精简冗余代码
+     *
+     * @param projectId
+     * @param units
+     * @param paramDate
+     * @return
+     * @throws Exception
+     */
+    private List<ClockInCensusReturn> processClockInCensus_New(Integer projectId, List<Integer> units, String paramDate) throws Exception {
+        List<ClockInCensusReturn> clockInCensusList = ssFUserGroupDAO.getClockInCensusList(units);
+
+        String startDate = "2022-08-01";
+        String startTime = " 00:00:00";
+        String endTime = " 23:59:59";
+        String currentDate = DateUtils.getDateByDate(new Date());
+
+        // 按甲方要求 开始时间为 2022-08-01
+        String startDateTime = startDate.concat(startTime);
+        //结束时间为当天日期
+        String endDateTime = currentDate.concat(endTime);
+        //总天数:因为计算时没有把第一天计算在内, 因此最后需加一天
+        Integer totalDay = DateUtils.subtractTwoDate(startDate, currentDate) + 1;
+
+        //请假天数：查询大于指定开始日期的请假数据(此处需要前置查询，因为开始时间后面可能会重新赋值)
+        List<ZjPersonLeave> personLeaveList = leaveDAO.getPersonLeaveListByStartDate(startDateTime);
+        boolean isCurrentMonth = true;
+        if (StringUtils.isNotEmpty(paramDate)) {
+            DateTime paramFormatDate = DateUtil.parse(paramDate, "yyyy-MM-dd");
+            startDateTime = DateUtil.format(DateUtils.getFirstOfMonth(paramFormatDate), "yyyy-MM");
+            endDateTime = DateUtil.format(DateUtils.getLastOfMonth(paramFormatDate), "yyyy-MM");
+            //先判断传入的月份是否是本月
+            isCurrentMonth = DateUtils.inCurrentMonth(paramFormatDate);
+            totalDay = isCurrentMonth ? DateUtils.subtractTwoDate(startDateTime, endDateTime) + 1 : DateUtils.day(Integer.parseInt(paramDate.substring(5, 7)),Integer.parseInt(paramDate.substring(0, 4)));
+        }
+        // 根据开始、结束时间查询ZjPersonClockin对象列表数据
+        List<ZjPersonClockin> personClockinList = clockInDAO.getPersonClockinListByDate(startDateTime, endDateTime);
+
+        //循环更新考勤数据
+        Integer finalTotalDay = totalDay;
+        String finalEndDateTime = endDateTime;
+        clockInCensusList.stream().forEach(clockInCensusReturn -> {
+            // 当前用户考勤数据列表
+            List<ZjPersonClockin> currentPersonClockinList = personClockinList.stream().filter(personClockin -> personClockin.getAttendancePersonId().equals(clockInCensusReturn.getUserId()))
+                    .collect(Collectors.toList());
+            // 当前用户请假数据列表
+            List<ZjPersonLeave> currentPersonLeaveList = personLeaveList.stream().filter(personLeave -> personLeave.getLeavePersonId().equals(clockInCensusReturn.getUserId())).collect(Collectors.toList());
+
+            //已打卡天数就是该用户的打卡次数
+            Integer clockInDay = currentPersonClockinList.size();
+            //未打卡天数
+            Integer notClockInDay = finalTotalDay - currentPersonClockinList.size();
+            //请假天数
+            Double leaveDay = currentPersonLeaveList.stream().collect(Collectors.summingDouble(ZjPersonLeave::getLeaveDay));
+
+            // 查询用户UPDATETIME字段是否为空(目前运维系统未记录用户账号开启\冻结的时间,暂时用false控制不执行以下逻辑), 如果不为空说明该账号之前已经冻结/再次启动
+            if ( false && !Objects.isNull(clockInCensusReturn.getUserUpdateTime())) {
+                //再判断 月初这天是在该账号冻结启用之前还是之后 OR 相同
+                List<ZjPersonClockin> newPersonClockinList = Lists.newArrayList();
+                if (StringUtils.isNotEmpty(paramDate)) {
+                    if (clockInCensusReturn.getUserUpdateTime().compareTo(DateUtils.getFirstOfMonth(DateUtil.parse(paramDate, "yyyy-MM-dd"))) != 1) {
+                        // 用户账号启用时间在月初时间之前 - 需要重新查询出考勤数据(因为账号启用到该月初的数据考勤列表数据里不包含)
+                        newPersonClockinList = clockInDAO.getPersonClockinListByDate(DateUtil.format(clockInCensusReturn.getUserUpdateTime(), "yyyy-MM-dd"), finalEndDateTime);
+                    } else {
+                        // 用户账号启用时间在月初时间之后，从原列表筛选出启用日期之后的数据
+                        newPersonClockinList = currentPersonClockinList.stream().filter(personClockin -> personClockin.getClockTime().compareTo(clockInCensusReturn.getUserUpdateTime()) == 1).collect(Collectors.toList());
+                    }
+                }
+                //总天数:因为计算时没有把第一天计算在内, 因此最后需加一天
+                Integer newTotalDay = DateUtils.subtractTwoDate(DateUtils.getDateByDate(clockInCensusReturn.getUserUpdateTime()), currentDate) + 1;
+                //已打卡天数
+                clockInDay = newPersonClockinList.size();
+                //未打卡天数
+                notClockInDay = newTotalDay - newPersonClockinList.size();
+                //请假天数
+                leaveDay = currentPersonLeaveList.stream().filter(personLeave -> LocalDateTime.ofInstant(clockInCensusReturn.getUserUpdateTime().toInstant(), ZoneId.systemDefault()).compareTo(personLeave.getEndTime()) > -1).collect(Collectors.summingDouble(ZjPersonLeave::getLeaveDay));
+            }
+            //已打卡天数就是该用户的打卡次数
+            clockInCensusReturn.setClockInDay(clockInDay);
+            //未打卡天数
+            clockInCensusReturn.setNotClockInDay(notClockInDay);
+            //请假天数
+            clockInCensusReturn.setLeaveDay(leaveDay);
+            //考勤状态: 先查该用户打卡表今天是否有记录, 没有再查请假表今天是否有记录
+
+            Optional<ZjPersonClockin> personClockinOptional = currentPersonClockinList.stream().filter(personClockin -> personClockin.getProjectId().equals(projectId) &&
+                    personClockin.getClockTime().compareTo(DateUtil.parseDate(currentDate.concat(startTime)).toJdkDate()) > -1).findFirst();
+            Optional<ZjPersonLeave> personLeaveOptional = currentPersonLeaveList.stream().filter(personLeave -> personLeave.getProjectId().equals(projectId) &&
+                    personLeave.getEndTime().toLocalDate().isEqual(LocalDate.now())).findFirst();
+
+            if (personClockinOptional.isPresent()) {
+                clockInCensusReturn.setClockInState(1);
+            }
+            if (personLeaveOptional.isPresent()) {
+                clockInCensusReturn.setClockInState(3);
+            }
+            clockInCensusReturn.setClockInState(2);
+        });
+        return clockInCensusList;
     }
 }
