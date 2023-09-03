@@ -1755,14 +1755,21 @@ public class PersonService {
         if (count1 <= 0) {
             return new ResponseBase(200, "该项目id无数据!");
         }
-        String token = getRequest().getHeader("Authorization");
+
+        Integer userId = LoginHelper.getUserId().intValue();
+        String token = getRequest().getHeader("Authorization");// 从 http 请求头中取出 token
+        Set<String> roleKey = LoginHelper.getLoginUser().getRolePermission();
+        //add by yangaogao 20230731  管理员可以查看所有数据
         List<ZjPersonLeave> personLeaves = Lists.newArrayList();
         if (parentRoleId != null && !parentRoleId.equals("")) {
             Integer roleId = getRoleIdByRoleType(parentRoleId);
             personLeaves = personLeaveDAO.getLeavesByRoleId(roleId);
-        } else {
+        } else if (roleKey.contains("gly") || roleKey.contains("admin")){
             personLeaves = personLeaveDAO.getAllFinishLeaves();
+        }else{
+            personLeaves = personLeaveDAO.getFinishLeavesByUserId(userId);
         }
+
         if (personLeaves.size() > 0) {
             for (ZjPersonLeave personLeave : personLeaves) {
                 TaskCommentReturn commentReturn = taskCommentReturn(personLeave.getProcessInstanceId(), token);

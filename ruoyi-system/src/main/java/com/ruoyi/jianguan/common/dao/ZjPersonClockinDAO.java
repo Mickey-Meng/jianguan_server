@@ -116,6 +116,6 @@ public interface ZjPersonClockinDAO {
      * @param endDateTime
      * @return
      */
-    @Select("select * from zj_person_clockin where clockTime >= #{startTime} and clockTime <= #{endTime} ")
+    @Select("select * from zj_person_clockin where clockTime >= #{startDateTime} and clockTime <= #{endDateTime} ")
     List<ZjPersonClockin> getPersonClockinListByDate(String startDateTime, String endDateTime);
 }

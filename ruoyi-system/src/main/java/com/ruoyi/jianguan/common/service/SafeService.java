@@ -682,6 +682,7 @@ public class SafeService {
         //采用新逻辑
         safePerData = DateUtils.getDay(count);
         //获取到用户所拥有的工区权限
+        // TODO yangaogao 20230831 s  可以直接去当前用户所属关联当前项目查询对应工区LIST，不需要先查工区，再查项目下属所有工区，然后去并集。考虑到其他功能也用到此逻辑，需要统一升级
         Integer id = LoginHelper.getUserId().intValue();
         List<Integer> gongqus = ssFUserGroupDAO.getGroupsOfProjectByUserId(id);
         if (gongqus.size() == 0){
@@ -689,13 +690,15 @@ public class SafeService {
         }
         List<Integer> allGroups = ssFUserGroupDAO.getAllGroupsByProjectId(projectId);
         //当用户的角色权限为2时,默认拥有所有权限
-        if (gongqus.contains(2)){
+      /*  if (gongqus.contains(2)){
             gongqus.clear();
             gongqus = allGroups;
-        }
+        }*/
         //取两个集合的交集
         List<Integer> intersectionList =
                 (List<Integer>) CollectionUtils.intersection(allGroups, gongqus);
+        // TODO yangaogao 20230831 e  可以直接去当前用户所属关联当前项目查询对应工区LIST，不需要先查工区，再查项目下属所有工区，然后去并集。考虑到其他功能也用到此逻辑，需要统一升级
+
         List<Integer> gids = Lists.newArrayList();
         List<SafeGongQugroup> list = Lists.newArrayList();
         List<SafeGongQugroupOverdue> overdueCount = Lists.newArrayList();
@@ -716,27 +719,7 @@ public class SafeService {
                 //把没有查到的工区设置为空
                 for (Integer gongqu : intersectionList) {
                     SafeGongQugroup qugroup = new SafeGongQugroup();
-//                    if (gongqu == 4) {
-//                        qugroup.setGongquname("工区一");
-//                        qugroup.setGongquid(gongqu);
-//                        qugroup.setCount(0);
-//                        qugroup.setFinish(0);
-//                    } else if (gongqu == 5) {
-//                        qugroup.setGongquname("工区二");
-//                        qugroup.setGongquid(gongqu);
-//                        qugroup.setCount(0);
-//                        qugroup.setFinish(0);
-//                    } else if (gongqu == 6) {
-//                        qugroup.setGongquname("工区三");
-//                        qugroup.setGongquid(gongqu);
-//                        qugroup.setCount(0);
-//                        qugroup.setFinish(0);
-//                    } else if (gongqu == 7) {
-//                        qugroup.setGongquname("工区四");
-//                        qugroup.setGongquid(gongqu);
-//                        qugroup.setCount(0);
-//                        qugroup.setFinish(0);
-//                    }
+
                     SsFProjects project = ssFGroupsDAO.getProjectById(gongqu);
                     if (project != null){
                         qugroup.setGongquname(project.getName());
@@ -750,27 +733,9 @@ public class SafeService {
             for (SafeGongQugroup qugroup : list) {
                 SsFProjects project = ssFGroupsDAO.getProjectById(qugroup.getGongquid());
                 qugroup.setGongquname(project.getName());
-//                if (qugroup.getGongquid() == 4) {
-//                    qugroup.setGongquname("工区一");
-//                } else if (qugroup.getGongquid() == 5) {
-//                    qugroup.setGongquname("工区二");
-//                } else if (qugroup.getGongquid() == 6) {
-//                    qugroup.setGongquname("工区三");
-//                } else if (qugroup.getGongquid() == 7) {
-//                    qugroup.setGongquname("工区四");
-//                }
             }
             //获得超期数据
             for (SafeGongQugroupOverdue over : overdueCount) {
-//                if (over.getGongquid() == 4) {
-//                    over.setGongquname("工区一");
-//                } else if (over.getGongquid() == 5) {
-//                    over.setGongquname("工区二");
-//                } else if (over.getGongquid() == 6) {
-//                    over.setGongquname("工区三");
-//                } else if (over.getGongquid() == 7) {
-//                    over.setGongquname("工区四");
-//                }
                 SsFProjects project = ssFGroupsDAO.getProjectById(over.getGongquid());
                 over.setGongquname(project.getName());
             }

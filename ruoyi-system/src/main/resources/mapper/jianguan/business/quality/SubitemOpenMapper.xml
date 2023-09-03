@@ -59,11 +59,11 @@
 
     <select id="getPageInfo" parameterType="com.ruoyi.jianguan.business.quality.domain.dto.SubitemOpenPageDTO"
             resultType="com.ruoyi.jianguan.business.quality.domain.vo.SubitemOpenPageVo">
-        select a.*,p.name as projectName,u.nick_name as liveUserName,e.nick_name as buildUserName ,r.nick_name as checkUserName
+        select a.*,p.name as projectName,s.name as buildSectionName,   u.nick_name as liveUserName,e.nick_name as buildUserName ,r.nick_name as checkUserName
         ,x.nick_name as createUserName from
         zz_subitem_open a
-        left join ss_f_projects p on p.ID = a.build_section and p.GROUPLEVEL = 2
-        left join ss_f_projects s on s.ID = a.build_section and p.GROUPLEVEL = 3
+        left join ss_f_projects s on s.ID = a.build_section
+        left join ss_f_projects p on p.ID = s.PARENTID
         left join sys_user u on a.live_user = u.user_id
         left join sys_user e on e.user_id = a.build_user
         left join sys_user r on r.user_id = a.check_user

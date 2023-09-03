@@ -24,6 +24,9 @@ public class ClockInCensusReturn {
     @ApiModelProperty(value = "更新时间")
     private Date userUpdateTime;
 
+    @ApiModelProperty(value = "用户昵称")
+    private String nickName;
+
     @ApiModelProperty(value = "单位id")
     private Integer unitId;
 
@@ -54,6 +57,14 @@ public class ClockInCensusReturn {
 
     public void setUserUpdateTime(Date userUpdateTime) {
         this.userUpdateTime = userUpdateTime;
+    }
+
+    public String getNickName() {
+        return nickName;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
     }
 
     public Integer getUserId() {

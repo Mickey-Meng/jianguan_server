@@ -62,7 +62,9 @@ public interface ZjQualityEventDAO {
     List<ZjQualityEvent> getAllStatusSafeByProjectcode(@Param("projectid") Integer projectid,
                                                        @Param("projectId")Integer projectId);
 
-    @Select("select * from zj_quality_event where gongquid in   ( ${userid} )")
+
+    @Select("select zqe.* ,sf1.`NAME` as gongquname,sf2.name as singleProjectName  from zj_quality_event zqe  ,ss_f_projects sf1 ,ss_f_projects sf2  " +
+            "where  zqe.gongquid = sf1.id  and zqe.singleProjectId = sf2.id  and  zqe.gongquid in   ( ${userid} ) ")
     List<ZjQualityEvent> getAllStatusQualityByModify(@Param("userid") String userid);
 
     List<ZjQualityEvent> getGongquData(String toString);

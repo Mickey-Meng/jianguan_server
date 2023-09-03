@@ -53,9 +53,9 @@ public class ProduceController {
     @PostMapping("/getTypeStatus")
     @ApiOperation("获取工序图数据")
     public ResponseBase getRecodeStatus(@RequestBody RecodeQueryData recodeQueryData){
-      /*  if(recodeQueryData.getType()==null){
+        if(recodeQueryData.getType()==null || "".equals(recodeQueryData.getType())){
             recodeQueryData.setType("ZJ");
-        }*/
+        }
         return produceService.getRecodeStatus(recodeQueryData);
     }
 

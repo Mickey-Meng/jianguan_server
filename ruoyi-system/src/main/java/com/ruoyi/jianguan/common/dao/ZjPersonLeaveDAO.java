@@ -54,6 +54,11 @@ public interface ZjPersonLeaveDAO {
     @Select("select * from zj_person_leave where status = 1 order by startTime desc")
     List<ZjPersonLeave> getAllFinishLeaves();
 
+
+    @Select("select * from zj_person_leave where status = 1 and leavePersonId = #{userId} order by subDate desc ")
+    List<ZjPersonLeave> getFinishLeavesByUserId(@Param("userId")Integer userId);
+
+
     @Select("select * from zj_person_leave order by subDate desc")
     List<ZjPersonLeave> getAllByProjectId();
 

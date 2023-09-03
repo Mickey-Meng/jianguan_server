@@ -36,6 +36,11 @@ public class SubitemOpenPageVo extends NewBaseVo {
      */
     @ApiModelProperty(value = "项目名称")
     private String projectName;
+    /**
+     * 标段名称
+     */
+    @ApiModelProperty(value = "标段名称")
+    private String buildSectionName;
 
     /**
      * 施工单位

@@ -35,8 +35,8 @@
 
     <select id="getPageInfo" parameterType="com.ruoyi.jianguan.business.quality.domain.dto.BuildPlanPageDTO" resultType="com.ruoyi.jianguan.business.quality.domain.vo.BuildPlanPageVo">
         select a.*,p.name as projectName,s.name as buildSectionName,u.nick_name as createUserName  from zz_build_plan a
-        left join ss_f_projects p on a.project_id = p.ID and p.GROUPLEVEL = 2
-        left join ss_f_projects s on a.project_id = s.PARENTID and s.GROUPLEVEL = 3
+        left join ss_f_projects p on a.build_section = p.ID
+        left join ss_f_projects s on a.project_id = s.PARENTID
         left join   sys_user u on a.create_user_id = u.user_id
           where    a.build_section = #{pageDto.buildSection}
         <if test="pageDto.buildPlanName != null and pageDto.buildPlanName != ''">

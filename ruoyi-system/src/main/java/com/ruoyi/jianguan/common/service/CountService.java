@@ -976,7 +976,10 @@ public class CountService {
         Integer SGId = null;
         Integer JLId = null;
         Integer QZId = null;
-        List<String> strGroupIds = Arrays.asList(project.getGroupid().split(","));
+        List<String> strGroupIds = Lists.newArrayList();
+        if (!Objects.isNull(project.getGroupid())) {
+            strGroupIds = Arrays.asList(project.getGroupid().split(","));
+        }
         for (String strGroupId : strGroupIds) {
             Integer groupId = Integer.parseInt(strGroupId);
             SsFGroups group = ssFGroupsDAO.getGroupInfoById(groupId);
@@ -1079,7 +1082,10 @@ public class CountService {
         Integer QZId = null;
         Integer buildUnitId = null;
         Integer buildGroupId = null;
-        List<String> strGroupIds = Arrays.asList(project.getGroupid().split(","));
+        List<String> strGroupIds = Lists.newArrayList();
+        if (!Objects.isNull(project.getGroupid())) {
+            strGroupIds = Arrays.asList(project.getGroupid().split(","));
+        }
         List<Integer> intGroupIds = Lists.newArrayList();
         for (String strGroupId : strGroupIds) {
             Integer groupId = Integer.parseInt(strGroupId);
@@ -1127,7 +1133,10 @@ public class CountService {
         if (project == null) {
             return new ResponseBase(200, "没有找到该项目数据!");
         }
-        List<String> strGroupIds = Arrays.asList(project.getGroupid().split(","));
+        List<String> strGroupIds = Lists.newArrayList();
+        if (!Objects.isNull(project.getGroupid())) {
+            strGroupIds = Arrays.asList(project.getGroupid().split(","));
+        }
         List<Integer> intGroupIds = Lists.newArrayList();
         for (String strGroupId : strGroupIds) {
             Integer groupId = Integer.parseInt(strGroupId);
@@ -1167,7 +1176,10 @@ public class CountService {
             Integer JLId = null;
             Integer QZId = null;
             List<Integer> units = Lists.newArrayList();
-            List<String> strGroupIds = Arrays.asList(project.getGroupid().split(","));
+            List<String> strGroupIds = Lists.newArrayList();
+        if (!Objects.isNull(project.getGroupid())) {
+            strGroupIds = Arrays.asList(project.getGroupid().split(","));
+        }
             for (String strGroupId : strGroupIds) {
                 Integer groupId = Integer.parseInt(strGroupId);
                 SsFGroups group = ssFGroupsDAO.getGroupInfoById(groupId);
@@ -1317,7 +1329,10 @@ public class CountService {
             Integer JLId = null;
             Integer QZId = null;
             List<Integer> units = Lists.newArrayList();
-            List<String> strGroupIds = Arrays.asList(project.getGroupid().split(","));
+            List<String> strGroupIds = Lists.newArrayList();
+        if (!Objects.isNull(project.getGroupid())) {
+            strGroupIds = Arrays.asList(project.getGroupid().split(","));
+        }
             for (String strGroupId : strGroupIds) {
                 Integer groupId = Integer.parseInt(strGroupId);
                 SsFGroups group = ssFGroupsDAO.getGroupInfoById(groupId);
@@ -1805,9 +1820,9 @@ public class CountService {
         List<ZjPersonLeave> personLeaveList = leaveDAO.getPersonLeaveListByStartDate(startDateTime);
         boolean isCurrentMonth = true;
         if (StringUtils.isNotEmpty(paramDate)) {
-            DateTime paramFormatDate = DateUtil.parse(paramDate, "yyyy-MM-dd");
-            startDateTime = DateUtil.format(DateUtils.getFirstOfMonth(paramFormatDate), "yyyy-MM");
-            endDateTime = DateUtil.format(DateUtils.getLastOfMonth(paramFormatDate), "yyyy-MM");
+            DateTime paramFormatDate = DateUtil.parse(paramDate, "yyyy-MM");
+            startDateTime = DateUtil.format(DateUtils.getFirstOfMonth(paramFormatDate), "yyyy-MM-dd");
+            endDateTime = DateUtil.format(DateUtils.getLastOfMonth(paramFormatDate), "yyyy-MM-dd");
             //先判断传入的月份是否是本月
             isCurrentMonth = DateUtils.inCurrentMonth(paramFormatDate);
             totalDay = isCurrentMonth ? DateUtils.subtractTwoDate(startDateTime, endDateTime) + 1 : DateUtils.day(Integer.parseInt(paramDate.substring(5, 7)),Integer.parseInt(paramDate.substring(0, 4)));
@@ -1862,10 +1877,10 @@ public class CountService {
             clockInCensusReturn.setLeaveDay(leaveDay);
             //考勤状态: 先查该用户打卡表今天是否有记录, 没有再查请假表今天是否有记录
 
-            Optional<ZjPersonClockin> personClockinOptional = currentPersonClockinList.stream().filter(personClockin -> personClockin.getProjectId().equals(projectId) &&
-                    personClockin.getClockTime().compareTo(DateUtil.parseDate(currentDate.concat(startTime)).toJdkDate()) > -1).findFirst();
-            Optional<ZjPersonLeave> personLeaveOptional = currentPersonLeaveList.stream().filter(personLeave -> personLeave.getProjectId().equals(projectId) &&
-                    personLeave.getEndTime().toLocalDate().isEqual(LocalDate.now())).findFirst();
+            Optional<ZjPersonClockin> personClockinOptional = currentPersonClockinList.stream().filter(personClockin -> Objects.equals(personClockin.getProjectId(), projectId) &&
+                     !Objects.isNull(personClockin.getClockTime()) && personClockin.getClockTime().compareTo(DateUtil.parseDate(currentDate.concat(startTime)).toJdkDate()) > -1).findFirst();
+            Optional<ZjPersonLeave> personLeaveOptional = currentPersonLeaveList.stream().filter(personLeave -> Objects.equals(personLeave.getProjectId(), projectId) &&
+                    !Objects.isNull(personLeave.getEndTime()) && personLeave.getEndTime().toLocalDate().isEqual(LocalDate.now())).findFirst();
 
             if (personClockinOptional.isPresent()) {
                 clockInCensusReturn.setClockInState(1);

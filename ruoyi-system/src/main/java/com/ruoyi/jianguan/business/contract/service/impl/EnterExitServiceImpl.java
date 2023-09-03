@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.google.common.collect.Maps;
 import com.ruoyi.common.core.domain.entity.CompanyInfo;
 import com.ruoyi.common.core.domain.object.ResponseBase;
 import com.ruoyi.common.core.sequence.util.IdUtil;
@@ -113,15 +114,19 @@ public class EnterExitServiceImpl extends ServiceImpl<EnterExitMapper, EnterExit
         //保存人员清单
         if (Objects.nonNull(enterExitUsers) && !enterExitUsers.isEmpty()) {
             //新增赋值id
-            if (isSave) {
-                enterExitUsers.forEach(enterExitUser -> {
-                    enterExitUser.setId(IdUtil.nextLongId());
-                    enterExitUser.setEnterExitId(enterExit.getId());
-                });
-                enterExitUserService.saveBatch(enterExitUsers);
+            if (!isSave) {
+                // 修改:先删除旧数据，再新增新数据
+                Map<String, Object> columnMap = Maps.newHashMap();
+                columnMap.put("enter_exit_id", enterExit.getId());
+                enterExitUserService.removeByMap(columnMap);
             }
-            //更新人员信息
-            enterExitUserService.updateBatchById(enterExitUsers);
+            // 新增-直接保存
+            enterExitUsers.forEach(enterExitUser -> {
+                enterExitUser.setId(IdUtil.nextLongId());
+                enterExitUser.setEnterExitId(enterExit.getId());
+            });
+            // 执行保存当前界面最新的进退场用户数据
+            enterExitUserService.saveBatch(enterExitUsers);
         }
         //新增且成功
         if (saveOrUpdate && isStartFlow) {

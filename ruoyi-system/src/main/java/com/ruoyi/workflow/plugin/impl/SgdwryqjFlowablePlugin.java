@@ -16,7 +16,7 @@ import java.util.Objects;
  * @author G.X.L
  */
 @Slf4j
-@Component("sgdwryqj1")
+@Component("sgdwryqj")
 public class SgdwryqjFlowablePlugin implements FlowablePlugin {
 
     @Autowired

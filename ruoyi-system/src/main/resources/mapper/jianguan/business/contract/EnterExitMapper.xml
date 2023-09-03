@@ -31,7 +31,7 @@
 
     <select id="getPageInfo" parameterType="com.ruoyi.jianguan.business.contract.domain.dto.EnterExitPageDTO" resultType="com.ruoyi.jianguan.business.contract.domain.vo.EnterExitPageVo">
         select a.*,p.name as projectName,s.name as buildSectionName,u.nick_name as createUserName  from zz_enter_exit a
-        left join ss_f_projects s on a.build_section = s.ID and s.GROUPLEVEL = 3
+        left join ss_f_projects s on a.build_section = s.ID
         LEFT JOIN ss_f_projects p ON s.PARENTID = p.ID
         left join sys_user u on a.create_user_id = u.user_id
         where   a.build_section = #{pageDto.buildSection}

@@ -601,7 +601,7 @@
            (case when  pjctype is null   then '分部工程是空'
                  else pjctype end 	) as sxname
     from zj_conponent_producetime where projectcode = #{projectcode}
-                                    and projecttype = #{projecttype}
+
     group by projectcode, projectname, pjctype
   </select>
 
