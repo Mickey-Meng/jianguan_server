@@ -10,6 +10,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruoyi.common.core.dao.jianguan.ZjFGroupsProjectsDAO;
 import com.ruoyi.common.enums.BimFlowKey;
+import com.ruoyi.common.utils.MyPageUtil;
 import com.ruoyi.flowable.service.FlowAuditEntryService;
 import com.ruoyi.jianguan.business.quality.domain.dto.HiddenProjectAcceptPageDTO;
 import com.ruoyi.jianguan.business.quality.domain.dto.HiddenProjectAcceptSaveDTO;
@@ -37,10 +38,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 隐蔽工程验收记录 服务实现类
@@ -182,7 +180,8 @@ public class HiddenProjectAcceptServiceImpl extends ServiceImpl<HiddenProjectAcc
             }
         }
         //分页对象返回
-        return new PageInfo(acceptList);
+        return MyPageUtil.getPageInfo(acceptList.stream()
+                .sorted(Comparator.comparing(HiddenProjectAcceptPageVo::getCreateTime).reversed()), acceptList.size(), pageDto.getPageSize(), pageDto.getPageNum());
     }
 
     /**

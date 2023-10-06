@@ -176,4 +176,14 @@ public interface ISysRoleService {
      * @return 结果
      */
     int insertAuthUsers(Long roleId, Long[] userIds);
+
+
+    /***
+     * 通过父节点角色key获取下面所有子节点角色key
+     * @param roleKey
+     * @return
+     */
+    List<SysRole> selectRolesByParentRolekey(String roleKey);
+
+
 }

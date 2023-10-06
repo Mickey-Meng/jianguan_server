@@ -1,5 +1,4 @@
 FROM frolvlad/alpine-java:jdk8-slim
-
 ENV TZ=Asia/Shanghai
 
 RUN mkdir -p /ruoyi/server
@@ -16,4 +15,4 @@ EXPOSE ${SERVER_PORT}
 
 ADD ./target/ruoyi-admin.jar ./app.jar
 
-ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-Dspring.profiles.active=dev", "-Dserver.port=${SERVER_PORT}","-jar", "app.jar"]
+ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-Dspring.profiles.active=zj", "-Dserver.port=${SERVER_PORT}","-jar", "app.jar"]

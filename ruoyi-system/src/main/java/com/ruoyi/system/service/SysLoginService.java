@@ -320,6 +320,11 @@ public class SysLoginService {
         // 生成token
         LoginHelper.loginByDevice(loginUser, DeviceType.PC);
         loginUser.setToken(StpUtil.getTokenValue());
+        if (ObjectUtil.equals(loginBody.getSourceType(), "2")) {
+            // 如果为移动端，则token永久有效
+            StpUtil.stpLogic.getConfig().setActivityTimeout(-1L);
+            StpUtil.setTokenValue(StpUtil.getTokenValue(), -1);
+        }
         // 记录登录信息
         asyncService.recordLogininfor(user.getUserName(), Constants.LOGIN_SUCCESS, MessageUtils.message("user.login.success"), request);
         recordLoginInfo(user.getUserId(), user.getUserName());

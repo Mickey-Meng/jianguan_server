@@ -7,6 +7,7 @@ import cn.hutool.poi.excel.ExcelWriter;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruoyi.common.enums.BimFlowKey;
+import com.ruoyi.common.utils.MyPageUtil;
 import com.ruoyi.jianguan.business.quality.domain.dto.SupervisionNoticePageDTO;
 import com.ruoyi.jianguan.business.quality.domain.dto.SupervisionNoticeSaveDTO;
 import com.ruoyi.jianguan.business.quality.domain.entity.SupervisionNotice;
@@ -30,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -131,7 +133,8 @@ public class SupervisionNoticeServiceImpl extends ServiceImpl<SupervisionNoticeM
                 }
             });
         }
-        return new PageInfo<>(supervisionNotices);
+        return MyPageUtil.getPageInfo(supervisionNotices.stream()
+                .sorted(Comparator.comparing(SupervisionNoticePageVo::getCreateTime).reversed()), supervisionNotices.size(), pageDto.getPageSize(), pageDto.getPageNum());
     }
 
     /**

@@ -25,9 +25,9 @@ public class MaterialBrandReportDetailVo extends NewBaseEntity {
     private String materialBrand;
     private String materialCategory;
     private String materialCategoryCode;
-    private String samplePhoto;
+    private List<FileModel> samplePhoto;
     private String sampleContent;
-    private String materialApproachPhoto;
+    private List<FileModel> materialApproachPhoto;
     private String materialApproachContent;
     private String materialApproachQuantity;
     /**

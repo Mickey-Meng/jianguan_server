@@ -6,6 +6,7 @@ import cn.hutool.poi.excel.ExcelWriter;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.ruoyi.common.utils.MyPageUtil;
 import com.ruoyi.jianguan.business.quality.domain.dto.SupervisionPatrolPageDTO;
 import com.ruoyi.jianguan.business.quality.domain.dto.SupervisionPatrolSaveDTO;
 import com.ruoyi.jianguan.business.quality.domain.entity.SupervisionPatrol;
@@ -26,6 +27,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -137,7 +139,8 @@ public class SupervisionPatrolServiceImpl extends ServiceImpl<SupervisionPatrolM
         //分页 查询
         PageHelper.startPage(pageDto.getPageNum(), pageDto.getPageSize());
         List<SupervisionPatrolPageVo> pageVoList = supervisionPatrolMapper.getPageInfo(pageDto);
-        return new PageInfo<>(pageVoList);
+        return MyPageUtil.getPageInfo(pageVoList.stream()
+                .sorted(Comparator.comparing(SupervisionPatrolPageVo::getCreateTime).reversed()), pageVoList.size(), pageDto.getPageSize(), pageDto.getPageNum());
     }
 
     /**

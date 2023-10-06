@@ -10,6 +10,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruoyi.common.core.domain.entity.Conponent;
 import com.ruoyi.common.enums.BimFlowKey;
+import com.ruoyi.common.utils.MyPageUtil;
 import com.ruoyi.jianguan.business.quality.domain.dto.FirstAcceptPageDTO;
 import com.ruoyi.jianguan.business.quality.domain.dto.FirstAcceptSaveDTO;
 import com.ruoyi.jianguan.business.quality.domain.entity.FirstAccept;
@@ -35,6 +36,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -201,7 +203,8 @@ public class FirstAcceptServiceImpl extends ServiceImpl<FirstAcceptMapper, First
                 }
             });
         }
-        return new PageInfo<>(pageVoList);
+        return MyPageUtil.getPageInfo(pageVoList.stream()
+                .sorted(Comparator.comparing(FirstAcceptPageVo::getBuildDate).reversed()), pageVoList.size(), pageDto.getPageSize(), pageDto.getPageNum());
     }
 
     /**

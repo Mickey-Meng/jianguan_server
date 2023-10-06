@@ -14,6 +14,7 @@ import com.ruoyi.common.core.domain.entity.FileModel;
 import com.ruoyi.common.core.domain.entity.SsFUsers;
 import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.core.sequence.util.IdUtil;
+import com.ruoyi.common.utils.MyPageUtil;
 import com.ruoyi.jianguan.business.quality.domain.dto.ManageTargetSaveDTO;
 import com.ruoyi.jianguan.business.quality.domain.entity.ManageTarget;
 import com.ruoyi.jianguan.business.quality.domain.vo.ManageTargetDetailVo;
@@ -29,6 +30,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -115,7 +117,9 @@ public class ManageTargetServiceImpl extends ServiceImpl<ManageTargetMapper, Man
                 }
             });
         }*/
-        return new PageInfo(manageTargets);
+        return MyPageUtil.getPageInfo(manageTargets.stream()
+                .sorted(Comparator.comparing(ManageTargetPageVo::getPublishDate).reversed()), manageTargets.size(), pageDto.getPageSize(), pageDto.getPageNum());
+
     }
 
     /**

@@ -415,4 +415,12 @@ public class SysRoleServiceImpl implements ISysRoleService {
         }
         return rows;
     }
+
+    @Override
+    public List<SysRole> selectRolesByParentRolekey(String roleKey) {
+        List<SysRole>   list = baseMapper.selectRolesByParentRoleKey(roleKey);
+        return list;
+    }
+
+
 }

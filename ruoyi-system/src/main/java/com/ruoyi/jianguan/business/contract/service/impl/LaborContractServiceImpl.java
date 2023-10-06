@@ -14,8 +14,10 @@ import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Sets;
 import com.ruoyi.common.core.domain.entity.FileModel;
 import com.ruoyi.common.core.domain.object.ResponseBase;
+import com.ruoyi.common.core.domain.vo.NewBaseVo;
 import com.ruoyi.common.core.sequence.util.IdUtil;
 import com.ruoyi.common.enums.BimFlowKey;
+import com.ruoyi.common.utils.MyPageUtil;
 import com.ruoyi.common.utils.jianguan.StringUtils;
 import com.ruoyi.jianguan.business.contract.domain.dto.LaborContractPageDTO;
 import com.ruoyi.jianguan.business.contract.domain.dto.LaborContractSaveDTO;
@@ -37,10 +39,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 劳务分包合同 服务实现类
@@ -184,7 +183,7 @@ public class LaborContractServiceImpl extends ServiceImpl<LaborContractMapper, L
                 }
             });
         }
-        return new PageInfo<>(pageVos);
+        return MyPageUtil.getPageInfo(pageVos.stream().sorted(Comparator.comparing(LaborContractPageVo ::getStartDate).reversed()), pageVos.size(), pageDto.getPageSize(), pageDto.getPageNum());
     }
 
     /**

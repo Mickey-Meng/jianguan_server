@@ -17,11 +17,13 @@ import com.ruoyi.common.core.domain.vo.EnumsVo;
 import com.ruoyi.common.core.sequence.util.IdUtil;
 import com.ruoyi.common.enums.BimFlowKey;
 import com.ruoyi.common.enums.BuildProjectPartEnum;
+import com.ruoyi.common.utils.MyPageUtil;
 import com.ruoyi.jianguan.business.contract.domain.dto.BuildContractPageDTO;
 import com.ruoyi.jianguan.business.contract.domain.dto.BuildContractSaveDTO;
 import com.ruoyi.jianguan.business.contract.domain.entity.BuildContract;
 import com.ruoyi.jianguan.business.contract.domain.vo.BuildContractDetailVo;
 import com.ruoyi.jianguan.business.contract.domain.vo.BuildContractPageVo;
+import com.ruoyi.jianguan.business.contract.domain.vo.EquipmentEnterPageVo;
 import com.ruoyi.jianguan.business.contract.mapper.BuildContractMapper;
 import com.ruoyi.jianguan.business.contract.service.BuildContractService;
 import com.ruoyi.flowable.domain.dto.FlowTaskCommentDto;
@@ -37,6 +39,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -173,7 +176,7 @@ public class BuildContractServiceImpl extends ServiceImpl<BuildContractMapper, B
             }
 
         });
-         return new PageInfo<>(buildContracts);
+        return MyPageUtil.getPageInfo(buildContracts.stream().sorted(Comparator.comparing(BuildContractPageVo::getCreateTime)), buildContracts.size(), pageDto.getPageSize(), pageDto.getPageNum());
     }
 
     /**

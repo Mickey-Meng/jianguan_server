@@ -10,6 +10,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.enums.BimFlowKey;
+import com.ruoyi.common.utils.MyPageUtil;
 import com.ruoyi.jianguan.business.quality.domain.dto.SupervisionOrderPageDTO;
 import com.ruoyi.jianguan.business.quality.domain.dto.SupervisionOrderSaveDTO;
 import com.ruoyi.jianguan.business.quality.domain.entity.SupervisionOrder;
@@ -33,6 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -176,7 +178,8 @@ public class SupervisionOrderServiceImpl extends ServiceImpl<SupervisionOrderMap
                 }
             });
         }
-        return new PageInfo<>(pageVoList);
+        return MyPageUtil.getPageInfo(pageVoList.stream()
+                .sorted(Comparator.comparing(SupervisionOrderPageVo::getCreateTime).reversed()), pageVoList.size(), pageDto.getPageSize(), pageDto.getPageNum());
     }
 
     /**

@@ -95,10 +95,13 @@
   <select id="getAllProduce" parameterType="com.ruoyi.jianguan.common.domain.dto.RecodeQueryData" resultMap="BaseResultMap">
     select a.* from produceandrecode a
      left join conponent b on a.conponentcode = b.conponentcode
-     where a.projectcode in
-    <foreach collection="list" index="index" item ="item" open="(" separator="," close=")">
-      #{item}
-    </foreach>
+     where a.conponentid is not null
+         <if test="list != null and list.size() > 0">
+           and a.projectcode in
+           <foreach collection="list" index="index" item ="item" open="(" separator="," close=")">
+             #{item}
+           </foreach>
+         </if>
     <if test="projectType != null">
       and b.projecttype = #{projectType}
     </if>
@@ -114,16 +117,19 @@
     <if test="endtime != null and type != ''">
       and a.updatetime &lt;= #{endtime}
     </if>
-    and a.conponentid is not null
+
   </select>
 
   <select id="getAllProduceTime" parameterType="com.ruoyi.jianguan.common.domain.dto.RecodeQueryData" resultMap="BaseResultMap">
     select a.* from produceandrecode a
      left join conponent b on a.conponentcode = b.conponentcode
-     where a.projectcode in
-    <foreach collection="list" index="index" item ="item" open="(" separator="," close=")">
-      #{item}
-    </foreach>
+     where  a.conponentid is not null
+    <if test="list != null and list.size() > 0">
+      and a.projectcode in
+      <foreach collection="list" index="index" item ="item" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
     <if test="projectType != null">
         and b.projecttype = #{projectType}
     </if>
@@ -139,7 +145,7 @@
     <if test="endtime != null ">
       and a.updatetime &lt;= #{newEndTime}
     </if>
-    and a.conponentid is not null
+
   </select>
 
   <select id="getRecodeId" parameterType="java.util.ArrayList"  resultMap="BaseResultMap">

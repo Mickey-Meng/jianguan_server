@@ -34,8 +34,23 @@ public interface SsFUserOnlineDAO {
     List<String> getJLOnlineUsers(@Param("startTime")String startTime,
                                   @Param("endTime")String endTime,@Param("roleKeys")List roleKeys);
 
-    List<String> getAllJLUsers(@Param("startTime")String startTime,
-                                  @Param("endTime")String endTime, @Param("roleKeys")List roleKeys);
+    /***
+     * yangaogao 20230923
+     * 通过角色ids来获取在线登录用户
+     * @param startTime
+     * @param endTime
+     * @param roleIds
+     * @return
+     */
+    List<String> getOnlineUsersByRoleIds(@Param("startTime")String startTime,
+                                  @Param("endTime")String endTime,@Param("roleIds")List roleIds);
+    /***
+     * yangaogao 20230923
+     * 通过角色ids来获取历史在线登录用户
+     * @param roleIds
+     * @return
+     */
+    List<String> getAllUsersByRoleIds(@Param("roleIds")List roleIds);
 
     Integer getSGOnlineCount(@Param("startTime")String startTime,
                              @Param("endTime")String endTime);

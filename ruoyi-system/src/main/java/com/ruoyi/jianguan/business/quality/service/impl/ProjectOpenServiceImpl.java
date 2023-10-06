@@ -9,6 +9,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruoyi.common.enums.BimFlowKey;
+import com.ruoyi.common.utils.MyPageUtil;
 import com.ruoyi.jianguan.business.quality.domain.dto.ProjectOpenPageDTO;
 import com.ruoyi.jianguan.business.quality.domain.dto.ProjectOpenSaveDTO;
 import com.ruoyi.jianguan.business.quality.domain.entity.ProjectOpen;
@@ -33,10 +34,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 项目开工申请 服务实现类
@@ -166,7 +164,8 @@ public class ProjectOpenServiceImpl extends ServiceImpl<ProjectOpenMapper, Proje
                     pageVo.setDays(Integer.parseInt(String.valueOf(days)));
                 });
         }
-        return new PageInfo<>(pageVoList);
+        return MyPageUtil.getPageInfo(pageVoList.stream()
+                .sorted(Comparator.comparing(ProjectOpenPageVo::getOpenDate).reversed()), pageVoList.size(), pageDto.getPageSize(), pageDto.getPageNum());
     }
 
     /**

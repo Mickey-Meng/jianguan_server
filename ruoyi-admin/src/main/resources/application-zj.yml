@@ -46,9 +46,9 @@ spring:
         # 主库数据源
         master:
           driverClassName: com.mysql.cj.jdbc.Driver
-          url: jdbc:mysql://150.158.139.18:8306/zhuji3?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8&autoReconnect=true&rewriteBatchedStatements=true&nullCatalogMeansCurrent=true
+          url: jdbc:mysql://36.139.53.154:23306/zhuji3?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8&autoReconnect=true&rewriteBatchedStatements=true&nullCatalogMeansCurrent=true
           username: root
-          password: 123456
+          password: Jg123456.
       druid:
         # 初始连接数
         initialSize: 5
@@ -103,15 +103,20 @@ spring:
   data:
     # mongodb配置
     mongodb:
-      uri: mongodb://112.30.143.210:27017
-      database: zjroad_test
+      database: zjroad_test1
+      authentication-database: admin
+      username: root
+      password: Jg123456.
+      host: 36.139.53.154
+      port: 27018
   redis:
-    host: 150.158.139.18
-    port: 31419
-    database: 3
+    host: 36.139.53.154
+    port: 26379
+    database: 1
     # password:
     timeout: 10s
     ssl: false
+    password: Jg123456.
 redisson:
   # redis key前缀
   keyPrefix:
@@ -175,6 +180,16 @@ temporary:
 
 zhuji:
   video: D:\TemporaryFile\Video
+  appKey: b3972ea27e394d4381d702adfdff5b25
+  clientId: 5da87851cb5c444283424fa6f7b2fe6b
+  clientSecret: 50f28c2d97e54f55bf837053b0aa3790
+  loginurl: https://proj.bim-ace.com:10260/connect/token
+  secret: 4a0c6f9cb7371e816ec825f4b13839e1
+  projectid: E215145A-9770-45D4-AE9E-08F8915ECE71
+  ycApiNewUrl: https://open.ys7.com/api/lapp/token/get
+  scope: DataCenterV2
+  grantType: client_credentials
+  ycApiurl: https://proj.bim-ace.com:10207/services/api/data-center/dustValue/last
 
 road:
   clock:

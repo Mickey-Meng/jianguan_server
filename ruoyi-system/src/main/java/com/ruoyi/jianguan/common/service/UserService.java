@@ -14,13 +14,8 @@ import com.ruoyi.common.core.dao.SsFGroupsDAO;
 import com.ruoyi.common.core.dao.SsFUserGroupDAO;
 import com.ruoyi.common.core.dao.SsFUsersDAO;
 import com.ruoyi.common.core.dao.jianguan.ZjFGroupsProjectsDAO;
-import com.ruoyi.common.core.domain.dto.RoleDTO;
 import com.ruoyi.common.core.domain.dto.UserOnlineDTO;
-import com.ruoyi.common.core.domain.entity.PowerData;
-import com.ruoyi.common.core.domain.entity.SsFGroups;
-import com.ruoyi.common.core.domain.entity.SsFUserGroup;
-import com.ruoyi.common.core.domain.entity.SsFUsers;
-import com.ruoyi.common.core.domain.model.LoginBody;
+import com.ruoyi.common.core.domain.entity.*;
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.core.domain.model.SsFUserRole;
 import com.ruoyi.common.core.domain.object.ResponseBase;
@@ -42,8 +37,8 @@ import com.ruoyi.jianguan.common.domain.entity.SsFUserOnline;
 import com.ruoyi.common.utils.jianguan.zjrw.HttpsUtils;
 import com.ruoyi.common.utils.jianguan.zjrw.MD5Util;
 import com.ruoyi.common.utils.jianguan.zjrw.MyExcelUtil;
+import com.ruoyi.system.domain.SysUserRole;
 import com.ruoyi.system.mapper.SysRoleMapper;
-import com.ruoyi.system.service.SysLoginService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -219,7 +214,8 @@ public class UserService {
         maps.put("client_secret", zhuJiOfferConfig.getClientSecret());
         maps.put("scope", zhuJiOfferConfig.getScope());
         maps.put("grant_type", zhuJiOfferConfig.getGrantType());
-        String returnToken = httpsUtils.httpsPostZhuJi(zhuJiOfferConfig.getLoginurl(), maps);
+        String returnToken = httpsUtils.sendByHttp(zhuJiOfferConfig.getLoginurl(), maps);
+//        String returnToken = httpsUtils.httpsPostZhuJi(zhuJiOfferConfig.getLoginurl(), maps);
         //处理token 将json转为对象
         TokenData tokenData = JSONObject.parseObject(returnToken, TokenData.class);
         //获取视频的token
@@ -301,24 +297,25 @@ public class UserService {
 
     @Deprecated
     @CheckRepeatCommit
-    public ResponseBase updateOnline(String cid, String lon, String lat) {
+        public ResponseBase updateOnline20230925(String cid, String lon, String lat) {
+        log.info("***********************************");
+        log.info("该用户的登录终端信息: cid :" + cid + "  lon:" + lon + "  lat:" + lat);
+        log.info("***********************************");
         LoginUser currentLoginUser = LoginHelper.getLoginUser();
+        //yangaogao 20230906
         List<Long> dbRoleIds = roleMapper.selectRoleListByUserId(currentLoginUser.getUserId());
         List<Long> currentRoleIds = Arrays.asList(currentLoginUser.getRoleIds().split(","))
                 .stream().map(roleId -> Long.valueOf(roleId)).collect(Collectors.toList());
         //两个roleId进行对比，如果不一样说明需要重新登录
         boolean isSame = dbRoleIds.size() == currentRoleIds.size() && dbRoleIds.containsAll(currentRoleIds) && currentRoleIds.containsAll(dbRoleIds);
         Map<String, String> responseDataMap = Maps.newHashMap();
-        responseDataMap.put("isChange", String.valueOf(!isSame));
-
-        if (StringUtils.isNotEmpty(cid) &&
-                StringUtils.isNotEmpty(lon) &&
-                    StringUtils.isNotEmpty(lat)) {
+//        responseDataMap.put("isChange", String.valueOf(!isSame));
+        if (StringUtils.isNotEmpty(cid)  && validCidLonLat(lon,lat) ) {
             SsFUserOnline userOnline = new SsFUserOnline();
             userOnline.setUsername(currentLoginUser.getUsername());
             userOnline.setUserid(currentLoginUser.getUserId().intValue());
             userOnline.setCid(cid);
-            userOnline.setRole(currentLoginUser.getRoleId().intValue());
+            userOnline.setRole(currentLoginUser.getRoles().get(0).getRoleId().intValue());
             userOnline.setName(currentLoginUser.getNickName());
             userOnline.setLat(lat);
             userOnline.setLon(lon);
@@ -327,11 +324,115 @@ public class UserService {
             if (result == 0) {
                 userOnlineDAO.insert(userOnline);
             } else {
-                userOnlineDAO.updateTimeByUserid(currentLoginUser.getUserId().intValue(), cid, currentLoginUser.getRoleId().intValue(), lon, lat);
+                userOnlineDAO.updateTimeByUserid(currentLoginUser.getUserId().intValue(), cid, currentLoginUser.getRoles().get(0).getRoleId().intValue(), lon, lat);
             }
         }
-        return new ResponseBase(isSame ? HttpStatus.HTTP_OK :HttpStatus.HTTP_RESET, isSame ? "当前登录用户角色无更新." : "用户角色改变,请重新登录!", responseDataMap);
+        return new ResponseBase(  HttpStatus.HTTP_OK ,  "当前登录用户角色无更新." , responseDataMap);
+//        return new ResponseBase(isSame ? HttpStatus.HTTP_OK :HttpStatus.HTTP_RESET, isSame ? "当前登录用户角色无更新." : "用户角色改变,请重新登录!", responseDataMap);
     }
+
+    @CheckRepeatCommit
+    public ResponseBase updateOnline(String cid, String lon, String lat) {
+
+
+        try{
+            Double lo = Double.valueOf(lon);
+            if(lo>100 && lo<130 ){
+                lon = null;
+            }
+        }catch (Exception e){
+            lon = null;
+        }
+        try {
+            Double la = Double.valueOf(lat);
+            if(  la>15 && la<40){
+                lat = null;
+            }
+        }catch (Exception e){
+            lat = null;
+        }
+
+
+
+
+        //通过token获取用户的id
+        LoginUser currentLoginUser = LoginHelper.getLoginUser();
+        Long roleId = LoginHelper.getLoginUser().getRoleId();
+        Integer userId = currentLoginUser.getUserId().intValue();
+
+        log.info("*********************************** userId: " + userId);
+        log.info("该用户的登录终端信息: cid :" + cid + "  lon:" + lon + "  lat:" + lat);
+        log.info("***********************************");
+//        SsFUsers users = ssFUsersDAO.selectByPrimaryKey(userId);
+        Map<String, String> maps = Maps.newHashMap();
+        //两个roleId进行对比，如果不一样说明需要重新登录
+        SsFUserRole userRole = userRoleDAO.getByUserid(userId);
+        //首先查询人员账号的状态  如果为0需要重新登录
+//        if(users != null) {
+//            if (users.getStstate() == 0){
+//                maps.put("isChange", "true");
+//                return new ResponseBase(200, "更新用户在线失败! ", maps);
+//            }
+//        }
+        if ((userRole == null && roleId == null)) {
+            //进行更新
+            SsFUserOnline userOnline = new SsFUserOnline();
+            userOnline.setUserid(userId);
+            userOnline.setUsername(currentLoginUser.getUsername());
+            userOnline.setName(currentLoginUser.getNickName());
+            userOnline.setCid(cid);
+            userOnline.setRole(userRole.getRoleid());
+            userOnline.setLon(lon);
+            userOnline.setLat(lat);
+            //在此之前查询在线表是否有该用户数据
+            Integer result = userOnlineDAO.getByUserid(userId);
+            if (result == 0) {
+                userOnlineDAO.insert(userOnline);
+            } else {
+                userOnlineDAO.updateTimeByUserid(userId, cid, userRole.getRoleid(), lon, lat);
+            }
+            maps.put("isChange", "false");
+            return new ResponseBase(200, "更新用户在线成功! ", maps);
+        } else if (userRole != null && roleId != null) {
+            if (userRole.getRoleid() != null && roleId == userRole.getRoleid().longValue()) {
+                SsFUserOnline userOnline = new SsFUserOnline();
+                userOnline.setUsername(currentLoginUser.getUsername());
+                userOnline.setUserid(userId);
+                userOnline.setCid(cid);
+                userOnline.setRole(userRole.getRoleid());
+                userOnline.setName(currentLoginUser.getNickName());
+                userOnline.setLat(lat);
+                userOnline.setLon(lon);
+                //在此之前查询在线表是否有该用户数据
+                Integer result = userOnlineDAO.getByUserid(userId);
+                if (result == 0) {
+                    userOnlineDAO.insert(userOnline);
+                } else {
+                    userOnlineDAO.updateTimeByUserid(userId, cid, userRole.getRoleid(), lon, lat);
+                }
+                maps.put("isChange", "false");
+                return new ResponseBase(200, "更新用户在线成功! ", maps);
+            } else{
+                maps.put("isChange", "true");
+                return new ResponseBase(200, "更新用户在线失败! ", maps);
+            }
+        } else {
+            maps.put("isChange", "true");
+            return new ResponseBase(200, "更新用户在线失败! ", maps);
+        }
+    }
+
+    private boolean validCidLonLat(String lon,String lat){
+        if (StringUtils.isNotEmpty(lon) && StringUtils.isNotEmpty(lat) ) {
+            Double lo = Double.valueOf(lon);
+            Double la = Double.valueOf(lat);
+            if(lo>100 && lo<130 && la>15 && la<40){
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     public ResponseBase getOnline() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -340,44 +441,64 @@ public class UserService {
         String startTime = today + " 00:00:00";
         String endTime = today + " 23:59:59";
         //监理在线   2022-08-22号， 增加联ss_f_users表，当账号被冻结时不记录
-        List<String> rokeKeys = new ArrayList();
-        rokeKeys.add("jianlijihe");
-        Integer onlineJLCount = userOnlineDAO.getJLOnlineCount(startTime, endTime,rokeKeys);
-        List<String> onlineJLUsers = userOnlineDAO.getJLOnlineUsers(startTime, endTime,rokeKeys);
-        List<String> allJLUsers = userOnlineDAO.getAllJLUsers(startTime, endTime,rokeKeys);
+
+
+        /**
+         * 1. 获取[监理]角色下的所有用户数据
+         */
+        //获取jianlijihe下所有角色集合，
+        List<Long> rokeIds_jl = new ArrayList();
+        List<SysRole> roleList_jl = roleMapper.selectRolesByParentRoleKey("jianlijihe");
+        for (SysRole role : roleList_jl) {
+            rokeIds_jl.add(role.getRoleId());
+        }
+
+        List<String> onlineJLUsers = userOnlineDAO.getOnlineUsersByRoleIds(startTime, endTime,rokeIds_jl);
+        Integer onlineJLCount = onlineJLUsers.size();
+        List<String> allJLUsers = userOnlineDAO.getAllUsersByRoleIds(rokeIds_jl);
         OnlineUser JLUser = new OnlineUser();
         JLUser.setOnlineCount(onlineJLCount);
         JLUser.setOnlineUser(onlineJLUsers);
-        JLUser.setAllUser(allJLUsers);
-        //施工在线
-        List<String> rokeKeysshigongjihe = new ArrayList();
-        rokeKeysshigongjihe.add("shigongjihe");
-        Integer onlineSGCount = userOnlineDAO.getJLOnlineCount(startTime, endTime,rokeKeysshigongjihe);
-        List<String> onlineSGUsers = userOnlineDAO.getJLOnlineUsers(startTime, endTime,rokeKeysshigongjihe);
-        List<String> allSGUsers = userOnlineDAO.getAllJLUsers(startTime, endTime,rokeKeysshigongjihe);
-
-     /*   Integer onlineSGCount = userOnlineDAO.getSGOnlineCount(startTime, endTime);
-        List<String> onlineSGUsers = userOnlineDAO.getSGOnlineUsers(startTime, endTime);
-        List<String> allSGUsers = userOnlineDAO.getAllSGUsers(startTime, endTime);*/
+        JLUser.setAllUser(allJLUsers);//yangaogao 20230923
 
 
+
+        /**
+         * 2. 获取[施工]角色下的所有用户数据
+         */
+        List<Long> rokeIds_sg = new ArrayList();
+        List<SysRole> roleList_sg = roleMapper.selectRolesByParentRoleKey("shigongjihe");
+        for (SysRole role : roleList_sg) {
+            rokeIds_sg.add(role.getRoleId());
+        }
+        List<String> onlineSGUsers = userOnlineDAO.getOnlineUsersByRoleIds(startTime, endTime,rokeIds_sg);
+        Integer onlineSGCount = onlineSGUsers.size();
+        List<String> allSGUsers = userOnlineDAO.getAllUsersByRoleIds(rokeIds_sg);
         OnlineUser SGUser = new OnlineUser();
         SGUser.setOnlineCount(onlineSGCount);
         SGUser.setOnlineUser(onlineSGUsers);
         SGUser.setAllUser(allSGUsers);
-        //业主在线
+        //
+
+        /**
+         * 3. 获取  [业主] 角色下的所有用户数据
+         */
         List<String> rokeKeysYz = new ArrayList();
         rokeKeysYz.add("quanzijihe"); // 'quanzijihe', 'jiashedanweijihe', 'jianshejituanjihe'
         rokeKeysYz.add("jiashedanweijihe");
         rokeKeysYz.add("jianshejituanjihe");
 
-        Integer onlineYZCount = userOnlineDAO.getJLOnlineCount(startTime, endTime,rokeKeysYz);
-        List<String> onlineYZUsers = userOnlineDAO.getJLOnlineUsers(startTime, endTime,rokeKeysYz);
-        List<String> allYZUsers = userOnlineDAO.getAllJLUsers(startTime, endTime,rokeKeysYz);
+        List<Long> rokeIds_yz = new ArrayList();
+        List<SysRole> roleList_yz = roleMapper.selectRolesByParentRoleKeys(rokeKeysYz);
+        for (SysRole role : roleList_yz) {
+            rokeIds_yz.add(role.getRoleId());
+        }
+        List<String> onlineYZUsers = userOnlineDAO.getOnlineUsersByRoleIds(startTime, endTime,rokeIds_yz);
+        Integer onlineYZCount = onlineYZUsers.size();
+        List<String> allYZUsers = userOnlineDAO.getAllUsersByRoleIds(rokeIds_yz);
 
-  /*      Integer onlineYZCount = userOnlineDAO.getYZOnlineCount(startTime, endTime);
-        List<String> onlineYZUsers = userOnlineDAO.getYZOnlineUsers(startTime, endTime);
-        List<String> allYZUsers = userOnlineDAO.getAllYZUsers(startTime, endTime);*/
+
+
         OnlineUser YZUser = new OnlineUser();
         YZUser.setOnlineCount(onlineYZCount);
         YZUser.setOnlineUser(onlineYZUsers);

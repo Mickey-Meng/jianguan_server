@@ -42,6 +42,10 @@ public interface ZjFGroupsProjectsDAO {
 
     List<String> getByGonquId(@Param("gongquid") Integer gongquid);
 
+    @Select("select t.PROJECTID from zj_f_groups_projects t, ss_f_projects t1 where t.GROUPID = t1.ID and t1.PARENTID = #{gongquid}")
+    List<String> getByGonquId1(@Param("gongquid") Integer gongquid);
+
+
     @Select("select GROUPID from zj_f_groups_projects where PROJECTID = #{project}")
     Integer getGroupidByProjectid(@Param("project") String project);
 

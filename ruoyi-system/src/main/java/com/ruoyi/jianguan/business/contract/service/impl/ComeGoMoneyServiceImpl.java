@@ -17,6 +17,7 @@ import com.ruoyi.common.core.sequence.util.IdUtil;
 import com.ruoyi.common.enums.BimFlowKey;
 import com.ruoyi.common.helper.LoginHelper;
 import com.ruoyi.common.utils.JwtUtil;
+import com.ruoyi.common.utils.MyPageUtil;
 import com.ruoyi.jianguan.business.contract.domain.dto.ComeGoMoneyPageDTO;
 import com.ruoyi.jianguan.business.contract.domain.dto.ComeGoMoneySaveDTO;
 import com.ruoyi.jianguan.business.contract.domain.entity.ComeGoMoney;
@@ -35,10 +36,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * 往来款 服务实现类
@@ -163,7 +161,8 @@ ComeGoMoneyServiceImpl extends ServiceImpl<ComeGoMoneyMapper, ComeGoMoney> imple
                     pageVo.setStatusStr("驳回");break;
             };
         });
-        return new PageInfo<>(pageVoList);
+        return MyPageUtil.getPageInfo(pageVoList.stream()
+                .sorted(Comparator.comparing(ComeGoMoneyPageVo::getCreateTime).reversed()), pageVoList.size(), pageDto.getPageSize(), pageDto.getPageNum());
     }
 
     /**

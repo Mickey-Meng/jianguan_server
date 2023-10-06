@@ -16,18 +16,21 @@ import com.ruoyi.common.core.domain.vo.EnumsVo;
 import com.ruoyi.common.core.sequence.util.IdUtil;
 import com.ruoyi.common.enums.BimFlowKey;
 import com.ruoyi.common.enums.EquipmentTypeEnum;
+import com.ruoyi.common.utils.MyPageUtil;
 import com.ruoyi.jianguan.business.contract.domain.dto.EquipmentEnterPageDTO;
 import com.ruoyi.jianguan.business.contract.domain.dto.EquipmentEnterSaveDTO;
 import com.ruoyi.jianguan.business.contract.domain.entity.EquipmentEnter;
 import com.ruoyi.jianguan.business.contract.domain.entity.EquipmentInfo;
 import com.ruoyi.jianguan.business.contract.domain.vo.EquipmentEnterDetailVo;
 import com.ruoyi.jianguan.business.contract.domain.vo.EquipmentEnterPageVo;
+import com.ruoyi.jianguan.business.contract.domain.vo.LaborContractPageVo;
 import com.ruoyi.jianguan.business.contract.mapper.EquipmentEnterMapper;
 import com.ruoyi.jianguan.business.contract.service.EquipmentEnterService;
 import com.ruoyi.jianguan.business.contract.service.EquipmentInfoService;
 import com.ruoyi.flowable.domain.dto.FlowTaskCommentDto;
 import com.ruoyi.flowable.service.FlowStaticPageService;
 import com.ruoyi.flowable.service.ZjFGroupsProjectsService;
+import com.ruoyi.jianguan.manage.project.domain.bo.JgProjectItemBo;
 import com.ruoyi.jianguan.manage.project.domain.vo.JgProjectItemVo;
 import com.ruoyi.jianguan.manage.project.service.IJgProjectItemService;
 import org.apache.commons.compress.utils.Lists;
@@ -39,10 +42,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 设备进场报验 服务实现类
@@ -185,7 +185,7 @@ public class EquipmentEnterServiceImpl extends ServiceImpl<EquipmentEnterMapper,
             //通过项目id获取施工单位 监理单位等
 //            CompanyInfo companyInfo = projectsService.getCompanyInfoByProjectId(pageDto.getProjectId());
 
-            JgProjectItemVo jgProjectItemVo = jgProjectItemService.queryById(pageDto.getProjectId().longValue()) ;
+            JgProjectItemVo jgProjectItemVo = jgProjectItemService.queryById(pageDto.getProjectId().longValue());
             String constructDept = jgProjectItemVo.getConstructDept();
             //施工单位
 //            Set<String> sgdws = companyInfo.getSgdws();
@@ -209,13 +209,15 @@ public class EquipmentEnterServiceImpl extends ServiceImpl<EquipmentEnterMapper,
                         default:
                             pageVo.setStatusStr("驳回");break;
                     };
-                    //设备信息
-                    List<EquipmentInfo> equipmentInfos = equipmentInfoService.getByEnterId(pageVo.getId());
-                    pageVo.setEquipmentInfos(equipmentInfos);
+
+                    EquipmentEnter equipmentEnter = this.getById((pageVo.getId()));
+                    if (!Objects.isNull(equipmentEnter)) {
+                        pageVo.setEquipmentInfos(JSONArray.parseArray(equipmentEnter.getEquipmentInfo(), EquipmentInfo.class));
+                    }
                 });
             }
         }
-        return new PageInfo<>(pageVoList);
+        return MyPageUtil.getPageInfo(pageVoList.stream().sorted(Comparator.comparingLong(EquipmentEnterPageVo:: getId).reversed()), pageVoList.size(), pageDto.getPageSize(), pageDto.getPageNum());
     }
 
     /**

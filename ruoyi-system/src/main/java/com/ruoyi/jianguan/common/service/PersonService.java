@@ -1430,12 +1430,13 @@ public class PersonService {
                 if (state != null && !state.equals("")){
                     personLeaves = personLeaveDAO.getAllLeavesByState(state);
                 } else {
-                    personLeaves = personLeaveDAO.getAllByProjectId();
+                    personLeaves = personLeaveDAO.getAllByProjectId(); //yangaogao 200230927 暂未实现多项目
                 }
 
             }
         }
-        if (personLeaves.size() > 0) {
+        // 优化查询-此处工作流数据修改为点击详情时查询，具体见函数getLeaveDetailById
+        if (false) {
             for (ZjPersonLeave personLeave : personLeaves) {
                 Map<String, String> maps = new WeakHashMap();
                 if (personLeave.getBusinessKey() != null && !personLeave.getBusinessKey().equals("")){
@@ -1537,8 +1538,8 @@ public class PersonService {
                         clockIn.getAttendancePersonId(), startTime, endTime);
 
         clockIn.setAttendancePersonId(clockIn.getAttendancePersonId());
-        String name = usersDAO.getNameByUserId(clockIn.getAttendancePersonId());
-        clockIn.setAttendancePersonName(name);
+        //String name = usersDAO.getNameByUserId(clockIn.getAttendancePersonId());
+        clockIn.setAttendancePersonName(LoginHelper.getNickName());
         clockIn.setState(1);
         clockIn.setOrder(1);
 
@@ -1609,6 +1610,7 @@ public class PersonService {
             endTime = endTime + " 23:59:59";
             clockInList = clockinDAO.getSelfAllByProjectIdInTime(projectId, userId, startTime, endTime);
         }
+        /**
         for (ZjPersonClockin clockin : clockInList) {
             Integer id = clockin.getGid();
             if (id != null) {
@@ -1616,6 +1618,7 @@ public class PersonService {
                 clockin.setFenceAddrName(fenceAddrName);
             }
         }
+         **/
         return new ResponseBase(200, "查询成功", clockInList);
     }
 
@@ -1765,7 +1768,7 @@ public class PersonService {
             Integer roleId = getRoleIdByRoleType(parentRoleId);
             personLeaves = personLeaveDAO.getLeavesByRoleId(roleId);
         } else if (roleKey.contains("gly") || roleKey.contains("admin")){
-            personLeaves = personLeaveDAO.getAllFinishLeaves();
+            personLeaves = personLeaveDAO.getAllByProjectId();
         }else{
             personLeaves = personLeaveDAO.getFinishLeavesByUserId(userId);
         }
@@ -2194,5 +2197,46 @@ public class PersonService {
         personSubDTO.setPerson(personDTO);
         personSubDTO.setPersonSubs(personSubs);
         return ResponseBase.success(personSubDTO);
+    }
+
+    public ResponseBase getLeaveDetailById(Integer personLeaveId) {
+         ZjPersonLeave personLeave = personLeaveDAO.selectByPrimaryKey(personLeaveId);
+        Map<String, String> maps = new WeakHashMap();
+        String token = getRequest().getHeader("Authorization");
+        if (personLeave.getBusinessKey() != null && !personLeave.getBusinessKey().equals("")){
+            maps = getFlowAndTaskInfo(personLeave.getBusinessKey(), token);
+            if (maps.get("processDefinitionId") != null) {
+                personLeave.setProcessDefinitionId(maps.get("processDefinitionId"));
+                String[] keys = personLeave.getProcessDefinitionId().split(":");
+                personLeave.setFlowKey(keys[0]);
+            }
+            if (maps.get("processInstanceId") != null) {
+                personLeave.setProcessInstanceId(maps.get("processInstanceId"));
+            }
+            if (maps.get("taskId") != null) {
+                personLeave.setTaskId(maps.get("taskId"));
+            }
+        } else {
+            maps = personDAO.getIdsByProcessInstanceId(personLeave.getProcessInstanceId());
+            if (maps == null) {
+                maps = personDAO.getRuntimeIdsByProcessInstanceId(personLeave.getProcessInstanceId());
+            }
+            if (maps != null){
+                //放入三个id
+                if (personLeave.getProcessInstanceId() != null) {
+                    personLeave.setProcessInstanceId(personLeave.getProcessInstanceId());
+                }
+                if (maps.get("processDefinitionId") != null) {
+                    personLeave.setProcessDefinitionId(maps.get("processDefinitionId"));
+                    String[] keys = personLeave.getProcessDefinitionId().split(":");
+                    personLeave.setFlowKey(keys[0]);
+                }
+                TaskCommentReturn commentReturn = taskCommentReturn(personLeave.getProcessInstanceId(), token);
+                if (commentReturn.getTaskId() != null) {
+                    personLeave.setTaskId(commentReturn.getTaskId());
+                }
+            }
+        }
+        return ResponseBase.success(personLeave);
     }
 }

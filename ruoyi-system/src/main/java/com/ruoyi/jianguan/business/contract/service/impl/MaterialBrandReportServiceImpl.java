@@ -55,6 +55,8 @@ public class MaterialBrandReportServiceImpl extends ServiceImpl<MaterialBrandRep
             materialBrandReport.setStatus1(-1);
             materialBrandReport.setStatus2(-1);
             materialBrandReport.setAttachment(JSON.toJSONString(saveDto.getAttachment()));
+            materialBrandReport.setSamplePhoto(null);
+            materialBrandReport.setMaterialApproachPhoto(null);
 
         }
         if ("2".equals(type)&&-1==(saveDto.getStatus1())) {
@@ -63,6 +65,8 @@ public class MaterialBrandReportServiceImpl extends ServiceImpl<MaterialBrandRep
             materialBrandReport.setStatus2(-1);
             materialBrandReport.setAttachment1(JSON.toJSONString(saveDto.getAttachment()));
             materialBrandReport.setAttachment(null);
+            materialBrandReport.setSamplePhoto(JSON.toJSONString(saveDto.getSamplePhoto()));
+            materialBrandReport.setMaterialApproachPhoto(null);
 
         }
         if ("3".equals(type)&&-1==(saveDto.getStatus2())) {
@@ -70,6 +74,8 @@ public class MaterialBrandReportServiceImpl extends ServiceImpl<MaterialBrandRep
             materialBrandReport.setStatus2(0);
             materialBrandReport.setAttachment2(JSON.toJSONString(saveDto.getAttachment()));
             materialBrandReport.setAttachment(null);
+            materialBrandReport.setSamplePhoto(null);
+            materialBrandReport.setMaterialApproachPhoto(JSON.toJSONString(saveDto.getMaterialApproachPhoto()));
         }
         boolean saveOrUpdate = this.saveOrUpdate(materialBrandReport);
         if (saveOrUpdate && isStartFlow) {
@@ -114,12 +120,13 @@ public class MaterialBrandReportServiceImpl extends ServiceImpl<MaterialBrandRep
         vo.setAttachment(JSONArray.parseArray(materialBrandReport.getAttachment(), FileModel.class));
         vo.setAttachment1(JSONArray.parseArray(materialBrandReport.getAttachment1(), FileModel.class));
         vo.setAttachment2(JSONArray.parseArray(materialBrandReport.getAttachment2(), FileModel.class));
+        vo.setSamplePhoto(JSONArray.parseArray(materialBrandReport.getSamplePhoto(), FileModel.class));
+        vo.setMaterialApproachPhoto(JSONArray.parseArray(materialBrandReport.getMaterialApproachPhoto(), FileModel.class));
         return vo;
     }
 
     @Override
     public PageInfo<MaterialBrandReportPageVo> getPageInfo(MaterialBrandReportPageDTO pageDto) {
-        //分页查询
         PageHelper.startPage(pageDto.getPageNum(), pageDto.getPageSize());
         List<MaterialBrandReportPageVo> materialBrandReportPageVos = materialBrandReportMapper.getPageInfo(pageDto);
         return new PageInfo<>(materialBrandReportPageVos);

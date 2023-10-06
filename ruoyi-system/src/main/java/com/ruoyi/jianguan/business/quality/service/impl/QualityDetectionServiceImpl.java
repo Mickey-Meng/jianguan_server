@@ -8,9 +8,13 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.ruoyi.common.core.domain.vo.EnumsVo;
+import com.ruoyi.common.core.domain.vo.NewBaseVo;
 import com.ruoyi.common.enums.BimFlowKey;
 import com.ruoyi.common.enums.MaterialsEnum;
+import com.ruoyi.common.utils.MyPageUtil;
 import com.ruoyi.flowable.service.FlowAuditEntryService;
 import com.ruoyi.jianguan.business.quality.domain.dto.QualityDetectionPageDTO;
 import com.ruoyi.jianguan.business.quality.domain.dto.QualityDetectionSaveDTO;
@@ -21,8 +25,6 @@ import com.ruoyi.jianguan.common.service.UserService;
 import com.ruoyi.common.core.domain.entity.FileModel;
 import com.ruoyi.jianguan.business.quality.mapper.QualityDetectionMapper;
 import com.ruoyi.jianguan.business.quality.service.QualityDetectionService;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Sets;
 import com.ruoyi.common.core.domain.object.ResponseBase;
 import com.ruoyi.flowable.domain.dto.FlowTaskCommentDto;
@@ -38,10 +40,8 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 质量检测 服务实现类
@@ -214,7 +214,6 @@ public class QualityDetectionServiceImpl extends ServiceImpl<QualityDetectionMap
                             default:
                                 qualityDetection.setStatusStr("驳回");break;
                         };
-
                         qualityDetection.setMaterialsName(materialsName);
                         qualityDetection.setProjectParts(projectParts);
                         qualityDetection.setMaterialSpecification(materialSpecification);
@@ -223,7 +222,8 @@ public class QualityDetectionServiceImpl extends ServiceImpl<QualityDetectionMap
                 }
             });
         }
-        return new PageInfo<>(qualityDetectionList);
+        return MyPageUtil.getPageInfo(qualityDetectionList.stream()
+                .sorted(Comparator.comparing(QualityDetectionPageVo::getFillDate).reversed()), qualityDetectionList.size(), pageDto.getPageSize(), pageDto.getPageNum());
     }
 
     /**

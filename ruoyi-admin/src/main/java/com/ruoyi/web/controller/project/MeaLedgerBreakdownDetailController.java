@@ -88,7 +88,7 @@ public class MeaLedgerBreakdownDetailController extends BaseController {
      */
     @GetMapping("/queryBreakdownDetails")
     public R<List<MeaLedgerBreakdownDetailVo>> queryMeaLedgerBreakdownDetails(MeaLedgerBreakdownDetailBo meaLedgerBreakdownDetailBo) {
-        List<MeaLedgerBreakdownDetailVo> meaLedgerBreakdownDetailVos = iMeaLedgerBreakdownDetailService.queryList(meaLedgerBreakdownDetailBo);
+        List<MeaLedgerBreakdownDetailVo> meaLedgerBreakdownDetailVos = iMeaLedgerBreakdownDetailService.queryList4ledgerApproval(meaLedgerBreakdownDetailBo);
         return R.ok(meaLedgerBreakdownDetailVos);
     }
 

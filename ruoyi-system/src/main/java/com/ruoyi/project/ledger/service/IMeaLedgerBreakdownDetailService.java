@@ -33,6 +33,10 @@ public interface IMeaLedgerBreakdownDetailService {
      */
     List<MeaLedgerBreakdownDetailVo> queryList(MeaLedgerBreakdownDetailBo bo);
     /**
+     * 查询台账分解明细列表
+     */
+    List<MeaLedgerBreakdownDetailVo> queryList4ledgerApproval(MeaLedgerBreakdownDetailBo bo);
+    /**
      * 查询台账分解明细叶子节点列表
      */
     List<MeaLedgerBreakdownDetailVo> getLeafList(String reviewCode);

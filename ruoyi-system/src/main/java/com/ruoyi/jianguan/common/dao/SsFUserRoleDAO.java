@@ -13,7 +13,7 @@ import java.util.List;
 @Mapper
 public interface SsFUserRoleDAO {
 
-    @Select("select sur.role_id as roileid,sur.user_id as userid from sys_user_role sur where sur.user_id= #{userid}")
+    @Select("select sur.role_id as roleid,sur.user_id as userid from sys_user_role sur where sur.user_id= #{userid}")
     SsFUserRole getByUserid(@Param("userid")Integer userid);
     /*
     @Select("select * from ss_f_user_role where userid = #{userid}")

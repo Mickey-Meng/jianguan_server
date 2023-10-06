@@ -1,0 +1,14 @@
+<!-- PageHelper配置文件 -->
+<configuration>
+    <!-- 开启驼峰命名规则 -->
+    <settings>
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+    </settings>
+    <!-- 配置pageNum、pageSize，支持通过startPage()方法使用 -->
+    <plugins>
+        <plugin interceptor="com.github.pagehelper.PageInterceptor">
+            <property name="dialect" value="mysql" />
+            <property name="reasonable" value="true" />
+        </plugin>
+    </plugins>
+</configuration>

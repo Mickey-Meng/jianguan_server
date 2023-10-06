@@ -55,6 +55,7 @@ public class ProduceController {
     public ResponseBase getRecodeStatus(@RequestBody RecodeQueryData recodeQueryData){
         if(recodeQueryData.getType()==null || "".equals(recodeQueryData.getType())){
             recodeQueryData.setType("ZJ");
+            recodeQueryData.setProjectType("QL");
         }
         return produceService.getRecodeStatus(recodeQueryData);
     }
@@ -198,15 +199,6 @@ public class ProduceController {
     public ResponseBase getCopyInfos(@RequestBody Map<String, String> data){
         return produceService.getCopyInfos(data);
     }
-
-
-
-
-
-
-
-
-
 
 
 }

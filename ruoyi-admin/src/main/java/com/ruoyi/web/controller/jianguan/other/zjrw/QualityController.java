@@ -45,9 +45,7 @@ public class QualityController {
     @ApiOperation(value="获取质量大小类数据")
     public ResponseBase getTree(@RequestParam(value ="id",required = false) Integer id,
                                 @RequestParam(value = "projectId", required = false)Integer projectId){
-        if (projectId == null || projectId.equals("")){
-            projectId = 3;
-        }
+   
         if(ObjectUtils.isEmpty(id) || id == null){
             id = 0;
         }

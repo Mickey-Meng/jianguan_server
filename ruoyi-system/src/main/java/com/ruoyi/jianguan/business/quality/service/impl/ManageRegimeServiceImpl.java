@@ -7,6 +7,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruoyi.common.core.dao.SsFUsersDAO;
+import com.ruoyi.common.utils.MyPageUtil;
 import com.ruoyi.jianguan.business.quality.domain.dto.ManageRegimeSaveDTO;
 import com.ruoyi.jianguan.business.quality.domain.entity.ManageRegime;
 import com.ruoyi.jianguan.business.quality.domain.vo.ManageRegimeDetailVo;
@@ -25,6 +26,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -102,7 +104,8 @@ public class ManageRegimeServiceImpl extends ServiceImpl<ManageRegimeMapper, Man
                 manageRegime.setDeletedFlagStr("正常");
             });
         }
-        return new PageInfo(manageRegimes);
+        return MyPageUtil.getPageInfo(manageRegimes.stream()
+                .sorted(Comparator.comparing(ManageRegimePageVo::getCompileDate).reversed()), manageRegimes.size(), pageDto.getPageSize(), pageDto.getPageNum());
     }
 
     /**

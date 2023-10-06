@@ -126,16 +126,21 @@ public interface ZjConponentProducetimeDAO {
     List<NewCensusData> getTypeSeason(@Param("conponentType") String conponentType,
                                       @Param("list") List<String> list,
                                       @Param("projectCode")String projectCode);
+//
+//    List<NewProjectConType> getallNew(@Param("abc") String abc);
+//
+//    @Select("select conponenttype as type, conponenttypename as name  from  zj_conponent_producetime where projecttype = 'SD'  " +
+//            " and  gongquid in (${abc}) group by  conponenttype ,conponenttypename")
+//    List<NewProjectConType> getallNewSD(@Param("abc") String abc);
+//
+//    @Select("select conponenttype as type, conponenttypename as name from zj_conponent_producetime where projecttype = 'LM' " +
+//            " and gongquid in (${abc}) group by conponenttype, conponenttypename")
+//    List<NewProjectConType> getallNewDL(@Param("abc") String abc);
 
-    List<NewProjectConType> getallNew(@Param("abc") String abc);
 
-    @Select("select conponenttype as type  ,conponenttypename as name  from  zj_conponent_producetime where projecttype = 'SD'  " +
-            " and  gongquid in (${abc}) group by  conponenttype ,conponenttypename")
-    List<NewProjectConType> getallNewSD(@Param("abc") String abc);
-
-    @Select("select conponenttype as type, conponenttypename as name from zj_conponent_producetime where projecttype = 'LM' " +
+    @Select("select conponenttype as type, conponenttypename as name from zj_conponent_producetime where projecttype = #{projectType} " +
             " and gongquid in (${abc}) group by conponenttype, conponenttypename")
-    List<NewProjectConType> getallNewDL(@Param("abc") String abc);
+    List<NewProjectConType> getallNewByType(@Param("abc") String abc,@Param("projectType") String projectType);
 
     List<GroupProjectDTO> getallProject(@Param("abc") String abc);
 

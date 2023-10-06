@@ -32,19 +32,31 @@ public interface ZjPersonClockinDAO {
                              @Param("endTime")Date endTime);
 
     //todo group by clockTime desc
-    @Select("SELECT zpc.*, " +
-            "zpf.clockAddrName AS fenceAddrName  " +
-            "FROM " +
-            " zj_person_clockin zpc, " +
-            " zj_person_fence zpf  " +
-            "WHERE   zpc.gid = zpf.id  AND  " +
-            " state = 1  " +
+    @Select(" SELECT " +
+            " su.nick_name AS attendancePersonName," +
+            " zpc.clockPic," +
+            " zpc.projectName," +
+            " zpc.clockTime," +
+            " zpf.clockAddrName AS fenceAddrName," +
+            " zpc.clockAddr  " +
+            "FROM zj_person_clockin zpc " +
+            " LEFT JOIN zj_person_fence zpf ON zpc.gid = zpf.id  " +
+            " LEFT JOIN sys_user su ON su.user_id = zpc.attendancePersonId " +
+            "WHERE state = 1  " +
             " AND zpc.projectId =  #{projectId} ")
     List<ZjPersonClockin> getAllByProjectId(@Param("projectId")Integer projectId);
 
     //todo group by a.clockTime desc
-    @Select(" SELECT   zpc.*,   zpf.clockAddrName AS fenceAddrName   FROM   zj_person_clockin zpc " +
+    @Select(" SELECT " +
+            " su.nick_name AS attendancePersonName," +
+            " zpc.clockPic," +
+            " zpc.projectName," +
+            " zpc.clockTime," +
+            " zpf.clockAddrName AS fenceAddrName," +
+            " zpc.clockAddr  " +
+            " FROM zj_person_clockin zpc " +
             " left join zj_person_fence zpf on  zpc.gid = zpf.id   " +
+            " LEFT JOIN sys_user su ON su.user_id = zpc.attendancePersonId " +
             " LEFT JOIN sys_user_role b ON zpc.attendancePersonId = b.user_id " +
             " LEFT JOIN sys_role c ON b.role_id = c.role_id " +
             " LEFT JOIN sys_role d ON c.parent_id = d.role_id  " +
@@ -53,18 +65,35 @@ public interface ZjPersonClockinDAO {
                                                      @Param("roleId")Integer roleId);
 
     //todo group by clockTime desc
-    @Select(" SELECT   zpc.*,   zpf.clockAddrName AS fenceAddrName   FROM   zj_person_clockin zpc " +
-            "left join   zj_person_fence zpf on  zpc.gid = zpf.id   " +
-            "where  state = 1 and zpc.projectId = #{projectId}" +
+    @Select(" SELECT " +
+            " su.nick_name AS attendancePersonName," +
+            " zpc.clockPic," +
+            " zpc.projectName," +
+            " zpc.clockTime," +
+            " zpf.clockAddrName AS fenceAddrName," +
+            " zpc.clockAddr  " +
+            " FROM   zj_person_clockin zpc " +
+            " LEFT JOIN sys_user su ON su.user_id = zpc.attendancePersonId " +
+            "left join zj_person_fence zpf on  zpc.gid = zpf.id " +
+            "where state = 1 and zpc.projectId = #{projectId}" +
             " and clockTime >= #{startTime} and clockTime <= #{endTime} ")
     List<ZjPersonClockin> getAllByProjectIdInTime(@Param("projectId")Integer projectId,
                                                   @Param("startTime")String startTime,
                                                   @Param("endTime")String endTime);
 
     //todo group by a.clockTime desc
-    @Select("SELECT a.* FROM zj_person_clockin a  " +
-            " LEFT JOIN sys_user_role b ON a.attendancePersonId = b.user_id  " +
-            " LEFT JOIN sys_role c ON b.role_id = c.role_id  " +
+    @Select(" SELECT " +
+            " su.nick_name AS attendancePersonName," +
+            " a.clockPic," +
+            " a.projectName," +
+            " a.clockTime," +
+            " zpf.clockAddrName AS fenceAddrName," +
+            " a.clockAddr  " +
+            "FROM zj_person_clockin a  " +
+            " left join zj_person_fence zpf on  a.gid = zpf.id " +
+            " LEFT JOIN sys_user su ON su.user_id = a.attendancePersonId " +
+            " LEFT JOIN sys_user_role b ON a.attendancePersonId = b.user_id " +
+            " LEFT JOIN sys_role c ON b.role_id = c.role_id " +
             " LEFT JOIN sys_role d ON c.parent_id = d.role_id" +
             " where a.state = 1 and a.projectId = #{projectId}" +
             " and a.clockTime >= #{startTime} and a.clockTime <= #{endTime} " +
@@ -75,8 +104,11 @@ public interface ZjPersonClockinDAO {
                                                            @Param("roleId")Integer roleId);
 
     //todo group by clockTime desc
-    @Select("select * from zj_person_clockin where attendancePersonId = #{userId} " +
-            " and state = 1 and projectId = #{projectId} ")
+    @Select("select pc.*,pf.clockAddrName from zj_person_clockin pc" +
+            " LEFT JOIN zj_person_fence pf ON pf.id = pc.gid" +
+            " where pc.attendancePersonId = #{userId} " +
+            " and pc.state = 1 and pc.projectId = #{projectId} "+
+            " ORDER BY pc.ID DESC")
     List<ZjPersonClockin> getSelfAllByProjectId(@Param("projectId")Integer projectId,
                                             @Param("userId")Integer userId);
 
@@ -89,9 +121,12 @@ public interface ZjPersonClockinDAO {
                                                     @Param("endTime") String end);
 
     //todo group by clockTime desc
-    @Select("select * from zj_person_clockin where attendancePersonId = #{userId}" +
-            " and state = 1 and  projectId = #{projectId}" +
-            " and clockTime >= #{startTime} and clockTime <= #{endTime} ")
+    @Select("select pc.*,pf.clockAddrName from zj_person_clockin pc" +
+            " LEFT JOIN zj_person_fence pf ON pf.id = pc.gid" +
+            " where pc.attendancePersonId = #{userId}" +
+            " and pc.state = 1 and  pc.projectId = #{projectId}" +
+            " and pc.clockTime >= #{startTime} and pc.clockTime <= #{endTime} " +
+            " ORDER BY pc.ID DESC")
     List<ZjPersonClockin> getSelfAllByProjectIdInTime(@Param("projectId")Integer projectId,
                                                   @Param("userId")Integer userId,
                                                   @Param("startTime")String startTime,

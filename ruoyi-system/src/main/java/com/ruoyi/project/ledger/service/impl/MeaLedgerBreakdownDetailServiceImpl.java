@@ -91,7 +91,14 @@ public class MeaLedgerBreakdownDetailServiceImpl implements IMeaLedgerBreakdownD
 //        lqw.eq(MeaLedgerBreakdownDetail::getYjlsl,0);
         return baseMapper.selectVoList(lqw);
     }
+    @Override
+    public List<MeaLedgerBreakdownDetailVo> queryList4ledgerApproval(MeaLedgerBreakdownDetailBo bo) {
+        LambdaQueryWrapper<MeaLedgerBreakdownDetail> lqw =  Wrappers.lambdaQuery();
+        lqw.eq(MeaLedgerBreakdownDetail::getYjlsl,0).and(wq->wq.
+        gt(MeaLedgerBreakdownDetail::getFjsl, 0).or().gt(MeaLedgerBreakdownDetail::getBgfjsl, 0));
 
+        return baseMapper.selectVoList(lqw);
+    }
     @Override
     public List<MeaLedgerBreakdownDetailVo> getLeafList(String reviewCode) {
         Map<String, Object> params = new HashMap<>();

@@ -19,6 +19,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.excel.ExcelResult;
 import com.ruoyi.common.helper.LoginHelper;
+import com.ruoyi.common.utils.CheckStrength;
 import com.ruoyi.common.utils.StreamUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.poi.ExcelUtil;
@@ -156,6 +157,11 @@ public class SysUserController extends BaseController {
             && UserConstants.NOT_UNIQUE.equals(userService.checkEmailUnique(user))) {
             return R.fail("新增用户'" + user.getUserName() + "'失败，邮箱账号已存在");
         }
+        /**
+        if (!CheckStrength.strongPasswordChecker(user.getPassword())) {
+            return R.fail(2001,"新增用户'" + user.getUserName() + "'失败，密码强度较弱:密码须为不小于6位长度且同时包含的非连续数字和大小写字母。");
+        }
+         */
         user.setPassword(BCrypt.hashpw(user.getPassword()));
         return toAjax(userService.insertUser(user));
     }
@@ -203,6 +209,10 @@ public class SysUserController extends BaseController {
     public R<Void> resetPwd(@RequestBody SysUser user) {
         userService.checkUserAllowed(user);
         userService.checkUserDataScope(user.getUserId());
+        /**
+        if (!CheckStrength.strongPasswordChecker(user.getPassword())) {
+            return R.fail(2001,"密码强度较弱:密码须为不小于6位长度且同时包含的非连续数字和大小写字母。");
+        }*/
         user.setPassword(BCrypt.hashpw(user.getPassword()));
         return toAjax(userService.resetPwd(user));
     }

@@ -1,6 +1,7 @@
 package com.ruoyi.jianguan.common.service;
 
 
+import cn.hutool.extra.spring.SpringUtil;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.j256.simplemagic.ContentInfoUtil;
@@ -141,13 +142,14 @@ public class FileService {
                     if (size > 200 * 1024) {
                         if (contentType.equals("image/png")) {
                             // 图片尺寸不变，压缩图片文件大小outputQuality实现,参数1为最高质量
-                            Thumbnails.of(thumbnailPathName).scale(0.5f).outputQuality(scale).outputFormat("png").toFile(thumbnailFilePathName);
+                            Thumbnails.of(thumbnailPathName).scale(0.8f).outputQuality(scale).outputFormat("png").toFile(thumbnailFilePathName);
                         } else {
-                            Thumbnails.of(thumbnailPathName).scale(0.5f).outputQuality(scale).outputFormat("jpg").toFile(thumbnailFilePathName);
+                            Thumbnails.of(thumbnailPathName).scale(0.8f).outputQuality(scale).outputFormat("jpg").toFile(thumbnailFilePathName);
                         }
                     }
                     //再把压缩过后的图片存到mongodb中
-                    InputStream is = new FileInputStream(thumbnailPathName);
+//                    InputStream is = new FileInputStream(thumbnailPathName);
+                    InputStream is = file.getInputStream();
                     save = fileMapper.save(is, fileNameStr, contentType);
                     //保存到mongodb成功之后，关掉流并删除临时文件夹
                     is.close();
@@ -231,9 +233,15 @@ public class FileService {
 
     public void download(String fileId, HttpServletResponse response, HttpServletRequest request, String fileName) throws Exception {
         GridFSFile gridFSFile = fileMapper.find(fileId);
+        Date uploadDate = gridFSFile.getUploadDate();
         byte[] bytes = Base64.decodeBase64(gridFSFile.getFilename());
         if (null == fileName) {
-            fileName = new String(bytes);
+            String activeProfile = SpringUtil.getActiveProfile();
+            if(activeProfile.equals("zj")&&uploadDate.before(new Date(2023,10,1))){
+                 fileName = new String(bytes, "gbk");
+            }else {
+                fileName = new String(bytes);
+            }
         }else {
             String replace = fileName.replace("-", "+").replace("_", "/");
             fileName = new String(Base64.decodeBase64(replace));
@@ -438,9 +446,9 @@ public class FileService {
                     if (size > 200 * 1024) {
                         if (contentType.equals("image/png")) {
                             // 图片尺寸不变，压缩图片文件大小outputQuality实现,参数1为最高质量
-                            Thumbnails.of(thumbnailPathName).scale(0.5f).outputQuality(scale).outputFormat("png").toFile(thumbnailFilePathName);
+                            Thumbnails.of(thumbnailPathName).scale(0.8f).outputQuality(scale).outputFormat("png").toFile(thumbnailFilePathName);
                         } else {
-                            Thumbnails.of(thumbnailPathName).scale(0.5f).outputQuality(scale).outputFormat("jpg").toFile(thumbnailFilePathName);
+                            Thumbnails.of(thumbnailPathName).scale(0.8f).outputQuality(scale).outputFormat("jpg").toFile(thumbnailFilePathName);
                         }
                     }
                     //再把压缩过后的图片存到mongodb中

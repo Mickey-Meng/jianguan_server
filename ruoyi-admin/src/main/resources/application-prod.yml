@@ -207,9 +207,19 @@ sms:
 temporary:
   file: D:\TemporaryFile
 
+
 zhuji:
   video: D:\TemporaryFile\Video
-
+  appKey: c5e334962bfe4044b8fc13746c1bb170
+  clientId: 5da87851cb5c444283424fa6f7b2fe6b
+  clientSecret: 50f28c2d97e54f55bf837053b0aa3790
+  loginurl: https://proj.bim-ace.com:10260/connect/token
+  secret: a84cb52d6aa603b72aceb38608b5cb6a
+  projectid: E215145A-9770-45D4-AE9E-08F8915ECE71
+  ycApiNewUrl: https://open.ys7.com/api/lapp/token/get
+  scope: DataCenterV2
+  grantType: client_credentials
+  ycApiurl: https://proj.bim-ace.com:10207/services/api/data-center/dustValue/last
 road:
   clock:
     host: http://127.0.0.1:8888

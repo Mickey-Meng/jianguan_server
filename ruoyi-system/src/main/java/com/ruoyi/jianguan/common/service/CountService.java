@@ -102,11 +102,12 @@ public class CountService {
 
 
     public ResponseBase getProjectDetail(Integer projectId) {
-
         Item projectDetail = itemDAO.selectByPrimaryKey(projectId);
-        SysOssVo sysOssVo = ossMapper.selectVoById(projectDetail.getEngineeringLayoutImageUrl());
-        if(sysOssVo != null){
-            projectDetail.setEngineeringLayoutImageUrl(sysOssVo.getUrl());
+        if(null != projectDetail){
+            SysOssVo sysOssVo = ossMapper.selectVoById(projectDetail.getEngineeringLayoutImageUrl());
+            if(sysOssVo != null){
+                projectDetail.setEngineeringLayoutImageUrl(sysOssVo.getUrl());
+            }
         }
         return new ResponseBase(200, "查询成功", projectDetail);
 
@@ -793,6 +794,7 @@ public class CountService {
         List<NewProjectConType> list = Lists.newArrayList();
         List<NewProjectConType> list1 = Lists.newArrayList();
         List<NewProjectConType> list2 = Lists.newArrayList();
+        List<NewProjectConType> list3 = Lists.newArrayList();
         //获取前端传的项目id
         List<Integer> proChildId = Lists.newArrayList();
         Integer projectLevel = projectsDAO.getProjectLevelById(projectId);
@@ -812,25 +814,28 @@ public class CountService {
                 }
                 String abc = sb.substring(0, sb.toString().length() - 1);
 
-                list = zjConponentProducetimeDao.getallNew(abc);
-                list1 = zjConponentProducetimeDao.getallNewSD(abc);
+                list = zjConponentProducetimeDao.getallNewByType(abc,"QL");
+                list1 = zjConponentProducetimeDao.getallNewByType(abc,"SD");
+                list2 = zjConponentProducetimeDao.getallNewByType(abc,"LM");
+                list3 = zjConponentProducetimeDao.getallNewByType(abc,"QT");
+//                if (!list.isEmpty()) {
+                    res.put("桥梁工程", list);
+//                }
+//                if (!list1.isEmpty()) {
+                    res.put("隧道工程", list1);
+//                }
 
-                if (!list.isEmpty()) {
-                    res.put("桥梁工程", list);
-                }
-                if (!list1.isEmpty()) {
-                    res.put("隧道工程", list1);
-                }
-                list2 = zjConponentProducetimeDao.getallNewDL(abc);
-                res.put("房建工程", list2);
+                res.put("道路工程", list2);
+                res.put("其他工程", list3);
             } else {
-                if (!list.isEmpty()) {
+//                if (!list.isEmpty()) {
                     res.put("桥梁工程", list);
-                }
-                if (!list1.isEmpty()) {
+//                }
+//                if (!list1.isEmpty()) {
                     res.put("隧道工程", list1);
-                }
-                res.put("房建工程", list2);
+//                }
+                res.put("道路工程", list2);
+                res.put("其他工程", list3);
             }
         }
         return new ResponseBase(200, "查询工序成功！", res);
@@ -910,7 +915,9 @@ public class CountService {
             CensusData censusData = new CensusData();
             censusData.setSort(integer);
             censusData.setName(DateUtils.getDateByDateAndType(dateMap.get(integer).getSttime(), "month"));
-            int num = zjConponentProducetimeDao.getcount(group, dateMap.get(integer).getSttime(), dateMap.get(integer).getEndtime(), type);
+            //yangaogao 20230918  #813  查询截至表格中当前月份的总量数据，原逻辑是查询表格中月份当月数据。
+//            int num = zjConponentProducetimeDao.getcount(group, dateMap.get(integer).getSttime(), dateMap.get(integer).getEndtime(), type);
+            int num = zjConponentProducetimeDao.getcount(group, null, dateMap.get(integer).getEndtime(), type);
             censusData.setNumber(num);
             list.add(censusData);
         }
@@ -1881,14 +1888,13 @@ public class CountService {
                      !Objects.isNull(personClockin.getClockTime()) && personClockin.getClockTime().compareTo(DateUtil.parseDate(currentDate.concat(startTime)).toJdkDate()) > -1).findFirst();
             Optional<ZjPersonLeave> personLeaveOptional = currentPersonLeaveList.stream().filter(personLeave -> Objects.equals(personLeave.getProjectId(), projectId) &&
                     !Objects.isNull(personLeave.getEndTime()) && personLeave.getEndTime().toLocalDate().isEqual(LocalDate.now())).findFirst();
-
+            clockInCensusReturn.setClockInState(2);
             if (personClockinOptional.isPresent()) {
                 clockInCensusReturn.setClockInState(1);
             }
             if (personLeaveOptional.isPresent()) {
                 clockInCensusReturn.setClockInState(3);
             }
-            clockInCensusReturn.setClockInState(2);
         });
         return clockInCensusList;
     }

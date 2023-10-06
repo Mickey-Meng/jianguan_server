@@ -23,11 +23,11 @@
         <if test="cid != null and cid != ''">
             , cid = #{cid}
         </if>
-        <if test="lat != lat">
-            lat = #{lat}
+        <if test="lat != null and lat != ''">
+            ,lat = #{lat}
         </if>
-        <if test="lon != lon">
-            lon = #{lon}
+        <if test="lon != null and lon != ''">
+            ,lon = #{lon}
         </if>
         where userid = #{userid}
     </update>
@@ -37,7 +37,7 @@
         FROM ss_f_user_online a
                  LEFT JOIN sys_role b ON a.role = b.role_id
                  LEFT JOIN sys_role c ON b.parent_id = c.role_id
-                 LEFT JOIN sys_user_role d ON a.userid = d.role_id
+                 LEFT JOIN sys_user_role d ON a.userid = d.user_id
         WHERE c.role_id in (SELECT role_id FROM sys_role WHERE role_key in
         <foreach collection="roleKeys" index="index" item="item" open="(" separator="," close=")">
             #{item}
@@ -47,7 +47,8 @@
           and a.updatetime &gt;= #{startTime}
           and a.updatetime &lt;= #{endTime}
     </select>
-
+<!--
+      yangaogao 20230923  直接通过 ss_f_user_online 就可以单表查询
     <select id="getJLOnlineUsers" resultType="string">
         SELECT a.NAME
         FROM ss_f_user_online a
@@ -64,20 +65,30 @@
           and a.updatetime &lt;= #{endTime}
     </select>
 
-    <select id="getAllJLUsers" resultType="string">
-        SELECT
-        a.name
-        FROM
-        ss_f_user_online a
-        LEFT JOIN sys_role b ON a.role = b.role_id
-        LEFT JOIN sys_role c ON b.parent_id = c.role_id
-        LEFT JOIN sys_user_role d ON a.userid = d.role_id
-        WHERE
-        c.role_id in ( SELECT role_id FROM sys_role WHERE role_key in
-        <foreach collection="roleKeys" index="index" item="item" open="(" separator="," close=")">
+-->
+
+
+    <select id="getOnlineUsersByRoleIds" resultType="string">
+        SELECT a.NAME
+        FROM ss_f_user_online a,sys_user su
+        WHERE  a.userid = su.user_id and su.`status`=0 and su.del_flag=0 and a.role in
+        <foreach collection="roleIds" index="index" item="item" open="(" separator="," close=")">
             #{item}
         </foreach>
-        )
+
+        AND a.role IS NOT NULL
+        and a.updatetime &gt;= #{startTime}
+        and a.updatetime &lt;= #{endTime}
+    </select>
+
+    <select id="getAllUsersByRoleIds" resultType="string">
+        SELECT a.NAME
+        FROM ss_f_user_online a,sys_user su
+        WHERE  a.userid = su.user_id and su.`status`=0 and su.del_flag=0 and a.role in
+        <foreach collection="roleIds" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+
         AND a.role IS NOT NULL
     </select>
 

@@ -111,21 +111,13 @@ public class MeaMeasurementNoController extends BaseController {
     }
 
 
-
-    @RepeatSubmit()
-    @GetMapping("/lockingMeaMeasurementNo/{meaMeasurementNo}")
-    public R<Void> lockingMeaMeasurementNoTest(@PathVariable String meaMeasurementNo) {
-
-            String b =  iMeaMeasurementNoService.lockingByJlqcbh(meaMeasurementNo);
-            b = "有以下计量凭证流程未结束，不能锁定： " + b;
-            if(StringUtils.isEmpty(b)) return  R.ok("1");
-            else return R.ok(b);
-    }
+ 
     @RepeatSubmit()
     @GetMapping("/lockingMeaMeasurementNo")
     public R<Void> lockingMeaMeasurementNo(@PathParam("meaMeasurementNo") String meaMeasurementNo) {
 
         String b =  iMeaMeasurementNoService.lockingByJlqcbh(meaMeasurementNo);
+        b = "有以下计量凭证流程未结束，不能锁定： " + b;
         if(StringUtils.isEmpty(b)) return  R.ok("1");
         else return R.ok(b);
     }

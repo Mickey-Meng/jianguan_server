@@ -179,5 +179,8 @@ public class MeaContractInfoVo {
     @ExcelDictFormat(dictType = "data_status")
     private String status;
 
+    @ExcelProperty(value = "备注")
+    private String remark;
+
 
 }

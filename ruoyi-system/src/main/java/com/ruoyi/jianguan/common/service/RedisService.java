@@ -73,15 +73,7 @@ public class RedisService {
         return s;
     }
 
-    private String getItemName(String item) {
-        if("QL".equals(item)){
-            return "桥梁工程";
-        }else if("DD".equals(item)){
-            return "地道工程";
-        }else{
-            return "隧道工程";
-        }
-    }
+
 
 
     //对conponentList 进行 树状排序

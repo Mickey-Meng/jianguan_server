@@ -21,6 +21,10 @@ public class MetaVo {
      * 设置该路由的图标，对应路径src/assets/icons/svg
      */
     private String icon;
+    /**
+     * app端的图标 20230910
+     */
+    private String appIcon;
 
     /**
      * 设置为true，则不会被 <keep-alive>缓存
@@ -52,6 +56,15 @@ public class MetaVo {
     public MetaVo(String title, String icon, boolean noCache, String link) {
         this.title = title;
         this.icon = icon;
+        this.noCache = noCache;
+        if (StringUtils.ishttp(link)) {
+            this.link = link;
+        }
+    }
+    public MetaVo(String title, String icon, boolean noCache, String link,String appIcon) {
+        this.title = title;
+        this.icon = icon;
+        this.appIcon = appIcon;
         this.noCache = noCache;
         if (StringUtils.ishttp(link)) {
             this.link = link;

@@ -202,7 +202,8 @@ public class Job {
     //  【提醒内容：XX2022-05-18今日未打卡、未请休假，请知晓！】
 
     //每隔 2小时取一次数据入库
-    @Scheduled(cron = "0 0 0/2 * * ?")
+//    @Scheduled(cron = "0 0 0/2 * * ?")
+    @Scheduled(cron = "0 */1 * * * ?")
     public void fixedRateJobDataBase() throws IOException {
         List<ZjYcdata> zjYcdataList = doUnitJob();
         zjYcdataList.forEach(zjYcdata -> {
@@ -370,15 +371,16 @@ public class Job {
         maps.put("client_secret",zhuJiOfferConfig.getClientSecret());
         maps.put("scope",zhuJiOfferConfig.getScope());
         maps.put("grant_type",zhuJiOfferConfig.getGrantType());
-        String returnToken = httpsUtils.httpsPostZhuJi(zhuJiOfferConfig.getLoginurl(), maps);
-        //处理token 将json转为对象
-        TokenData tokenData = JSONObject.parseObject(JSONObject.toJSONString(returnToken),TokenData.class);
+//        String returnToken = httpsUtils.httpsPostZhuJi(zhuJiOfferConfig.getLoginurl(), maps); yangaogao 20230919
+        String returnToken = httpsUtils.sendByHttp(zhuJiOfferConfig.getLoginurl(), maps);
+
+        JSONObject returnJson = JSON.parseObject(returnToken);
+        String accessToken = returnJson.getString("access_token");
 
         //在进行请求
         PostData postData = new PostData(zhuJiOfferConfig.getProjectid());
         String a = JSON.toJSONString(postData);
-        String token = tokenData.getAccess_token();
-        String s = httpsUtils.httpsPostData(zhuJiOfferConfig.getYcApiurl(),a,token);
+        String s = httpsUtils.httpsPostData(zhuJiOfferConfig.getYcApiurl(),a,accessToken);
         List<ZjYcdata> zjYcdataList = JSONObject.parseArray(s,ZjYcdata.class);
         return zjYcdataList;
     }

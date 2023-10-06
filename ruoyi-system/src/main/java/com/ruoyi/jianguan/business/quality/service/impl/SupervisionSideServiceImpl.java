@@ -11,6 +11,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruoyi.common.core.domain.vo.EnumsVo;
 import com.ruoyi.common.enums.BimFlowKey;
 import com.ruoyi.common.enums.SideProjectEnum;
+import com.ruoyi.common.utils.MyPageUtil;
 import com.ruoyi.jianguan.business.quality.domain.dto.SupervisionSidePageDTO;
 import com.ruoyi.jianguan.business.quality.domain.dto.SupervisionSideSaveDTO;
 import com.ruoyi.jianguan.business.quality.domain.entity.SupervisionSide;
@@ -34,6 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -173,7 +175,8 @@ public class SupervisionSideServiceImpl extends ServiceImpl<SupervisionSideMappe
                 pageVo.setSideProjectName(SideProjectEnum.getEnum(pageVo.getSideProjectId()).getDes());
             });
         }
-        return new PageInfo<>(pageVoList);
+        return MyPageUtil.getPageInfo(pageVoList.stream()
+                .sorted(Comparator.comparing(SupervisionSidePageVo::getSideDate).reversed()), pageVoList.size(), pageDto.getPageSize(), pageDto.getPageNum());
     }
 
     /**

@@ -3,12 +3,19 @@ package com.ruoyi.common.utils;
 import cn.jimmyshi.beanquery.BeanQuery;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.ruoyi.common.core.domain.object.MyPageData;
 import com.ruoyi.common.core.domain.object.Tuple2;
+import com.ruoyi.common.core.domain.vo.NewBaseVo;
 import com.ruoyi.common.core.mapper.BaseModelMapper;
 import org.apache.commons.collections4.CollectionUtils;
 
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * 生成带有分页信息的数据列表
@@ -104,5 +111,49 @@ public class MyPageUtil {
      * 私有构造函数，明确标识该常量类的作用。
      */
     private MyPageUtil() {
+    }
+
+    public static PageInfo getPageInfo(Collection<? extends NewBaseVo> dataCollection, int pageSize, int currentPageNum ){
+        //计算总记录数
+        int total = dataCollection.size();
+        //pageHelper无效，手动分页，流操作：sorted排序、skip跳记录和limit限制显示记录数
+        List<?> streamDataCollectionCollect = dataCollection
+                .stream()
+                .sorted(Comparator.comparing(NewBaseVo::getUpdateTime))
+                .skip((currentPageNum - 1) * pageSize)
+                .limit( pageSize)
+                .collect(Collectors.toList());
+        //计算总页数
+        int pageSum = total %  pageSize == 0 ? total /  pageSize : total /  pageSize + 1;
+        PageInfo resultPageInfo = new PageInfo<>(streamDataCollectionCollect);
+        //总记录数
+        resultPageInfo.setTotal(total);
+        //总页数
+        resultPageInfo.setPages(pageSum);
+        // 当前页
+        resultPageInfo.setPageNum(currentPageNum);
+        //清除分页缓存
+        PageHelper.clearPage();
+        return resultPageInfo;
+    }
+
+    public static PageInfo getPageInfo(Stream<? extends NewBaseVo> dataStream, int total, int pageSize, int currentPageNum ){
+        //计算总记录数
+        //pageHelper无效，手动分页，流操作：sorted排序、skip跳记录和limit限制显示记录数
+        List<?> streamDataCollectionCollect = dataStream.skip((currentPageNum - 1) * pageSize)
+                .limit( pageSize)
+                .collect(Collectors.toList());
+        //计算总页数
+        int pageSum = total %  pageSize == 0 ? total /  pageSize : total /  pageSize + 1;
+        PageInfo resultPageInfo = new PageInfo<>(streamDataCollectionCollect);
+        //总记录数
+        resultPageInfo.setTotal(total);
+        //总页数
+        resultPageInfo.setPages(pageSum);
+        // 当前页
+        resultPageInfo.setPageNum(currentPageNum);
+        //清除分页缓存
+        PageHelper.clearPage();
+        return resultPageInfo;
     }
 }

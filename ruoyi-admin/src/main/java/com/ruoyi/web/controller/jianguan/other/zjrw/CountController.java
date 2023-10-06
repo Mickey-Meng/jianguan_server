@@ -187,9 +187,7 @@ public class CountController {
     @ResponseBody
     @ApiOperation(value="构件完成数量按照月，按照日，按照季度--左下图数据")
     public ResponseBase getCountConponent(@RequestBody Census census){
-        if (census.getProjectId() == null || census.getProjectId().equals("")){
-            census.setProjectId(3);
-        }
+
         return countService.getCountConponent(census);
     }
 

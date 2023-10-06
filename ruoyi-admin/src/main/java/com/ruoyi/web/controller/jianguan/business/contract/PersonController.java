@@ -360,4 +360,10 @@ public class PersonController {
         return personService.findPersonByBusinessKey(businessKey);
     }
 
+    @ResponseBody
+    @PostMapping("/getLeaveDetailById")
+    @ApiOperation(value = "查询人员申报详情")
+    public ResponseBase getLeaveDetailById(@RequestParam(value = "personLeaveId", required = true,  defaultValue = "0")Integer personLeaveId){
+        return personService.getLeaveDetailById(personLeaveId);
+    }
 }

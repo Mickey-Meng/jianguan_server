@@ -12,6 +12,7 @@ import com.ruoyi.common.core.domain.entity.CompanyInfo;
 import com.ruoyi.common.core.domain.entity.FileModel;
 import com.ruoyi.common.core.sequence.util.IdUtil;
 import com.ruoyi.common.enums.BimFlowKey;
+import com.ruoyi.common.utils.MyPageUtil;
 import com.ruoyi.flowable.domain.dto.FlowTaskCommentDto;
 import com.ruoyi.flowable.service.FlowStaticPageService;
 import com.ruoyi.flowable.service.ZjFGroupsProjectsService;
@@ -35,10 +36,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 质量活动 服务实现类
@@ -174,7 +172,8 @@ public class QualityActivityServiceImpl extends ServiceImpl<QualityActivityMappe
                 }
             });
         }
-        return new PageInfo<>(pageVoList);
+        return MyPageUtil.getPageInfo(pageVoList.stream()
+                .sorted(Comparator.comparing(QualityActivityPageVo::getCreateTime).reversed()), pageVoList.size(), pageDto.getPageSize(), pageDto.getPageNum());
     }
 
     /**

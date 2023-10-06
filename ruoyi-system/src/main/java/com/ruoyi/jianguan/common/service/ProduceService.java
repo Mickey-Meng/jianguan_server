@@ -1,6 +1,8 @@
 package com.ruoyi.jianguan.common.service;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateTime;
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.util.StringUtil;
@@ -152,7 +154,7 @@ public class ProduceService {
                 listttt.stream().collect(Collectors.toMap(ZjFGroupsProjects::getProjectid, ZjFGroupsProjects::getProjectname));
 
         //通过工区来查询该工区有哪些项目code
-        List<String> groupsProjectsDTOs = zjFGroupsProjectsDAO.getByGonquId(recodeQueryData.getGongquid());
+        List<String> groupsProjectsDTOs = zjFGroupsProjectsDAO.getByGonquId1(recodeQueryData.getGongquid());
 
         if(ObjectUtils.isEmpty(recodeQueryData.getCode())){
             recodeQueryData.setCode(null);
@@ -161,14 +163,18 @@ public class ProduceService {
         //当前端没有传工区id时,默认查询该用户所拥有的projectcode
         if (recodeQueryData.getGongquid() == null){
             if(ObjectUtils.isEmpty(recodeQueryData.getList())){
-                recodeQueryData.setList(intersectionList);
+                List<String> ids = intersectionList.stream().filter(StrUtil::isNotBlank).collect(Collectors.toList());
+                recodeQueryData.setList(ids);
             }
             Map<String,Object> data = processData(type, collect2, collect1, recodeQueryData);
             return new ResponseBase(200,"查询成功", data);
         } else{
             //前端传有工区id时, 使用前端传过来的工区id
             if(ObjectUtils.isEmpty(recodeQueryData.getList())){
-                recodeQueryData.setList(groupsProjectsDTOs);
+                if(CollUtil.isNotEmpty(groupsProjectsDTOs)) {
+                     List<String> ids = groupsProjectsDTOs.stream().filter(StrUtil::isNotBlank).collect(Collectors.toList());
+                    recodeQueryData.setList(ids);
+                }
             }
             Map<String,Object> data = processData(type, collect2, collect1, recodeQueryData);
             return new ResponseBase(200,"查询成功", data);
