@@ -167,8 +167,9 @@ public class JgProjectItemBo extends BaseEntity {
 
 
     /**
-     * 产值进度
+     * 宣传视频
      */
     private float productionProgress;
+    private String videoUrl;
 
 }

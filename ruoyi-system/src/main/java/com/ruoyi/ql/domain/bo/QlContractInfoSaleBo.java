@@ -153,4 +153,15 @@ public class QlContractInfoSaleBo extends BaseEntity {
      * 账期
      */
     private Long accountPeriod;
+    /**
+     * 项目名称
+     */
+    @NotBlank(message = "项目名称不能为空", groups = { AddGroup.class, EditGroup.class })
+    private String projectName;
+
+    /**
+     * 项目id
+     */
+    @NotBlank(message = "项目id不能为空", groups = { AddGroup.class, EditGroup.class })
+    private String projectId;
 }

@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * 入库单明细对象 ql_warehousing_detail
@@ -63,7 +64,7 @@ public class QlWarehousingDetail extends BaseEntity {
     /**
      * 库存数量
      */
-    private Long inventoryNumber;
+    private BigDecimal  inventoryNumber;
     /**
      * 采购总价 = 采购数量 * 进货价
      */
@@ -95,4 +96,7 @@ public class QlWarehousingDetail extends BaseEntity {
      * 单位
      */
     private String goodsUnit;
+
+    private Date inventoryDate;
+
 }

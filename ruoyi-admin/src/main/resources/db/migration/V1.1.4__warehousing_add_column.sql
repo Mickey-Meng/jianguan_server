@@ -1,0 +1,2 @@
+ALTER table ql_warehousing add lock_status varchar(50) DEFAULT 'unlock' COMMENT '锁定状态，lock：锁定，unlock：未锁定';
+ALTER table ql_outbound add lock_status varchar(50) DEFAULT 'unlock' COMMENT '锁定状态，lock：锁定，unlock：未锁定';

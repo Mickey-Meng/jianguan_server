@@ -23,6 +23,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="supplierName" column="supplier_name"/>
         <result property="invoiceNo" column="Invoice_no"/>
         <result property="fj" column="fj"/>
+        <result property="discount" column="discount"/>
     </resultMap>
 
 

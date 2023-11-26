@@ -79,5 +79,8 @@ public class QlFinInvoiceSale extends BaseEntity {
      * 部门ID
      */
     private Long deptId;
-
+    /**
+     * 折扣
+     */
+    private String discount;
 }

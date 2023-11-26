@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * 工序信息Service接口
@@ -60,5 +61,5 @@ public interface IPubProduceService {
 
     Map<String, String> getFillDataTemplate(Long id, String templateUrl);
 
-    boolean saveFillDataTemplate(Long id, String luckySheetJson) throws IOException;
+    Optional<List<String>> saveFillDataTemplate(Long id, String luckySheetJson) throws IOException;
 }

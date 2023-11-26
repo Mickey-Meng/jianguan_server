@@ -1,6 +1,8 @@
 package com.ruoyi.jianguan.business.contract.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
 import com.alibaba.fastjson.JSON;
@@ -9,7 +11,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.ruoyi.common.core.domain.entity.CompanyInfo;
 import com.ruoyi.common.core.domain.entity.FileModel;
 import com.ruoyi.common.core.domain.object.ResponseBase;
 import com.ruoyi.common.core.domain.vo.EnumsVo;
@@ -19,18 +20,20 @@ import com.ruoyi.common.enums.EquipmentTypeEnum;
 import com.ruoyi.common.utils.MyPageUtil;
 import com.ruoyi.jianguan.business.contract.domain.dto.EquipmentEnterPageDTO;
 import com.ruoyi.jianguan.business.contract.domain.dto.EquipmentEnterSaveDTO;
+import com.ruoyi.jianguan.business.contract.domain.dto.EquipmentExitPageDTO;
 import com.ruoyi.jianguan.business.contract.domain.entity.EquipmentEnter;
 import com.ruoyi.jianguan.business.contract.domain.entity.EquipmentInfo;
 import com.ruoyi.jianguan.business.contract.domain.vo.EquipmentEnterDetailVo;
 import com.ruoyi.jianguan.business.contract.domain.vo.EquipmentEnterPageVo;
-import com.ruoyi.jianguan.business.contract.domain.vo.LaborContractPageVo;
+import com.ruoyi.jianguan.business.contract.domain.vo.EquipmentExitPageVo;
 import com.ruoyi.jianguan.business.contract.mapper.EquipmentEnterMapper;
+import com.ruoyi.jianguan.business.contract.mapper.EquipmentExitMapper;
+import com.ruoyi.jianguan.business.contract.service.EnterExitService;
 import com.ruoyi.jianguan.business.contract.service.EquipmentEnterService;
 import com.ruoyi.jianguan.business.contract.service.EquipmentInfoService;
 import com.ruoyi.flowable.domain.dto.FlowTaskCommentDto;
 import com.ruoyi.flowable.service.FlowStaticPageService;
 import com.ruoyi.flowable.service.ZjFGroupsProjectsService;
-import com.ruoyi.jianguan.manage.project.domain.bo.JgProjectItemBo;
 import com.ruoyi.jianguan.manage.project.domain.vo.JgProjectItemVo;
 import com.ruoyi.jianguan.manage.project.service.IJgProjectItemService;
 import org.apache.commons.compress.utils.Lists;
@@ -39,10 +42,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 设备进场报验 服务实现类
@@ -169,6 +174,8 @@ public class EquipmentEnterServiceImpl extends ServiceImpl<EquipmentEnterMapper,
         return vo;
     }
 
+    @Resource
+    private EquipmentExitMapper equipmentExitMapper;
     /**
      * 分页查询设备进场报验数据
      *
@@ -180,6 +187,8 @@ public class EquipmentEnterServiceImpl extends ServiceImpl<EquipmentEnterMapper,
         //分页查询
         PageHelper.startPage(pageDto.getPageNum(), pageDto.getPageSize());
         List<EquipmentEnterPageVo> pageVoList = equipmentEnterMapper.getPageInfo(pageDto);
+        // 过滤已经退场的设备
+        pageVoList = filterExistEquipment(pageDto, pageVoList);
         //非空
         if (Objects.nonNull(pageVoList) && !pageVoList.isEmpty()) {
             //通过项目id获取施工单位 监理单位等
@@ -218,6 +227,54 @@ public class EquipmentEnterServiceImpl extends ServiceImpl<EquipmentEnterMapper,
             }
         }
         return MyPageUtil.getPageInfo(pageVoList.stream().sorted(Comparator.comparingLong(EquipmentEnterPageVo:: getId).reversed()), pageVoList.size(), pageDto.getPageSize(), pageDto.getPageNum());
+    }
+
+    private List<EquipmentEnterPageVo> filterExistEquipment(EquipmentEnterPageDTO pageDto, List<EquipmentEnterPageVo> pageVoList) {
+        if(StrUtil.isBlank(pageDto.getFilterEquipmentExist()) || !pageDto.getFilterEquipmentExist().equals("1")) {
+            return pageVoList;
+        }
+        EquipmentExitPageDTO equipmentExitPageDTO = new EquipmentExitPageDTO();
+        equipmentExitPageDTO.setProjectId(pageDto.getProjectId());
+        equipmentExitPageDTO.setProjectCode(pageDto.getProjectCode());
+        equipmentExitPageDTO.setBuildSection(pageDto.getBuildSection());
+        equipmentExitPageDTO.setDraftFlag(1);
+        List<EquipmentExitPageVo> equipmentExitPageVos = equipmentExitMapper.getPageInfo(equipmentExitPageDTO);
+        if(CollUtil.isEmpty(equipmentExitPageVos)) {
+            return pageVoList;
+        }
+        List<EquipmentInfo> equipmentInfos = new ArrayList<>();
+        for (EquipmentExitPageVo equipmentExitPageVo : equipmentExitPageVos) {
+            String equipmentInfo = equipmentExitPageVo.getEquipmentInfo();
+            equipmentInfos.addAll(JSON.parseArray(equipmentInfo, EquipmentInfo.class));
+        }
+
+        Map<Long, Integer> equipmentInfoNumGroup = equipmentInfos.stream().collect(Collectors.groupingBy(EquipmentInfo::getEnterId, Collectors.summingInt(EquipmentInfo::getNum)));
+
+        List<EquipmentEnterPageVo> equipmentEnterPageVos = new ArrayList<>();
+
+        for (EquipmentEnterPageVo equipmentEnterPageVo : pageVoList) {
+            List<EquipmentInfo> equipmentInfoList = JSON.parseArray(equipmentEnterPageVo.getEquipmentInfo(), EquipmentInfo.class);
+//            List<EquipmentInfo> equipmentInfoList = equipmentEnterPageVo.getEquipmentInfos();
+            boolean existNumStatus = true;
+            for (EquipmentInfo equipmentInfo : equipmentInfoList) {
+                if (equipmentInfoNumGroup.containsKey(equipmentInfo.getEnterId())) {
+                    // 如果其中一个设备还有剩余数量，则不可以过滤
+                    Integer exitNum = equipmentInfoNumGroup.get(equipmentInfo.getEnterId());
+                    if(equipmentInfo.getNum() >= exitNum) {
+                        existNumStatus = false;
+                    } else {
+                        existNumStatus = true;
+                        break;
+                    }
+                }
+            }
+            if(!existNumStatus) {
+                continue;
+            }
+            equipmentEnterPageVos.add(equipmentEnterPageVo);
+        }
+
+        return equipmentEnterPageVos;
     }
 
     /**

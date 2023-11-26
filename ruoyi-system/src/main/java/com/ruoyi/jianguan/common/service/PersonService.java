@@ -2,6 +2,7 @@ package com.ruoyi.jianguan.common.service;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
@@ -1430,7 +1431,7 @@ public class PersonService {
                 if (state != null && !state.equals("")){
                     personLeaves = personLeaveDAO.getAllLeavesByState(state);
                 } else {
-                    personLeaves = personLeaveDAO.getAllByProjectId(); //yangaogao 200230927 暂未实现多项目
+                    personLeaves = personLeaveDAO.getAllByProjectId(null); //yangaogao 200230927 暂未实现多项目
                 }
 
             }
@@ -1764,12 +1765,25 @@ public class PersonService {
         Set<String> roleKey = LoginHelper.getLoginUser().getRolePermission();
         //add by yangaogao 20230731  管理员可以查看所有数据
         List<ZjPersonLeave> personLeaves = Lists.newArrayList();
-        if (parentRoleId != null && !parentRoleId.equals("")) {
+        if (roleKey.contains("gly") || roleKey.contains("admin")){
+            String roleType = null;
+            if(ObjectUtil.isNotNull(parentRoleId)) {
+                if (parentRoleId == 1) {
+                    //施工
+                    roleType = "shigongjihe";
+                } else if (parentRoleId == 2) {
+                    //监理
+                    roleType = "jianlijihe";
+                } else {
+                    //全资
+                    roleType = "quanzijihe";
+                }
+            }
+            personLeaves = personLeaveDAO.getAllByProjectId(roleType);
+        } else if (parentRoleId != null && !parentRoleId.equals("")) {
             Integer roleId = getRoleIdByRoleType(parentRoleId);
             personLeaves = personLeaveDAO.getLeavesByRoleId(roleId);
-        } else if (roleKey.contains("gly") || roleKey.contains("admin")){
-            personLeaves = personLeaveDAO.getAllByProjectId();
-        }else{
+        } else{
             personLeaves = personLeaveDAO.getFinishLeavesByUserId(userId);
         }
 

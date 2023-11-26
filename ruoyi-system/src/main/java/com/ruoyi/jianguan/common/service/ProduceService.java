@@ -445,7 +445,11 @@ public class ProduceService {
         produceandrecode.setProjectId(recodeData.getProjectId());
         //在插入之前先通过编码查询该条数据是否存在，如存在则修改
         Integer row = produceandrecodeDAO.getCountById(produceandrecode.getConponentid(), produceandrecode.getProduceid());
+
+
         if (row == 1){
+            Produceandrecode produceandrecode1 =  produceandrecodeDAO.getByIdAndProduceId(recodeData.getConpoentid(),recodeData.getProduceid());
+            produceandrecode.setId(produceandrecode1.getId());
             produceandrecodeDAO.updateByCode(produceandrecode);
         } else {
             //插入数据工序填报
@@ -890,7 +894,6 @@ public class ProduceService {
     public RecodeCombin getCheckDataByrecod(Integer recodeid) {
         Produceandrecode produceandrecode = produceandrecodeDAO.getProduceandReconde(recodeid);
         Recode recode = recodeDAO.selectByPrimaryKey(recodeid);
-
         RecodeCombin recodeCombin = new RecodeCombin();
         recodeCombin.setRecode(recode);
         recodeCombin.setProduceandrecode(produceandrecode);
@@ -1084,13 +1087,13 @@ public class ProduceService {
         return new ResponseBase(200, "删除成功!");
     }
 
-    public ResponseBase getAllReverse(){
-        List<Produceandrecode> produceandrecodes = produceandrecodeDAO.getAll();
+    public ResponseBase getAllReverse(Integer projectId){
+        List<Produceandrecode> produceandrecodes = produceandrecodeDAO.getAll(projectId);
         return new ResponseBase(200, "查询所有工序成功", produceandrecodes);
     }
 
-    public ResponseBase syncData(){
-        List<Produceandrecode> produceandrecodes = produceandrecodeDAO.getAll();
+    public ResponseBase syncData(Integer projectId){
+        List<Produceandrecode> produceandrecodes = produceandrecodeDAO.getAll(projectId);
         for (Produceandrecode produceandrecode : produceandrecodes) {
             Integer produceid = produceandrecode.getProduceid();
             Integer recondid = produceandrecode.getRecodeid();
@@ -1115,9 +1118,9 @@ public class ProduceService {
     }
 
     @Transactional
-    public ResponseBase updateGroups(){
+    public ResponseBase updateGroups(Integer projectId){
         log.info("准备开始同步工序填报表和构件表数据。。");
-        List<Produceandrecode> recodes = produceandrecodeDAO.getAll();
+        List<Produceandrecode> recodes = produceandrecodeDAO.getAll(projectId);
         for (Produceandrecode recode : recodes) {
             String code = recode.getConponentcode();
             //查询构建表code对应的projectcode

@@ -1,12 +1,9 @@
 package com.ruoyi.workflow.plugin.impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import com.ruoyi.common.constant.AuditStatusEnum;
 import com.ruoyi.jianguan.business.contract.domain.entity.EquipmentEnter;
 import com.ruoyi.jianguan.business.contract.domain.vo.EquipmentEnterDetailVo;
 import com.ruoyi.jianguan.business.contract.service.EquipmentEnterService;
-import com.ruoyi.jianguan.business.metrology.domain.entity.Metrology;
-import com.ruoyi.jianguan.business.metrology.service.MetrologyService;
 import com.ruoyi.workflow.plugin.FlowablePlugin;
 import lombok.extern.slf4j.Slf4j;
 import org.flowable.engine.runtime.ProcessInstance;

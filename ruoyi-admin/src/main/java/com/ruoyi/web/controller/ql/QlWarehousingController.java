@@ -11,6 +11,7 @@ import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.annotation.RepeatSubmit;
+import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.PageQuery;
 import com.ruoyi.common.core.domain.R;
@@ -19,19 +20,15 @@ import com.ruoyi.common.core.validate.AddGroup;
 import com.ruoyi.common.core.validate.EditGroup;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.exception.ServiceException;
-import com.ruoyi.ql.domain.bo.QlContractGoodsRelBo;
-import com.ruoyi.ql.domain.bo.QlContractInfoPurchaseBo;
-import com.ruoyi.ql.domain.bo.QlWarehousingBo;
-import com.ruoyi.ql.domain.bo.QlWarehousingDetailBo;
-import com.ruoyi.ql.domain.export.OutboundExportVo;
+import com.ruoyi.ql.domain.bo.*;
+import com.ruoyi.ql.domain.convert.WarehousingConvert;
 import com.ruoyi.ql.domain.export.WarehousingExportVo;
+import com.ruoyi.ql.domain.export.query.QlWarehousingReportQuery;
 import com.ruoyi.ql.domain.importvo.WarehousingImportVo;
 import com.ruoyi.ql.domain.vo.*;
 import com.ruoyi.ql.mapstruct.QlWarehousingDetailMapstruct;
 import com.ruoyi.ql.mapstruct.WarehousingMapstruct;
-import com.ruoyi.ql.service.IQlContractGoodsRelService;
-import com.ruoyi.ql.service.IQlContractInfoPurchaseService;
-import com.ruoyi.ql.service.IQlWarehousingService;
+import com.ruoyi.ql.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -79,8 +76,17 @@ public class QlWarehousingController extends BaseController {
     @SaCheckPermission("warehousing:warehousing:export")
     @Log(title = "入库管理", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(QlWarehousingBo bo, HttpServletResponse response) throws IOException {
-        List<QlWarehousingVo> warehousings = iQlWarehousingService.queryList(bo);
+    public void export(QlWarehousingReportQuery bo, HttpServletResponse response) throws IOException {
+        List<QlWarehousingVo> warehousings = null;
+        if(Constants.EXPORT_ALL.equals(bo.getExportAll())) {
+            warehousings = iQlWarehousingService.queryList(WarehousingConvert.INSTANCE.conver(bo));
+        } else {
+            PageQuery pageQuery = new PageQuery();
+            pageQuery.setPageNum(bo.getPageNum());
+            pageQuery.setPageSize(bo.getPageSize());
+            TableDataInfo<QlWarehousingVo> qlWarehousingVoTableDataInfo = iQlWarehousingService.queryPageList(WarehousingConvert.INSTANCE.conver(bo), pageQuery);
+            warehousings = qlWarehousingVoTableDataInfo.getRows();
+        }
 
         List<WarehousingExportVo> warehousingExports = new ArrayList<>();
         for (QlWarehousingVo warehousing : warehousings) {
@@ -206,7 +212,7 @@ public class QlWarehousingController extends BaseController {
             for (QlWarehousingDetailBo warehousingDetail : warehousingDetails) {
                 Long goodsId = goodsIds.get(contractInfoPurchase.getId() + "-" + warehousingDetail.getGoodsName());
                 if(ObjectUtil.isNull(goodsId)) {
-                    throw new ServiceException("未查询到采购合同下的产品销售信息");
+                    throw new ServiceException("未查询到采购合同："+warehousing.getContractCode()+"下的"+warehousingDetail.getGoodsName()+"产品采购信息");
                 }
                 warehousingDetail.setGoodsId(String.valueOf(goodsId));
                 warehousingDetail.setInventoryDirection("warehousing");
@@ -285,8 +291,80 @@ public class QlWarehousingController extends BaseController {
     @RepeatSubmit()
     @PutMapping()
     public R<Void> edit(@Validated(EditGroup.class) @RequestBody QlWarehousingBo bo) {
+        QlWarehousingBo qlWarehousingBo = new QlWarehousingBo();
+        qlWarehousingBo.setId(bo.getId());
+        List<QlWarehousingVo> qlWarehousingVos = iQlWarehousingService.queryList(qlWarehousingBo);
+        for (QlWarehousingVo qlWarehousingVo : qlWarehousingVos) {
+            if(LOCK.equals(qlWarehousingVo.getLockStatus())) {
+                return R.fail("入库单已锁定，不能修改");
+            }
+        }
         return toAjax(iQlWarehousingService.updateByBo(bo) ? 1 : 0);
     }
+
+    private static final String LOCK = "lock";
+
+    private static final String UNLOCK = "unlock";
+
+    /**
+     * 修改入库管理
+     */
+    @SaCheckPermission("warehousing:warehousing:lock")
+    @Log(title = "入库管理", businessType = BusinessType.LOCK)
+    @RepeatSubmit()
+    @GetMapping("/lock/{ids}")
+    public R<Void> lock(@NotEmpty(message = "主键不能为空") @PathVariable Long[] ids) {
+        // 锁定状态的数据不需要重复操作
+        QlWarehousingBo qlWarehousingBo = new QlWarehousingBo();
+        qlWarehousingBo.setIds(CollUtil.newArrayList(ids));
+        List<QlWarehousingVo> qlWarehousingVos = iQlWarehousingService.queryList(qlWarehousingBo);
+        for (QlWarehousingVo qlWarehousingVo : qlWarehousingVos) {
+            if(LOCK.equals(qlWarehousingVo.getLockStatus())) {
+                return R.fail("重复锁定");
+            }
+        }
+        for (QlWarehousingVo qlWarehousingVo : qlWarehousingVos) {
+            qlWarehousingVo.setLockStatus(LOCK);
+            QlWarehousingBo qlWarehousing = BeanUtil.copyProperties(qlWarehousingVo, QlWarehousingBo.class);
+            iQlWarehousingService.updateByBo(qlWarehousing);
+        }
+        return R.ok();
+    }
+
+    private final IQlPaymentWarehousingRelService iQlPaymentWarehousingRelService;
+
+    /**
+     * 修改入库管理
+     */
+    @SaCheckPermission("warehousing:warehousing:unlock")
+    @Log(title = "入库管理", businessType = BusinessType.UNLOCK)
+    @RepeatSubmit()
+    @GetMapping("/unlock/{ids}")
+    public R<Void> unlock(@NotEmpty(message = "主键不能为空") @PathVariable Long[] ids) {
+        // 锁定状态的数据不需要重复操作
+        QlWarehousingBo qlWarehousingBo = new QlWarehousingBo();
+        qlWarehousingBo.setIds(CollUtil.newArrayList(ids));
+        List<QlWarehousingVo> qlWarehousingVos = iQlWarehousingService.queryList(qlWarehousingBo);
+        for (QlWarehousingVo qlWarehousingVo : qlWarehousingVos) {
+            if(UNLOCK.equals(qlWarehousingVo.getLockStatus())) {
+                return R.fail("重复解锁");
+            }
+        }
+        for (QlWarehousingVo qlWarehousingVo : qlWarehousingVos) {
+            // 查询是否有支付记录--有支付记录，抛出异常
+            QlPaymentWarehousingRelBo qlPaymentWarehousingRelBo = new QlPaymentWarehousingRelBo();
+            qlPaymentWarehousingRelBo.setWarehousingCode(qlWarehousingVo.getWarehousingCode());
+            List<QlPaymentWarehousingRelVo> qlPaymentWarehousingRelVos = iQlPaymentWarehousingRelService.queryList(qlPaymentWarehousingRelBo);
+            if(CollUtil.isNotEmpty(qlPaymentWarehousingRelVos)) {
+                return R.fail("出库单已有支付记录，不能解锁");
+            }
+            qlWarehousingVo.setLockStatus(UNLOCK);
+            QlWarehousingBo qlWarehousing = BeanUtil.copyProperties(qlWarehousingVo, QlWarehousingBo.class);
+            iQlWarehousingService.updateByBo(qlWarehousing);
+        }
+        return R.ok();
+    }
+
 
     /**
      * 删除入库管理
@@ -298,6 +376,25 @@ public class QlWarehousingController extends BaseController {
     @DeleteMapping("/{ids}")
     public R<Void> remove(@NotEmpty(message = "主键不能为空")
                           @PathVariable Long[] ids) {
+        QlWarehousingBo qlWarehousingBo = new QlWarehousingBo();
+        qlWarehousingBo.setIds(CollUtil.newArrayList(ids));
+        List<QlWarehousingVo> qlWarehousingVos = iQlWarehousingService.queryList(qlWarehousingBo);
+        for (QlWarehousingVo qlWarehousingVo : qlWarehousingVos) {
+            if(LOCK.equals(qlWarehousingVo.getLockStatus())) {
+                return R.fail("入库单已锁定，不能删除");
+            }
+        }
         return toAjax(iQlWarehousingService.deleteWithValidByIds(Arrays.asList(ids), true) ? 1 : 0);
+    }
+
+
+    /**
+     * 获取最新入库单编号
+     */
+    @SaCheckPermission("warehousing:warehousing:list")
+    @GetMapping("/getInventoryId")
+    public String getInventoryId(String type) {
+        String inventNo = iQlWarehousingService.getInventoryId(type);
+        return inventNo;
     }
 }

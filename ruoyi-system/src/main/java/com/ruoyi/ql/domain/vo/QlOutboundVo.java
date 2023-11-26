@@ -27,6 +27,11 @@ public class QlOutboundVo {
     private static final long serialVersionUID = 1L;
 
     /**
+     * 锁定状态
+     */
+    private String lockStatus;
+
+    /**
      * id
      */
     @ExcelProperty(value = "id")

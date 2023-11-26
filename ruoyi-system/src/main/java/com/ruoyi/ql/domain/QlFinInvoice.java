@@ -83,4 +83,8 @@ public class QlFinInvoice extends BaseEntity {
      * 附件
      */
     private String fj;
+    /**
+     * 折扣
+     */
+    private String discount;
 }

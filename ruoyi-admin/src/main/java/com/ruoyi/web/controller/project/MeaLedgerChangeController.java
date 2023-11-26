@@ -57,7 +57,11 @@ public class MeaLedgerChangeController extends BaseController {
     @SaCheckPermission("ledgerChange:ledgerChange:list")
     @GetMapping("/list")
     public TableDataInfo<MeaLedgerChangeVo> list(MeaLedgerChangeBo bo, PageQuery pageQuery) {
-        return iMeaLedgerChangeService.queryPageList(bo, pageQuery);
+        TableDataInfo<MeaLedgerChangeVo> meaLedgerChangeVoTableDataInfo = iMeaLedgerChangeService.queryPageList(bo, pageQuery);
+        for (MeaLedgerChangeVo row : meaLedgerChangeVoTableDataInfo.getRows()) {
+//            row.setStatus("1");
+        }
+        return meaLedgerChangeVoTableDataInfo;
     }
 
     /**
@@ -117,7 +121,6 @@ public class MeaLedgerChangeController extends BaseController {
             processService.startMeaProcess(Process_1690622335686,formKey,bo.getBgbh(), bo);
         }
         return toAjax(aBoolean ? 1 : 0);
-
     }
 
 

@@ -87,4 +87,6 @@ public class EquipmentEnterPageVo extends NewBaseVo {
     @ApiModelProperty(value = "设备信息")
     private List<EquipmentInfo> equipmentInfos;
 
+    private String equipmentInfo;
+
 }

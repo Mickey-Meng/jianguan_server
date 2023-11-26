@@ -41,11 +41,11 @@ public class QlFinReceivableController extends BaseController {
 
     private final IQlFinReceivableService iQlFinReceivableService;
 
-/**
- * 查询收款记录列表
- */
-@SaCheckPermission("ql:finReceivable:list")
-@GetMapping("/list")
+    /**
+     * 查询收款记录列表
+     */
+    @SaCheckPermission("ql:finReceivable:list")
+    @GetMapping("/list")
     public TableDataInfo<QlFinReceivableVo> list(QlFinReceivableBo bo, PageQuery pageQuery) {
         return iQlFinReceivableService.queryPageList(bo, pageQuery);
     }
@@ -65,11 +65,11 @@ public class QlFinReceivableController extends BaseController {
      * 导出收款记录列表
      */
     @SaCheckPermission("ql:finReceivable:export")
-    @Log(title = "收款记录" , businessType = BusinessType.EXPORT)
+    @Log(title = "收款记录", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(QlFinReceivableBo bo, HttpServletResponse response) {
         List<QlFinReceivableVo> list = iQlFinReceivableService.queryList(bo);
-        ExcelUtil.exportExcel(list, "收款记录" , QlFinReceivableVo.class, response);
+        ExcelUtil.exportExcel(list, "收款记录", QlFinReceivableVo.class, response);
     }
 
     /**
@@ -80,7 +80,7 @@ public class QlFinReceivableController extends BaseController {
     @SaCheckPermission("ql:finReceivable:query")
     @GetMapping("/{id}")
     public R<QlFinReceivableVo> getInfo(@NotNull(message = "主键不能为空")
-                                     @PathVariable Long id) {
+                                        @PathVariable Long id) {
         return R.ok(iQlFinReceivableService.queryById(id));
     }
 
@@ -88,7 +88,7 @@ public class QlFinReceivableController extends BaseController {
      * 新增收款记录
      */
     @SaCheckPermission("ql:finReceivable:add")
-    @Log(title = "收款记录" , businessType = BusinessType.INSERT)
+    @Log(title = "收款记录", businessType = BusinessType.INSERT)
     @RepeatSubmit()
     @PostMapping()
     public R<Void> add(@Validated(AddGroup.class) @RequestBody QlFinReceivableBo bo) {
@@ -99,7 +99,7 @@ public class QlFinReceivableController extends BaseController {
      * 修改收款记录
      */
     @SaCheckPermission("ql:finReceivable:edit")
-    @Log(title = "收款记录" , businessType = BusinessType.UPDATE)
+    @Log(title = "收款记录", businessType = BusinessType.UPDATE)
     @RepeatSubmit()
     @PutMapping()
     public R<Void> edit(@Validated(EditGroup.class) @RequestBody QlFinReceivableBo bo) {
@@ -112,7 +112,7 @@ public class QlFinReceivableController extends BaseController {
      * @param ids 主键串
      */
     @SaCheckPermission("ql:finReceivable:remove")
-    @Log(title = "收款记录" , businessType = BusinessType.DELETE)
+    @Log(title = "收款记录", businessType = BusinessType.DELETE)
     @DeleteMapping("/{ids}")
     public R<Void> remove(@NotEmpty(message = "主键不能为空")
                           @PathVariable Long[] ids) {

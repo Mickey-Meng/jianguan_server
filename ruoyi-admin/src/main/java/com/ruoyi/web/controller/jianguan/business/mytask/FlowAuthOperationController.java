@@ -6,6 +6,7 @@ import com.ruoyi.common.core.domain.object.MyPageData;
 import com.ruoyi.common.core.domain.object.MyPageParam;
 import com.ruoyi.common.core.domain.object.ResponseBase;
 import com.ruoyi.common.core.domain.object.ResponseResult;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.flowable.domain.vo.FlowTaskCommentVo;
 import com.ruoyi.flowable.domain.vo.FlowTaskVo;
 import com.ruoyi.flowable.service.FlowApiService;
@@ -221,6 +222,9 @@ public class FlowAuthOperationController {
      */
     @GetMapping("/getRunVariables")
     public ResponseBase getRunVariables(String processInstanceId, String flowKey, Integer projectId, Integer buildSection) {
+        if (StringUtils.isEmpty(processInstanceId) || Objects.equals("undefined", processInstanceId)) {
+            return ResponseBase.success("流程实例ID为空，请检查数据~");
+        }
         //获取流程的人员变量
         List<String> userVariables = flowAuditEntryService.getUSerVariable(flowKey, projectId, buildSection);
         //获取运行的变量

@@ -116,4 +116,12 @@ public class QlContractInfoSale extends BaseEntity {
      * 账期
      */
     private Long accountPeriod;
+    /**
+     * 项目名称
+     */
+    private String projectName;
+    /**
+     * 项目id
+     */
+    private String projectId;
 }

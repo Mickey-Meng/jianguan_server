@@ -91,6 +91,9 @@ public interface ProduceandrecodeDAO {
     String getConpontentCodeByRecodeId(@Param("recodeid") Integer recodeid,
                                        @Param("produceid")Integer produceid);
 
+    List<Produceandrecode> getAll(Integer projectId);
+
+
     List<Produceandrecode> getAll();
 
     @Select("select * from produceandrecode")

@@ -333,11 +333,10 @@ public class UserService {
 
     @CheckRepeatCommit
     public ResponseBase updateOnline(String cid, String lon, String lat) {
-
-
+        //yangaogao 20231024 下面对经纬度的判断，逻辑写反了
         try{
             Double lo = Double.valueOf(lon);
-            if(lo>100 && lo<130 ){
+            if(lo<100 || lo > 130 ){
                 lon = null;
             }
         }catch (Exception e){
@@ -345,7 +344,7 @@ public class UserService {
         }
         try {
             Double la = Double.valueOf(lat);
-            if(  la>15 && la<40){
+            if(  la<15 || la>40){
                 lat = null;
             }
         }catch (Exception e){
@@ -555,8 +554,8 @@ public class UserService {
             for (UserOnlineDTO onlineDTO : userOnlineDTO) {
                 Map<String, Object> dataMap = Maps.newHashMap();
                 dataMap.put("用户ID", onlineDTO.getUserId());
-                dataMap.put("昵称", onlineDTO.getUserName());
-                dataMap.put("名字", onlineDTO.getName());
+                dataMap.put("昵称", onlineDTO.getName());
+                dataMap.put("名字", onlineDTO.getUserName());
                 dataMap.put("角色ID", onlineDTO.getRoleId());
                 dataMap.put("角色名称", onlineDTO.getRoleName());
 //                dataMap.put("最后在线时间", onlineDTO.getUpdateTime());

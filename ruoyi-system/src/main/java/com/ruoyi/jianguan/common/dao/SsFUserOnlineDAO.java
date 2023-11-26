@@ -73,7 +73,7 @@ public interface SsFUserOnlineDAO {
     @Select("select cid from ss_f_user_online where userid = #{userid}")
     String getCidByUserid(Integer userid);
 
-    @Select("select * from ss_f_user_online where cid is not null")
+    @Select("select sfuo.* from ss_f_user_online  sfuo, sys_user su    where cid is not null and sfuo.userid=su.user_id and su.user_name not like '%admin'")
     List<SsFUserOnline> getAll();
 
     @Update("update ss_f_user_online set role = #{roleId} where userid = #{userId}")

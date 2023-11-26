@@ -10,6 +10,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 
 /**
@@ -95,7 +96,7 @@ public class QlWarehousingDetailVo {
      */
     @ExcelProperty(value = "库存数量")
     @ApiModelProperty(value = "库存数量", required = true)
-    private Long inventoryNumber;
+    private BigDecimal  inventoryNumber;
 
     /**
      * 采购总价 = 采购数量 * 进货价
@@ -133,5 +134,7 @@ public class QlWarehousingDetailVo {
      * 单位
      */
     private String goodsUnit;
+
+    private Date inventoryDate;
 
 }

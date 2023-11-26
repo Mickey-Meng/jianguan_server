@@ -1,6 +1,7 @@
 package com.ruoyi.ql.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.core.page.TableDataInfo;
@@ -9,6 +10,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.ruoyi.ql.domain.QlContractInfoPurchase;
+import com.ruoyi.ql.domain.QlOutbound;
 import com.ruoyi.ql.mapper.QlContractInfoPurchaseMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -80,6 +82,7 @@ public class QlBasisSupplierServiceImpl implements IQlBasisSupplierService {
         lqw.eq(bo.getUnpaid() != null, QlBasisSupplier::getUnpaid, bo.getUnpaid());
         lqw.eq(bo.getInvoiceAmount() != null, QlBasisSupplier::getInvoiceAmount, bo.getInvoiceAmount());
         lqw.eq(bo.getUninvoiceAmount() != null, QlBasisSupplier::getUninvoiceAmount, bo.getUninvoiceAmount());
+        lqw.in(CollUtil.isNotEmpty(bo.getSupplierNames()), QlBasisSupplier::getSupplierName, bo.getSupplierNames());
         return lqw;
     }
 

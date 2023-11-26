@@ -864,13 +864,22 @@ public class LuckySheetUtil {
                 // 循环读取每一行数据
                 for (int rowNumber = 0; rowNumber < currentSheet.getPhysicalNumberOfRows(); rowNumber++) {
                     Row currentRow = currentSheet.getRow(rowNumber);
+                    if (Objects.isNull(currentRow)) {
+                        System.out.println("当前行数据为空:" + rowNumber);
+                        continue;
+                    }
                     // 读取每一列数据
                     List<String> currentRowValueList = Lists.newArrayList();
                     for (int cellNumber = 0; cellNumber < currentRow.getPhysicalNumberOfCells(); cellNumber++) {
                         Cell currentCell = currentRow.getCell(cellNumber);
-                        currentCell.setCellType(CellType.STRING);
-                        if (Objects.equals(currentCell.getStringCellValue(), "")) {
+                        if (Objects.isNull(currentCell)) {
+                            System.out.println("当前单元格数据为空(rowNumber:" + rowNumber + " cellNumber:" + cellNumber);
                             continue;
+                        } else {
+                            currentCell.setCellType(CellType.STRING);
+                            if (Objects.equals(currentCell.getStringCellValue(), "")) {
+                                continue;
+                            }
                         }
                         currentRowValueList.add(currentCell.getStringCellValue());
                     }

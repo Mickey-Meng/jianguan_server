@@ -171,20 +171,20 @@ public class ProduceController {
 
     @PostMapping("/getAllReverse")
     @ApiOperation(value = "获取所有工序（倒叙排列）")
-    public ResponseBase getAllReverse (){
-        return produceService.getAllReverse();
+    public ResponseBase getAllReverse(@RequestBody RecodeQueryData recodeQueryData){
+        return produceService.getAllReverse(recodeQueryData.getProjectId());
     }
 
     @PostMapping("/syncData")
     @ApiOperation(value = "同步工序记录表与构建进度表数据")
-    public ResponseBase syncData(){
-        return produceService.syncData();
+    public ResponseBase syncData(@RequestParam("projectid") String projectId){
+        return produceService.syncData(Integer.parseInt(projectId));
     }
 
     @PostMapping("/updateGroups")
     @ApiOperation(value = "同步工序记录表与构建表数据组织Code（如：QL16Z）")
-    public ResponseBase updateGroups(){
-        return produceService.updateGroups();
+    public ResponseBase updateGroups(@RequestParam(value = "projectId", required = false) String projectId){
+        return produceService.updateGroups(Integer.parseInt(projectId));
     }
 
     @PostMapping("/getCopyInfos")

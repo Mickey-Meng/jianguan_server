@@ -10,7 +10,7 @@ import com.ruoyi.common.convert.ExcelDictConvert;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import java.util.Date;
-
+import java.util.List;
 
 
 /**
@@ -96,5 +96,12 @@ public class QlFinInvoiceVo {
     @ExcelProperty(value = "附件")
     @ApiModelProperty(value = "附件", required = true)
     private String fj;
+    /**
+     * 折扣
+     */
+    @ExcelProperty(value = "折扣")
+    @ApiModelProperty(value = "折扣", required = true)
+    private String discount;
 
+    private List<QlInvoiceItemVo> invoiceItems;
 }

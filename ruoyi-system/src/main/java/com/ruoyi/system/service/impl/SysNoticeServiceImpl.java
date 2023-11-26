@@ -57,7 +57,11 @@ public class SysNoticeServiceImpl implements ISysNoticeService {
         return baseMapper.selectList(new LambdaQueryWrapper<SysNotice>()
             .like(StringUtils.isNotBlank(notice.getNoticeTitle()), SysNotice::getNoticeTitle, notice.getNoticeTitle())
             .eq(StringUtils.isNotBlank(notice.getNoticeType()), SysNotice::getNoticeType, notice.getNoticeType())
-            .like(StringUtils.isNotBlank(notice.getCreateBy()), SysNotice::getCreateBy, notice.getCreateBy()));
+            .like(StringUtils.isNotBlank(notice.getCreateBy()), SysNotice::getCreateBy, notice.getCreateBy())
+                .eq(StringUtils.isNotBlank(notice.getReceiveId()), SysNotice::getReceiveId, notice.getReceiveId())
+         .like(StringUtils.isNotBlank(notice.getReceiveName()), SysNotice::getReceiveName, notice.getReceiveName())
+         .eq(StringUtils.isNotBlank(notice.getReadStatus()), SysNotice::getReadStatus, notice.getReadStatus())
+         .eq(notice.getReadTime() != null, SysNotice::getReadTime, notice.getReadTime()));
     }
 
     /**

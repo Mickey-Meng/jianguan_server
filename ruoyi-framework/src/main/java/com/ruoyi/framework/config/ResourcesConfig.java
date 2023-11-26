@@ -2,6 +2,7 @@ package com.ruoyi.framework.config;
 
 import com.ruoyi.framework.interceptor.PlusWebInvokeTimeInterceptor;
 import com.yomahub.tlog.web.interceptor.TLogWebInterceptor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
@@ -19,12 +20,16 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class ResourcesConfig implements WebMvcConfigurer {
 
+    @Autowired
+    private JiMuInterceptor jiMuInterceptor;
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         // 全局链路跟踪拦截器
         registry.addInterceptor(new TLogWebInterceptor());
         // 全局访问性能拦截
         registry.addInterceptor(new PlusWebInvokeTimeInterceptor());
+        registry.addInterceptor(jiMuInterceptor).addPathPatterns("/jmreport/view/*");
     }
 
     @Override

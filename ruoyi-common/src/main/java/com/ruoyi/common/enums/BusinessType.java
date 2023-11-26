@@ -59,4 +59,14 @@ public enum BusinessType {
      * 清空数据
      */
     CLEAN,
+
+    /**
+     * 锁定
+     */
+    LOCK,
+
+    /**
+     * 解锁
+     */
+    UNLOCK,
 }

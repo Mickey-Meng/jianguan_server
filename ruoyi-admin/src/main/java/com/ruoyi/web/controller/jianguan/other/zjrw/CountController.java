@@ -158,8 +158,9 @@ public class CountController {
     @ResponseBody
     @ApiOperation(value="工区统计数据")
     public ResponseBase getpjFirst(@RequestParam("projectcode") String projectcode,
+                                   @RequestParam("projectType") String projectType,
                                    @RequestParam(value = "projectId", required = false)Integer projectId){
-        return countService.getpjFirst(projectcode, projectId);
+        return countService.getpjFirst(projectcode, projectId,projectType);
     }
 
     @GetMapping("/getProject")
@@ -239,10 +240,7 @@ public class CountController {
     @ResponseBody
     @ApiOperation(value="获取每个工程的项目构件类型")
     public ResponseBase getData(@RequestParam(value ="type",required = false) String type) throws ParseException {
-        if("QL".equals(type)||"LM".equals(type)||"SD".equals(type)){
             return countService.getData(type);
-        }
-        return new ResponseBase(505,"暂时只支持：桥梁、隧道、道路！");
     }
 
     //获取工作面信息

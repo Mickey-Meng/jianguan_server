@@ -7,8 +7,11 @@ import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.ruoyi.common.annotation.ExcelDictFormat;
 import com.ruoyi.common.convert.ExcelDictConvert;
+import com.ruoyi.ql.domain.bo.QlInvoiceItemBo;
 import lombok.Data;
 import java.util.Date;
+import java.util.List;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -111,6 +114,13 @@ public class QlFinInvoiceSaleVo {
     @ExcelProperty(value = "部门ID")
     @ApiModelProperty(value = "部门ID", required = true)
     private Long deptId;
+    /**
+     * 折扣
+     */
+    @ExcelProperty(value = "折扣")
+    @ApiModelProperty(value = "折扣", required = true)
+    private String discount;
 
+    private List<QlInvoiceItemVo> invoiceItems;
 
 }

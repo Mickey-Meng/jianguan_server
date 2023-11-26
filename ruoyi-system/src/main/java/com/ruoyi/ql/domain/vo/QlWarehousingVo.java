@@ -30,6 +30,12 @@ public class QlWarehousingVo {
     private static final long serialVersionUID = 1L;
 
     /**
+     * 锁定状态
+     */
+    @ExcelProperty(value = "锁定状态")
+    private String lockStatus;
+
+    /**
      * id
      */
     @ExcelProperty(value = "id")
@@ -231,4 +237,32 @@ public class QlWarehousingVo {
      * 备注
      */
     private String remark;
+
+    /**
+     * 税率
+     */
+    @ExcelProperty(value = "税率")
+    @ApiModelProperty(value = "税率", required = true)
+    private BigDecimal rate;
+
+    /**
+     * 不含税金额
+     */
+    @ExcelProperty(value = "不含税金额")
+    @ApiModelProperty(value = "不含税金额", required = true)
+    private BigDecimal amountNotax;
+
+    /**
+     * 税额
+     */
+    @ExcelProperty(value = "税额")
+    @ApiModelProperty(value = "税额", required = true)
+    private BigDecimal amountTax;
+
+    /**
+     * 车牌号码
+     */
+    @ExcelProperty(value = "车牌号码")
+    @ApiModelProperty(value = "车牌号码", required = true)
+    private String licensePlate;
 }

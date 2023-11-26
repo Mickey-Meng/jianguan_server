@@ -139,4 +139,18 @@ public class QlContractInfoSaleVo {
      */
     private Long accountPeriod;
 
+    /**
+     * 项目名称
+     */
+    @ExcelProperty(value = "项目名称")
+    @ApiModelProperty(value = "项目名称", required = true)
+    private String projectName;
+
+    /**
+     * 项目id
+     */
+    @ExcelProperty(value = "项目id")
+    @ApiModelProperty(value = "项目id", required = true)
+    private String projectId;
+
 }

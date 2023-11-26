@@ -213,7 +213,7 @@ public class PubProduceServiceImpl implements IPubProduceService {
      * @throws IOException
      */
     @Override
-    public boolean saveFillDataTemplate(Long id, String luckySheetJson) throws IOException {
+    public Optional<List<String>> saveFillDataTemplate(Long id, String luckySheetJson) throws IOException {
         JSONObject jsonObject = (JSONObject) JSON.parse(luckySheetJson);
         JSONArray luckySheetJsonArray = jsonObject.getJSONArray("data");
         List<JSONObject> jsonObjectList = luckySheetJsonArray.stream()
@@ -236,7 +236,7 @@ public class PubProduceServiceImpl implements IPubProduceService {
             }
             // 3、磁盘文件上传至文件服务器
             sysOssService.upload(FileUtils.getMultipartFile(FileUtils.file(fillDataTemplatePath)));
-            return true;
+            return approvalComments;
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException(e.getMessage());

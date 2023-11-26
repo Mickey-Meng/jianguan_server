@@ -1,0 +1,1 @@
+ALTER table ql_warehousing_detail add inventory_date datetime COMMENT '入库时间/出库时间';

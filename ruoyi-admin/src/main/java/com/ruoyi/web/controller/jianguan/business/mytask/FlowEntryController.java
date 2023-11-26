@@ -210,16 +210,16 @@ public class FlowEntryController {
         PageInfo<FlowTypeDetailVo> pageInfo = flowTypeService.getPageInfo(flowTypePageDTO);
         if (ObjectUtil.isNotNull(pageInfo) || CollUtil.isNotEmpty(pageInfo.getList())) {
             flowTypeService.removeBatchByIds(pageInfo.getList().stream().map(FlowTypeDetailVo::getId).collect(Collectors.toList()));
-            for (FlowTypeDetailVo flowTypeDetailVo : pageInfo.getList()) {
-                FlowType flowType = new FlowType();
-                flowType.setFlowKey(flowEntry.getProcessDefinitionKey());
-                flowType.setFlowName(flowTypeDetailVo.getFlowName());
-                flowType.setDeletedFlag(1);
-                flowType.setCreateUserId(LoginHelper.getUserId().intValue());
-                flowType.setCreateTime(new Date());
-                flowTypeService.addOrUpdate(flowType);
-            }
         }
+
+        FlowType flowType = new FlowType();
+        flowType.setFlowKey(flowEntry.getProcessDefinitionKey());
+        flowType.setFlowName(flowEntry.getProcessDefinitionName());
+        flowType.setDeletedFlag(1);
+        flowType.setCreateUserId(LoginHelper.getUserId().intValue());
+        flowType.setCreateTime(new Date());
+        flowTypeService.addOrUpdate(flowType);
+
         flowAuditEntryService.removeByFlowKey(flowEntry.getProcessDefinitionKey());
 //        重新发布工作流
 //          1、typeId清理zz_flow_audit_entry表数据

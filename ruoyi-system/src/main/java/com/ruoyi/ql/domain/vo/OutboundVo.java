@@ -55,7 +55,6 @@ public class OutboundVo {
     /**
      * 电话
      */
-    @NotBlank(message = "电话不能为空", groups = { AddGroup.class, EditGroup.class })
     private String telephone;
 
     /**
@@ -103,7 +102,7 @@ public class OutboundVo {
     @NotNull(message = "附加价格不能为空", groups = { AddGroup.class, EditGroup.class })
     private BigDecimal extraPrice;
 
-    @NotBlank(message = "附件--销售基准价截图不能为空", groups = { AddGroup.class, EditGroup.class })
+//    @NotBlank(message = "附件--销售基准价截图不能为空", groups = { AddGroup.class, EditGroup.class })
     private String fj;
 
     /**
@@ -127,7 +126,6 @@ public class OutboundVo {
     /**
      * 出库对接人 todo
      */
-    @NotBlank(message = "出库对接人不能为空", groups = { AddGroup.class, EditGroup.class })
     private String outboundUsername;
 
     /**

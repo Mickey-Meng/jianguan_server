@@ -54,6 +54,7 @@
     delete from produceandrecode
     where id = #{id,jdbcType=INTEGER}
   </delete>
+  <!--yangaogao 20231107  修改stime 值从now改为 前端传的值-->
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.ruoyi.common.core.domain.entity.Produceandrecode" useGeneratedKeys="true">
     insert into produceandrecode (conponentid, recodeid, produceid,
       projectcode, checkresult, checkuser,
@@ -63,7 +64,7 @@
       )
     values (#{conponentid,jdbcType=INTEGER}, #{recodeid,jdbcType=INTEGER}, #{produceid,jdbcType=INTEGER},
       #{projectcode,jdbcType=VARCHAR}, #{checkresult,jdbcType=INTEGER}, #{checkuser,jdbcType=INTEGER},
-      #{updateuser,jdbcType=INTEGER}, #{stime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP},
+      #{updateuser,jdbcType=INTEGER}, #{stime,jdbcType=TIMESTAMP}, now(),
       #{producename,jdbcType=VARCHAR}, #{conponenttype,jdbcType=VARCHAR}, #{conponentname,jdbcType=VARCHAR},
       #{updateusername,jdbcType=VARCHAR}, #{checkusername,jdbcType=VARCHAR}, #{conponentcode,jdbcType=VARCHAR},
       #{status,jdbcType=INTEGER}, #{projectId,jdbcType=INTEGER}
@@ -80,7 +81,7 @@
       checkuser = #{checkuser,jdbcType=INTEGER},
       updateuser = #{updateuser,jdbcType=INTEGER},
       stime = #{stime,jdbcType=TIMESTAMP},
-      updatetime = #{updatetime,jdbcType=TIMESTAMP},
+      updatetime= now(),
       producename = #{producename,jdbcType=VARCHAR},
       conponenttype = #{conponenttype,jdbcType=VARCHAR},
       conponentname = #{conponentname,jdbcType=VARCHAR},
@@ -291,14 +292,14 @@
   </select>
 
   <update id="updateReject">
-    update produceandrecode set status = 2, checkresult = 2 where recodeid =#{recodeid}
+    update produceandrecode set status = 2, checkresult = 2,updatetime= now(), where recodeid =#{recodeid}
     <if test="produceid != null">
       and produceid = #{produceid}
     </if>
   </update>
 
   <select id="getAll" resultMap="BaseResultMap">
-    select * from produceandrecode order by updatetime desc;
+    select * from produceandrecode where projectId = #{projectId}  order by updatetime, stime DESC
   </select>
 
   <select id="selectByRecodeId" resultMap="BaseResultMap">

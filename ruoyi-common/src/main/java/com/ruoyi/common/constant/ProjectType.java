@@ -10,7 +10,7 @@ package com.ruoyi.common.constant;
 public enum ProjectType {
 
     桥梁工程(1, "桥梁工程"),
-    道路工程(2, "道路工程"),
+    房建工程(2, "房建工程"),
     隧道工程(3, "隧道工程");
 
     private Integer code;

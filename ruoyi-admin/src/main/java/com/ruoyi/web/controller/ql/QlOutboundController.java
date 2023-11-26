@@ -11,6 +11,7 @@ import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.annotation.RepeatSubmit;
+import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.PageQuery;
 import com.ruoyi.common.core.domain.R;
@@ -19,16 +20,16 @@ import com.ruoyi.common.core.validate.AddGroup;
 import com.ruoyi.common.core.validate.EditGroup;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.exception.ServiceException;
+import com.ruoyi.ql.domain.QlReceivableOutboundRel;
 import com.ruoyi.ql.domain.bo.*;
+import com.ruoyi.ql.domain.convert.OutboundConvert;
 import com.ruoyi.ql.domain.export.OutboundExportVo;
+import com.ruoyi.ql.domain.export.query.QlOutboundReportQuery;
 import com.ruoyi.ql.domain.importvo.OutboundImportVo;
 import com.ruoyi.ql.domain.vo.*;
 import com.ruoyi.ql.mapstruct.OutboundAndWarehousingMapstruct;
 import com.ruoyi.ql.mapstruct.QlWarehousingDetailMapstruct;
-import com.ruoyi.ql.service.IQlContractGoodsRelService;
-import com.ruoyi.ql.service.IQlContractInfoSaleService;
-import com.ruoyi.ql.service.IQlOutboundService;
-import com.ruoyi.ql.service.IQlProjectInfoService;
+import com.ruoyi.ql.service.*;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections.ArrayStack;
 import org.springframework.validation.annotation.Validated;
@@ -64,6 +65,7 @@ public class QlOutboundController extends BaseController {
 
     private final IQlProjectInfoService iQlProjectInfoService;
 
+    private final IQlReceivableOutboundRelService iQlReceivableOutboundRelService;
     /**
      * 查询出库管理列表
      */
@@ -134,7 +136,7 @@ public class QlOutboundController extends BaseController {
             for (QlWarehousingDetailBo warehousingDetail : warehousingDetails) {
                 Long goodsId = goodsIds.get(qlContractInfoSaleVo.getId() + "-" + warehousingDetail.getGoodsName());
                 if(ObjectUtil.isNull(goodsId)) {
-                    throw new ServiceException("未查询到销售合同下的产品销售信息");
+                    throw new ServiceException("未查询到销售合同下的"+warehousingDetail.getGoodsName()+"产品销售信息");
                 }
                 warehousingDetail.setGoodsId(String.valueOf(goodsId));
                 warehousingDetail.setInventoryDirection("outbound");
@@ -203,8 +205,17 @@ public class QlOutboundController extends BaseController {
     @SaCheckPermission("ql:outbound:export")
     @Log(title = "出库管理", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(QlOutboundBo bo, HttpServletResponse response) throws IOException {
-        List<QlOutboundVo> qutbounds = iQlOutboundService.queryList(bo);
+    public void export(QlOutboundReportQuery bo, HttpServletResponse response) throws IOException {
+        List<QlOutboundVo> qutbounds = null;
+        if(Constants.EXPORT_ALL.equals(bo.getExportAll())) {
+            qutbounds = iQlOutboundService.queryList(OutboundConvert.INSTANCE.conver(bo));
+        }else {
+            PageQuery pageQuery = new PageQuery();
+            pageQuery.setPageNum(bo.getPageNum());
+            pageQuery.setPageSize(bo.getPageSize());
+            TableDataInfo<QlOutboundVo> qlOutboundVoTableDataInfo = iQlOutboundService.queryPageList(OutboundConvert.INSTANCE.conver(bo), pageQuery);
+            qutbounds = qlOutboundVoTableDataInfo.getRows();
+        }
         List<OutboundExportVo> outboundExports = new ArrayList<>();
         for (QlOutboundVo outbound : qutbounds) {
             if(CollUtil.isEmpty(outbound.getWarehousingDetails())) {
@@ -327,6 +338,14 @@ public class QlOutboundController extends BaseController {
     @RepeatSubmit()
     @PutMapping()
     public R<Void> edit(@Validated(EditGroup.class) @RequestBody QlOutboundBo bo) {
+        QlOutboundBo qlOutboundBo = new QlOutboundBo();
+        qlOutboundBo.setId(bo.getId());
+        List<QlOutboundVo> qlOutboundVos = iQlOutboundService.queryList(qlOutboundBo);
+        for (QlOutboundVo qlWarehousingVo : qlOutboundVos) {
+            if(LOCK.equals(qlWarehousingVo.getLockStatus())) {
+                return R.fail("出库单已锁定，不能修改");
+            }
+        }
         return toAjax(iQlOutboundService.updateByBo(bo) ? 1 : 0);
     }
 
@@ -340,6 +359,76 @@ public class QlOutboundController extends BaseController {
     @DeleteMapping("/{ids}")
     public R<Void> remove(@NotEmpty(message = "主键不能为空")
                           @PathVariable Long[] ids) {
+        QlOutboundBo qlOutboundBo = new QlOutboundBo();
+        qlOutboundBo.setIds(CollUtil.newArrayList(ids));
+        List<QlOutboundVo> qlOutboundVos = iQlOutboundService.queryList(qlOutboundBo);
+        for (QlOutboundVo qlWarehousingVo : qlOutboundVos) {
+            if(LOCK.equals(qlWarehousingVo.getLockStatus())) {
+                return R.fail("出库单已锁定，不能删除");
+            }
+        }
         return toAjax(iQlOutboundService.deleteWithValidByIds(Arrays.asList(ids), true) ? 1 : 0);
+    }
+
+
+    private static final String LOCK = "lock";
+
+    private static final String UNLOCK = "unlock";
+
+    /**
+     * 修改入库管理
+     */
+    @SaCheckPermission("warehousing:warehousing:lock")
+    @Log(title = "入库管理", businessType = BusinessType.LOCK)
+    @RepeatSubmit()
+    @GetMapping("/lock/{ids}")
+    public R<Void> lock(@NotEmpty(message = "主键不能为空") @PathVariable Long[] ids) {
+        // 锁定状态的数据不需要重复操作
+        QlOutboundBo qlOutboundBo = new QlOutboundBo();
+        qlOutboundBo.setIds(CollUtil.newArrayList(ids));
+        List<QlOutboundVo> qlOutboundVos = iQlOutboundService.queryList(qlOutboundBo);
+        for (QlOutboundVo qlOutboundVo : qlOutboundVos) {
+            if(LOCK.equals(qlOutboundVo.getLockStatus())) {
+                return R.fail("重复锁定");
+            }
+        }
+        for (QlOutboundVo qlOutboundVo : qlOutboundVos) {
+            qlOutboundVo.setLockStatus(LOCK);
+            qlOutboundBo = BeanUtil.copyProperties(qlOutboundVo, QlOutboundBo.class);
+            iQlOutboundService.updateByBo(qlOutboundBo);
+        }
+        return R.ok();
+    }
+
+    /**
+     * 修改入库管理
+     */
+    @SaCheckPermission("warehousing:warehousing:unlock")
+    @Log(title = "入库管理", businessType = BusinessType.UNLOCK)
+    @RepeatSubmit()
+    @GetMapping("/unlock/{ids}")
+    public R<Void> unlock(@NotEmpty(message = "主键不能为空") @PathVariable Long[] ids) {
+        // 锁定状态的数据不需要重复操作
+        QlOutboundBo qlOutboundBo = new QlOutboundBo();
+        qlOutboundBo.setIds(CollUtil.newArrayList(ids));
+        List<QlOutboundVo> qlOutboundVos = iQlOutboundService.queryList(qlOutboundBo);
+        for (QlOutboundVo qlOutboundVo : qlOutboundVos) {
+            if(UNLOCK.equals(qlOutboundVo.getLockStatus())) {
+                return R.fail("重复解锁");
+            }
+        }
+        for (QlOutboundVo qlOutboundVo : qlOutboundVos) {
+            // 查询是否有支付记录--有支付记录，抛出异常
+            QlReceivableOutboundRelBo qlReceivableOutboundRelBo = new QlReceivableOutboundRelBo();
+            qlReceivableOutboundRelBo.setOutboundCode(qlOutboundVo.getOutboundCode());
+            List<QlReceivableOutboundRelVo> qlReceivableOutboundRelVos = iQlReceivableOutboundRelService.queryList(qlReceivableOutboundRelBo);
+            if(CollUtil.isNotEmpty(qlReceivableOutboundRelVos)) {
+                return R.fail("入库单已有收款记录，不能解锁");
+            }
+            qlOutboundVo.setLockStatus(UNLOCK);
+            qlOutboundBo = BeanUtil.copyProperties(qlOutboundVo, QlOutboundBo.class);
+            iQlOutboundService.updateByBo(qlOutboundBo);
+        }
+        return R.ok();
     }
 }

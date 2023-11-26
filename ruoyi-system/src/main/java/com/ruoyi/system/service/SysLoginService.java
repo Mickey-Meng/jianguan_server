@@ -87,6 +87,21 @@ public class SysLoginService {
         return StpUtil.getTokenValue();
     }
 
+
+    public String login(String username, String password, String uuid) {
+        HttpServletRequest request = ServletUtils.getRequest();
+        SysUser user = loadUserByUsername(username);
+        checkLogin(LoginType.PASSWORD, username, () -> !BCrypt.checkpw(password, user.getPassword()));
+        // 此处可根据登录用户的数据不同 自行创建 loginUser
+        LoginUser loginUser = buildLoginUser(user);
+        // 生成token
+        LoginHelper.loginByDevice(loginUser, DeviceType.PC);
+
+        asyncService.recordLogininfor(username, Constants.LOGIN_SUCCESS, MessageUtils.message("user.login.success"), request);
+        recordLoginInfo(user.getUserId(), username);
+        return StpUtil.getTokenValue();
+    }
+
     public String smsLogin(String phonenumber, String smsCode) {
         // 通过手机号查找用户
         SysUser user = loadUserByPhonenumber(phonenumber);

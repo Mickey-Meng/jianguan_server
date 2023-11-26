@@ -205,5 +205,5 @@ weather:
   location_id: 330681
 
 jianguan:
-  jmreportUrl: "http://118.195.226.5:8088/"
+  jmreportUrl: "http://118.195.226.5:29999/"
   serverBaseUrl: "http://118.195.226.5:26666/"

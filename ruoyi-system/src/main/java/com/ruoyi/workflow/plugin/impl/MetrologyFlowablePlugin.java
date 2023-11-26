@@ -1,6 +1,6 @@
 package com.ruoyi.workflow.plugin.impl;
 
-import com.ruoyi.common.constant.AuditStatusEnum;
+import com.ruoyi.common.constant.ApprovalStatusEnum;
 import com.ruoyi.jianguan.business.metrology.domain.entity.Metrology;
 import com.ruoyi.jianguan.business.metrology.service.MetrologyService;
 import com.ruoyi.workflow.plugin.FlowablePlugin;
@@ -29,7 +29,7 @@ public class MetrologyFlowablePlugin implements FlowablePlugin {
         String businessKey = processInstance.getBusinessKey();
         Metrology metrology = metrologyService.getById(businessKey);
         if (Objects.nonNull(metrology)){
-            metrology.setAuditStatus(AuditStatusEnum.APPROVED.name());
+            metrology.setAuditStatus(ApprovalStatusEnum.APPROVED.name());
             metrologyService.updateById(metrology);
         }
     }
@@ -39,7 +39,7 @@ public class MetrologyFlowablePlugin implements FlowablePlugin {
         String businessKey = processInstance.getBusinessKey();
         Metrology metrology = metrologyService.getById(businessKey);
         if (Objects.nonNull(metrology)){
-            metrology.setAuditStatus(AuditStatusEnum.APPROVING.name());
+            metrology.setAuditStatus(ApprovalStatusEnum.APPROVING.name());
             metrologyService.updateById(metrology);
         }
     }
@@ -50,7 +50,7 @@ public class MetrologyFlowablePlugin implements FlowablePlugin {
         Metrology metrology = metrologyService.getById(businessKey);
         log.info("MetrologyFlowablePlugin.rejectToStart.metrology: {}", metrology);
         if (Objects.nonNull(metrology)) {
-            metrology.setAuditStatus(AuditStatusEnum.REJECT.name());
+            metrology.setAuditStatus(ApprovalStatusEnum.REJECT.name());
             metrologyService.updateById(metrology);
         }
     }
@@ -61,7 +61,7 @@ public class MetrologyFlowablePlugin implements FlowablePlugin {
         Metrology metrology = metrologyService.getById(businessKey);
         log.info("MetrologyFlowablePlugin.rejectToStart.metrology: {}", metrology);
         if (Objects.nonNull(metrology)) {
-            metrology.setAuditStatus(AuditStatusEnum.REJECT.name());
+            metrology.setAuditStatus(ApprovalStatusEnum.REJECT.name());
             metrologyService.updateById(metrology);
         }
     }

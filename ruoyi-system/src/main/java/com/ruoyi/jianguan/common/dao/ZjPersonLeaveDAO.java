@@ -59,8 +59,7 @@ public interface ZjPersonLeaveDAO {
     List<ZjPersonLeave> getFinishLeavesByUserId(@Param("userId")Integer userId);
 
 
-    @Select("select * from zj_person_leave order by subDate desc")
-    List<ZjPersonLeave> getAllByProjectId();
+    List<ZjPersonLeave> getAllByProjectId(@Param("roleType") String roleType);
 
     @Select("select * from zj_person_leave order by subDate desc limit #{pageNum}, #{pageSize}")
     List<ZjPersonLeave> getAllByProjectIdLimit(@Param("pageNum")Integer pageNum,

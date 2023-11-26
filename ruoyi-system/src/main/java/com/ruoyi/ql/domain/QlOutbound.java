@@ -147,4 +147,6 @@ public class QlOutbound extends BaseEntity {
      * 最后收款日期
      */
     private Date lastReceivableDate;
+
+    private String lockStatus;
 }

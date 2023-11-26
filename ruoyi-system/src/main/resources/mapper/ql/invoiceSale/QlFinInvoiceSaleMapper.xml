@@ -22,6 +22,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="remark" column="remark"/>
         <result property="fj" column="fj"/>
         <result property="deptId" column="dept_id"/>
+        <result property="discount" column="discount"/>
     </resultMap>
 
 

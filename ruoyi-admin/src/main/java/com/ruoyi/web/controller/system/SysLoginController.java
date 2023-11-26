@@ -3,25 +3,27 @@ package com.ruoyi.web.controller.system;
 import com.ruoyi.common.annotation.Anonymous;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.core.domain.R;
+import com.ruoyi.common.core.domain.entity.SsFUsers;
 import com.ruoyi.common.core.domain.entity.SysMenu;
 import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.core.domain.model.LoginBody;
 import com.ruoyi.common.core.domain.model.SmsLoginBody;
 import com.ruoyi.common.helper.LoginHelper;
 import com.ruoyi.common.utils.RsaEncrypt;
+import com.ruoyi.common.utils.sm4.Sm4Util;
 import com.ruoyi.system.domain.vo.RouterVo;
 import com.ruoyi.system.service.ISysMenuService;
 import com.ruoyi.system.service.ISysUserService;
 import com.ruoyi.system.service.SysLoginService;
 import com.ruoyi.system.service.SysPermissionService;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.bouncycastle.util.encoders.Hex;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotBlank;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import static com.ruoyi.common.constant.RoleConstants.SYS_ROLE_SYSTEM;
@@ -61,6 +63,30 @@ public class SysLoginController {
         // 生成令牌
         String token = loginService.login(loginBody.getUsername(), loginBody.getPassword(), loginBody.getCode(),
             loginBody.getUuid());
+        ajax.put(Constants.TOKEN, token);
+
+        String ssoToken = RsaEncrypt.encrypt("Alice", defaultKey);
+        ajax.put("ssoToken",ssoToken);
+        return R.ok(ajax);
+    }
+
+
+    @ResponseBody
+    @GetMapping("/validateSsoToken/{tokenStr}")
+    @ApiOperation(value = "校验token")
+    public R<Map<String, Object>> checkToken(@PathVariable("tokenStr") String tokenStr) throws Exception {
+//        tokenStr = "b69b650e5839ba8293fce8fcd0a89a4d8931a59ae51b682a054685f6e5babdad";
+        byte[] key = Sm4Util.hexTobytes("51d95b1dc43a9faaad0570f81c755fcc");
+        byte[] input = Hex.decode(tokenStr);
+        byte[] output = Sm4Util.decryptEcbPkcs5Padding(input, key);
+        String s = new String(output, StandardCharsets.UTF_8);
+
+        String[] split = s.split("&");
+
+        String token = loginService.login(split[0], split[1], null);
+
+        Map<String, Object> ajax = new HashMap<>();
+
         ajax.put(Constants.TOKEN, token);
 
         String ssoToken = RsaEncrypt.encrypt("Alice", defaultKey);

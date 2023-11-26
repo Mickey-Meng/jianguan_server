@@ -33,10 +33,8 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.File;
+import java.util.*;
 
 @RestController
 @RequestMapping("/mong")
@@ -336,5 +334,17 @@ public class MongController {
             System.out.println(bsonObjectId.getValue());
         }
         return new ResponseBase(200,"", it);
+    }
+
+    /**
+     * 获取app最新版本
+     * @return
+     */
+    @GetMapping(value = "/getAppLastVersion")
+    @ApiOperation(value = "获取最新的app版本号和文件地址")
+    public ZjFile getAppLastVersion() {
+        List<ZjFile> storeFileType = fileService.getStoreFileType(17, null);
+        storeFileType.sort(Comparator.comparing(ZjFile::getUploadtime).reversed());
+        return storeFileType.get(0);
     }
 }

@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ruoyi.common.core.domain.PageQuery;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.ql.domain.QlContractGoodsRel;
 import com.ruoyi.ql.domain.QlOutbound;
 import com.ruoyi.ql.domain.QlWarehousing;
 import com.ruoyi.ql.domain.bo.QlOutboundBo;
@@ -16,8 +17,10 @@ import com.ruoyi.ql.domain.bo.QlWarehousingBo;
 import com.ruoyi.ql.domain.bo.QlWarehousingDetailBo;
 import com.ruoyi.ql.domain.vo.QlWarehousingDetailVo;
 import com.ruoyi.ql.domain.vo.QlWarehousingVo;
+import com.ruoyi.ql.mapper.QlOutboundMapper;
 import com.ruoyi.ql.mapper.QlWarehousingMapper;
 import com.ruoyi.ql.mapstruct.OutboundAndWarehousingMapstruct;
+import com.ruoyi.ql.service.IQlOutboundService;
 import com.ruoyi.ql.service.IQlWarehousingDetailService;
 import com.ruoyi.ql.service.IQlWarehousingService;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +28,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -44,6 +49,7 @@ public class QlWarehousingServiceImpl implements IQlWarehousingService {
     private final QlWarehousingMapper baseMapper;
 
     private final IQlWarehousingDetailService warehousingDetailService;
+    private final QlOutboundMapper outboundMapper;
 
     /**
      * 查询入库管理
@@ -84,6 +90,7 @@ public class QlWarehousingServiceImpl implements IQlWarehousingService {
         Map<String, Object> params = bo.getParams();
         LambdaQueryWrapper<QlWarehousing> lqw = Wrappers.lambdaQuery();
         lqw.eq(StringUtils.isNotBlank(bo.getWarehousingCode()), QlWarehousing::getWarehousingCode, bo.getWarehousingCode());
+        lqw.eq(StringUtils.isNotBlank(bo.getSupplierName()), QlWarehousing::getSupplierName, bo.getSupplierName());
         lqw.like(StringUtils.isNotBlank(bo.getWarehousingUsername()), QlWarehousing::getWarehousingUsername, bo.getWarehousingUsername());
         lqw.eq(StringUtils.isNotBlank(bo.getProudctId()), QlWarehousing::getProudctId, bo.getProudctId());
         lqw.eq(bo.getWarehousingNumber() != null, QlWarehousing::getWarehousingNumber, bo.getWarehousingNumber());
@@ -92,6 +99,8 @@ public class QlWarehousingServiceImpl implements IQlWarehousingService {
         lqw.eq(bo.getDeptId() != null, QlWarehousing::getDeptId, bo.getDeptId());
         lqw.like(StringUtils.isNotBlank(bo.getProudctName()), QlWarehousing::getProudctName, bo.getProudctName());
         lqw.eq(StringUtils.isNotBlank(bo.getPurchaseOrderId()), QlWarehousing::getPurchaseOrderId, bo.getPurchaseOrderId());
+        lqw.eq(StringUtils.isNotBlank(bo.getLockStatus()), QlWarehousing::getLockStatus, bo.getLockStatus());
+        lqw.in(CollUtil.isNotEmpty(bo.getIds()), QlWarehousing::getId, bo.getIds());
         return lqw;
     }
 
@@ -163,7 +172,9 @@ public class QlWarehousingServiceImpl implements IQlWarehousingService {
         if (flag) {
             bo.setId(add.getId());
         }
-
+        for (QlWarehousingDetailBo warehousingDetail : bo.getWarehousingDetails()) {
+            warehousingDetail.setInventoryDate(bo.getArrivalDate());
+        }
         batchInsertDetail(bo.getWarehousingDetails(), add);
         return flag;
     }
@@ -216,7 +227,9 @@ public class QlWarehousingServiceImpl implements IQlWarehousingService {
                 warehousingDetailService.deleteWithValidByIds(detailIds, true);
             }
         }
-
+        for (QlWarehousingDetailBo warehousingDetail : bo.getWarehousingDetails()) {
+            warehousingDetail.setInventoryDate(bo.getWarehousingDate());
+        }
         batchInsertDetail(bo.getWarehousingDetails(), update);
         return updateResult;
     }
@@ -269,5 +282,45 @@ public class QlWarehousingServiceImpl implements IQlWarehousingService {
             warehousingDetailService.deleteWithValidByIds(detailIds, true);
         }
         return deleteResult;
+    }
+
+
+    @Override
+    public String getInventoryId(String type) {
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        String formattedDateTime = currentDateTime.format(formatter);
+        String str = "";
+        if("CGRK".equals(type)){//入库单
+            str = baseMapper.getInventoryId(formattedDateTime);
+            if(null == str){
+                str = "CGRK" + formattedDateTime + "-01";
+            }else{
+                String no = str.substring(str.length() - 2);
+                Integer n = Integer.valueOf(no);
+                n++;
+                no = n.toString();
+                if(no.length()<2){
+                    no = "0" + no;
+                }
+                str = str.substring(0,str.length() - 2) + no;
+            }
+        }else  if("XSCK".equals(type)){//出库单
+            str = outboundMapper.getInventoryId(formattedDateTime);
+            if(null == str){
+                str = "XSCK" + formattedDateTime + "-01";
+            }else{
+                String no = str.substring(str.length() - 2);
+                Integer n = Integer.valueOf(no);
+                n++;
+                no = n.toString();
+                if(no.length()<2){
+                    no = "0" + no;
+                }
+                str = str.substring(0,str.length() - 2) + no;
+            }
+        }
+
+        return str;
     }
 }

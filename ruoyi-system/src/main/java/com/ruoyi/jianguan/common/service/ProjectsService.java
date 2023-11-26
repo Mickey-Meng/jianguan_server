@@ -605,6 +605,10 @@ public class ProjectsService {
             for (int i =0;i<projects.size();i++){
                 SsFProjects ssFProjects = projects.get(i);
 
+                Item item = itemDAO.selectByPrimaryKey(ssFProjects.getId());
+                if(item != null){
+                    ssFProjects.setVideoUrl(item.getVideoUrl());
+                }
                 SysOssVo sysOssVo = ossMapper.selectVoById(ssFProjects.getProjectpic());
                 if(sysOssVo != null){
                     ssFProjects.setProjectpic(sysOssVo.getUrl());

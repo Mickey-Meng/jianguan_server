@@ -1,9 +1,13 @@
 package com.ruoyi.web.controller.listener;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.log.StaticLog;
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.ruoyi.common.constant.ApprovalStatusEnum;
+import com.ruoyi.flowable.service.FlowApiService;
 import com.ruoyi.project.approval.domain.MeaLedgerApproval;
 import com.ruoyi.project.approval.domain.MeaLedgerApprovalNo;
 import com.ruoyi.project.approval.mapper.MeaLedgerApprovalMapper;
@@ -12,23 +16,31 @@ import com.ruoyi.project.flowidatenfo.domain.MeaFlowDataInfo;
 import com.ruoyi.project.flowidatenfo.mapper.MeaFlowDataInfoMapper;
 import com.ruoyi.project.ledger.domain.MeaLedgerBreakdownDetail;
 import com.ruoyi.project.ledger.mapper.MeaLedgerBreakdownDetailMapper;
+import com.ruoyi.project.ledgerChange.domain.bo.MeaLedgerChangeBo;
+import com.ruoyi.project.ledgerChange.domain.vo.MeaLedgerChangeVo;
+import com.ruoyi.project.ledgerChange.service.IMeaLedgerChangeService;
+import lombok.extern.slf4j.Slf4j;
+import org.flowable.engine.runtime.ProcessInstance;
 import org.flowable.task.service.delegate.DelegateTask;
 import org.flowable.task.service.delegate.TaskListener;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author jing-zhang
  * @version 1.0.0
  * @date 2022/12/2 18:30
  */
+@Slf4j
 @Component
 public class LedgerApprovalEndEvent implements TaskListener {
 
     @Override
     public void notify(DelegateTask delegateTask) {
+        updateStatus(delegateTask.getProcessInstanceId());
         MeaFlowDataInfoMapper meaFlowDataInfoMapper = SpringContextHolder.getBean(MeaFlowDataInfoMapper.class);
         MeaLedgerBreakdownDetailMapper meaLedgerBreakdownDetailMapper = SpringContextHolder.getBean(MeaLedgerBreakdownDetailMapper.class);
         MeaLedgerApprovalMapper meaLedgerApprovalMapper = SpringContextHolder.getBean(MeaLedgerApprovalMapper.class);
@@ -82,6 +94,27 @@ public class LedgerApprovalEndEvent implements TaskListener {
                     }
                 });
             }
+        }
+    }
+
+    private void updateStatus(String processInstanceId) {
+        FlowApiService flowApiService = SpringContextHolder.getBean(FlowApiService.class);
+        ProcessInstance processInstance = flowApiService.getProcessInstance(processInstanceId);
+        IMeaLedgerChangeService iMeaLedgerChangeService = SpringContextHolder.getBean(IMeaLedgerChangeService.class);
+        String businessKey = processInstance.getBusinessKey();
+        MeaLedgerChangeBo meaLedgerChangeBo = new MeaLedgerChangeBo();
+        meaLedgerChangeBo.setBgbh(businessKey);
+        List<MeaLedgerChangeVo> meaLedgerChangeVos = iMeaLedgerChangeService.queryList(meaLedgerChangeBo);
+        if(CollUtil.isEmpty(meaLedgerChangeVos)) {
+            return;
+        }
+        log.info("Process1690622335686FlowablePlugin.meaLedgerChangeVos: {}", JSON.toJSONString(meaLedgerChangeVos));
+        MeaLedgerChangeVo meaLedgerChangeVo = meaLedgerChangeVos.get(0);
+        if (Objects.nonNull(meaLedgerChangeVo)) {
+            meaLedgerChangeVo.setStatus(ApprovalStatusEnum.APPROVED.name());
+            MeaLedgerChangeBo meaLedgerChange = new MeaLedgerChangeBo();
+            BeanUtil.copyProperties(meaLedgerChangeVo, meaLedgerChange, false);
+            iMeaLedgerChangeService.updateByBo(meaLedgerChange);
         }
     }
 }

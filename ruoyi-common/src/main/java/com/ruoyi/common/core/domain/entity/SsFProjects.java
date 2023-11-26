@@ -6,7 +6,6 @@ import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
-
 /**
  * @author
  * 组织列表
@@ -102,6 +101,7 @@ public class SsFProjects implements Serializable {
     @ApiModelProperty(value = "项目线")
     private String projectline;
 
+
     public String getMapUrl() {
         return mapUrl;
     }
@@ -117,6 +117,17 @@ public class SsFProjects implements Serializable {
     private String introduction;
     @ApiModelProperty(value = "项目地图")
     private String mapUrl;
+
+    @ApiModelProperty(value = "宣传视频")
+    private String videoUrl;
+
+    public String getVideoUrl() {
+        return videoUrl;
+    }
+
+    public void setVideoUrl(String videoUrl) {
+        this.videoUrl = videoUrl;
+    }
 
     private static final long serialVersionUID = 1L;
 

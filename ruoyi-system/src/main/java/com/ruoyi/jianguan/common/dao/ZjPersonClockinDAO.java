@@ -43,7 +43,8 @@ public interface ZjPersonClockinDAO {
             " LEFT JOIN zj_person_fence zpf ON zpc.gid = zpf.id  " +
             " LEFT JOIN sys_user su ON su.user_id = zpc.attendancePersonId " +
             "WHERE state = 1  " +
-            " AND zpc.projectId =  #{projectId} ")
+            " AND zpc.projectId =  #{projectId} " +
+            " ORDER BY zpc.clockTime DESC")
     List<ZjPersonClockin> getAllByProjectId(@Param("projectId")Integer projectId);
 
     //todo group by a.clockTime desc
@@ -60,7 +61,8 @@ public interface ZjPersonClockinDAO {
             " LEFT JOIN sys_user_role b ON zpc.attendancePersonId = b.user_id " +
             " LEFT JOIN sys_role c ON b.role_id = c.role_id " +
             " LEFT JOIN sys_role d ON c.parent_id = d.role_id  " +
-            " where zpc.state = 1 and zpc.projectId = #{projectId} and d.role_id = #{roleId} ")
+            " where zpc.state = 1 and zpc.projectId = #{projectId} and d.role_id = #{roleId} " +
+            " ORDER BY zpc.clockTime DESC")
     List<ZjPersonClockin> getAllByProjectIdAndRoleId(@Param("projectId")Integer projectId,
                                                      @Param("roleId")Integer roleId);
 
@@ -76,7 +78,8 @@ public interface ZjPersonClockinDAO {
             " LEFT JOIN sys_user su ON su.user_id = zpc.attendancePersonId " +
             "left join zj_person_fence zpf on  zpc.gid = zpf.id " +
             "where state = 1 and zpc.projectId = #{projectId}" +
-            " and clockTime >= #{startTime} and clockTime <= #{endTime} ")
+            " and clockTime >= #{startTime} and clockTime <= #{endTime} " +
+            " ORDER BY zpc.clockTime DESC")
     List<ZjPersonClockin> getAllByProjectIdInTime(@Param("projectId")Integer projectId,
                                                   @Param("startTime")String startTime,
                                                   @Param("endTime")String endTime);
@@ -97,7 +100,8 @@ public interface ZjPersonClockinDAO {
             " LEFT JOIN sys_role d ON c.parent_id = d.role_id" +
             " where a.state = 1 and a.projectId = #{projectId}" +
             " and a.clockTime >= #{startTime} and a.clockTime <= #{endTime} " +
-            " and d.role_id = #{roleId} ")
+            " and d.role_id = #{roleId} " +
+            " ORDER BY a.clockTime DESC")
     List<ZjPersonClockin> getAllByProjectIdAndRoleIdInTime(@Param("projectId")Integer projectId,
                                                            @Param("startTime")String startTime,
                                                            @Param("endTime")String endTime,

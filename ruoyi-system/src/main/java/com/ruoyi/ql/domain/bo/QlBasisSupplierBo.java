@@ -8,6 +8,7 @@ import lombok.EqualsAndHashCode;
 
 import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * 供应商管理业务对象 ql_basis_supplier
@@ -46,6 +47,7 @@ public class QlBasisSupplierBo extends BaseEntity {
     @NotBlank(message = "供应商名称不能为空", groups = { AddGroup.class, EditGroup.class })
     private String supplierName;
 
+    private List<String> supplierNames;
     /**
      * 联系人
      */

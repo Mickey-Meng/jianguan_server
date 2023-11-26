@@ -28,4 +28,9 @@ public class EquipmentExitPageDTO extends PageDTO {
     @ApiModelProperty(value = "监理办")
     private String supervisionBan;
 
+    /**
+     * 过滤已审批通过的退场设备 1：过滤，
+     */
+    private String filterEquipmentExist = "0";
+
 }

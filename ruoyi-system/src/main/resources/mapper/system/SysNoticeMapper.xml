@@ -15,6 +15,10 @@
         <result property="updateBy" column="update_by"/>
         <result property="updateTime" column="update_time"/>
         <result property="remark" column="remark"/>
+        <result property="receiveId" column="receive_id"/>
+        <result property="receiveName" column="receive_name"/>
+        <result property="readStatus" column="read_status"/>
+        <result property="readTime" column="read_time"/>
     </resultMap>
 
 </mapper>

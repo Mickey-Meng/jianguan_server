@@ -48,4 +48,6 @@ public interface IQlWarehousingService {
      * 校验并批量删除入库管理信息
      */
     Boolean deleteWithValidByIds(Collection<Long> ids, Boolean isValid);
+
+    String getInventoryId(String type);
 }

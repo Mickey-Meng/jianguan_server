@@ -171,8 +171,11 @@ security:
     - /mong/download
     - /jmreport/**
     - /warehousing/warehousing/import
+    - /shopGoods/shopGoods/import
     - /ql/outbound/import
     - /logo/**
+    - /validateSsoToken/*
+    - /system/config/configKey/*
 
 # MyBatisPlus配置
 # https://baomidou.com/config/
@@ -286,16 +289,16 @@ lock4j:
   expire: 30000
 
 --- # Actuator 监控端点的配置项
-management:
-  endpoints:
-    web:
-      exposure:
-        include: '*'
-  endpoint:
-    health:
-      show-details: ALWAYS
-    logfile:
-      external-file: ./logs/sys-console.log
+#management:
+#  endpoints:
+#    web:
+#      exposure:
+#        include: '*'
+#  endpoint:
+#    health:
+#      show-details: ALWAYS
+#    logfile:
+#      external-file: ./logs/sys-console.log
 
 --- # Flowable 配置
 flowable:
@@ -320,3 +323,12 @@ httpclient:
 
 temporary:
   template: 111
+jeecg :
+  jmreport:
+    #自定义项目前缀，必须与前端 process.env.VUE_APP_BASE_API 的值一致
+#    customPrePath: /local
+    customPrePath: /prod-api
+    pageSize:
+      - 100
+      - 200
+      - 500

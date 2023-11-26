@@ -74,9 +74,12 @@ public class QlShopGoods extends BaseEntity {
      * 商品重量(单位:千克)
      */
     private BigDecimal goodsWeight;
+
+
     /**
      * 成本价
      */
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
     private BigDecimal costPrice;
     /**
      * 零售价

@@ -6,6 +6,7 @@ import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.ruoyi.common.constant.ApprovalStatusEnum;
 import com.ruoyi.common.core.domain.PageQuery;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.project.ledgerChange.domain.MeaLedgerChange;
@@ -141,7 +142,7 @@ public class MeaLedgerChangeServiceImpl implements IMeaLedgerChangeService {
         String bgbh = bo.getBgbh();
         validEntityBeforeSave(add);
         add.setBgbh(bgbh);
-        add.setReviewCode("0");
+        add.setReviewCode(ApprovalStatusEnum.APPROVING.name());
         add.setSqrq(new Date());
         boolean flag = baseMapper.insert(add) > 0;
         if (flag) {

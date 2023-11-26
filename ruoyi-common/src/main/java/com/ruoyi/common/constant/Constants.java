@@ -74,5 +74,6 @@ public interface Constants {
 
     String LOGIN_USER_INFO = "userInfo";
 
+    String EXPORT_ALL = "1";
 }
 

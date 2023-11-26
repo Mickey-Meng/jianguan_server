@@ -91,6 +91,10 @@ public class Item implements Serializable {
      * 项目code
      */
     private String projectcode;
+    /**
+     * 宣传视频
+     */
+    private String videoUrl;
 
 
 }

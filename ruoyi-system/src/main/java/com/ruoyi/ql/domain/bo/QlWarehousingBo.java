@@ -28,10 +28,20 @@ import com.ruoyi.common.core.domain.BaseEntity;
 public class QlWarehousingBo extends BaseEntity {
 
     /**
+     * 锁定状态
+     */
+    private String lockStatus;
+
+    /**
      * id
      */
     @NotNull(message = "id不能为空", groups = { EditGroup.class })
     private Long id;
+
+    /**
+     * id集合
+     */
+    private List<Long> ids;
 
     /**
      * 入库单号
@@ -197,5 +207,27 @@ public class QlWarehousingBo extends BaseEntity {
      */
     private List<QlWarehousingDetailBo> warehousingDetails;
 
+    /**
+     * 税率
+     */
+    @NotNull(message = "税率不能为空", groups = { AddGroup.class, EditGroup.class })
+    private BigDecimal rate;
+
+    /**
+     * 不含税金额
+     */
+    @NotNull(message = "不含税金额不能为空", groups = { AddGroup.class, EditGroup.class })
+    private BigDecimal amountNotax;
+
+    /**
+     * 税额
+     */
+    @NotNull(message = "税额不能为空", groups = { AddGroup.class, EditGroup.class })
+    private BigDecimal amountTax;
+
+    /**
+     * 车牌号码
+     */
+    private String licensePlate;
 }
 

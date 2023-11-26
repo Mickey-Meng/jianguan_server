@@ -89,17 +89,9 @@ public class QualityService {
     WebSocketServer webSocketServer;
 
     public ResponseBase getTree(Integer id, Integer projectId) {
-        if (projectId <= 0) {
-            return new ResponseBase(200, "请输入有效的项目id!");
-        }
-        Integer count1 = projectsDAO.getCountById(projectId);
-        if (count1 <= 0){
-            return new ResponseBase(200, "该项目id无数据!");
-        }
+
         List<ZjZlDic> zjZlDics = Lists.newArrayList();
-        if (projectId == 3){
-            zjZlDics = zjZlDicDAO.getByPid(id);
-        }
+        zjZlDics = zjZlDicDAO.getByPid(id);
         return new ResponseBase(200,null,zjZlDics);
     }
 
@@ -497,13 +489,16 @@ public class QualityService {
 
         List<Integer> gongqus = ssFUserGroupDAO.getGroupsByUserId(userId);
 //      20230828 yangaogao  List<Integer> allGroups = ssFUserGroupDAO.getAllGroups();
-        if (gongqus.size() > 0) {
-           /* if (gongqus.contains(2)) {
-                gongqus.clear();
-                gongqus = allGroups;
-            }*/
+
+        List<Integer> allGroups = ssFUserGroupDAO.getAllGroupsByProjectId(projectId);
+
+        //取两个集合的交集
+        List<Integer> intersectionList =
+                (List<Integer>) CollectionUtils.intersection(allGroups, gongqus);
+
+        if (intersectionList.size() > 0) {
             StringBuilder sb = new StringBuilder();
-            for (Integer i : gongqus) {
+            for (Integer i : intersectionList) {
                 sb.append(i).append(",");
             }
             String abc = sb.substring(0, sb.toString().length() - 1);

@@ -10,6 +10,7 @@ import lombok.EqualsAndHashCode;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -86,7 +87,7 @@ public class QlWarehousingDetailBo extends BaseEntity {
      * 采购数量
      */
     @NotNull(message = "库存数量不能为空", groups = { AddGroup.class, EditGroup.class })
-    private Long inventoryNumber;
+    private BigDecimal  inventoryNumber;
 
     /**
      * 采购总价 = 采购数量 * 进货价
@@ -121,4 +122,9 @@ public class QlWarehousingDetailBo extends BaseEntity {
      * 单位
      */
     private String goodsUnit;
+
+    /**
+     *
+     */
+    private Date inventoryDate;
 }

@@ -50,7 +50,7 @@ public class MaterialSampleConfirmationController {
     @ApiOperation(value = "通过id获取一条数据")
     public MaterialBrandReportDetailVo getById(@ApiParam(name = "id") Long id) {
         MaterialBrandReportDetailVo infoById = materialBrandReportService.getInfoById(id);
-        infoById.setAttachment(infoById.getAttachment1());
+        infoById.setAttachment(infoById.getAttachment2());
         return infoById;
     }
 

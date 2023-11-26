@@ -1,5 +1,10 @@
 FROM frolvlad/alpine-java:jdk8-slim
-ENV TZ=Asia/Shanghai
+
+ENV TZ='Asia/Shanghai'
+RUN echo "http://mirrors.aliyun.com/alpine/v3.4/main/" > /etc/apk/repositories \
+        && apk --no-cache add tzdata zeromq \
+        && ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime \
+        && echo "${TZ}" > /etc/timezone
 
 RUN mkdir -p /ruoyi/server
 RUN mkdir -p /ruoyi/server/logs

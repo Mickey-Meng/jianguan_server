@@ -107,7 +107,7 @@ public class WarehousingExportVo {
      * 库存数量
      */
     @ExcelProperty(value = "库存数量")
-    private Long inventoryNumber;
+    private BigDecimal  inventoryNumber;
 
     /**
      * 基准价

@@ -40,6 +40,12 @@ public class QualityController {
     SafeService safeService;
 
 
+    /***
+     *
+     * @param id
+     * @param projectId  暂时默认所有项目都使用同一套质量检查大小类分类数据，因此该字段不需要传值。后续如果不同项目的检查项目不一致，则需要单独维护
+     * @return
+     */
     @GetMapping("/getTree")
     @ResponseBody
     @ApiOperation(value="获取质量大小类数据")

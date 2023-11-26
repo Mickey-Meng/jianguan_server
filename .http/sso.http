@@ -1,0 +1,22 @@
+### login
+POST http://localhost:8088/login
+Content-Type: application/json
+
+{"username":"admin","password":"Jg321321@"}
+
+###
+GET  {{host}}/system/oss/listByIds/451
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJsb2dpblR5cGUiOiJsb2dpbiIsImxvZ2luSWQiOiJzeXNfdXNlcjoxIiwicm5TdHIiOiJzSWlxQzVsRnhwZnhLc0c3djZ5dDRja0lRSGljbVRKZCJ9.1spIJXtQdqGk9xGa-KTPJOmYX8DvmVYRQA7cF5w7Jc4
+
+### upload
+POST {{host}}/system/oss/webUpload
+Content-Type: multipart/form-data; boundary=----1
+
+------1
+Content-Disposition: form-data; name="file"; filename="cpuz_readme.txt"
+Content-Type: text/plain
+
+< /C:/Users/Dell/Desktop/cpuz_readme.txt
+------1
+
+<> 2023-11-07T174159.200.json

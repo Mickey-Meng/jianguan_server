@@ -676,9 +676,9 @@ public class ComponentSevice {
     public ResponseBase getSubProject(String type) {
         if (type == null) {
             return new ResponseBase(500, "查询分部工程失败，请核实项目类型有效值！");
-        } else if (!type.equals("SD") && !type.equals("QL") && !type.equals("LM")) {
+        } /*else if (!type.equals("SD") && !type.equals("QL") && !type.equals("LM")) {
             return new ResponseBase(500, "查询分部工程失败，目前只支持查询桥梁、隧道、路基路面的分部工程！");
-        }
+        }*/
         List<String> project = conponentDAO.getProjectTypeByProject(type);
         return new ResponseBase(200, "查询分部工程成功！", project);
     }

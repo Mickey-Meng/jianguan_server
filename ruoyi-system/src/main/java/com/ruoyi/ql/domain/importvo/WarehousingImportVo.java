@@ -225,7 +225,7 @@ public class WarehousingImportVo {
     /**
      * 库存数量
      */
-    private Long inventoryNumber;
+    private BigDecimal  inventoryNumber;
 
     /**
      * 产品名称

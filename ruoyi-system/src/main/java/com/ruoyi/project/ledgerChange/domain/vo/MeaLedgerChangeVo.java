@@ -26,6 +26,8 @@ public class MeaLedgerChangeVo {
 
     private static final long serialVersionUID = 1L;
 
+    private String id;
+
     /**
      * 变更编号
      */

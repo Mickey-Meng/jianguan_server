@@ -27,6 +27,7 @@ import com.ruoyi.common.utils.jianguan.zjrw.ListUtils;
 import com.ruoyi.common.utils.jianguan.zjrw.MyExcelUtil;
 import com.ruoyi.system.domain.SysOss;
 import com.ruoyi.system.domain.vo.SysOssVo;
+import com.ruoyi.system.mapper.SysDictDataMapper;
 import com.ruoyi.system.mapper.SysOssMapper;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,6 +100,9 @@ public class CountService {
 
     @Autowired
     private SysOssMapper ossMapper;
+
+    @Autowired
+    private SysDictDataMapper sysDictDataMapper;
 
 
     public ResponseBase getProjectDetail(Integer projectId) {
@@ -692,7 +696,7 @@ public class CountService {
 
     }
 
-    public ResponseBase getpjFirst(String projectcode, Integer projectId) {
+    public ResponseBase getpjFirst(String projectcode, Integer projectId,String projectType) {
         if (projectId <= 0) {
             return new ResponseBase(200, "请输入有效的项目id!");
         }
@@ -710,9 +714,8 @@ public class CountService {
 //        String project = projectcode.substring(0, 2);
         List<PjGirst> pjFirsts = Lists.newArrayList();
         SsFProjects ssFProjects = projectsDAO.getProjectById(projectId);
-        String projecttype = ssFProjects.getProjecttype();
 
-        pjFirsts = zjConponentProducetimeDao.getAllByProJectType(projectcode,projecttype);
+        pjFirsts = zjConponentProducetimeDao.getAllByProJectType(projectcode,projectType);
 
         /*if (project.equals("QL")) {
             pjFirsts = zjConponentProducetimeDao.getAllByProJectSX(projectcode);
@@ -813,20 +816,26 @@ public class CountService {
                     sb.append(i).append(",");
                 }
                 String abc = sb.substring(0, sb.toString().length() - 1);
+                List<SysDictData> sysDictDataList =     sysDictDataMapper.selectDictDataByType("jg_gclx_all");
 
-                list = zjConponentProducetimeDao.getallNewByType(abc,"QL");
-                list1 = zjConponentProducetimeDao.getallNewByType(abc,"SD");
-                list2 = zjConponentProducetimeDao.getallNewByType(abc,"LM");
-                list3 = zjConponentProducetimeDao.getallNewByType(abc,"QT");
-//                if (!list.isEmpty()) {
-                    res.put("桥梁工程", list);
-//                }
-//                if (!list1.isEmpty()) {
-                    res.put("隧道工程", list1);
-//                }
+                for (SysDictData sysDictData : sysDictDataList) {
 
-                res.put("道路工程", list2);
-                res.put("其他工程", list3);
+                    list = zjConponentProducetimeDao.getallNewByType(abc,sysDictData.getDictValue());
+                    res.put(sysDictData.getDictLabel(), list);
+                }
+//                list = zjConponentProducetimeDao.getallNewByType(abc,"QL");
+//                list1 = zjConponentProducetimeDao.getallNewByType(abc,"SD");
+//                list2 = zjConponentProducetimeDao.getallNewByType(abc,"LM");
+//                list3 = zjConponentProducetimeDao.getallNewByType(abc,"QT");
+////                if (!list.isEmpty()) {
+//                    res.put("桥梁工程", list);
+////                }
+////                if (!list1.isEmpty()) {
+//                    res.put("隧道工程", list1);
+////                }
+//
+//                res.put("房建工程", list2);
+//                res.put("其他工程", list3);
             } else {
 //                if (!list.isEmpty()) {
                     res.put("桥梁工程", list);
@@ -834,7 +843,7 @@ public class CountService {
 //                if (!list1.isEmpty()) {
                     res.put("隧道工程", list1);
 //                }
-                res.put("道路工程", list2);
+                res.put("房建工程", list2);
                 res.put("其他工程", list3);
             }
         }

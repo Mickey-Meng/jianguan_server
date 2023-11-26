@@ -232,5 +232,11 @@ public class JgProjectItemVo {
     @ExcelProperty(value = "产值进度")
     @ApiModelProperty(value = "产值进度")
     private float productionProgress;
+    /**
+     * 产值进度
+     */
+    @ExcelProperty(value = "宣传视频")
+    @ApiModelProperty(value = "宣传视频")
+    private String videoUrl;
 
 }

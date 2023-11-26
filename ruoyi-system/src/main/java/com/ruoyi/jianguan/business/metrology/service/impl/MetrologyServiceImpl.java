@@ -10,7 +10,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.ruoyi.common.constant.AuditStatusEnum;
+import com.ruoyi.common.constant.ApprovalStatusEnum;
 import com.ruoyi.common.core.domain.entity.FileModel;
 import com.ruoyi.common.core.domain.object.ResponseBase;
 import com.ruoyi.common.core.sequence.util.IdUtil;
@@ -81,10 +81,10 @@ public class MetrologyServiceImpl extends ServiceImpl<MetrologyMapper, Metrology
         if (Objects.isNull(saveDto.getId())) {
             isStartFlow = true;
             // 初始化审批状态：审批中
-            metrology.setAuditStatus(AuditStatusEnum.APPROVING.name());
+            metrology.setAuditStatus(ApprovalStatusEnum.APPROVING.name());
             metrology.setId(IdUtil.nextLongId());
         } else {
-            metrology.setAuditStatus(AuditStatusEnum.REJECT.name());
+            metrology.setAuditStatus(ApprovalStatusEnum.REJECT.name());
         }
         //附件
         metrology.setAttachment(JSON.toJSONString(saveDto.getAttachment()));
@@ -208,7 +208,7 @@ public class MetrologyServiceImpl extends ServiceImpl<MetrologyMapper, Metrology
      */
     private void convertAuditStatus(List<MetroLogyExport> metroLogyExports)  {
         for (MetroLogyExport metrology : metroLogyExports) {
-            metrology.setAuditStatus(AuditStatusEnum.getDesc(metrology.getAuditStatus()));
+            metrology.setAuditStatus(ApprovalStatusEnum.getDesc(metrology.getAuditStatus()));
         }
     }
 }

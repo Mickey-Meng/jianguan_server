@@ -23,6 +23,8 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class QlOutboundBo extends BaseEntity {
 
+    private List<Long> ids;
+
     /**
      * id
      */
@@ -74,7 +76,6 @@ public class QlOutboundBo extends BaseEntity {
     /**
      * 电话
      */
-    @NotBlank(message = "电话不能为空", groups = { AddGroup.class, EditGroup.class })
     private String telephone;
 
     /**
@@ -121,7 +122,7 @@ public class QlOutboundBo extends BaseEntity {
     /**
      * 附件--销售基准价截图
      */
-    @NotBlank(message = "附件--销售基准价截图不能为空", groups = { AddGroup.class, EditGroup.class })
+//    @NotBlank(message = "附件--销售基准价截图不能为空", groups = { AddGroup.class, EditGroup.class })
     private String fj;
 
     /**
@@ -144,7 +145,6 @@ public class QlOutboundBo extends BaseEntity {
     /**
      * 出库对接人
      */
-    @NotBlank(message = "出库对接人不能为空", groups = { AddGroup.class, EditGroup.class })
     private String outboundUsername;
 
     /**
@@ -189,5 +189,7 @@ public class QlOutboundBo extends BaseEntity {
      */
     @NotNull(message = "最后收款日期不能为空", groups = { AddGroup.class, EditGroup.class })
     private Date lastReceivableDate;
+
+    private String lockStatus;
 }
 

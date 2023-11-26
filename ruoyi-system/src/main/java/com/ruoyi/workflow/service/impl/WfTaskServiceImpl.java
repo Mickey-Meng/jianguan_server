@@ -28,6 +28,7 @@ import com.ruoyi.workflow.domain.bo.WfTaskBo;
 import com.ruoyi.workflow.domain.dto.WfNextDto;
 import com.ruoyi.workflow.domain.vo.MeaFlow;
 import com.ruoyi.workflow.domain.vo.WfViewerVo;
+import com.ruoyi.workflow.ryplugin.RYFlowablePluginExecutor;
 import com.ruoyi.workflow.service.IWfCopyService;
 import com.ruoyi.workflow.service.IWfTaskService;
 import lombok.RequiredArgsConstructor;
@@ -53,6 +54,7 @@ import org.flowable.task.api.history.HistoricTaskInstance;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.io.InputStream;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -77,6 +79,9 @@ public class WfTaskServiceImpl extends FlowServiceFactory implements IWfTaskServ
 
     private final MeaFlowDataInfoMapper meaFlowDataInfoMapper;
 
+    @Resource
+    private RYFlowablePluginExecutor ryFlowablePluginExecutor;
+
     /**
      * 完成任务
      *
@@ -90,6 +95,7 @@ public class WfTaskServiceImpl extends FlowServiceFactory implements IWfTaskServ
         if (Objects.isNull(task)) {
             throw new ServiceException("任务不存在");
         }
+        ryFlowablePluginExecutor.executeApply(task.getProcessInstanceId());
         if (DelegationState.PENDING.equals(task.getDelegationState())) {
             taskService.addComment(taskBo.getTaskId(), taskBo.getProcInsId(), FlowComment.DELEGATE.getType(), taskBo.getComment());
             taskService.resolveTask(taskBo.getTaskId());
@@ -126,6 +132,7 @@ public class WfTaskServiceImpl extends FlowServiceFactory implements IWfTaskServ
         }
     }
 
+
     /**
      * 拒绝任务
      *
@@ -146,6 +153,7 @@ public class WfTaskServiceImpl extends FlowServiceFactory implements IWfTaskServ
         ProcessInstance processInstance = runtimeService.createProcessInstanceQuery()
             .processInstanceId(taskBo.getProcInsId())
             .singleResult();
+        ryFlowablePluginExecutor.executeTerminate(processInstance.getProcessInstanceId());
         if (processInstance == null) {
             throw new RuntimeException("流程实例不存在，请确认！");
         }
@@ -189,6 +197,7 @@ public class WfTaskServiceImpl extends FlowServiceFactory implements IWfTaskServ
         if (task.isSuspended()) {
             throw new RuntimeException("任务处于挂起状态");
         }
+        ryFlowablePluginExecutor.executeReject(task.getProcessInstanceId());
         // 获取流程定义信息
         ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionId(task.getProcessDefinitionId()).singleResult();
         // 获取所有节点信息

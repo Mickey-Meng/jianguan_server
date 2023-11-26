@@ -9,6 +9,7 @@ import lombok.EqualsAndHashCode;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.Date;
 
 
 /**
@@ -54,5 +55,20 @@ public class SysNotice extends BaseEntity {
      * 备注
      */
     private String remark;
-
+    /**
+     * 接收者id
+     */
+    private String receiveId;
+    /**
+     * 接收者名称
+     */
+    private String receiveName;
+    /**
+     * 阅读状态  1:已读   0：未读
+     */
+    private String readStatus;
+    /**
+     * 阅读时间
+     */
+    private Date readTime;
 }

@@ -177,6 +177,11 @@ public class JgProjectItem {
      */
     @TableField("production_progress")
     private float productionProgress;
+    /**
+     * 宣传视频
+     */
+    @TableField("videoUrl")
+    private String videoUrl;
 
 
 }

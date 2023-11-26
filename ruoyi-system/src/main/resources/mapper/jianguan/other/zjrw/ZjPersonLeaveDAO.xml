@@ -29,7 +29,7 @@
          #{businessKey});
     </insert>
     <select id="getByUserId" resultMap="BaseResultMap">
-        select * from zj_person_leave where 1=1
+        select * from zj_person_leave where 1=1 and status != 1
         <if test='leavePersonId != null '> and leavePersonId = #{leavePersonId} </if>
         order by id desc
     </select>
@@ -78,6 +78,17 @@
         where processInstanceId = #{processInstanceId}
     </update>
 
-
+    <select id="getAllByProjectId" resultMap="BaseResultMap">
+        select
+            a.*
+        from zj_person_leave a
+        <if test="roleType != null and roleType != ''">
+            inner JOIN sys_user_role b ON a.leavePersonId = b.user_id
+            inner JOIN sys_role c ON b.ROLE_ID = c.role_id
+            inner JOIN sys_role d ON c.parent_id = d.role_id
+            and d.role_id in (select role_id from sys_role where role_key = #{roleType})
+        </if>
+        order by a.subDate desc
+    </select>
 
 </mapper>

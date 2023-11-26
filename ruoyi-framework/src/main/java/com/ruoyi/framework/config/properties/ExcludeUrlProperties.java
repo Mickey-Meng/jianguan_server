@@ -4,6 +4,7 @@ import cn.hutool.core.util.ReUtil;
 import com.ruoyi.common.annotation.Anonymous;
 import com.ruoyi.common.utils.spring.SpringUtils;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.core.annotation.AnnotationUtils;
@@ -24,6 +25,7 @@ import java.util.regex.Pattern;
  */
 @Lazy
 @Component
+@Slf4j
 public class ExcludeUrlProperties implements InitializingBean {
 
     private static final Pattern PATTERN = Pattern.compile("\\{(.*?)\\}");
@@ -54,8 +56,9 @@ public class ExcludeUrlProperties implements InitializingBean {
                     Set<String> patterns = patternsCondition.getPatterns();
                     patterns.forEach(url -> {
                         excludes.add(ReUtil.replaceAll(url, PATTERN, asterisk));
+                        log.info("允许匿名访问的url:{}",url);
                     });
-                    System.out.println("q");
+
                 }
 
             });
@@ -80,8 +83,7 @@ public class ExcludeUrlProperties implements InitializingBean {
 
             });
         });
-        System.out.println(excludes);
-
+        log.info("允许匿名访问的url list :{}",excludes);
     }
 
 }

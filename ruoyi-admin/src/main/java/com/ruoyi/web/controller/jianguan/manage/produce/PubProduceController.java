@@ -178,8 +178,8 @@ public class PubProduceController extends BaseController {
     @Log(title = "保存编辑后的模板数据" , businessType = BusinessType.INSERT)
     @RepeatSubmit()
     @PostMapping("/saveFillDataTemplate/{id}")
-    public R<Void> saveFillDataTemplate(@NotNull(message = "主键不能为空") @PathVariable Long id,
+    public R<?> saveFillDataTemplate(@NotNull(message = "主键不能为空") @PathVariable Long id,
                                        @Validated(AddGroup.class) @RequestBody String LuckySheetJson) throws IOException {
-        return toAjax(iPubProduceService.saveFillDataTemplate(id, LuckySheetJson));
+        return R.ok("模板数据保存成功", iPubProduceService.saveFillDataTemplate(id, LuckySheetJson));
     }
 }

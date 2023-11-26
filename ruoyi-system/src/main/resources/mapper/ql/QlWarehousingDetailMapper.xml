@@ -26,6 +26,8 @@
         <result property="inventoryDirection" column="inventory_direction"/>
         <result property="goodsUnit" column="goods_unit"/>
         <result property="goodsSearchstandard" column="goods_searchStandard"/>
+        <result property="inventoryDate" column="inventory_date"/>
+
     </resultMap>
 
 </mapper>

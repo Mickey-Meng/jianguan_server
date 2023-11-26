@@ -237,7 +237,7 @@ public class FileService {
         byte[] bytes = Base64.decodeBase64(gridFSFile.getFilename());
         if (null == fileName) {
             String activeProfile = SpringUtil.getActiveProfile();
-            if(activeProfile.equals("zj")&&uploadDate.before(new Date(2023,10,1))){
+            if(activeProfile.equals("zj")&&uploadDate.after(new Date(2023,10,1))){
                  fileName = new String(bytes, "gbk");
             }else {
                 fileName = new String(bytes);

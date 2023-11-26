@@ -95,7 +95,7 @@ public class QlFinReceivableBo extends BaseEntity {
     /**
      * 发票编号
      */
-    @NotBlank(message = "发票编号不能为空", groups = { AddGroup.class, EditGroup.class })
+//    @NotBlank(message = "发票编号不能为空", groups = { AddGroup.class, EditGroup.class })
     private String invoiceNo;
 
     /**

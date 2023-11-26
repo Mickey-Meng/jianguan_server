@@ -89,6 +89,17 @@ public class SysOssController extends BaseController {
     }
 
     /**
+     * 上传OSS对象存储
+     *
+     * @param file 文件
+     */
+    @Log(title = "OSS对象存储", businessType = BusinessType.INSERT)
+    @PostMapping(value = "/webUpload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public R<Map<String, String>> webUpload(@RequestPart("file") MultipartFile file) {
+        return this.upload(file);
+    }
+
+    /**
      * 下载OSS对象
      *
      * @param ossId OSS对象ID

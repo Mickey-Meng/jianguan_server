@@ -1,5 +1,6 @@
 package com.ruoyi.ql.domain;
 
+import com.alibaba.excel.annotation.ExcelProperty;
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -23,6 +24,11 @@ import com.ruoyi.common.core.domain.BaseEntity;
 public class QlWarehousing extends BaseEntity {
 
     private static final long serialVersionUID=1L;
+
+    /**
+     * 锁定状态
+     */
+    private String lockStatus;
 
     /**
      * id
@@ -157,4 +163,20 @@ public class QlWarehousing extends BaseEntity {
      * 单位
      */
     private String goodsUnit;
+    /**
+     * 税率
+     */
+    private BigDecimal rate;
+    /**
+     * 不含税金额
+     */
+    private BigDecimal amountNotax;
+    /**
+     * 税额
+     */
+    private BigDecimal amountTax;
+    /**
+     * 车牌号码
+     */
+    private String licensePlate;
 }

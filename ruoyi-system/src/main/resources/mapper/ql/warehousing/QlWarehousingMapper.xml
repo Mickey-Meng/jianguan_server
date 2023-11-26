@@ -41,8 +41,22 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="incomeDate" column="income_date"/>
         <result property="lastPaymentDate" column="last_payment_date"/>
         <result property="warehousingCode" column="warehousing_code"/>
-
+        <result property="rate" column="rate"/>
+        <result property="amountNotax" column="amount_notax"/>
+        <result property="amountTax" column="amount_tax"/>
+        <result property="licensePlate" column="license_plate"/>
+        <result property="lockStatus" column="lock_status"/>
     </resultMap>
 
+    <select id="getInventoryId" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT MAX(warehousing_code) FROM ql_warehousing WHERE warehousing_code LIKE concat('%',#{formattedDateTime},'%')
+
+                                                           and  del_flag=0;
+    </select>
+    <select id="getWarehousingExpireScheduled"  resultMap="QlWarehousingResult">
+        SELECT *  FROM ql_outbound
+        WHERE
+            datediff( CURRENT_DATE (), last_receivable_date ) = 5;
+    </select>
 
 </mapper>

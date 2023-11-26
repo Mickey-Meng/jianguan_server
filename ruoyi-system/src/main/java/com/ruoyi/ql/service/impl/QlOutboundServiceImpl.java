@@ -10,6 +10,7 @@ import com.ruoyi.common.core.domain.PageQuery;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.ql.domain.QlOutbound;
+import com.ruoyi.ql.domain.QlWarehousing;
 import com.ruoyi.ql.domain.bo.QlOutboundBo;
 import com.ruoyi.ql.domain.bo.QlWarehousingDetailBo;
 import com.ruoyi.ql.domain.vo.QlOutboundVo;
@@ -102,6 +103,8 @@ public class QlOutboundServiceImpl implements IQlOutboundService {
         lqw.eq(bo.getOutboundNumber() != null, QlOutbound::getOutboundNumber, bo.getOutboundNumber());
         lqw.eq(StringUtils.isNotBlank(bo.getProjectId()), QlOutbound::getProjectId, bo.getProjectId());
         lqw.like(StringUtils.isNotBlank(bo.getProjectName()), QlOutbound::getProjectName, bo.getProjectName());
+        lqw.in(CollUtil.isNotEmpty(bo.getIds()), QlOutbound::getId, bo.getIds());
+        lqw.eq(StringUtils.isNotBlank(bo.getLockStatus()), QlOutbound::getLockStatus, bo.getLockStatus());
         return lqw;
     }
 
@@ -160,6 +163,9 @@ public class QlOutboundServiceImpl implements IQlOutboundService {
         if (flag) {
             bo.setId(add.getId());
         }
+        for (QlWarehousingDetailBo warehousingDetail : bo.getWarehousingDetails()) {
+            warehousingDetail.setInventoryDate(bo.getOutboundDate());
+        }
         batchInsertDetail(bo.getWarehousingDetails(), add);
         return flag;
     }
@@ -171,6 +177,9 @@ public class QlOutboundServiceImpl implements IQlOutboundService {
         Map<String, QlOutbound> qlOutboundMap = entity.stream().collect(Collectors.toMap(QlOutbound::getOutboundCode, outbound -> outbound));
         for (QlOutboundBo bo : bos) {
             QlOutbound qlOutbound = qlOutboundMap.get(bo.getOutboundCode());
+            for (QlWarehousingDetailBo warehousingDetail : bo.getWarehousingDetails()) {
+                warehousingDetail.setInventoryDate(bo.getOutboundDate());
+            }
             batchInsertDetail(bo.getWarehousingDetails(), qlOutbound);
         }
     }
@@ -189,6 +198,9 @@ public class QlOutboundServiceImpl implements IQlOutboundService {
             if (CollUtil.isNotEmpty(detailIds)) {
                 warehousingDetailService.deleteWithValidByIds(detailIds, true);
             }
+        }
+        for (QlWarehousingDetailBo warehousingDetail : bo.getWarehousingDetails()) {
+            warehousingDetail.setInventoryDate(bo.getOutboundDate());
         }
         batchInsertDetail(bo.getWarehousingDetails(), update);
         return updateResult;

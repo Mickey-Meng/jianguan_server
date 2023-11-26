@@ -1,0 +1,2 @@
+alter table ql_warehousing_detail modify inventory_number decimal (20, 3) default null comment '库存数量，入库数量、出库数量';
+alter table ql_warehousing_detail modify income_price decimal (20, 6) default null comment '进货价';

@@ -77,4 +77,10 @@ public class EquipmentExitPageVo extends NewBaseVo {
      */
     @ApiModelProperty(value = "状态")
     private String statusStr;
+
+    /**
+     * 退场设备
+     */
+    @ApiModelProperty(value = "状态")
+    private String equipmentInfo;
 }

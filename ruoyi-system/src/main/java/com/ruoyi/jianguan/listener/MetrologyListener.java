@@ -1,6 +1,6 @@
 package com.ruoyi.jianguan.listener;
 
-import com.ruoyi.common.constant.AuditStatusEnum;
+import com.ruoyi.common.constant.ApprovalStatusEnum;
 import com.ruoyi.common.utils.ApplicationContextHolder;
 import com.ruoyi.jianguan.business.metrology.domain.entity.Metrology;
 import com.ruoyi.jianguan.business.metrology.service.MetrologyService;
@@ -31,8 +31,8 @@ public class MetrologyListener implements ExecutionListener {
         }
         String businessKey = delegateExecution.getProcessInstanceBusinessKey();
         Metrology metrology = metrologyService.getById(businessKey);
-        if (Objects.nonNull(metrology) && !AuditStatusEnum.REJECT.name().equals(metrology.getAuditStatus())){
-            metrology.setAuditStatus(AuditStatusEnum.APPROVED.name());
+        if (Objects.nonNull(metrology) && !ApprovalStatusEnum.REJECT.name().equals(metrology.getAuditStatus())){
+            metrology.setAuditStatus(ApprovalStatusEnum.APPROVED.name());
             metrologyService.updateById(metrology);
         }
     }
