@@ -152,7 +152,7 @@ public class PubProduceController extends BaseController {
      * @param id
      * @return
      */
-    @SaCheckPermission("jg:produce:query")
+    //@SaCheckPermission("jg:produce:query")
     @GetMapping("/getFillDataTemplate/{id}")
     public void getFillDataTemplate(@NotNull(message = "主键不能为空") @PathVariable Long id,
                               @RequestParam("templateUrl") String templateUrl, HttpServletResponse response) throws IOException {
