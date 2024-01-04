@@ -8,23 +8,37 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ruoyi.common.core.domain.PageQuery;
+import com.ruoyi.common.core.domain.entity.Produceandrecode;
+import com.ruoyi.common.core.domain.entity.ZjConponentProducetime;
+import com.ruoyi.common.core.domain.object.ResponseBase;
 import com.ruoyi.common.core.page.TableDataInfo;
-import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.common.enums.BimFlowKey;
+import com.ruoyi.common.helper.LoginHelper;
 import com.ruoyi.common.utils.file.FileUtils;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.common.utils.poi.LuckySheetUtil;
+import com.ruoyi.flowable.domain.dto.FlowTaskCommentDto;
+import com.ruoyi.flowable.service.FlowStaticPageService;
 import com.ruoyi.jianguan.business.onlineForms.domain.PubProduceDocument;
 import com.ruoyi.jianguan.business.onlineForms.domain.bo.PubProduceDocumentBo;
 import com.ruoyi.jianguan.business.onlineForms.domain.vo.PubProduceDocumentVo;
 import com.ruoyi.jianguan.business.onlineForms.mapper.PubProduceDocumentMapper;
 import com.ruoyi.jianguan.business.onlineForms.service.IOnlineFormsService;
 import com.ruoyi.jianguan.business.onlineForms.service.IPubProduceDocumentService;
+import com.ruoyi.jianguan.common.dao.ProduceandrecodeDAO;
+import com.ruoyi.jianguan.common.dao.RecodeDAO;
+import com.ruoyi.jianguan.common.dao.ZjConponentProducetimeDAO;
+import com.ruoyi.jianguan.common.domain.dto.RecodeUploadData;
+import com.ruoyi.jianguan.common.domain.entity.Recode;
 import com.ruoyi.jianguan.manage.produce.domain.entity.PubProduce;
 import com.ruoyi.jianguan.manage.produce.mapper.PubProduceMapper;
 import com.ruoyi.system.domain.SysOss;
 import com.ruoyi.system.service.ISysOssService;
 import liquibase.pro.packaged.P;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -53,6 +67,18 @@ public class OnlineFormsServiceImpl implements IOnlineFormsService {
 
     private final PubProduceDocumentMapper pubProduceDocumentMapper;
 
+    @Autowired
+    private RecodeDAO recodeDAO;
+
+    @Autowired
+    private ZjConponentProducetimeDAO zjConponentProducetimeDAO;
+
+    @Autowired
+    @Qualifier("zjProduceandrecodeDAO")
+    private ProduceandrecodeDAO produceandrecodeDAO;
+
+    @Autowired
+    private FlowStaticPageService flowStaticPageService;
 
     @Override
     public Object saveFillDataTemplate(Long id, String luckySheetJson) throws IOException {
@@ -96,5 +122,88 @@ public class OnlineFormsServiceImpl implements IOnlineFormsService {
                 }
             }
         }
+    }
+
+    @Override
+    public ResponseBase submitReport(RecodeUploadData recodeData) {
+        /******************************************************************************/
+        //默认为一标段
+        recodeData.setProjectId(StringUtils.isBlank(recodeData.getProjectId() + "") ? 3 : 0);
+        //produceService.uploadRecode(recodeData);
+
+        //往recode表查一个数据
+        Recode recode = new Recode();
+        recode.setCreatetime(new Date());
+        //新加四个url
+        recode.setRemark(recodeData.getRemark());
+        recode.setAccrecodeurl(recodeData.getAccrecodeurl());
+        recode.setStandbyrecode(recodeData.getStandbyrecode());
+        recode.setTesturl(recodeData.getTesturl());
+
+        recodeDAO.insert(recode);
+
+        ZjConponentProducetime zjConponentProducetime =
+                zjConponentProducetimeDAO.getZjByConponentId(recodeData.getConpoentid());
+        Produceandrecode produceandrecode = new Produceandrecode();
+        //审核通过后才设置完成时间
+//        produceandrecode.setUpdatetime(new Date());
+        produceandrecode.setConponentcode(zjConponentProducetime.getConponentcode());
+        //2022.3.17  sttime字段当作   该条提交工序完成时间
+        produceandrecode.setStime(recodeData.getUploadtime());
+        produceandrecode.setCheckusername(recodeData.getCheckusername());
+        produceandrecode.setCheckuser(recodeData.getCheckid());
+        produceandrecode.setUpdateusername(recodeData.getUpdateusername());
+        //这里前端有可能没有传上传用户id,修改成从token中获取
+        produceandrecode.setUpdateuser(LoginHelper.getUserId().intValue());
+        produceandrecode.setConponentname(recodeData.getConponentname());
+        produceandrecode.setConponenttype(recodeData.getConponenttype());
+        produceandrecode.setConponentid(recodeData.getConpoentid());
+        produceandrecode.setProducename(recodeData.getProduceidname());
+        produceandrecode.setProjectcode(recodeData.getProjectcode());
+        produceandrecode.setProduceid(recodeData.getProduceid());
+        produceandrecode.setRecodeid(recode.getId());
+        produceandrecode.setCheckresult(3);
+        //新增工序状态
+        produceandrecode.setStatus(0);
+        produceandrecode.setProjectId(recodeData.getProjectId());
+        //在插入之前先通过编码查询该条数据是否存在，如存在则修改
+        Integer count = produceandrecodeDAO.getCountById(produceandrecode.getConponentid(), produceandrecode.getProduceid());
+        Integer dbCount = 0;
+        if (count > 0){
+            Produceandrecode produceandrecode1 =  produceandrecodeDAO.getByIdAndProduceId(recodeData.getConpoentid(),recodeData.getProduceid());
+            produceandrecode.setId(produceandrecode1.getId());
+            dbCount = produceandrecodeDAO.updateByCode(produceandrecode);
+        } else {
+            //插入数据工序填报
+            dbCount = produceandrecodeDAO.insert(produceandrecode);
+        }
+        /******************************************************************************/
+        if (dbCount > 0) {
+            String processDefinitionKey = BimFlowKey.produceOnlineReport.getName();
+            String businessKey = produceandrecode.getId() + "_" + processDefinitionKey;
+            //设置流程的审批人
+            Map<String, Object> auditUser = recodeData.getAuditUser();
+            if (auditUser.isEmpty()) {
+                throw new RuntimeException("流程的审批人不能为空！");
+            }
+            //发起流程
+            try {
+                FlowTaskCommentDto flowTaskComment = new FlowTaskCommentDto();
+                flowTaskComment.setApprovalType("save");
+                flowTaskComment.setComment("在线表单-工序填报表单创建");
+                JSONObject taskVariableData = new JSONObject(auditUser);
+                flowStaticPageService.startAndTakeUserTask(processDefinitionKey, flowTaskComment, taskVariableData, null, null, recodeData.getCopyData(), businessKey);
+            } catch (Exception e) {
+                throw new RuntimeException("流程启动失败！e=" + e.getMessage());
+            }
+        }
+        return ResponseBase.success("流程启动成功");
+    }
+
+    public Produceandrecode updateFlowStatusById(String id, Integer status) {
+        Produceandrecode produceandrecode = produceandrecodeDAO.selectByPrimaryKey(Integer.valueOf(id));
+        produceandrecode.setStatus(status);
+        produceandrecodeDAO.updateByPrimaryKey(produceandrecode);
+        return produceandrecode;
     }
 }

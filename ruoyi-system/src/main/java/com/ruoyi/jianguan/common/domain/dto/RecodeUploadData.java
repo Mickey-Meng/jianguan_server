@@ -1,6 +1,7 @@
 package com.ruoyi.jianguan.common.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.ruoyi.common.core.domain.dto.SaveDTO;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.util.Date;
@@ -12,7 +13,7 @@ import java.util.Date;
  * @slogan: 天下风云出我辈，一入代码苦耕耘
  * @description:
  **/
-public class RecodeUploadData {
+public class RecodeUploadData extends SaveDTO {
 
     @ApiModelProperty(value = "构件类型name",required=true)
     private String conponentname;

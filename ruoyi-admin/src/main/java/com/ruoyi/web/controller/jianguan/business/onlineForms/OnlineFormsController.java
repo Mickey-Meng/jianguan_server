@@ -6,6 +6,7 @@ import com.ruoyi.common.annotation.RepeatSubmit;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.PageQuery;
 import com.ruoyi.common.core.domain.R;
+import com.ruoyi.common.core.domain.object.ResponseBase;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.core.validate.AddGroup;
 import com.ruoyi.common.core.validate.EditGroup;
@@ -15,6 +16,8 @@ import com.ruoyi.jianguan.business.onlineForms.domain.bo.PubProduceDocumentBo;
 import com.ruoyi.jianguan.business.onlineForms.domain.vo.PubProduceDocumentVo;
 import com.ruoyi.jianguan.business.onlineForms.service.IOnlineFormsService;
 import com.ruoyi.jianguan.business.onlineForms.service.IPubProduceDocumentService;
+import com.ruoyi.jianguan.common.domain.dto.RecodeUploadData;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -46,6 +49,12 @@ public class OnlineFormsController extends BaseController {
     public R<?> saveFillDataTemplate(@NotNull(message = "主键不能为空") @PathVariable Long id,
                                      @Validated(AddGroup.class) @RequestBody String LuckySheetJson) throws IOException {
         return R.ok("模板数据保存成功", onlineFormsService.saveFillDataTemplate(id, LuckySheetJson));
+    }
+
+    @PostMapping("/submitReport")
+    @ApiOperation("上传填报记录")
+    public ResponseBase submitReport(@RequestBody RecodeUploadData recodeData){
+        return onlineFormsService.submitReport(recodeData);
     }
 
 }

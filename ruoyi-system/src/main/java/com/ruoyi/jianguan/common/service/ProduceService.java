@@ -96,7 +96,7 @@ public class ProduceService {
     RecodedetailDAO recodedetailDAO;
 
     @Autowired
-@Qualifier("zjProduceandrecodeDAO")
+    @Qualifier("zjProduceandrecodeDAO")
     ProduceandrecodeDAO produceandrecodeDAO;
     @Autowired
     private SsFUserGroupDAO ssFUserGroupDAO;

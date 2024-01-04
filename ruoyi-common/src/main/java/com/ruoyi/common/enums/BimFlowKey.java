@@ -137,6 +137,16 @@ public enum BimFlowKey {
      */
     progressConstructionDesign("进度管理-施工图设计", "progressConstructionDesign"),
 
+    /**
+     * 在线表单-工序填报
+     */
+    produceOnlineReport("在线表单-工序填报", "produceOnlineReport"),
+
+    /**
+     * 在线表单-工序核验
+     */
+    produceOnlineCheck("在线表单-工序核验", "produceOnlineCheck"),
+
 
 
     /**
