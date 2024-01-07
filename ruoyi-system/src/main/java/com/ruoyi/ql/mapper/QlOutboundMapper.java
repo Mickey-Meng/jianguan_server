@@ -1,5 +1,6 @@
 package com.ruoyi.ql.mapper;
 
+import com.baomidou.mybatisplus.annotation.InterceptorIgnore;
 import com.ruoyi.ql.domain.QlOutbound;
 import com.ruoyi.ql.domain.QlWarehousing;
 import com.ruoyi.ql.domain.vo.QlOutboundVo;
@@ -15,6 +16,6 @@ import java.util.List;
  */
 public interface QlOutboundMapper extends BaseMapperPlus<QlOutboundMapper, QlOutbound, QlOutboundVo> {
     String getInventoryId(String formattedDateTime);
-
+    @InterceptorIgnore(tenantLine = "true")
     List<QlOutbound> getQlOutboundExpireScheduled();
 }

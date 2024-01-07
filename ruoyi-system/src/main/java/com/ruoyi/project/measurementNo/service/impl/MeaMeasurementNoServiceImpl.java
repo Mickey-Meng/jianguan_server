@@ -3,6 +3,7 @@ package com.ruoyi.project.measurementNo.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -17,17 +18,12 @@ import com.ruoyi.project.measurementNo.domain.bo.MeaMeasurementNoBo;
 import com.ruoyi.project.measurementNo.domain.vo.MeaMeasurementNoVo;
 import com.ruoyi.project.measurementNo.mapper.MeaMeasurementNoMapper;
 import com.ruoyi.project.measurementNo.service.IMeaMeasurementNoService;
-import com.ruoyi.ql.domain.QlWarehousing;
-import com.ruoyi.ql.domain.bo.QlWarehousingBo;
 import io.micrometer.core.instrument.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.SimpleFormatter;
+import java.util.*;
 
 /**
  * 中间计量期数管理Service业务层处理
@@ -115,25 +111,29 @@ public class MeaMeasurementNoServiceImpl implements IMeaMeasurementNoService {
 
     @Override
     public String lockingByJlqcbh(String jlqcbh) {
-        String sName = "";
         LambdaQueryWrapper<MeaMeasurementDocuments> lqw = Wrappers.lambdaQuery();
         lqw.eq(StringUtils.isNotBlank(jlqcbh), MeaMeasurementDocuments::getJlqsbh,jlqcbh);
         List<MeaMeasurementDocumentsVo> meaMeasurementDocumentsVos = meaMeasurementDocumentsMapper.selectVoList(lqw);
-        Boolean f = true;
+        if(CollUtil.isEmpty(meaMeasurementDocumentsVos)) {
+            return "未进行中间计量，期次无法锁定";
+        }
+
+        List<String> pzbhList = new ArrayList<>();
         for (MeaMeasurementDocumentsVo meaMeasurementDocumentsVo : meaMeasurementDocumentsVos) {
             if(!"2".equalsIgnoreCase(meaMeasurementDocumentsVo.getReviewCode())){
-                f = false;
-                sName =sName + "," + meaMeasurementDocumentsVo.getPzbh();
+                pzbhList.add(meaMeasurementDocumentsVo.getPzbh());
             }
         }
-        if(f){
-            LambdaQueryWrapper<MeaMeasurementNo> lqwMeaMeasurementNo = Wrappers.lambdaQuery();
-            lqwMeaMeasurementNo.eq(StringUtils.isNotBlank(jlqcbh), MeaMeasurementNo::getJlqsbh, jlqcbh);
-            MeaMeasurementNo meaMeasurementNo = baseMapper.selectOne(lqwMeaMeasurementNo);
-            meaMeasurementNo.setStatus("1");//修改为已锁定
-            baseMapper.updateById(meaMeasurementNo);
+        if(CollUtil.isNotEmpty(pzbhList)) {
+            return "有以下计量凭证流程未结束，不能锁定： "+ StrUtil.join(",", pzbhList);
         }
-        return sName;
+
+        LambdaQueryWrapper<MeaMeasurementNo> lqwMeaMeasurementNo = Wrappers.lambdaQuery();
+        lqwMeaMeasurementNo.eq(StringUtils.isNotBlank(jlqcbh), MeaMeasurementNo::getJlqsbh, jlqcbh);
+        MeaMeasurementNo meaMeasurementNo = baseMapper.selectOne(lqwMeaMeasurementNo);
+        meaMeasurementNo.setStatus("1");//修改为已锁定
+        baseMapper.updateById(meaMeasurementNo);
+        return null;
     }
 
     /**

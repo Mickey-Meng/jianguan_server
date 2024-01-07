@@ -47,4 +47,6 @@ public interface RecodeDAO {
     List<String> getTesturl();
     @Select("select standbyrecode from recode where standbyrecode is not null and standbyrecode != ''")
     List<String> getStandbyrecode();
+    @Select("select MAX(id) from recode ")
+    Integer selectPrimaryKey();
 }

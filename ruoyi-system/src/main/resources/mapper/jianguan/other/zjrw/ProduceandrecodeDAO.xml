@@ -18,6 +18,7 @@
     <result column="updateusername" jdbcType="VARCHAR" property="updateusername" />
     <result column="checkusername" jdbcType="VARCHAR" property="checkusername" />
     <result column="conponentcode" jdbcType="VARCHAR" property="conponentcode" />
+    <result column="wbscode" jdbcType="VARCHAR" property="wbscode" />
     <result column="projectId" jdbcType="INTEGER" property="projectId" />
   </resultMap>
   <resultMap id="conModel" type="com.ruoyi.jianguan.common.domain.dto.ConModel">
@@ -41,7 +42,7 @@
   <sql id="Base_Column_List">
     id, conponentid, recodeid, produceid, projectcode, checkresult, checkuser, updateuser,
     stime, updatetime, producename, conponenttype, conponentname, updateusername, checkusername,
-    conponentcode, projectId
+    conponentcode, projectId,wbscode
   </sql>
 
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -87,14 +88,15 @@
       conponentname = #{conponentname,jdbcType=VARCHAR},
       updateusername = #{updateusername,jdbcType=VARCHAR},
       checkusername = #{checkusername,jdbcType=VARCHAR},
-      conponentcode = #{conponentcode,jdbcType=VARCHAR}
+      conponentcode = #{conponentcode,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
 
 
 
   <select id="getAllProduce" parameterType="com.ruoyi.jianguan.common.domain.dto.RecodeQueryData" resultMap="BaseResultMap">
-    select a.* from produceandrecode a
+    select a.*,b.wbscode from produceandrecode a
      left join conponent b on a.conponentcode = b.conponentcode
      where a.conponentid is not null
          <if test="list != null and list.size() > 0">
@@ -110,7 +112,7 @@
       and a.conponenttype = #{type}
     </if>
     <if test="code != null and type != ''">
-      and a.conponentcode like   concat('%', #{code}, '%')
+      and b.wbscode like   concat('%', #{code}, '%')
     </if>
     <if test="sttime != null and type != ''">
       and a.updatetime &gt;= #{sttime}
@@ -122,7 +124,7 @@
   </select>
 
   <select id="getAllProduceTime" parameterType="com.ruoyi.jianguan.common.domain.dto.RecodeQueryData" resultMap="BaseResultMap">
-    select a.* from produceandrecode a
+    select a.*,b.wbscode from produceandrecode a
      left join conponent b on a.conponentcode = b.conponentcode
      where  a.conponentid is not null
     <if test="list != null and list.size() > 0">
@@ -138,7 +140,7 @@
       and a.conponenttype = #{type}
     </if>
     <if test="code != null">
-      and a.conponentcode like   concat('%', #{code}, '%')
+      and b.wbscode like   concat('%', #{code}, '%')
     </if>
     <if test="sttime != null ">
       and a.updatetime &gt;= #{newStime}
@@ -292,7 +294,7 @@
   </select>
 
   <update id="updateReject">
-    update produceandrecode set status = 2, checkresult = 2,updatetime= now(), where recodeid =#{recodeid}
+    update produceandrecode set status = 2, checkresult = 2,updatetime= now() where recodeid =#{recodeid}
     <if test="produceid != null">
       and produceid = #{produceid}
     </if>
@@ -310,7 +312,7 @@
   </select>
 
   <select id="getAllByConponentCodes" parameterType="string" resultMap="BaseResultMap">
-    select * from produceandrecode where conponentcode in
+    select par.*,c.wbscode from produceandrecode  par , conponent c where par.conponentid=c.id and par.conponentcode in
     <foreach collection="list" index="index" item ="item" open ="(" separator="," close=")">
       #{item}
     </foreach>

@@ -6,6 +6,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <resultMap type="com.ruoyi.ql.domain.QlFinEmp" id="QlFinEmpResult">
         <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
         <result property="empName" column="emp_name"/>
         <result property="empAge" column="emp_age"/>
         <result property="empGender" column="emp_gender"/>

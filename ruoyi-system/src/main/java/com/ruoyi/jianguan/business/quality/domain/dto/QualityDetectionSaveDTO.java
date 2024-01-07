@@ -131,8 +131,13 @@ public class QualityDetectionSaveDTO extends SaveDTO {
         /**
          * 材料数量
          */
-        @ApiModelProperty(value = "材料数量(吨)")
+        @ApiModelProperty(value = "材料数量")
         private BigDecimal num;
+        /**
+         * 材料单位
+         */
+        @ApiModelProperty(value = "材料单位")
+        private String unit;
         /**
          * 取样地点
          */

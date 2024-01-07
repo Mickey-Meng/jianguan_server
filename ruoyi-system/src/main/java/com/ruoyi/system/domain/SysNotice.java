@@ -58,7 +58,7 @@ public class SysNotice extends BaseEntity {
     /**
      * 接收者id
      */
-    private String receiveId;
+    private Long receiveId;
     /**
      * 接收者名称
      */
@@ -71,4 +71,8 @@ public class SysNotice extends BaseEntity {
      * 阅读时间
      */
     private Date readTime;
+    /**
+     * 消息失效时间
+     */
+    private Date expirationDate;
 }

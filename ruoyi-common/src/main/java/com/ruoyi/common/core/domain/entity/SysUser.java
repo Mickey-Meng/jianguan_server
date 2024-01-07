@@ -53,12 +53,17 @@ public class SysUser extends BaseEntity {
     @Size(min = 0, max = 30, message = "用户账号长度不能超过30个字符")
     private String userName;
 
+    private List<String> userNames;
+
+
     /**
      * 用户昵称
      */
     @Xss(message = "用户昵称不能包含脚本字符")
     @Size(min = 0, max = 30, message = "用户昵称长度不能超过30个字符")
     private String nickName;
+
+    private List<String> nickNames;
 
     /**
      * 用户类型（sys_user系统用户）
@@ -157,6 +162,11 @@ public class SysUser extends BaseEntity {
 
     @TableField(exist = false)
     private String roleName;
+
+    /**
+     * 用户归属系统
+     */
+    private String sysCode;
 
     public SysUser(Long userId) {
         this.userId = userId;

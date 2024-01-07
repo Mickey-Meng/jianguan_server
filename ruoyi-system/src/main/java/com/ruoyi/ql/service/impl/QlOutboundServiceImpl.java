@@ -10,13 +10,12 @@ import com.ruoyi.common.core.domain.PageQuery;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.ql.domain.QlOutbound;
-import com.ruoyi.ql.domain.QlWarehousing;
 import com.ruoyi.ql.domain.bo.QlOutboundBo;
 import com.ruoyi.ql.domain.bo.QlWarehousingDetailBo;
 import com.ruoyi.ql.domain.vo.QlOutboundVo;
 import com.ruoyi.ql.domain.vo.QlWarehousingDetailVo;
 import com.ruoyi.ql.mapper.QlOutboundMapper;
-import com.ruoyi.ql.mapstruct.OutboundAndWarehousingMapstruct;
+import com.ruoyi.ql.mapstruct.QlOutboundAndWarehousingMapstruct;
 import com.ruoyi.ql.service.IQlOutboundService;
 import com.ruoyi.ql.service.IQlWarehousingDetailService;
 import lombok.RequiredArgsConstructor;
@@ -104,6 +103,7 @@ public class QlOutboundServiceImpl implements IQlOutboundService {
         lqw.eq(StringUtils.isNotBlank(bo.getProjectId()), QlOutbound::getProjectId, bo.getProjectId());
         lqw.like(StringUtils.isNotBlank(bo.getProjectName()), QlOutbound::getProjectName, bo.getProjectName());
         lqw.in(CollUtil.isNotEmpty(bo.getIds()), QlOutbound::getId, bo.getIds());
+        lqw.eq(ObjectUtil.isNotNull(bo.getId()), QlOutbound::getId, bo.getIds());
         lqw.eq(StringUtils.isNotBlank(bo.getLockStatus()), QlOutbound::getLockStatus, bo.getLockStatus());
         return lqw;
     }
@@ -172,7 +172,7 @@ public class QlOutboundServiceImpl implements IQlOutboundService {
 
     @Override
     public void batchInsertBo(List<QlOutboundBo> bos) {
-        List<QlOutbound> entity = OutboundAndWarehousingMapstruct.INSTANCES.toEos(bos);
+        List<QlOutbound> entity = QlOutboundAndWarehousingMapstruct.INSTANCES.toEos(bos);
         baseMapper.insertBatch(entity);
         Map<String, QlOutbound> qlOutboundMap = entity.stream().collect(Collectors.toMap(QlOutbound::getOutboundCode, outbound -> outbound));
         for (QlOutboundBo bo : bos) {

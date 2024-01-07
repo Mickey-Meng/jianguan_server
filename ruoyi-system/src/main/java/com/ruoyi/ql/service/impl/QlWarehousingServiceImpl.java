@@ -9,18 +9,14 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ruoyi.common.core.domain.PageQuery;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.ql.domain.QlContractGoodsRel;
-import com.ruoyi.ql.domain.QlOutbound;
 import com.ruoyi.ql.domain.QlWarehousing;
-import com.ruoyi.ql.domain.bo.QlOutboundBo;
 import com.ruoyi.ql.domain.bo.QlWarehousingBo;
 import com.ruoyi.ql.domain.bo.QlWarehousingDetailBo;
 import com.ruoyi.ql.domain.vo.QlWarehousingDetailVo;
 import com.ruoyi.ql.domain.vo.QlWarehousingVo;
 import com.ruoyi.ql.mapper.QlOutboundMapper;
 import com.ruoyi.ql.mapper.QlWarehousingMapper;
-import com.ruoyi.ql.mapstruct.OutboundAndWarehousingMapstruct;
-import com.ruoyi.ql.service.IQlOutboundService;
+import com.ruoyi.ql.mapstruct.QlOutboundAndWarehousingMapstruct;
 import com.ruoyi.ql.service.IQlWarehousingDetailService;
 import com.ruoyi.ql.service.IQlWarehousingService;
 import lombok.RequiredArgsConstructor;
@@ -100,6 +96,7 @@ public class QlWarehousingServiceImpl implements IQlWarehousingService {
         lqw.like(StringUtils.isNotBlank(bo.getProudctName()), QlWarehousing::getProudctName, bo.getProudctName());
         lqw.eq(StringUtils.isNotBlank(bo.getPurchaseOrderId()), QlWarehousing::getPurchaseOrderId, bo.getPurchaseOrderId());
         lqw.eq(StringUtils.isNotBlank(bo.getLockStatus()), QlWarehousing::getLockStatus, bo.getLockStatus());
+        lqw.eq(ObjectUtil.isNotNull(bo.getId()), QlWarehousing::getId, bo.getId());
         lqw.in(CollUtil.isNotEmpty(bo.getIds()), QlWarehousing::getId, bo.getIds());
         return lqw;
     }
@@ -182,7 +179,7 @@ public class QlWarehousingServiceImpl implements IQlWarehousingService {
 
     @Override
     public void batchInsertBo(List<QlWarehousingBo> bos) {
-        List<QlWarehousing> entity = OutboundAndWarehousingMapstruct.INSTANCES.toQlWarehousing(bos);
+        List<QlWarehousing> entity = QlOutboundAndWarehousingMapstruct.INSTANCES.toQlWarehousing(bos);
         baseMapper.insertBatch(entity);
 
         Map<String, QlWarehousing> qlOutboundMap = entity.stream().collect(Collectors.toMap(QlWarehousing::getWarehousingCode, warehousing -> warehousing));

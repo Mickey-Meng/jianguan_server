@@ -19,6 +19,7 @@ import com.ruoyi.jianguan.business.onlineForms.service.IPubProduceDocumentServic
 import com.ruoyi.jianguan.common.domain.dto.RecodeUploadData;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.util.ObjectUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -55,6 +56,23 @@ public class OnlineFormsController extends BaseController {
     @ApiOperation("上传填报记录")
     public ResponseBase submitReport(@RequestBody RecodeUploadData recodeData){
         return onlineFormsService.submitReport(recodeData);
+    }
+
+    @PostMapping("/submitCheck")
+    @ApiOperation("上传填报记录")
+    public ResponseBase submitCheck(@RequestBody RecodeUploadData recodeData){
+        return onlineFormsService.submitCheck(recodeData);
+    }
+
+    @GetMapping("/getProduceReportInfoById")
+    @ApiOperation("根据构件id查询每到工序的记录")
+    public ResponseBase getProduceReportInfoById(@RequestParam(value ="produceAndRecodeId",required = false) Integer id,
+                                                 @RequestParam(value ="documentType",required = false) Integer documentType){
+        if(ObjectUtils.isEmpty(id)){
+            return new ResponseBase(500,"id为null");
+        }
+        // 查询所有的数据
+        return onlineFormsService.getProduceReportInfoById(id, documentType);
     }
 
 }

@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
+import com.ruoyi.common.constant.Constants;
+import com.ruoyi.ql.domain.convert.QlBasisSupplierConvert;
+import com.ruoyi.ql.domain.export.query.QlBasisSupplierReportQuery;
 import lombok.RequiredArgsConstructor;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.*;
@@ -54,8 +57,17 @@ public class QlBasisSupplierController extends BaseController {
     @SaCheckPermission("basisSupplier:basisSupplier:export")
     @Log(title = "供应商管理", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(QlBasisSupplierBo bo, HttpServletResponse response) {
-        List<QlBasisSupplierVo> list = iQlBasisSupplierService.queryList(bo);
+    public void export(QlBasisSupplierReportQuery bo, HttpServletResponse response) {
+        List<QlBasisSupplierVo> list = null;
+        if(Constants.EXPORT_ALL.equals(bo.getExportAll())) {
+            list = iQlBasisSupplierService.queryList(QlBasisSupplierConvert.INSTANCE.conver(bo));
+        } else {
+            PageQuery pageQuery = new PageQuery();
+            pageQuery.setPageNum(bo.getPageNum());
+            pageQuery.setPageSize(bo.getPageSize());
+            TableDataInfo<QlBasisSupplierVo> qlBasisSupplierVoTableDataInfo = iQlBasisSupplierService.queryPageList(QlBasisSupplierConvert.INSTANCE.conver(bo), pageQuery);
+            list = qlBasisSupplierVoTableDataInfo.getRows();
+        }
         ExcelUtil.exportExcel(list, "供应商管理", QlBasisSupplierVo.class, response);
     }
 

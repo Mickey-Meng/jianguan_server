@@ -333,6 +333,8 @@ public class ProduceService {
                 // 之前将 checkresult 转为status返回了，不知道用意何在。而且checkresult的值，和数据库中定义的字典不匹配，3不知道是什么。因此统一改为用status，让前台也修改。
                 //可能因为ProduceData 中status的定义是int, new对象后，默认是0，而和数据库中status=0其实是有业务含义的，冲突了。因此新加了checkresult字段，用于代替“提交未审核”状态。
                 produceData.setStatus(produceandrecode.getStatus());
+                produceData.setCheckresult(produceandrecode.getCheckresult());
+                produceData.setProduceAndRecodeId(produceandrecode.getId());
             }
             res.add(produceData);
 
@@ -970,6 +972,7 @@ public class ProduceService {
                     ProduceRecord produceRecord = new ProduceRecord();
                     Produceandrecode produceandrecode = listt.get(0);
                     produceRecord.setConponentcode(produceandrecode.getConponentcode());
+                    produceRecord.setWbscode(produceandrecode.getWbscode());
                     produceRecord.setConponentid(produceandrecode.getConponentid());
                     produceRecord.setConponenttypename(produceandrecode.getConponentname());
                     produceRecord.setProjectcode(produceandrecode.getProjectcode());

@@ -1,6 +1,7 @@
 package com.ruoyi.ql.service;
 
 import com.ruoyi.ql.domain.QlContractInfoPurchase;
+import com.ruoyi.ql.domain.bo.QlWarehousingBo;
 import com.ruoyi.ql.domain.vo.QlContractInfoPurchaseVo;
 import com.ruoyi.ql.domain.bo.QlContractInfoPurchaseBo;
 import com.ruoyi.common.core.page.TableDataInfo;
@@ -36,6 +37,9 @@ public interface IQlContractInfoPurchaseService {
      * 新增采购合同
      */
     Boolean insertByBo(QlContractInfoPurchaseBo bo);
+
+    void batchInsertBo(List<QlContractInfoPurchaseBo> bos);
+
     Boolean insertContractInfoPurchase(QlContractInfoPurchaseBo bo);
 
     /**

@@ -171,5 +171,8 @@ public class JgProjectItemBo extends BaseEntity {
      */
     private float productionProgress;
     private String videoUrl;
-
+    private String projectType;
+    private String projectTypeAbbr;
+    private String monitorAppkey;
+    private String monitorSecret;
 }

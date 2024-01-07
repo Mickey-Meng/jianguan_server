@@ -36,6 +36,16 @@ public interface SysUserMapper extends BaseMapperPlus<SysUserMapper, SysUser, Sy
     })
     List<SysUser> selectUserList(@Param(Constants.WRAPPER) Wrapper<SysUser> queryWrapper);
 
+
+    /**
+     * 根据条件分页查询用户列表
+     *
+     * @param queryWrapper 查询条件
+     * @return 用户信息集合信息
+     */
+    List<SysUser> findUsers(@Param(Constants.WRAPPER) Wrapper<SysUser> queryWrapper);
+
+
     /**
      * 根据条件分页查询已配用户角色列表
      *

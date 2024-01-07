@@ -182,6 +182,16 @@ public class JgProjectItem {
      */
     @TableField("videoUrl")
     private String videoUrl;
+    /**
+     *工程类型
+     */
+    @TableField("project_type")
+    private String projectType;
+    @TableField("project_type_abbr")
+    private String projectTypeAbbr;
 
-
+    @TableField("monitor_secret")
+    private String monitorSecret;
+    @TableField("monitor_appkey")
+    private String monitorAppkey;
 }

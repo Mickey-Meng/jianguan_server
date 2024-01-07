@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.ql.dao.InventoryDAO">
+
+    <resultMap type="com.ruoyi.ql.domain.report.vo.InventoryDetail" id="inventoryDetail">
+		<result column="goods_id" property="goodsId" />
+		<result column="inventory_code" property="inventoryCode" />
+		<result column="goods_name" property="goodsName" />
+		<result column="goods_searchstandard" property="goodsSearchstandard" />
+		<result column="goods_unit" property="goodsUnit" />
+		<result column="warehousing_quantity" property="warehousingQuantity" />
+		<result column="warehousing_price" property="warehousingPrice" />
+		<result column="warehousing_amount" property="warehousingAmount" />
+		<result column="outbound_quantity" property="outboundQuantity" />
+		<result column="outbound_price" property="outboundPrice" />
+		<result column="inventory_date" property="inventoryDate" />
+		<result column="goods_code" property="goodsCode" />
+		<result column="inventory_direction" property="inventoryDirection" />
+		<result column="contract_code" property="contractCode" />
+    </resultMap>
+
+	<select id="queryWarehousing" parameterType="com.ruoyi.ql.domain.report.query.QlInventoryQuery" resultMap="inventoryDetail">
+		SELECT t.goods_id,
+			   t.goods_name,
+			   t.inventory_code,
+			   t.goods_searchstandard,
+			   t.goods_unit,
+			   t.inventory_number                    as warehousing_quantity,
+			   t.income_price                        as warehousing_price,
+			   t.amount								 as warehousing_amount
+		FROM ql_warehousing_detail t,
+			 ql_warehousing t1
+		WHERE t.del_flag = 0
+		  AND t.inventory_direction = 'warehousing'
+		  and t1.del_flag = 0
+		  and t1.id = t.inventory_id
+		  <if test="goodsIds != null and goodsIds.size > 0">
+			  and t.goods_id in
+			  <foreach collection="goodsIds" item="goodsId"   open="(" separator="," close=")">
+				  #{goodsId}
+			  </foreach>
+		  </if>
+		  <if test="startDate != null">
+		  and t1.arrival_date <![CDATA[ >= ]]> #{startDate}
+		  </if>
+		  <if test="endDate != null">
+		  and t1.arrival_date <![CDATA[ <= ]]> #{endDate}
+		  </if>
+	</select>
+
+	<select id="queryOutbound" parameterType="com.ruoyi.ql.domain.report.query.QlInventoryQuery" resultMap="inventoryDetail">
+		SELECT t.goods_id,
+			   t.goods_name,
+			   t.inventory_code,
+			   t.goods_searchstandard,
+			   t.goods_unit,
+			   t.inventory_number                    as outbound_quantity,
+			   t.income_price                        as outbound_price,
+			   t.amount								 as outbound_amount
+		FROM ql_warehousing_detail t,
+			 ql_outbound t1
+		WHERE t.del_flag = 0
+		  AND t.inventory_direction = 'outbound'
+		  and t1.del_flag = 0
+		  and t1.id = t.inventory_id
+		  <if test="goodsIds != null and goodsIds.size > 0">
+		  	and t.goods_id in
+			<foreach collection="goodsIds" item="goodsId"   open="(" separator="," close=")">
+				#{goodsId}
+			</foreach>
+		  </if>
+		  <if test="startDate != null">
+		  and t1.outbound_date <![CDATA[ >= ]]> #{startDate}
+		  </if>
+		  <if test="endDate != null">
+		  and t1.outbound_date <![CDATA[ <= ]]> #{endDate}
+		  </if>
+	</select>
+
+    <select id="query" parameterType="com.ruoyi.ql.domain.report.query.QlInventoryQuery" resultMap="inventoryDetail">
+		SELECT t.goods_id,
+		       t.inventory_code,
+			   t.goods_name,
+			   t.goods_searchstandard,
+			   t.goods_unit,
+			   t.inventory_number                  as warehousing_quantity,
+			   t.income_price                      as warehousing_price,
+			   t.inventory_number * t.income_price as warehousing_amount,
+			   '0'                                 as outbound_quantity,
+			   '0'                                 as outbound_price,
+			   t1.arrival_date                     as inventory_date,
+			   t2.goods_code,
+			   t.inventory_direction,
+			   t1.contract_code
+		FROM ql_warehousing_detail t,
+			 ql_warehousing t1,
+			 ql_shop_goods t2
+		WHERE t.del_flag = 0
+		  AND t.inventory_direction = 'warehousing'
+		  and t1.del_flag = 0
+		  and t1.id = t.inventory_id
+		  and t1.arrival_date >= concat(#{startMonth}, '-01')
+		  and t1.arrival_date <![CDATA[ <= ]]> last_day(concat(#{endMonth}, '-01'))
+		  and t2.del_flag = 0
+		  and t.goods_id = t2.id
+		union
+		SELECT t.goods_id,
+		       t.inventory_code,
+			   t.goods_name,
+			   t.goods_searchstandard,
+			   t.goods_unit,
+			   '0'                   as warehousing_quantity,
+			   '0'                   as warehousing_price,
+			   '0'                   as warehousingAmount,
+			   t.inventory_number    as outbound_quantity,
+			   t.sale_price          as outbound_price,
+			   t1.outbound_date      as inventory_date,
+			   t2.goods_code,
+			   t.inventory_direction,
+			   t1.sale_contract_code as contractCode
+		FROM ql_warehousing_detail t,
+			 ql_outbound t1,
+			 ql_shop_goods t2
+		WHERE t.del_flag = 0
+		  AND t.inventory_direction = 'outbound'
+		  and t1.del_flag = 0
+		  and t1.id = t.inventory_id
+		  and t1.outbound_date >= concat(#{startMonth}, '-01')
+		  and t1.outbound_date <![CDATA[ <= ]]> last_day(concat(#{endMonth}, '-01'))
+		  and t2.del_flag = 0
+		  and t.goods_id = t2.id;
+    </select>
+
+	<select id="queryCumulativeInventory" parameterType="com.ruoyi.ql.domain.report.query.QlInventoryQuery" resultMap="inventoryDetail">
+		select tt1.goods_id,
+			   tt1.warehousing_quantity - ifnull(tt2.outbound_quantity, 0) as cumulative_inventory,
+			   tt1.warehousing_amount - ifnull(tt2.outbound_amount, 0)     as cumulative_amount
+		from (SELECT t.goods_id,
+					 sum(t.inventory_number)                  as warehousing_quantity,
+					 sum(t.inventory_number * t.income_price) as warehousing_amount
+			  FROM ql_warehousing_detail t,
+				   ql_warehousing t1,
+				   ql_shop_goods t2
+			  WHERE t.del_flag = 0
+				AND t.inventory_direction = 'warehousing'
+				and t.goods_id = #{goodsId}
+				and t1.del_flag = 0
+				and t1.id = t.inventory_id
+		        and t1.arrival_date <![CDATA[ < ]]> concat(#{startMonth}, '-01')
+				and t2.del_flag = 0
+				and t.goods_id = t2.id
+			  group by t.goods_id) tt1
+				 left join
+			 (SELECT t.goods_id,
+					 sum(t.inventory_number)                as outbound_quantity,
+					 sum(t.inventory_number * t.sale_price) as outbound_amount
+			  FROM ql_warehousing_detail t,
+				   ql_outbound t1
+			  WHERE t.del_flag = 0
+				AND t.inventory_direction = 'outbound'
+				and t.goods_id = #{goodsId}
+				and t1.del_flag = 0
+				and t1.id = t.inventory_id
+		        and t1.outbound_date <![CDATA[ < ]]> concat(#{startMonth}, '-01')
+			  group by t.goods_id) tt2 on tt1.goods_id = tt2.goods_id
+	</select>
+
+</mapper>

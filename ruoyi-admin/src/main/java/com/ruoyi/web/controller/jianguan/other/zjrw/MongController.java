@@ -1,7 +1,9 @@
 package com.ruoyi.web.controller.jianguan.other.zjrw;
 
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjUtil;
+import cn.hutool.json.JSONUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.mongodb.client.gridfs.GridFSFindIterable;
 import com.mongodb.client.gridfs.model.GridFSFile;
@@ -157,6 +159,14 @@ public class MongController {
         Integer count1 = projectsDAO.getCountById(zjFile.getProjectId());
         if (count1 <= 0){
             return new ResponseBase(200, "该项目id无数据!");
+        }
+
+        //将fileUrl修改正确
+        String fileurl = zjFile.getFileurl();
+        if(fileurl.contains("fileId")){
+            cn.hutool.json.JSONObject entries = JSONUtil.parseObj(fileurl);
+            String fileId=entries.getStr("fileId");
+            zjFile.setFileurl(fileId);
         }
         Integer userid = LoginHelper.getUserId().intValue();
         zjFile.setUploadid(userid);
@@ -344,6 +354,9 @@ public class MongController {
     @ApiOperation(value = "获取最新的app版本号和文件地址")
     public ZjFile getAppLastVersion() {
         List<ZjFile> storeFileType = fileService.getStoreFileType(17, null);
+        if(CollUtil.isEmpty(storeFileType)) {
+            return null;
+        }
         storeFileType.sort(Comparator.comparing(ZjFile::getUploadtime).reversed());
         return storeFileType.get(0);
     }

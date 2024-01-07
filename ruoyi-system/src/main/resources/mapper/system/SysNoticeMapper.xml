@@ -19,6 +19,15 @@
         <result property="receiveName" column="receive_name"/>
         <result property="readStatus" column="read_status"/>
         <result property="readTime" column="read_time"/>
+        <result property="expirationDate" column="expiration_date"/>
     </resultMap>
-
+    <update id="updateNoticeReadStatus" useGeneratedKeys="true" keyProperty="id">
+        UPDATE
+        sys_notice
+        <set>
+                read_status=1,read_time=NOW()
+        </set>
+        WHERE
+        notice_id=#{id}
+    </update>
 </mapper>

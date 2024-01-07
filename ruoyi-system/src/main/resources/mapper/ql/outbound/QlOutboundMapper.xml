@@ -27,6 +27,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="saleAmount" column="sale_amount"/>
         <result property="outboundUsername" column="outbound_username"/>
         <result property="outboundReleaseuser" column="outbound_releaseuser"/>
+        <result property="outboundUserId" column="outbound_user_id"/>
+        <result property="outboundReleaseuserId" column="outbound_releaseuser_id"/>
         <result property="outboundNumber" column="outbound_number"/>
         <result property="delFlag" column="del_flag"/>
         <result property="createBy" column="create_by"/>
@@ -47,11 +49,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 
     <select id="getQlOutboundExpireScheduled"  resultMap="QlOutboundResult">
-        SELECT
-            *
-        FROM
-            ( SELECT *, datediff( CURRENT_DATE (), last_receivable_date ) AS qqq FROM ql_outbound ) AS temp
+        SELECT *  FROM ql_outbound
         WHERE
-            temp.qqq = 5;
+            datediff(last_receivable_date  , CURRENT_DATE ()) = 5
     </select>
 </mapper>

@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import javax.validation.constraints.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import java.math.BigDecimal;
@@ -118,5 +120,10 @@ public class MeaMaterialPrepaymentBo extends BaseEntity {
     @NotBlank(message = "状态（0正常 1停用）不能为空", groups = { AddGroup.class, EditGroup.class })
     private String status;
 
+    /**
+     *  申请时间
+     */
+    @NotNull(message = " 申请时间不能为空", groups = { AddGroup.class, EditGroup.class })
+    private LocalDateTime sqsj;
 
 }

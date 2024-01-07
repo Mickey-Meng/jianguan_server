@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
+import com.ruoyi.common.constant.Constants;
+import com.ruoyi.ql.domain.convert.QlFinEmpConvert;
+import com.ruoyi.ql.domain.export.query.QlFinEmpReportQuery;
 import lombok.RequiredArgsConstructor;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.*;
@@ -54,8 +57,17 @@ public class QlFinEmpController extends BaseController {
     @SaCheckPermission("finEmp:finEmp:export")
     @Log(title = "员工信息管理", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(QlFinEmpBo bo, HttpServletResponse response) {
-        List<QlFinEmpVo> list = iQlFinEmpService.queryList(bo);
+    public void export(QlFinEmpReportQuery bo, HttpServletResponse response) {
+        List<QlFinEmpVo> list = null;
+        if(Constants.EXPORT_ALL.equals(bo.getExportAll())) {
+            list = iQlFinEmpService.queryList(QlFinEmpConvert.INSTANCE.conver(bo));
+        } else {
+            PageQuery pageQuery = new PageQuery();
+            pageQuery.setPageNum(bo.getPageNum());
+            pageQuery.setPageSize(bo.getPageSize());
+            TableDataInfo<QlFinEmpVo> qlFinEmpVoTableDataInfo = iQlFinEmpService.queryPageList(QlFinEmpConvert.INSTANCE.conver(bo), pageQuery);
+            list = qlFinEmpVoTableDataInfo.getRows();
+        }
         ExcelUtil.exportExcel(list, "员工信息管理", QlFinEmpVo.class, response);
     }
 

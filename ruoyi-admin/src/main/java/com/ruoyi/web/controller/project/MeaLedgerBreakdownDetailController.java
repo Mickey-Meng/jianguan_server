@@ -3,7 +3,6 @@ package com.ruoyi.web.controller.project;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.StrUtil;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.annotation.RepeatSubmit;
 import com.ruoyi.common.core.controller.BaseController;
@@ -13,10 +12,8 @@ import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.core.validate.AddGroup;
 import com.ruoyi.common.core.validate.EditGroup;
 import com.ruoyi.common.enums.BusinessType;
+import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.poi.ExcelUtil;
-import com.ruoyi.project.approval.domain.bo.MeaLedgerApprovalBo;
-import com.ruoyi.project.bill.domain.bo.MeaContractBillBo;
-import com.ruoyi.project.bill.domain.vo.MeaContractBillVo;
 import com.ruoyi.project.ledger.domain.bo.MeaLedgerBreakdownDetailBo;
 import com.ruoyi.project.ledger.domain.vo.MeaLedgerBreakdownDetailInfoVo;
 import com.ruoyi.project.ledger.domain.vo.MeaLedgerBreakdownDetailVo;
@@ -31,10 +28,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 台账分解明细
@@ -123,6 +119,7 @@ public class MeaLedgerBreakdownDetailController extends BaseController {
     @RepeatSubmit()
     @PostMapping()
     public R<Void> add(@Validated(AddGroup.class) @RequestBody MeaLedgerBreakdownDetailBo bo) {
+        checkFjsl(bo);
         /*String process_1669973630070 = processService.getProcessByKey("Process_1670392865296");
         if(StrUtil.isBlank(process_1669973630070)){
             return R.fail("流程图未定义");
@@ -145,6 +142,20 @@ public class MeaLedgerBreakdownDetailController extends BaseController {
         return toAjax(aBoolean ? 1 : 0);
     }
 
+    private void checkFjsl(MeaLedgerBreakdownDetailBo bo) {
+        MeaLedgerBreakdownDetailBo meaLedgerBreakdownDetailBo = new MeaLedgerBreakdownDetailBo();
+        meaLedgerBreakdownDetailBo.setZmh(bo.getZmh());
+        List<MeaLedgerBreakdownDetailVo> meaLedgerBreakdownDetailVos = iMeaLedgerBreakdownDetailService.queryList(meaLedgerBreakdownDetailBo);
+        if(CollUtil.isNotEmpty(meaLedgerBreakdownDetailVos)) {
+            BigDecimal fjsl = bo.getFjsl();
+            BigDecimal sjsl = meaLedgerBreakdownDetailVos.get(0).getSjsl();
+            BigDecimal totalFjsl = meaLedgerBreakdownDetailVos.stream().map(MeaLedgerBreakdownDetailVo::getFjsl).reduce(BigDecimal.ZERO, BigDecimal::add);
+            BigDecimal remainder = sjsl.subtract(totalFjsl).subtract(fjsl);
+            if(remainder.compareTo(BigDecimal.ZERO) < 0) {
+                throw new ServiceException("分解数量超过设计数量，待分解数量: "+String.valueOf(sjsl.subtract(totalFjsl)));
+            }
+        }
+    }
 
     /**
      * 修改台账分解明细
@@ -155,6 +166,7 @@ public class MeaLedgerBreakdownDetailController extends BaseController {
     @PutMapping()
     public R<Void> edit(@Validated(EditGroup.class) @RequestBody MeaLedgerBreakdownDetailBo bo) {
         bo.setReviewCode("0");
+        checkFjsl(bo);
         Boolean b = iMeaLedgerBreakdownDetailService.updateByBo(bo);
        /*
        20230731 yangaogao  台账分解功能，取消流程审批

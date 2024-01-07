@@ -108,4 +108,7 @@ public class QlBasisSupplierVo {
      */
     private String remark;
 
+
+    private String supplierEnglishName;
+
 }

@@ -61,4 +61,13 @@ public class QlContractGoodsRel extends BaseEntity {
     @TableLogic
     private String delFlag;
 
+    /**
+     * 单位
+     */
+    private String goodsUnit;
+
+    private BigDecimal totalAmountDollar;
+
+    private String remark;
+
 }

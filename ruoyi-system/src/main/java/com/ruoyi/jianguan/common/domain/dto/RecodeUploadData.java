@@ -14,6 +14,8 @@ import java.util.Date;
  * @description:
  **/
 public class RecodeUploadData extends SaveDTO {
+    // 提交类型:report、check
+    private String submitType;
 
     @ApiModelProperty(value = "构件类型name",required=true)
     private String conponentname;
@@ -245,4 +247,11 @@ public class RecodeUploadData extends SaveDTO {
         this.url = url;
     }
 
+    public String getSubmitType() {
+        return submitType;
+    }
+
+    public void setSubmitType(String submitType) {
+        this.submitType = submitType;
+    }
 }

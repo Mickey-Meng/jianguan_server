@@ -36,7 +36,7 @@ public class MaterialSampleConfirmationController {
             saveDto.setMaterialCategoryCode(split[0]);
             saveDto.setMaterialCategory(split[1]);
         }
-        return materialBrandReportService.addOrUpdate(saveDto,"2");
+        return materialBrandReportService.addOrUpdateMaterialSampleConfirmation(saveDto);
     }
 
     @GetMapping(value = "/id", produces = "application/json;charset=UTF-8")

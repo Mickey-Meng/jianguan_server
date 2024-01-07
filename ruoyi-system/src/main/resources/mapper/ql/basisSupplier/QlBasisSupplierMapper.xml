@@ -29,6 +29,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="unpaid" column="unpaid"/>
         <result property="invoiceAmount" column="invoice_amount"/>
         <result property="uninvoiceAmount" column="uninvoice_amount"/>
+        <result property="supplierEnglishName" column="supplier_english_name"/>
     </resultMap>
 
 

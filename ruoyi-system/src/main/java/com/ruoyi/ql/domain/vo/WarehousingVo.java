@@ -24,6 +24,10 @@ public class WarehousingVo {
     /**
      * 入库对接人
      */
+    private Long warehousingUserId;
+    /**
+     * 入库对接人
+     */
     @NotBlank(message = "入库对接人不能为空", groups = { AddGroup.class, EditGroup.class })
     private String warehousingUsername;
 
@@ -120,7 +124,10 @@ public class WarehousingVo {
      */
     @NotBlank(message = "入库复核人不能为空", groups = { AddGroup.class, EditGroup.class })
     private String warehousingReleaseuser;
-
+    /**
+     * 入库复核人id
+     */
+     private Long warehousingReleaseuserId;
     /**
      * 基准价
      */

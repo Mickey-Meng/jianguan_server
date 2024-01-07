@@ -1,5 +1,6 @@
 package com.ruoyi.web.controller.jianguan.other.zjrw;
 
+import com.ruoyi.common.core.domain.entity.SsFProjects;
 import com.ruoyi.common.core.domain.object.ResponseBase;
 import com.ruoyi.jianguan.common.domain.dto.ProjectsDTO;
 import com.ruoyi.jianguan.common.domain.entity.SsFCompany;
@@ -174,8 +175,8 @@ public class ProjectsController {
     @ResponseBody
     @PostMapping("/getProjectByUser")
     @ApiOperation(value = "通过用户查询所拥有的项目权限(目前只支持用户所拥有的工区权限查询)")
-    public ResponseBase getProjectByUser(){
-        return projectsService.getProjectByUser();
+    public ResponseBase getProjectByUser(@RequestBody SsFProjects ststate){
+        return projectsService.getProjectByUser(ststate.getStstate());
     }
 
     @ResponseBody

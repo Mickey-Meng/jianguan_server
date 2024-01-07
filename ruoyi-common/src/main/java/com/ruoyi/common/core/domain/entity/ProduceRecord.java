@@ -8,6 +8,7 @@ public class ProduceRecord {
 
     private int conponentid;
     private String conponentcode;
+    private String wbscode;
     private String conponenttypename;
     private String projectcode;
     private String projectname;
@@ -45,9 +46,10 @@ public class ProduceRecord {
         Map header = new HashMap();
         list.add(new Head("构件id","conponentid",1));
         list.add(new Head("构件编码","conponentcode",2));
-        list.add(new Head("构件类型名称","conponenttypename",3));
-        list.add(new Head("项目名称","projectname",4));
-        list.add(new Head("项目编码","projectcode",5));
+        list.add(new Head("构件类型名称","conponenttypename",4));
+        list.add(new Head("项目名称","projectname",5));
+        list.add(new Head("项目编码","projectcode",6));
+        list.add(new Head("wbs编码","wbscode",3));
 
         //
         return list;
@@ -189,5 +191,13 @@ public class ProduceRecord {
 
     public void setMaxTime(Date maxTime) {
         this.maxTime = maxTime;
+    }
+
+    public String getWbscode() {
+        return wbscode;
+    }
+
+    public void setWbscode(String wbscode) {
+        this.wbscode = wbscode;
     }
 }

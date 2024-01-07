@@ -2,6 +2,8 @@ package com.ruoyi.ql.domain;
 
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.baomidou.mybatisplus.annotation.*;
+import com.ruoyi.common.core.validate.AddGroup;
+import com.ruoyi.common.core.validate.EditGroup;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import java.io.Serializable;
@@ -11,6 +13,8 @@ import java.math.BigDecimal;
 import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ruoyi.common.core.domain.BaseEntity;
+
+import javax.validation.constraints.NotBlank;
 
 /**
  * 入库管理对象 ql_warehousing
@@ -39,6 +43,10 @@ public class QlWarehousing extends BaseEntity {
      * 入库单号
      */
     private String warehousingCode;
+    /**
+     * 入库对接人ID
+     */
+    private Long warehousingUserId;
     /**
      * 入库对接人
      */
@@ -130,6 +138,8 @@ public class QlWarehousing extends BaseEntity {
      * 入库复核人
      */
     private String warehousingReleaseuser;
+
+    private Long warehousingReleaseuserId;
     /**
      * 基准价
      */

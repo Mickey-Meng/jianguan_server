@@ -1,0 +1,1 @@
+alter table ql_contract_goods_rel add goods_unit char(16) comment '商品单位【关联字典管理】';

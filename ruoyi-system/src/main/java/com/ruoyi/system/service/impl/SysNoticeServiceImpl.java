@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -26,11 +27,15 @@ public class SysNoticeServiceImpl implements ISysNoticeService {
     private final SysNoticeMapper baseMapper;
 
     @Override
-    public TableDataInfo<SysNotice> selectPageNoticeList(SysNotice notice, PageQuery pageQuery) {
+    public TableDataInfo<SysNotice> selectPageNoticeList(SysNotice notice, PageQuery pageQuery,Boolean b) {
+
         LambdaQueryWrapper<SysNotice> lqw = new LambdaQueryWrapper<SysNotice>()
             .like(StringUtils.isNotBlank(notice.getNoticeTitle()), SysNotice::getNoticeTitle, notice.getNoticeTitle())
             .eq(StringUtils.isNotBlank(notice.getNoticeType()), SysNotice::getNoticeType, notice.getNoticeType())
-            .like(StringUtils.isNotBlank(notice.getCreateBy()), SysNotice::getCreateBy, notice.getCreateBy());
+                .in( true!= b  ,SysNotice::getReceiveId, 0,notice.getReceiveId())//receiveId=0,默认为全部用户
+                .eq(StringUtils.isNotBlank(notice.getReadStatus()), SysNotice::getReadStatus, notice.getReadStatus())
+                .lt(null !=notice.getExpirationDate(), SysNotice::getExpirationDate, new Date())
+                .like(StringUtils.isNotBlank(notice.getCreateBy()), SysNotice::getCreateBy, notice.getCreateBy());
         Page<SysNotice> page = baseMapper.selectPage(pageQuery.build(), lqw);
         return TableDataInfo.build(page);
     }
@@ -58,7 +63,7 @@ public class SysNoticeServiceImpl implements ISysNoticeService {
             .like(StringUtils.isNotBlank(notice.getNoticeTitle()), SysNotice::getNoticeTitle, notice.getNoticeTitle())
             .eq(StringUtils.isNotBlank(notice.getNoticeType()), SysNotice::getNoticeType, notice.getNoticeType())
             .like(StringUtils.isNotBlank(notice.getCreateBy()), SysNotice::getCreateBy, notice.getCreateBy())
-                .eq(StringUtils.isNotBlank(notice.getReceiveId()), SysNotice::getReceiveId, notice.getReceiveId())
+
          .like(StringUtils.isNotBlank(notice.getReceiveName()), SysNotice::getReceiveName, notice.getReceiveName())
          .eq(StringUtils.isNotBlank(notice.getReadStatus()), SysNotice::getReadStatus, notice.getReadStatus())
          .eq(notice.getReadTime() != null, SysNotice::getReadTime, notice.getReadTime()));
@@ -84,6 +89,11 @@ public class SysNoticeServiceImpl implements ISysNoticeService {
     @Override
     public int updateNotice(SysNotice notice) {
         return baseMapper.updateById(notice);
+    }
+
+    @Override
+    public int updateNoticeReadStatus(Long noticeId) {
+        return baseMapper.updateNoticeReadStatus(noticeId);
     }
 
     /**

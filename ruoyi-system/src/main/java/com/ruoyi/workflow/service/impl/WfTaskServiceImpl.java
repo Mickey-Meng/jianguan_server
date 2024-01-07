@@ -3,13 +3,11 @@ package com.ruoyi.workflow.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.ruoyi.common.core.domain.entity.SysRole;
 import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.helper.LoginHelper;
-import com.ruoyi.common.utils.JsonUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.flowable.common.constant.ProcessConstants;
 import com.ruoyi.flowable.common.constant.TaskConstants;
@@ -26,8 +24,8 @@ import com.ruoyi.system.service.ISysRoleService;
 import com.ruoyi.system.service.ISysUserService;
 import com.ruoyi.workflow.domain.bo.WfTaskBo;
 import com.ruoyi.workflow.domain.dto.WfNextDto;
-import com.ruoyi.workflow.domain.vo.MeaFlow;
 import com.ruoyi.workflow.domain.vo.WfViewerVo;
+import com.ruoyi.workflow.front.plugin.FrontFlowablePluginExecutor;
 import com.ruoyi.workflow.ryplugin.RYFlowablePluginExecutor;
 import com.ruoyi.workflow.service.IWfCopyService;
 import com.ruoyi.workflow.service.IWfTaskService;
@@ -51,6 +49,7 @@ import org.flowable.image.ProcessDiagramGenerator;
 import org.flowable.task.api.DelegationState;
 import org.flowable.task.api.Task;
 import org.flowable.task.api.history.HistoricTaskInstance;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -70,6 +69,9 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class WfTaskServiceImpl extends FlowServiceFactory implements IWfTaskService {
+
+    @Autowired
+    private FrontFlowablePluginExecutor frontFlowablePluginExecutor;
 
     private final ISysUserService sysUserService;
 
@@ -95,7 +97,11 @@ public class WfTaskServiceImpl extends FlowServiceFactory implements IWfTaskServ
         if (Objects.isNull(task)) {
             throw new ServiceException("任务不存在");
         }
-        ryFlowablePluginExecutor.executeApply(task.getProcessInstanceId());
+        if(CollUtil.isNotEmpty(findUserTask(taskBo))) {
+            ryFlowablePluginExecutor.executeApply(task.getProcessInstanceId());
+        }else {
+            ryFlowablePluginExecutor.executeApproved(task.getProcessInstanceId());
+        }
         if (DelegationState.PENDING.equals(task.getDelegationState())) {
             taskService.addComment(taskBo.getTaskId(), taskBo.getProcInsId(), FlowComment.DELEGATE.getType(), taskBo.getComment());
             taskService.resolveTask(taskBo.getTaskId());
@@ -130,8 +136,23 @@ public class WfTaskServiceImpl extends FlowServiceFactory implements IWfTaskServ
                 meaFlowDataInfoMapper.insert(meaFlowDataInfo);
             }
         }
+
+
     }
 
+
+    private List<UserTask> findUserTask(WfTaskBo taskBo) {
+        // Step 1. 获取当前节点并找到下一步节点
+        Task task = taskService.createTaskQuery().taskId(taskBo.getTaskId()).singleResult();
+        WfNextDto nextDto = new WfNextDto();
+        if (Objects.nonNull(task)) {
+            // Step 2. 获取当前流程所有流程变量(网关节点时需要校验表达式)
+            Map<String, Object> variables = taskService.getVariables(task.getId());
+            List<UserTask> nextUserTask = FindNextNodeUtil.getNextUserTasks(repositoryService, task, variables);
+            return nextUserTask;
+        }
+        return new ArrayList<>();
+    }
 
     /**
      * 拒绝任务
@@ -149,6 +170,7 @@ public class WfTaskServiceImpl extends FlowServiceFactory implements IWfTaskServ
         if (task.isSuspended()) {
             throw new RuntimeException("任务处于挂起状态");
         }
+        frontFlowablePluginExecutor.executeStop(taskBo.getProcInsId());
         // 获取流程实例
         ProcessInstance processInstance = runtimeService.createProcessInstanceQuery()
             .processInstanceId(taskBo.getProcInsId())
@@ -175,6 +197,7 @@ public class WfTaskServiceImpl extends FlowServiceFactory implements IWfTaskServ
             .processInstanceId(task.getProcessInstanceId())
             .moveExecutionsToSingleActivityId(executionIds, endEvent.getId())
             .changeState();
+
         // 处理抄送用户
         if (!copyService.makeCopy(taskBo)) {
             throw new RuntimeException("抄送任务失败");

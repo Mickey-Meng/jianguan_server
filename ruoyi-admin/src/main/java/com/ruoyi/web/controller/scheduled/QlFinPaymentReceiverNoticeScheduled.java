@@ -37,7 +37,7 @@ public class QlFinPaymentReceiverNoticeScheduled {
 
 
 
-    @Scheduled(cron = "0 45 23 * * ?")
+    @Scheduled(cron = "0 35 23 * * ?")
     public void WarehousingExpireScheduled() {
 
         List<QlWarehousing> qlWarehousings = qlWarehousingMapper.getWarehousingExpireScheduled();
@@ -49,7 +49,11 @@ public class QlFinPaymentReceiverNoticeScheduled {
             SysNotice sysNotice = new SysNotice();
             sysNotice.setNoticeContent("入库单编号:["+qlWarehousing.getWarehousingCode()  +"]入库单付款截止日期为["+ format+"]到期，需及时补充付款记录”。");
             sysNotice.setNoticeTitle("付款到期提醒");
-            sysNotice.setNoticeType("2");
+            sysNotice.setNoticeType("3");//预警
+            sysNotice.setReadStatus("0");//
+            sysNotice.setReceiveId(qlWarehousing.getWarehousingUserId());
+            sysNotice.setReceiveName(qlWarehousing.getWarehousingUsername());
+            sysNotice.setExpirationDate(qlWarehousing.getLastPaymentDate());
             sysNotices.add(sysNotice);
         }
         sysNoticeMapper.insertBatch(sysNotices);
@@ -58,7 +62,7 @@ public class QlFinPaymentReceiverNoticeScheduled {
 
 
 
-    @Scheduled(cron = "0 45 23 * * ?")
+    @Scheduled(cron = "0 25 23 * * ?")
     public void OutboundExpireScheduled() {
 
         List<QlOutbound> qlOutbounds = qlOutboundMapper.getQlOutboundExpireScheduled();
@@ -70,7 +74,11 @@ public class QlFinPaymentReceiverNoticeScheduled {
             SysNotice sysNotice = new SysNotice();
             sysNotice.setNoticeContent("出库单编号:["+qlOutbound.getOutboundCode()  +"]出库收款截止日期为["+ format+"]到期，需及时补充收款记录”。");
             sysNotice.setNoticeTitle("收款到期提醒");
-            sysNotice.setNoticeType("2");
+            sysNotice.setNoticeType("3");//预警
+            sysNotice.setReadStatus("0");//
+            sysNotice.setReceiveId(qlOutbound.getOutboundReleaseuserId());
+            sysNotice.setReceiveName(qlOutbound.getOutboundUsername());
+            sysNotice.setExpirationDate(qlOutbound.getLastReceivableDate());
             sysNotices.add(sysNotice);
         }
         sysNoticeMapper.insertBatch(sysNotices);

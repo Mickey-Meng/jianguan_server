@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
+import com.ruoyi.common.constant.Constants;
+import com.ruoyi.ql.domain.convert.QlFinInvoiceConvert;
+import com.ruoyi.ql.domain.export.query.QlFinInvoiceReportQuery;
 import lombok.RequiredArgsConstructor;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.*;
@@ -54,8 +57,17 @@ public class QlFinInvoiceController extends BaseController {
     @SaCheckPermission("finInvoice:finInvoice:export")
     @Log(title = "供应商开票", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(QlFinInvoiceBo bo, HttpServletResponse response) {
-        List<QlFinInvoiceVo> list = iQlFinInvoiceService.queryList(bo);
+    public void export(QlFinInvoiceReportQuery bo, HttpServletResponse response) {
+        List<QlFinInvoiceVo> list = null;
+        if(Constants.EXPORT_ALL.equals(bo.getExportAll())) {
+            list = iQlFinInvoiceService.queryList(QlFinInvoiceConvert.INSTANCE.conver(bo));
+        } else {
+            PageQuery pageQuery = new PageQuery();
+            pageQuery.setPageNum(bo.getPageNum());
+            pageQuery.setPageSize(bo.getPageSize());
+            TableDataInfo<QlFinInvoiceVo> qlFinInvoiceVoTableDataInfo = iQlFinInvoiceService.queryPageList(QlFinInvoiceConvert.INSTANCE.conver(bo), pageQuery);
+            list = qlFinInvoiceVoTableDataInfo.getRows();
+        }
         ExcelUtil.exportExcel(list, "供应商开票", QlFinInvoiceVo.class, response);
     }
 

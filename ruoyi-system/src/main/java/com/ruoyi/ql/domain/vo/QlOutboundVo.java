@@ -191,7 +191,19 @@ public class QlOutboundVo {
     @ExcelProperty(value = "出库审核人")
     @ApiModelProperty(value = "出库审核人", required = true)
     private String outboundReleaseuser;
+    /**
+     * 出库对接人
+     */
+    @ExcelProperty(value = "出库对接人Id")
+    @ApiModelProperty(value = "出库对接人Id", required = true)
+    private Long outboundUserId;
 
+    /**
+     * 出库审核人
+     */
+    @ExcelProperty(value = "出库审核人Id")
+    @ApiModelProperty(value = "出库审核人Id", required = true)
+    private Long outboundReleaseuserId;
     /**
      * 出库数量
      */

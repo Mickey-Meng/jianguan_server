@@ -28,6 +28,7 @@ public class QlFinEmpBo extends BaseEntity {
      */
     @NotNull(message = "ID ,主键不能为空", groups = { EditGroup.class })
     private Long id;
+    private Long userId;
 
     /**
      * 姓名

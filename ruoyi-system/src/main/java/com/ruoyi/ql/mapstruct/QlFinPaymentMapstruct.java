@@ -1,6 +1,6 @@
 package com.ruoyi.ql.mapstruct;
 
-import com.ruoyi.ql.domain.vo.QlFinPaymentExport;
+import com.ruoyi.ql.domain.export.QlFinPaymentExport;
 import com.ruoyi.ql.domain.vo.QlFinPaymentVo;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;

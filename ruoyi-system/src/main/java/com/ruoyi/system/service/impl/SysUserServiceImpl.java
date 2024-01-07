@@ -69,6 +69,12 @@ public class SysUserServiceImpl implements ISysUserService {
         return baseMapper.selectUserList(this.buildQueryWrapper(user));
     }
 
+    @Override
+    public List<SysUser> findUsers(SysUser user) {
+        return baseMapper.findUsers(this.buildQueryWrapper(user));
+    }
+
+
     private Wrapper<SysUser> buildQueryWrapper(SysUser user) {
         Map<String, Object> params = user.getParams();
         QueryWrapper<SysUser> wrapper = Wrappers.query();
@@ -79,6 +85,7 @@ public class SysUserServiceImpl implements ISysUserService {
             .like(StringUtils.isNotBlank(user.getUserName()), "u.user_name", user.getUserName())
             .like(StringUtils.isNotBlank(user.getNickName()), "u.nick_name", user.getNickName())
             .eq(StringUtils.isNotBlank(user.getStatus()), "u.status", user.getStatus())
+            .like(StringUtils.isNotBlank(user.getSysCode()), "u.sys_code", user.getSysCode())
             .eq("u.del_flag", UserConstants.USER_NORMAL)
             .like(StringUtils.isNotBlank(user.getPhonenumber()), "u.phonenumber", user.getPhonenumber())
             .between(params.get("beginTime") != null && params.get("endTime") != null,
@@ -90,7 +97,9 @@ public class SysUserServiceImpl implements ISysUserService {
                 List<Long> ids = StreamUtils.toList(deptList, SysDept::getDeptId);
                 ids.add(user.getDeptId());
                 w.in("u.dept_id", ids);
-            });
+            }).in(CollUtil.isNotEmpty(user.getUserNames()), "u.user_name", user.getUserNames())
+                    .in(CollUtil.isNotEmpty(user.getNickNames()), "u.nick_name", user.getNickNames());
+
         return wrapper;
     }
 

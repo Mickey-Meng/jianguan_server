@@ -17,6 +17,9 @@
         <result property="createTime" column="create_time"/>
         <result property="updateBy" column="update_by"/>
         <result property="updateTime" column="update_time"/>
+        <result property="goodsUnit" column="goods_unit"/>
+        <result property="totalAmountDollar" column="total_amount_dollar"/>
+        <result property="remark" column="goods_unit"/>
     </resultMap>
 
 

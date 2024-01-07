@@ -170,9 +170,9 @@ security:
     - /mong/newUpload
     - /mong/download
     - /jmreport/**
-    - /warehousing/warehousing/import
-    - /shopGoods/shopGoods/import
-    - /ql/outbound/import
+#    - /warehousing/warehousing/import
+#    - /shopGoods/shopGoods/import
+#    - /ql/outbound/import
     - /logo/**
     - /validateSsoToken/*
     - /system/config/configKey/*

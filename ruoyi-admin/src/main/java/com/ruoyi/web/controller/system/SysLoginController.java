@@ -75,7 +75,6 @@ public class SysLoginController {
     @GetMapping("/validateSsoToken/{tokenStr}")
     @ApiOperation(value = "校验token")
     public R<Map<String, Object>> checkToken(@PathVariable("tokenStr") String tokenStr) throws Exception {
-//        tokenStr = "b69b650e5839ba8293fce8fcd0a89a4d8931a59ae51b682a054685f6e5babdad";
         byte[] key = Sm4Util.hexTobytes("51d95b1dc43a9faaad0570f81c755fcc");
         byte[] input = Hex.decode(tokenStr);
         byte[] output = Sm4Util.decryptEcbPkcs5Padding(input, key);

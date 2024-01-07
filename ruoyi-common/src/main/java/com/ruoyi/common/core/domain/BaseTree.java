@@ -8,6 +8,7 @@ public class BaseTree {
     private int pid ;
     private String pname;
     private String conponetcode;
+    private String wbstcode;
     private String x;
     private String y;
     private String z;
@@ -92,5 +93,12 @@ public class BaseTree {
 
     public void setMouldid(String mouldid) {
         this.mouldid = mouldid;
+    }
+    public String getWbstcode() {
+        return wbstcode;
+    }
+
+    public void setWbstcode(String wbstcode) {
+        this.wbstcode = wbstcode;
     }
 }

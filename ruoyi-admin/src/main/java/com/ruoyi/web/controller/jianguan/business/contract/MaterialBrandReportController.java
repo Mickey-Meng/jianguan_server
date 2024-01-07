@@ -1,5 +1,7 @@
 package com.ruoyi.web.controller.jianguan.business.contract;
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.StrUtil;
 import com.github.pagehelper.PageInfo;
 import com.ruoyi.common.core.domain.object.ResponseBase;
 import com.ruoyi.jianguan.business.contract.domain.dto.MaterialBrandReportPageDTO;
@@ -30,13 +32,15 @@ public class MaterialBrandReportController {
     @PostMapping(value = "/addOrUpdate", produces = "application/json;charset=UTF-8")
     @ApiOperation(value = "新增或者更新")
     public ResponseBase addOrUpdate(@RequestBody @ApiParam(name = "saveDto") MaterialBrandReportSaveDTO saveDto) {
-        if(null==saveDto.getId()){
-            String materialCategory = saveDto.getMaterialCategory();
+        String materialCategory = saveDto.getMaterialCategory();
+        if(StrUtil.isNotBlank(materialCategory)) {
             String[] split = materialCategory.split(",");
-            saveDto.setMaterialCategoryCode(split[0]);
-            saveDto.setMaterialCategory(split[1]);
+            if(split.length > 1) {
+                saveDto.setMaterialCategoryCode(split[0]);
+                saveDto.setMaterialCategory(split[1]);
+            }
         }
-        return materialBrandReportService.addOrUpdate(saveDto,"1");
+        return materialBrandReportService.addOrUpdateMaterialBrandReport(saveDto);
     }
 
     @GetMapping(value = "/id", produces = "application/json;charset=UTF-8")

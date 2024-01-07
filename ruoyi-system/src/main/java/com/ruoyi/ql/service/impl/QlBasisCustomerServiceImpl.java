@@ -1,6 +1,7 @@
 package com.ruoyi.ql.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.core.page.TableDataInfo;
@@ -90,6 +91,7 @@ public class QlBasisCustomerServiceImpl implements IQlBasisCustomerService {
         lqw.like(StringUtils.isNotBlank(bo.getPrivateBankName()), QlBasisCustomer::getPrivateBankName, bo.getPrivateBankName());
         lqw.eq(StringUtils.isNotBlank(bo.getPublicBankNo()), QlBasisCustomer::getPublicBankNo, bo.getPublicBankNo());
         lqw.eq(StringUtils.isNotBlank(bo.getPrivateBankNo()), QlBasisCustomer::getPrivateBankNo, bo.getPrivateBankNo());
+        lqw.in(CollUtil.isNotEmpty(bo.getCustomerNames()), QlBasisCustomer::getCustomerName, bo.getCustomerNames());
         return lqw;
     }
 

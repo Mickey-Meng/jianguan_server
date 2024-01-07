@@ -14,7 +14,7 @@ import java.util.List;
 public interface ISysNoticeService {
 
 
-    TableDataInfo<SysNotice> selectPageNoticeList(SysNotice notice, PageQuery pageQuery);
+    TableDataInfo<SysNotice> selectPageNoticeList(SysNotice notice, PageQuery pageQuery,Boolean isAdmin);
 
     /**
      * 查询公告信息
@@ -47,6 +47,7 @@ public interface ISysNoticeService {
      * @return 结果
      */
     int updateNotice(SysNotice notice);
+    int updateNoticeReadStatus(Long noticeId);
 
     /**
      * 删除公告信息

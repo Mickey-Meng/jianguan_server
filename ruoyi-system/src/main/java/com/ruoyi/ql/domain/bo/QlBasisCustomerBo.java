@@ -42,6 +42,8 @@ public class QlBasisCustomerBo extends BaseEntity {
     @NotBlank(message = "客户名称不能为空", groups = { AddGroup.class, EditGroup.class })
     private String customerName;
 
+    private List<String> customerNames;
+
     /**
      * 营业执照(税号)
      */

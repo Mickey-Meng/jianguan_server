@@ -1,5 +1,6 @@
 package com.ruoyi.ql.mapper;
 
+import com.baomidou.mybatisplus.annotation.InterceptorIgnore;
 import com.ruoyi.ql.domain.QlContractInfoSale;
 import com.ruoyi.ql.domain.QlWarehousing;
 import com.ruoyi.ql.domain.vo.QlWarehousingVo;
@@ -15,6 +16,6 @@ import java.util.List;
  */
 public interface QlWarehousingMapper extends BaseMapperPlus<QlWarehousingMapper, QlWarehousing, QlWarehousingVo> {
     String getInventoryId(String formattedDateTime);
-
+    @InterceptorIgnore(tenantLine = "true")
     List<QlWarehousing> getWarehousingExpireScheduled();
 }

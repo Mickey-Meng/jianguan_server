@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
+import com.ruoyi.common.constant.Constants;
+import com.ruoyi.ql.domain.convert.QlProjectInfoConvert;
+import com.ruoyi.ql.domain.export.query.QlProjectInfoReportQuery;
 import lombok.RequiredArgsConstructor;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.*;
@@ -54,8 +57,17 @@ public class QlProjectInfoController extends BaseController {
     @SaCheckPermission("projectInfo:projectInfo:export")
     @Log(title = "项目信息", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(QlProjectInfoBo bo, HttpServletResponse response) {
-        List<QlProjectInfoVo> list = iQlProjectInfoService.queryList(bo);
+    public void export(QlProjectInfoReportQuery bo, HttpServletResponse response) {
+        List<QlProjectInfoVo> list = null;
+        if(Constants.EXPORT_ALL.equals(bo.getExportAll())) {
+            list = iQlProjectInfoService.queryList(QlProjectInfoConvert.INSTANCE.conver(bo));
+        } else {
+            PageQuery pageQuery = new PageQuery();
+            pageQuery.setPageNum(bo.getPageNum());
+            pageQuery.setPageSize(bo.getPageSize());
+            TableDataInfo<QlProjectInfoVo> qlProjectInfoVoTableDataInfo = iQlProjectInfoService.queryPageList(QlProjectInfoConvert.INSTANCE.conver(bo), pageQuery);
+            list = qlProjectInfoVoTableDataInfo.getRows();
+        }
         ExcelUtil.exportExcel(list, "项目信息", QlProjectInfoVo.class, response);
     }
 

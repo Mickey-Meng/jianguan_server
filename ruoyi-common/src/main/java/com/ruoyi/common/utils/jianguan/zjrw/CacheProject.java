@@ -31,6 +31,7 @@ public class CacheProject {
         baseTree.setName(conponent.getName());
         baseTree.setPid(conponent.getPid());
         baseTree.setPname(conponent.getPname());
+        baseTree.setWbstcode(conponent.getWbscode());
         baseTree.setConponetcode(ObjectUtils.isEmpty(conponent.getConponentcode())?"":conponent.getConponentcode());
         return baseTree;
     }

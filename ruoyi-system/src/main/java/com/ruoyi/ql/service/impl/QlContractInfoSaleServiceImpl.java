@@ -192,4 +192,10 @@ public class QlContractInfoSaleServiceImpl implements IQlContractInfoSaleService
         }
         return deleteResult;
     }
+
+    public void batchInsertBo(List<QlContractInfoSaleBo> qlContractInfoSaleBos) {
+        for (QlContractInfoSaleBo qlContractInfoSaleBo : qlContractInfoSaleBos) {
+            insertByBo(qlContractInfoSaleBo);
+        }
+    }
 }

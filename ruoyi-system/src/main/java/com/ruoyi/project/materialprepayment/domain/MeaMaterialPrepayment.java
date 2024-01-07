@@ -1,9 +1,12 @@
 package com.ruoyi.project.materialprepayment.domain;
 
+import com.alibaba.excel.annotation.ExcelProperty;
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.math.BigDecimal;
 
@@ -92,5 +95,10 @@ public class MeaMaterialPrepayment extends BaseEntity {
      * 备注
      */
     private String remark;
+
+    /**
+     *  申请时间
+     */
+    private LocalDateTime sqsj;
 
 }

@@ -15,23 +15,23 @@ import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.PageQuery;
 import com.ruoyi.common.core.domain.R;
+import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.core.validate.AddGroup;
 import com.ruoyi.common.core.validate.EditGroup;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.exception.ServiceException;
-import com.ruoyi.ql.domain.QlReceivableOutboundRel;
 import com.ruoyi.ql.domain.bo.*;
-import com.ruoyi.ql.domain.convert.OutboundConvert;
-import com.ruoyi.ql.domain.export.OutboundExportVo;
+import com.ruoyi.ql.domain.convert.QlOutboundConvert;
+import com.ruoyi.ql.domain.export.OutboundExport;
 import com.ruoyi.ql.domain.export.query.QlOutboundReportQuery;
-import com.ruoyi.ql.domain.importvo.OutboundImportVo;
+import com.ruoyi.ql.domain.importvo.QlOutboundImport;
 import com.ruoyi.ql.domain.vo.*;
-import com.ruoyi.ql.mapstruct.OutboundAndWarehousingMapstruct;
+import com.ruoyi.ql.mapstruct.QlOutboundAndWarehousingMapstruct;
 import com.ruoyi.ql.mapstruct.QlWarehousingDetailMapstruct;
 import com.ruoyi.ql.service.*;
+import com.ruoyi.system.service.ISysUserService;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.collections.ArrayStack;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -66,6 +66,9 @@ public class QlOutboundController extends BaseController {
     private final IQlProjectInfoService iQlProjectInfoService;
 
     private final IQlReceivableOutboundRelService iQlReceivableOutboundRelService;
+
+    private final ISysUserService sysUserService;
+
     /**
      * 查询出库管理列表
      */
@@ -92,8 +95,9 @@ public class QlOutboundController extends BaseController {
     public void uploadExcel(MultipartFile file) throws IOException {
         InputStream inputStream = file.getInputStream();
         ExcelReader reader = cn.hutool.poi.excel.ExcelUtil.getReader(inputStream);
-        List<OutboundImportVo> outboundImports = reader.read(2, 3, Integer.MAX_VALUE, OutboundImportVo.class);
-        List<QlOutboundBo> outboundBos = importToBo(outboundImports);
+        List<QlOutboundImport> qlOutboundImports = reader.read(2, 3, Integer.MAX_VALUE, QlOutboundImport.class);
+        checkOutBoundImport(qlOutboundImports);
+        List<QlOutboundBo> outboundBos = importToBo(qlOutboundImports);
         if (CollUtil.isEmpty(outboundBos)) {
             return;
         }
@@ -101,27 +105,27 @@ public class QlOutboundController extends BaseController {
     }
 
     /**
-     * @param outboundImports
+     * @param qlOutboundImports
      * @return
      */
-    private List<QlOutboundBo> importToBo(List<OutboundImportVo> outboundImports) {
-        if (CollUtil.isEmpty(outboundImports)) {
+    private List<QlOutboundBo> importToBo(List<QlOutboundImport> qlOutboundImports) {
+        if (CollUtil.isEmpty(qlOutboundImports)) {
             return new ArrayList<>();
         }
         List<QlOutboundBo> outbounds = new ArrayList<>();
-        List<QlContractInfoSaleVo> contractInfoSales = findContractInfoSale(outboundImports);
+        List<QlContractInfoSaleVo> contractInfoSales = findContractInfoSale(qlOutboundImports);
         Map<String, QlContractInfoSaleVo> contractInfoSaleMap = contractInfoSales.stream().collect(Collectors.toMap(QlContractInfoSaleVo::getContractCode, qlContractInfoSaleVo -> qlContractInfoSaleVo));
 
-        List<QlProjectInfoVo> projectInfos = findProjectInfo(outboundImports);
+        List<QlProjectInfoVo> projectInfos = findProjectInfo(qlOutboundImports);
         Map<String, QlProjectInfoVo> projectInfoMap = projectInfos.stream().collect(Collectors.toMap(QlProjectInfoVo::getProjectName, project -> project));
 
         List<QlContractGoodsRelVo> qlContractGoodsRelVos = findContractGoodsRel(contractInfoSales);
         Map<String, Long> goodsIds = buildGoodsIds(contractInfoSales, qlContractGoodsRelVos);
 
-        Map<String, List<OutboundImportVo>> outboundImportMap = outboundImports.stream().collect(Collectors.groupingBy(OutboundImportVo::getOutboundCode));
+        Map<String, List<QlOutboundImport>> outboundImportMap = qlOutboundImports.stream().collect(Collectors.groupingBy(QlOutboundImport::getOutboundCode));
 
         outboundImportMap.forEach((key, value) -> {
-            QlOutboundBo outbound = OutboundAndWarehousingMapstruct.INSTANCES.importToBo(value.get(0));
+            QlOutboundBo outbound = QlOutboundAndWarehousingMapstruct.INSTANCES.importToBo(value.get(0));
 
             // 销售合同编号查询客户Id[customerId]
             setCustomerId(outbound, contractInfoSaleMap);
@@ -148,16 +152,35 @@ public class QlOutboundController extends BaseController {
         return outbounds;
     }
 
-    private List<QlContractInfoSaleVo> findContractInfoSale(List<OutboundImportVo> outboundImports) {
+    private void checkOutBoundImport(List<QlOutboundImport> qlOutboundImports) {
+        List<String> names = new ArrayList<>();
+        names.addAll(qlOutboundImports.stream().map(QlOutboundImport::getOutboundUsername).collect(Collectors.toList()));
+        names.addAll(qlOutboundImports.stream().map(QlOutboundImport::getOutboundReleaseuser).collect(Collectors.toList()));
+        checkUser(names);
+    }
+
+    private void checkUser(List<String> names) {
+        SysUser user = new SysUser();
+        user.setNickNames(names);
+        List<SysUser> sysUsers = sysUserService.findUsers(user);
+        List<String> nickNames = sysUsers.stream().map(SysUser::getNickName).collect(Collectors.toList());
+        for (String name : names) {
+            if(!nickNames.contains(name)) {
+                throw new ServiceException(name + "非系统用户不能导入");
+            }
+        }
+    }
+
+    private List<QlContractInfoSaleVo> findContractInfoSale(List<QlOutboundImport> qlOutboundImports) {
         // 销售合同编码查询合同Id
         QlContractInfoSaleBo qlContractInfoSaleBo = new QlContractInfoSaleBo();
-        List<String> contractCodes = outboundImports.stream().map(OutboundImportVo:: getSaleContractCode).collect(Collectors.toList());
+        List<String> contractCodes = qlOutboundImports.stream().map(QlOutboundImport:: getSaleContractCode).collect(Collectors.toList());
         qlContractInfoSaleBo.setContractCodes(contractCodes);
         return iQlContractInfoSaleService.queryList(qlContractInfoSaleBo);
     }
 
-    private List<QlProjectInfoVo>  findProjectInfo(List<OutboundImportVo> outboundImports) {
-        List<String> projectNames = outboundImports.stream().map(OutboundImportVo::getProjectName).distinct().collect(Collectors.toList());
+    private List<QlProjectInfoVo>  findProjectInfo(List<QlOutboundImport> qlOutboundImports) {
+        List<String> projectNames = qlOutboundImports.stream().map(QlOutboundImport::getProjectName).distinct().collect(Collectors.toList());
         QlProjectInfoBo projectInfo = new QlProjectInfoBo();
         projectInfo.setProjectNames(projectNames);
         return iQlProjectInfoService.queryList(projectInfo);
@@ -208,21 +231,21 @@ public class QlOutboundController extends BaseController {
     public void export(QlOutboundReportQuery bo, HttpServletResponse response) throws IOException {
         List<QlOutboundVo> qutbounds = null;
         if(Constants.EXPORT_ALL.equals(bo.getExportAll())) {
-            qutbounds = iQlOutboundService.queryList(OutboundConvert.INSTANCE.conver(bo));
+            qutbounds = iQlOutboundService.queryList(QlOutboundConvert.INSTANCE.conver(bo));
         }else {
             PageQuery pageQuery = new PageQuery();
             pageQuery.setPageNum(bo.getPageNum());
             pageQuery.setPageSize(bo.getPageSize());
-            TableDataInfo<QlOutboundVo> qlOutboundVoTableDataInfo = iQlOutboundService.queryPageList(OutboundConvert.INSTANCE.conver(bo), pageQuery);
+            TableDataInfo<QlOutboundVo> qlOutboundVoTableDataInfo = iQlOutboundService.queryPageList(QlOutboundConvert.INSTANCE.conver(bo), pageQuery);
             qutbounds = qlOutboundVoTableDataInfo.getRows();
         }
-        List<OutboundExportVo> outboundExports = new ArrayList<>();
+        List<OutboundExport> outboundExports = new ArrayList<>();
         for (QlOutboundVo outbound : qutbounds) {
             if(CollUtil.isEmpty(outbound.getWarehousingDetails())) {
                 continue;
             }
             for (QlWarehousingDetailVo warehousingDetail : outbound.getWarehousingDetails()) {
-                OutboundExportVo outboundExport = new OutboundExportVo();
+                OutboundExport outboundExport = new OutboundExport();
                 BeanUtil.copyProperties(outbound, outboundExport);
                 BeanUtil.copyProperties(warehousingDetail, outboundExport);
                 outboundExports.add(outboundExport);

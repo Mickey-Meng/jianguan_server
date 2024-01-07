@@ -46,7 +46,11 @@ public class QlWarehousingVo {
      */
     @ExcelProperty(value = "入库单号")
     private String warehousingCode;
-
+    /**
+     * 入库对接人id
+     */
+    @ExcelProperty(value = "入库对接人")
+    private Long warehousingUserId;
     /**
      * 入库对接人
      */
@@ -172,7 +176,12 @@ public class QlWarehousingVo {
     @ExcelProperty(value = "入库复核人")
     @ApiModelProperty(value = "入库复核人", required = true)
     private String warehousingReleaseuser;
-
+    /**
+     * 入库复核人id
+     */
+    @ExcelProperty(value = "入库复核人")
+    @ApiModelProperty(value = "入库复核人", required = true)
+    private Long warehousingReleaseuserId;
     /**
      * 基准价
      */

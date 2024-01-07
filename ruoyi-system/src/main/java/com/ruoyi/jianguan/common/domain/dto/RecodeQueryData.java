@@ -22,7 +22,7 @@ public class RecodeQueryData {
     private String type;
     //单位
     private List<String> list;
-    //构建编码
+    //构建编码 --2024-01-06 前端改为wbscode，后端代码暂时不修改，仅再最后查询sql时，改为wbscode
     private String code;
     @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
     private Date sttime;

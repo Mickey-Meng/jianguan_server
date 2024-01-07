@@ -44,7 +44,8 @@ public class ProduceOnlineCheckFlowablePlugin implements FlowablePlugin {
      */
     private void updateStatus(ProcessInstance processInstance, Integer status) {
         String businessKey = processInstance.getBusinessKey();
-        Produceandrecode produceandrecode = onlineFormsService.updateFlowStatusById(businessKey, status);
+        String id = businessKey.substring(0, businessKey.indexOf("_"));
+        Produceandrecode produceandrecode = onlineFormsService.updateFlowStatusById(id, status, "check");
         log.info("ProduceOnlineReportFlowablePlugin.produceandrecode: {}", produceandrecode);
     }
 }

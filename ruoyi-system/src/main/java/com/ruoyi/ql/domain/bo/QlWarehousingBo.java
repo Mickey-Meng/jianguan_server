@@ -52,9 +52,12 @@ public class QlWarehousingBo extends BaseEntity {
     /**
      * 入库对接人
      */
+     private Long warehousingUserId;
+    /**
+     * 入库对接人
+     */
     @NotBlank(message = "入库对接人不能为空", groups = { AddGroup.class, EditGroup.class })
     private String warehousingUsername;
-
     /**
      * 采购订单id
      */
@@ -154,6 +157,10 @@ public class QlWarehousingBo extends BaseEntity {
     private String address;
 
 
+    /**
+     * 入库复核人id
+     */
+     private Long warehousingReleaseuserId;
     /**
      * 入库复核人
      */

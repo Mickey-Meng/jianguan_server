@@ -1,29 +1,36 @@
 package com.ruoyi.ql.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ruoyi.common.core.domain.PageQuery;
 import com.ruoyi.common.core.page.TableDataInfo;
+import com.ruoyi.common.exception.ServiceException;
+import com.ruoyi.common.utils.ApplicationContextHolder;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.ql.domain.QlShopGoods;
 import com.ruoyi.ql.domain.QlShopGoodsType;
+import com.ruoyi.ql.domain.bo.QlContractGoodsRelBo;
 import com.ruoyi.ql.domain.bo.QlShopGoodsBo;
-import com.ruoyi.ql.domain.vo.QlShopGoodsTypeVo;
-import com.ruoyi.ql.domain.vo.QlShopGoodsVo;
-import com.ruoyi.ql.domain.vo.TreeVo;
+import com.ruoyi.ql.domain.bo.QlWarehousingDetailBo;
+import com.ruoyi.ql.domain.vo.*;
 import com.ruoyi.ql.mapper.QlShopGoodsMapper;
 import com.ruoyi.ql.mapper.QlShopGoodsTypeMapper;
+import com.ruoyi.ql.service.IQlContractGoodsRelService;
 import com.ruoyi.ql.service.IQlShopGoodsService;
+import com.ruoyi.ql.service.IQlWarehousingDetailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 商品信息Service业务层处理
@@ -39,6 +46,7 @@ public class QlShopGoodsServiceImpl implements IQlShopGoodsService {
 
     private final QlShopGoodsTypeMapper qlShopGoodsTypeMapper;
 
+    private final IQlWarehousingDetailService warehousingDetailService;
 
     /**
      * 查询商品信息
@@ -122,6 +130,20 @@ public class QlShopGoodsServiceImpl implements IQlShopGoodsService {
     public Boolean deleteWithValidByIds(Collection<Long> ids, Boolean isValid) {
         if (isValid) {
             //TODO 做一些业务上的校验,判断是否需要校验
+//            已用于采购合同/销售合同/入库单/出库单的产品，不允许删除
+            QlWarehousingDetailBo qlWarehousingDetailBo =  new QlWarehousingDetailBo();
+            qlWarehousingDetailBo.setGoodsIds(ids.stream().map(String::valueOf).collect(Collectors.toList()));
+            List<QlWarehousingDetailVo> qlWarehousingDetailVos = warehousingDetailService.queryList(qlWarehousingDetailBo);
+            if(CollUtil.isNotEmpty(qlWarehousingDetailVos)) {
+                throw new ServiceException("已用于采购合同/销售合同/入库单/出库单的产品，不允许删除");
+            }
+            IQlContractGoodsRelService contractGoodsRelService = ApplicationContextHolder.getBean(IQlContractGoodsRelService.class);
+            QlContractGoodsRelBo qlContractGoodsRelBo = new QlContractGoodsRelBo();
+            qlContractGoodsRelBo.setGoodsIds(new ArrayList<>(ids));
+            List<QlContractGoodsRelVo> qlContractGoodsRelVos = contractGoodsRelService.queryList(qlContractGoodsRelBo);
+            if(CollUtil.isNotEmpty(qlContractGoodsRelVos)) {
+                throw new ServiceException("已用于采购合同/销售合同/入库单/出库单的产品，不允许删除");
+            }
         }
         return baseMapper.deleteBatchIds(ids) > 0;
     }

@@ -79,6 +79,7 @@ public class MeaMeasurementDocumentsServiceImpl implements IMeaMeasurementDocume
     private LambdaQueryWrapper<MeaMeasurementDocuments> buildQueryWrapper(MeaMeasurementDocumentsBo bo) {
         Map<String, Object> params = bo.getParams();
         LambdaQueryWrapper<MeaMeasurementDocuments> lqw = Wrappers.lambdaQuery();
+        lqw.eq(StringUtils.isNotBlank(bo.getId()), MeaMeasurementDocuments::getId, bo.getId());
         lqw.eq(StringUtils.isNotBlank(bo.getBdbh()), MeaMeasurementDocuments::getBdbh, bo.getBdbh());
         lqw.eq(StringUtils.isNotBlank(bo.getJlqsbh()), MeaMeasurementDocuments::getJlqsbh, bo.getJlqsbh());
         lqw.eq(StringUtils.isNotBlank(bo.getTzfjbh()), MeaMeasurementDocuments::getTzfjbh, bo.getTzfjbh());

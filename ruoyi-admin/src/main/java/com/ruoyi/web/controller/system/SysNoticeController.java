@@ -5,13 +5,17 @@ import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.PageQuery;
 import com.ruoyi.common.core.domain.R;
+import com.ruoyi.common.core.domain.object.ResponseBase;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
+import com.ruoyi.common.helper.LoginHelper;
 import com.ruoyi.system.domain.SysNotice;
 import com.ruoyi.system.service.ISysNoticeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Set;
 
 /**
  * 公告 信息操作处理
@@ -32,7 +36,14 @@ public class SysNoticeController extends BaseController {
     @SaCheckPermission("system:notice:list")
     @GetMapping("/list")
     public TableDataInfo<SysNotice> list(SysNotice notice, PageQuery pageQuery) {
-        return noticeService.selectPageNoticeList(notice, pageQuery);
+        Long userId = LoginHelper.getLoginUser().getUserId();
+        notice.setReceiveId(userId);
+        Set<String> roleKey = LoginHelper.getLoginUser().getRolePermission();
+        Boolean b = false;
+        if (roleKey.contains("admin")){
+            b = true;
+        }
+        return noticeService.selectPageNoticeList(notice, pageQuery,b);
     }
 
     /**
@@ -43,6 +54,7 @@ public class SysNoticeController extends BaseController {
     @SaCheckPermission("system:notice:query")
     @GetMapping(value = "/{noticeId}")
     public R<SysNotice> getInfo(@PathVariable Long noticeId) {
+        noticeService.updateNoticeReadStatus(noticeId);
         return R.ok(noticeService.selectNoticeById(noticeId));
     }
 
@@ -65,7 +77,15 @@ public class SysNoticeController extends BaseController {
     public R<Void> edit(@Validated @RequestBody SysNotice notice) {
         return toAjax(noticeService.updateNotice(notice));
     }
-
+    /**
+     * 将通知信息改为已读
+     */
+    @SaCheckPermission("system:notice:edit")
+    @Log(title = "将通知信息改为已读", businessType = BusinessType.UPDATE)
+    @GetMapping("/updateNoticeReadStatus")
+    public R<Void> editReadStatus(Long noticeId) {
+        return toAjax(noticeService.updateNoticeReadStatus(noticeId));
+    }
     /**
      * 删除通知公告
      *

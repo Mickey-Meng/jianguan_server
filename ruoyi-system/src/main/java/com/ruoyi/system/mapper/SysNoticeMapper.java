@@ -9,5 +9,5 @@ import com.ruoyi.system.domain.SysNotice;
  * @author Lion Li
  */
 public interface SysNoticeMapper extends BaseMapperPlus<SysNoticeMapper, SysNotice, SysNotice> {
-
+     int  updateNoticeReadStatus(Long noticeId);
 }

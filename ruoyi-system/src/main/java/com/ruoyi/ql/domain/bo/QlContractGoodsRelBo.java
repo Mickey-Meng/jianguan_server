@@ -50,6 +50,11 @@ public class QlContractGoodsRelBo extends BaseEntity {
     private Long goodsId;
 
     /**
+     * 商品Id集合
+     */
+    private List<Long> goodsIds;
+
+    /**
      * 商品名称
      */
     @NotBlank(message = "商品名称不能为空", groups = { AddGroup.class, EditGroup.class })
@@ -73,5 +78,10 @@ public class QlContractGoodsRelBo extends BaseEntity {
     @NotBlank(message = "合同类型，purchase：采购合同、sale：销售合同不能为空", groups = { AddGroup.class, EditGroup.class })
     private String contractType;
 
+    private String goodsUnit;
+
+    private BigDecimal totalAmountDollar;
+
+    private String remark;
 
 }

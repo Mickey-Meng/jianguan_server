@@ -40,6 +40,10 @@
             <groupId>com.ruoyi</groupId>
             <artifactId>ruoyi-sms</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.jeecgframework.jimureport</groupId>
+            <artifactId>jimureport-spring-boot-starter</artifactId>
+        </dependency>
 
     </dependencies>
     <build>

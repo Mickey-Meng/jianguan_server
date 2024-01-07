@@ -15,20 +15,22 @@ import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.PageQuery;
 import com.ruoyi.common.core.domain.R;
+import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.core.validate.AddGroup;
 import com.ruoyi.common.core.validate.EditGroup;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.ql.domain.bo.*;
-import com.ruoyi.ql.domain.convert.WarehousingConvert;
-import com.ruoyi.ql.domain.export.WarehousingExportVo;
+import com.ruoyi.ql.domain.convert.QlWarehousingConvert;
+import com.ruoyi.ql.domain.export.WarehousingExport;
 import com.ruoyi.ql.domain.export.query.QlWarehousingReportQuery;
-import com.ruoyi.ql.domain.importvo.WarehousingImportVo;
+import com.ruoyi.ql.domain.importvo.QlWarehousingImport;
 import com.ruoyi.ql.domain.vo.*;
 import com.ruoyi.ql.mapstruct.QlWarehousingDetailMapstruct;
-import com.ruoyi.ql.mapstruct.WarehousingMapstruct;
+import com.ruoyi.ql.mapstruct.QlWarehousingMapstruct;
 import com.ruoyi.ql.service.*;
+import com.ruoyi.system.service.ISysUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -61,6 +63,8 @@ public class QlWarehousingController extends BaseController {
 
     private final IQlContractInfoPurchaseService contractInfoPurchaseService;
 
+    private final ISysUserService sysUserService;
+
     /**
      * 查询入库管理列表
      */
@@ -79,22 +83,22 @@ public class QlWarehousingController extends BaseController {
     public void export(QlWarehousingReportQuery bo, HttpServletResponse response) throws IOException {
         List<QlWarehousingVo> warehousings = null;
         if(Constants.EXPORT_ALL.equals(bo.getExportAll())) {
-            warehousings = iQlWarehousingService.queryList(WarehousingConvert.INSTANCE.conver(bo));
+            warehousings = iQlWarehousingService.queryList(QlWarehousingConvert.INSTANCE.conver(bo));
         } else {
             PageQuery pageQuery = new PageQuery();
             pageQuery.setPageNum(bo.getPageNum());
             pageQuery.setPageSize(bo.getPageSize());
-            TableDataInfo<QlWarehousingVo> qlWarehousingVoTableDataInfo = iQlWarehousingService.queryPageList(WarehousingConvert.INSTANCE.conver(bo), pageQuery);
+            TableDataInfo<QlWarehousingVo> qlWarehousingVoTableDataInfo = iQlWarehousingService.queryPageList(QlWarehousingConvert.INSTANCE.conver(bo), pageQuery);
             warehousings = qlWarehousingVoTableDataInfo.getRows();
         }
 
-        List<WarehousingExportVo> warehousingExports = new ArrayList<>();
+        List<WarehousingExport> warehousingExports = new ArrayList<>();
         for (QlWarehousingVo warehousing : warehousings) {
             if(CollUtil.isEmpty(warehousing.getWarehousingDetails())) {
                 continue;
             }
             for (QlWarehousingDetailVo warehousingDetail : warehousing.getWarehousingDetails()) {
-                WarehousingExportVo warehousingExport = new WarehousingExportVo();
+                WarehousingExport warehousingExport = new WarehousingExport();
                 BeanUtil.copyProperties(warehousing, warehousingExport);
                 BeanUtil.copyProperties(warehousingDetail, warehousingExport);
                 warehousingExports.add(warehousingExport);
@@ -177,30 +181,50 @@ public class QlWarehousingController extends BaseController {
     public void uploadExcel(MultipartFile file) throws IOException {
         InputStream inputStream = file.getInputStream();
         ExcelReader reader = cn.hutool.poi.excel.ExcelUtil.getReader(inputStream);
-        List<WarehousingImportVo> warehousingImports = reader.read(2, 3, Integer.MAX_VALUE, WarehousingImportVo.class);
-        List<QlWarehousingBo> warehousings = importToBo(warehousingImports);
+        List<QlWarehousingImport> qlWarehousingImports = reader.read(2, 3, Integer.MAX_VALUE, QlWarehousingImport.class);
+        checkWareHousingImport(qlWarehousingImports);
+        List<QlWarehousingBo> warehousings = importToBo(qlWarehousingImports);
         iQlWarehousingService.batchInsertBo(warehousings);
     }
 
+    private void checkWareHousingImport(List<QlWarehousingImport> outboundImports) {
+        List<String> names = new ArrayList<>();
+        names.addAll(outboundImports.stream().map(QlWarehousingImport::getWarehousingUsername).collect(Collectors.toList()));
+        names.addAll(outboundImports.stream().map(QlWarehousingImport::getWarehousingReleaseuser).collect(Collectors.toList()));
+        checkUser(names);
+    }
+
+    private void checkUser(List<String> names) {
+        SysUser user = new SysUser();
+        user.setNickNames(names);
+        List<SysUser> sysUsers = sysUserService.findUsers(user);
+        List<String> nickNames = sysUsers.stream().map(SysUser::getNickName).collect(Collectors.toList());
+        for (String name : names) {
+            if(!nickNames.contains(name)) {
+                throw new ServiceException(name + "非系统用户不能导入");
+            }
+        }
+    }
+
     /**
-     * @param warehousingImports
+     * @param qlWarehousingImports
      * @return
      */
-    private List<QlWarehousingBo> importToBo(List<WarehousingImportVo> warehousingImports) {
-        if (CollUtil.isEmpty(warehousingImports)) {
+    private List<QlWarehousingBo> importToBo(List<QlWarehousingImport> qlWarehousingImports) {
+        if (CollUtil.isEmpty(qlWarehousingImports)) {
             return new ArrayList<>();
         }
         List<QlWarehousingBo> warehousings = new ArrayList<>();
-        List<QlContractInfoPurchaseVo> contractInfos = findContractInfoPurchase(warehousingImports);
+        List<QlContractInfoPurchaseVo> contractInfos = findContractInfoPurchase(qlWarehousingImports);
         Map<String, QlContractInfoPurchaseVo> contractInfoMap = contractInfos.stream().collect(Collectors.toMap(QlContractInfoPurchaseVo::getContractCode, contractInfo -> contractInfo));
 
         List<QlContractGoodsRelVo> qlContractGoodsRelVos = findContractGoodsRel(contractInfos);
         Map<String, Long> goodsIds = buildGoodsIds(contractInfos, qlContractGoodsRelVos);
 
-        Map<String, List<WarehousingImportVo>> warehousingImportMap = warehousingImports.stream().collect(Collectors.groupingBy(WarehousingImportVo::getWarehousingCode));
+        Map<String, List<QlWarehousingImport>> warehousingImportMap = qlWarehousingImports.stream().collect(Collectors.groupingBy(QlWarehousingImport::getWarehousingCode));
 
         warehousingImportMap.forEach((key, value) -> {
-             QlWarehousingBo warehousing = WarehousingMapstruct.INSTANCES.importToBo(value.get(0));
+             QlWarehousingBo warehousing = QlWarehousingMapstruct.INSTANCES.importToBo(value.get(0));
 
             // 销售合同编号查询客户Id[customerId]
             setSupplierId(warehousing, contractInfoMap);
@@ -231,8 +255,8 @@ public class QlWarehousingController extends BaseController {
         warehousing.setSupplierId(Long.parseLong(contractInfoMap.get(warehousing.getContractCode()).getSupplierId()));
     }
 
-    private List<QlContractInfoPurchaseVo> findContractInfoPurchase(List<WarehousingImportVo> warehousingImports) {
-        List<String> contractCodes = warehousingImports.stream().map(WarehousingImportVo::getContractCode).collect(Collectors.toList());
+    private List<QlContractInfoPurchaseVo> findContractInfoPurchase(List<QlWarehousingImport> qlWarehousingImports) {
+        List<String> contractCodes = qlWarehousingImports.stream().map(QlWarehousingImport::getContractCode).collect(Collectors.toList());
         QlContractInfoPurchaseBo contractInfoPurchase = new QlContractInfoPurchaseBo();
         contractInfoPurchase.setContractCodes(contractCodes);
         return contractInfoPurchaseService.queryList(contractInfoPurchase);

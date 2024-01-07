@@ -2,8 +2,12 @@ package com.ruoyi.web.controller.ql;
 
 import java.util.List;
 import java.util.Arrays;
-import java.util.concurrent.TimeUnit;
 
+import com.ruoyi.common.constant.Constants;
+import com.ruoyi.ql.domain.convert.QlFinReceivableConvert;
+import com.ruoyi.ql.domain.convert.QlOutboundConvert;
+import com.ruoyi.ql.domain.export.query.QlFinReceivableReportQuery;
+import com.ruoyi.ql.domain.vo.QlOutboundVo;
 import lombok.RequiredArgsConstructor;
 
 import javax.servlet.http.HttpServletResponse;
@@ -19,7 +23,6 @@ import com.ruoyi.common.core.domain.PageQuery;
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.validate.AddGroup;
 import com.ruoyi.common.core.validate.EditGroup;
-import com.ruoyi.common.core.validate.QueryGroup;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.ql.domain.vo.QlFinReceivableVo;
@@ -67,8 +70,17 @@ public class QlFinReceivableController extends BaseController {
     @SaCheckPermission("ql:finReceivable:export")
     @Log(title = "收款记录", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(QlFinReceivableBo bo, HttpServletResponse response) {
-        List<QlFinReceivableVo> list = iQlFinReceivableService.queryList(bo);
+    public void export(QlFinReceivableReportQuery bo, HttpServletResponse response) {
+        List<QlFinReceivableVo> list = null;
+        if(Constants.EXPORT_ALL.equals(bo.getExportAll())) {
+            list = iQlFinReceivableService.queryList(QlFinReceivableConvert.INSTANCE.conver(bo));
+        }else {
+            PageQuery pageQuery = new PageQuery();
+            pageQuery.setPageNum(bo.getPageNum());
+            pageQuery.setPageSize(bo.getPageSize());
+            TableDataInfo<QlFinReceivableVo> qlFinReceivableVoTableDataInfo = iQlFinReceivableService.queryPageList(QlFinReceivableConvert.INSTANCE.conver(bo), pageQuery);
+            list = qlFinReceivableVoTableDataInfo.getRows();
+        }
         ExcelUtil.exportExcel(list, "收款记录", QlFinReceivableVo.class, response);
     }
 

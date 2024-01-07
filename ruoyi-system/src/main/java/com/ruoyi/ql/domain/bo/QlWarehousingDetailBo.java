@@ -55,6 +55,11 @@ public class QlWarehousingDetailBo extends BaseEntity {
     private String goodsId;
 
     /**
+     * 产品id集合
+     */
+    private List<String> goodsIds;
+
+    /**
      * 产品名称
      */
     @NotBlank(message = "产品名称不能为空", groups = { AddGroup.class, EditGroup.class })

@@ -25,5 +25,9 @@ public interface IOnlineFormsService {
 
     ResponseBase submitReport(RecodeUploadData recodeData);
 
-    public Produceandrecode updateFlowStatusById(String id, Integer status);
+    public Produceandrecode updateFlowStatusById(String id, Integer status, String type);
+
+    ResponseBase getProduceReportInfoById(Integer id, Integer documentType);
+
+    ResponseBase submitCheck(RecodeUploadData recodeData);
 }

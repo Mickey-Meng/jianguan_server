@@ -7,7 +7,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.google.common.collect.Maps;
 import com.ruoyi.common.core.domain.PageQuery;
+import com.ruoyi.common.core.domain.entity.Conponent;
 import com.ruoyi.common.core.domain.entity.Produceandrecode;
 import com.ruoyi.common.core.domain.entity.ZjConponentProducetime;
 import com.ruoyi.common.core.domain.object.ResponseBase;
@@ -25,6 +27,7 @@ import com.ruoyi.jianguan.business.onlineForms.domain.vo.PubProduceDocumentVo;
 import com.ruoyi.jianguan.business.onlineForms.mapper.PubProduceDocumentMapper;
 import com.ruoyi.jianguan.business.onlineForms.service.IOnlineFormsService;
 import com.ruoyi.jianguan.business.onlineForms.service.IPubProduceDocumentService;
+import com.ruoyi.jianguan.common.dao.ConponentDAO;
 import com.ruoyi.jianguan.common.dao.ProduceandrecodeDAO;
 import com.ruoyi.jianguan.common.dao.RecodeDAO;
 import com.ruoyi.jianguan.common.dao.ZjConponentProducetimeDAO;
@@ -69,6 +72,9 @@ public class OnlineFormsServiceImpl implements IOnlineFormsService {
 
     @Autowired
     private RecodeDAO recodeDAO;
+
+    @Autowired
+    private ConponentDAO conponentDAO;
 
     @Autowired
     private ZjConponentProducetimeDAO zjConponentProducetimeDAO;
@@ -127,8 +133,14 @@ public class OnlineFormsServiceImpl implements IOnlineFormsService {
     @Override
     public ResponseBase submitReport(RecodeUploadData recodeData) {
         /******************************************************************************/
+        if (recodeData.getSubmitType().equals("report")) {
+
+        }
         //默认为一标段
-        recodeData.setProjectId(StringUtils.isBlank(recodeData.getProjectId() + "") ? 3 : 0);
+        if (recodeData.getProjectId() == null || recodeData.getProjectId().equals("")){
+            //默认为一标段
+            recodeData.setProjectId(3);
+        }
         //produceService.uploadRecode(recodeData);
 
         //往recode表查一个数据
@@ -148,8 +160,8 @@ public class OnlineFormsServiceImpl implements IOnlineFormsService {
         //审核通过后才设置完成时间
 //        produceandrecode.setUpdatetime(new Date());
         produceandrecode.setConponentcode(zjConponentProducetime.getConponentcode());
-        //2022.3.17  sttime字段当作   该条提交工序完成时间
-        produceandrecode.setStime(recodeData.getUploadtime());
+
+        produceandrecode.setUpdatetime(new Date());
         produceandrecode.setCheckusername(recodeData.getCheckusername());
         produceandrecode.setCheckuser(recodeData.getCheckid());
         produceandrecode.setUpdateusername(recodeData.getUpdateusername());
@@ -162,7 +174,6 @@ public class OnlineFormsServiceImpl implements IOnlineFormsService {
         produceandrecode.setProjectcode(recodeData.getProjectcode());
         produceandrecode.setProduceid(recodeData.getProduceid());
         produceandrecode.setRecodeid(recode.getId());
-        produceandrecode.setCheckresult(3);
         //新增工序状态
         produceandrecode.setStatus(0);
         produceandrecode.setProjectId(recodeData.getProjectId());
@@ -178,9 +189,11 @@ public class OnlineFormsServiceImpl implements IOnlineFormsService {
             dbCount = produceandrecodeDAO.insert(produceandrecode);
         }
         /******************************************************************************/
+        // 查询记录表新增数据的ID
+        Integer currentMaxId = recodeDAO.selectPrimaryKey();
         if (dbCount > 0) {
             String processDefinitionKey = BimFlowKey.produceOnlineReport.getName();
-            String businessKey = produceandrecode.getId() + "_" + processDefinitionKey;
+            String businessKey = produceandrecode.getId() + "_" + currentMaxId + "_" + processDefinitionKey;
             //设置流程的审批人
             Map<String, Object> auditUser = recodeData.getAuditUser();
             if (auditUser.isEmpty()) {
@@ -190,7 +203,7 @@ public class OnlineFormsServiceImpl implements IOnlineFormsService {
             try {
                 FlowTaskCommentDto flowTaskComment = new FlowTaskCommentDto();
                 flowTaskComment.setApprovalType("save");
-                flowTaskComment.setComment("在线表单-工序填报表单创建");
+                flowTaskComment.setComment("在线表单-工序报验表单创建");
                 JSONObject taskVariableData = new JSONObject(auditUser);
                 flowStaticPageService.startAndTakeUserTask(processDefinitionKey, flowTaskComment, taskVariableData, null, null, recodeData.getCopyData(), businessKey);
             } catch (Exception e) {
@@ -200,10 +213,68 @@ public class OnlineFormsServiceImpl implements IOnlineFormsService {
         return ResponseBase.success("流程启动成功");
     }
 
-    public Produceandrecode updateFlowStatusById(String id, Integer status) {
+    public Produceandrecode updateFlowStatusById(String id, Integer status, String type) {
         Produceandrecode produceandrecode = produceandrecodeDAO.selectByPrimaryKey(Integer.valueOf(id));
+        if (type.equals("check")) {
+            produceandrecode.setCheckresult(status);
+        }
         produceandrecode.setStatus(status);
+        produceandrecode.setCheckuser(LoginHelper.getUserId().intValue());
+        produceandrecode.setStime(new Date());
         produceandrecodeDAO.updateByPrimaryKey(produceandrecode);
         return produceandrecode;
+    }
+
+    @Override
+    public ResponseBase getProduceReportInfoById(Integer id, Integer documentType) {
+        Produceandrecode produceandrecode = produceandrecodeDAO.selectByPrimaryKey(id);
+        Conponent conponent = conponentDAO.selectByPrimaryKey(produceandrecode.getConponentid());
+        Map resultMap = Maps.newHashMap();
+        if (documentType == 1) {
+            Recode recode = recodeDAO.selectByPrimaryKey(produceandrecode.getRecodeid());
+            resultMap.put("attachment", recode.getRemark());
+        }
+
+        Map<String, Object> conditionMap = Maps.newHashMap();
+        conditionMap.put("component_id", conponent.getId());
+        conditionMap.put("produce_id", produceandrecode.getProduceid());
+        conditionMap.put("document_type", documentType);
+        List<PubProduceDocumentVo> templateListData = pubProduceDocumentMapper.selectVoByMap(conditionMap);
+
+        resultMap.put("produceandrecode", produceandrecode);
+        resultMap.put("conponent", conponent);
+        resultMap.put("templateListData", templateListData);
+        return ResponseBase.success(resultMap);
+    }
+
+    @Override
+    public ResponseBase submitCheck(RecodeUploadData recodeData) {
+        Produceandrecode  dbProduceandrecode = produceandrecodeDAO.getByIdAndProduceId(recodeData.getConpoentid(), recodeData.getProduceid());
+        /******************************************************************************/
+
+        dbProduceandrecode.setCheckresult(3);
+        int count = produceandrecodeDAO.updateByPrimaryKey(dbProduceandrecode);
+        // 查询记录表新增数据的ID
+        Integer currentMaxId = recodeDAO.selectPrimaryKey();
+        if (!Objects.isNull(dbProduceandrecode) && count > 0){
+            String processDefinitionKey = BimFlowKey.produceOnlineCheck.getName();
+            String businessKey = dbProduceandrecode.getId() + "_" + currentMaxId + "_" + processDefinitionKey;
+            //设置流程的审批人
+            Map<String, Object> auditUser = recodeData.getAuditUser();
+            if (auditUser.isEmpty()) {
+                throw new RuntimeException("流程的审批人不能为空！");
+            }
+            //发起流程
+            try {
+                FlowTaskCommentDto flowTaskComment = new FlowTaskCommentDto();
+                flowTaskComment.setApprovalType("save");
+                flowTaskComment.setComment("在线表单-质量评定表单创建");
+                JSONObject taskVariableData = new JSONObject(auditUser);
+                flowStaticPageService.startAndTakeUserTask(processDefinitionKey, flowTaskComment, taskVariableData, null, null, recodeData.getCopyData(), businessKey);
+            } catch (Exception e) {
+                throw new RuntimeException("流程启动失败！e=" + e.getMessage());
+            }
+        }
+        return ResponseBase.success("流程启动成功");
     }
 }

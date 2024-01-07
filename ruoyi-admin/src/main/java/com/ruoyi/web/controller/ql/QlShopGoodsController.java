@@ -3,7 +3,6 @@ package com.ruoyi.web.controller.ql;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import cn.hutool.core.bean.BeanUtil;
@@ -13,18 +12,13 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.poi.excel.ExcelReader;
 import cn.hutool.poi.excel.ExcelWriter;
-import com.ruoyi.common.exception.ServiceException;
-import com.ruoyi.ql.domain.QlBasisSupplier;
+import com.ruoyi.common.constant.Constants;
 import com.ruoyi.ql.domain.bo.QlBasisSupplierBo;
-import com.ruoyi.ql.domain.bo.QlOutboundBo;
-import com.ruoyi.ql.domain.bo.QlWarehousingDetailBo;
-import com.ruoyi.ql.domain.export.OutboundExportVo;
+import com.ruoyi.ql.domain.convert.QlShopGoodsConvert;
 import com.ruoyi.ql.domain.export.QlShopGoodsExport;
-import com.ruoyi.ql.domain.importvo.OutboundImportVo;
+import com.ruoyi.ql.domain.export.query.QlShopGoodsReportQuery;
 import com.ruoyi.ql.domain.importvo.QlShopGoodsImport;
 import com.ruoyi.ql.domain.vo.*;
-import com.ruoyi.ql.mapstruct.OutboundAndWarehousingMapstruct;
-import com.ruoyi.ql.mapstruct.QlWarehousingDetailMapstruct;
 import com.ruoyi.ql.service.IQlBasisSupplierService;
 import lombok.RequiredArgsConstructor;
 
@@ -32,7 +26,6 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.*;
 import cn.dev33.satoken.annotation.SaCheckPermission;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.annotation.Validated;
 import com.ruoyi.common.annotation.RepeatSubmit;
@@ -42,9 +35,7 @@ import com.ruoyi.common.core.domain.PageQuery;
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.validate.AddGroup;
 import com.ruoyi.common.core.validate.EditGroup;
-import com.ruoyi.common.core.validate.QueryGroup;
 import com.ruoyi.common.enums.BusinessType;
-import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.ql.domain.bo.QlShopGoodsBo;
 import com.ruoyi.ql.service.IQlShopGoodsService;
 import com.ruoyi.common.core.page.TableDataInfo;
@@ -119,6 +110,25 @@ public class QlShopGoodsController extends BaseController {
     }
 
     /**
+     * 查询商品信息列表
+     */
+    @SaCheckPermission("shopGoods:shopGoods:list")
+    @GetMapping("/distinctList")
+    public TableDataInfo<QlShopGoodsVo> distinctList(QlShopGoodsBo bo, PageQuery pageQuery) {
+        TableDataInfo<QlShopGoodsVo> qlShopGoodsVoTableDataInfo = iQlShopGoodsService.queryPageList(bo, pageQuery);
+        if(ObjectUtil.isNull(qlShopGoodsVoTableDataInfo) || CollUtil.isEmpty(qlShopGoodsVoTableDataInfo.getRows())) {
+            return qlShopGoodsVoTableDataInfo;
+        }
+        List<QlShopGoodsVo> qlShopGoodsVos = new ArrayList<>(qlShopGoodsVoTableDataInfo
+                .getRows()
+                .stream()
+                .collect(Collectors.toMap(qlShopGoodsVo -> (qlShopGoodsVo.getGoodsName() + qlShopGoodsVo.getGoodsSearchstandard()),
+                        qlShopGoodsVo -> qlShopGoodsVo, (oldObj, newObj) -> newObj)).values());
+        qlShopGoodsVoTableDataInfo.setRows(qlShopGoodsVos);
+        return qlShopGoodsVoTableDataInfo;
+    }
+
+    /**
      * 商品类别树
      */
     @SaCheckPermission("shopGoods:shopGoods:list")
@@ -133,9 +143,18 @@ public class QlShopGoodsController extends BaseController {
     @SaCheckPermission("shopGoods:shopGoods:export")
     @Log(title = "商品信息", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(QlShopGoodsBo bo, HttpServletResponse response) {
+    public void export(QlShopGoodsReportQuery bo, HttpServletResponse response) {
+        List<QlShopGoodsVo> qlShopGoodsVos = null;
+        if(Constants.EXPORT_ALL.equals(bo.getExportAll())) {
+            qlShopGoodsVos = iQlShopGoodsService.queryList(QlShopGoodsConvert.INSTANCE.conver(bo));
+        } else {
+            PageQuery pageQuery = new PageQuery();
+            pageQuery.setPageNum(bo.getPageNum());
+            pageQuery.setPageSize(bo.getPageSize());
+            TableDataInfo<QlShopGoodsVo> qlShopGoodsVoTableDataInfo = iQlShopGoodsService.queryPageList(QlShopGoodsConvert.INSTANCE.conver(bo), pageQuery);
+            qlShopGoodsVos = qlShopGoodsVoTableDataInfo.getRows();
+        }
 
-        List<QlShopGoodsVo> qlShopGoodsVos = iQlShopGoodsService.queryList(bo);
         List<QlShopGoodsExport> shopGoodsExports = new ArrayList<>();
         for (QlShopGoodsVo qlShopGoodsVo : qlShopGoodsVos) {
             QlShopGoodsExport qlShopGoodsExport = new QlShopGoodsExport();

@@ -1,0 +1,2 @@
+ALTER TABLE sys_config MODIFY COLUMN config_value VARCHAR(20000);
+ALTER TABLE item MODIFY COLUMN project_type VARCHAR(256);

@@ -30,4 +30,85 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="remark" column="remark"/>
         <result property="isChange" column="is_change"/>
     </resultMap>
+
+    <resultMap type="com.ruoyi.project.ledger.domain.vo.MeaLedgerBreakdownDetailVo" id="MeaLedgerBreakdownDetailVoResult">
+        <result property="id" column="id"/>
+        <result property="bdbh" column="bdbh"/>
+        <result property="tzfjbh" column="tzfjbh"/>
+        <result property="fjmulu" column="fjmulu"/>
+        <result property="zmh" column="zmh"/>
+        <result property="zmmc" column="zmmc"/>
+        <result property="dw" column="dw"/>
+        <result property="htdj" column="htdj"/>
+        <result property="sjsl" column="sjsl"/>
+        <result property="fjsl" column="fjsl"/>
+        <result property="bgsl" column="bgsl"/>
+        <result property="bgfjsl" column="bgfjsl"/>
+        <result property="fhsl" column="fhsl"/>
+        <result property="yjlsl" column="yjlsl"/>
+        <result property="fhje" column="fhje"/>
+        <result property="fjlx" column="fjlx"/>
+        <result property="status" column="status"/>
+        <result property="reviewCode" column="review_code"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+        <result property="isChange" column="is_change"/>
+    </resultMap>
+    <select id="selectMeaLedgerBreakdownDetails" resultMap="MeaLedgerBreakdownDetailVoResult">
+        select d.id,
+        d.bdbh,
+        d.tzfjbh,
+        d.fjmulu,
+        d.zmh,
+        d.zmmc,
+        d.dw,
+        d.htdj,
+        d.sjsl,
+        d.fjsl,
+        d.bgsl,
+        d.bgfjsl,
+        d.fhsl,
+        d.yjlsl,
+        d.fhje,
+        d.fjlx,
+        d.`status`,
+        d.review_code,
+        d.is_change from mea_ledger_breakdown_detail d where (bgfjsl>0 or fjsl>0)
+        <if test="tzfjbh != null and tzfjbh != ''">
+         and tzfjbh like CONCAT(#{tzfjbh},'%') ;
+        </if>
+    </select>
+
+    <select id="queryList4ledgerApproval" resultMap="MeaLedgerBreakdownDetailVoResult">
+        select d.id,
+        d.bdbh,
+        d.tzfjbh,
+        d.fjmulu,
+        d.zmh,
+        d.zmmc,
+        d.dw,
+        d.htdj,
+        d.sjsl,
+        d.fjsl,
+        d.bgsl,
+        d.bgfjsl,
+        d.fhsl,
+        d.yjlsl,
+        d.fhje,
+        d.fjlx,
+        d.`status`,
+        d.review_code,
+        d.is_change from mea_ledger_breakdown_detail d   where  d.yjlsl=0
+        and (bgfjsl>0 or fjsl>0) and d.id not in (select m.breakdown_id from mea_ledger_approval m  )
+        <if test="zmh != null and zmh != ''">
+         and d.zmh like CONCAT(#{zmh},'%') ;
+        </if>
+        <if test="zmmc != null and zmmc != ''">
+         and d.zmmc like CONCAT(#{zmmc},'%') ;
+        </if>
+    </select>
+
 </mapper>

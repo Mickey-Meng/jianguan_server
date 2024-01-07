@@ -597,11 +597,11 @@ public class ProjectsService {
         return new ResponseBase(200, "查询成功!", roles);
     }
 
-    public ResponseBase getProjectByUser(){
+    public ResponseBase getProjectByUser(Integer stState){
         try {
             //Integer userId = LoginHelper.getUserId().intValue();
             Long userId = LoginHelper.getLoginUser().getUserId();
-            List<SsFProjects> projects = projectsDAO.getSectionProjectsIdByUserId(userId.intValue());
+            List<SsFProjects> projects = projectsDAO.getSectionProjectsIdByUserId(userId.intValue(),stState);
             for (int i =0;i<projects.size();i++){
                 SsFProjects ssFProjects = projects.get(i);
 
@@ -626,7 +626,7 @@ public class ProjectsService {
         try {
             Integer userId = LoginHelper.getUserId().intValue();
             //查询用户所拥有的标段
-            List<SsFProjects> projects = projectsDAO.getSectionProjectsIdByUserId(userId);
+            List<SsFProjects> projects = projectsDAO.getSectionProjectsIdByUserId(userId,null);
             List<Integer> projectIds = Lists.newArrayList();
             SsFProjectsTree projectsTree = new SsFProjectsTree();
             if (projects.size() > 0){

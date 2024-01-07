@@ -29,6 +29,7 @@ public class QlFinEmp extends BaseEntity {
      */
     @TableId(value = "id")
     private Long id;
+    private Long userId;
     /**
      * 姓名
      */

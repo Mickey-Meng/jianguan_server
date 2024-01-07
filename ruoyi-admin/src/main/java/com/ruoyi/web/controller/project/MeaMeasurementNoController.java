@@ -2,6 +2,7 @@ package com.ruoyi.web.controller.project;
 
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.hutool.core.util.StrUtil;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.annotation.RepeatSubmit;
 import com.ruoyi.common.core.controller.BaseController;
@@ -115,11 +116,11 @@ public class MeaMeasurementNoController extends BaseController {
     @RepeatSubmit()
     @GetMapping("/lockingMeaMeasurementNo")
     public R<Void> lockingMeaMeasurementNo(@PathParam("meaMeasurementNo") String meaMeasurementNo) {
-
-        String b =  iMeaMeasurementNoService.lockingByJlqcbh(meaMeasurementNo);
-        b = "有以下计量凭证流程未结束，不能锁定： " + b;
-        if(StringUtils.isEmpty(b)) return  R.ok("1");
-        else return R.ok(b);
+        String lockResult =  iMeaMeasurementNoService.lockingByJlqcbh(meaMeasurementNo);
+        if(StrUtil.isBlank(lockResult)) {
+            return R.ok("锁定成功");
+        }
+        return R.fail(lockResult);
     }
     /**
      * 删除中间计量期数管理

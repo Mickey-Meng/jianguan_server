@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.NotNull;
 
 /**
  * @author ：lin_zhixiong
@@ -58,8 +59,8 @@ public class LoginController {
     @PostMapping("/viewToken/new")
     @ResponseBody
     @ApiOperation(value="获取视频token，当视频token过期的时候请求这个接口")
-    public ResponseBase viewNewToken() throws Exception {
-        return userService.viewNewToken();
+    public ResponseBase viewNewToken(@RequestParam("projectId") String projectId) throws Exception {
+        return userService.viewNewToken(projectId);
     }
 
     @PostMapping("/addGroups")

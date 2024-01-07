@@ -87,14 +87,13 @@ public class MeaLedgerBreakdownDetailVo {
      * 变更数量
      */
     @ExcelProperty(value = "变更数量")
-    private BigDecimal bgsl;
+    private BigDecimal bgsl=BigDecimal.ZERO;
 
     /**
      * 变更分解数量
      */
     @ExcelProperty(value = "变更分解数量")
-    @ApiModelProperty(value = "变更分解数量", required = true)
-    private BigDecimal bgfjsl;
+    private BigDecimal bgfjsl =BigDecimal.ZERO;
     /**
      * 复核数量
      */

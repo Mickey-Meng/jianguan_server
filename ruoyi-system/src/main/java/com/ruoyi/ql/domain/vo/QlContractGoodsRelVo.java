@@ -88,4 +88,9 @@ public class QlContractGoodsRelVo {
      */
     private String goodsUnit;
 
+
+    private BigDecimal totalAmountDollar;
+
+    private String remark;
+
 }

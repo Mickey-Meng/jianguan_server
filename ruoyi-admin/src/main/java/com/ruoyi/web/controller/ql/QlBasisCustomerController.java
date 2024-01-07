@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
+import com.ruoyi.common.constant.Constants;
+import com.ruoyi.ql.domain.convert.QlBasisCustomerConvert;
+import com.ruoyi.ql.domain.export.query.QlBasisCustomerReportQuery;
 import lombok.RequiredArgsConstructor;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.*;
@@ -54,8 +57,17 @@ public class QlBasisCustomerController extends BaseController {
     @SaCheckPermission("basisCustomer:basisCustomer:export")
     @Log(title = "客户资料", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(QlBasisCustomerBo bo, HttpServletResponse response) {
-        List<QlBasisCustomerVo> list = iQlBasisCustomerService.queryList(bo);
+    public void export(QlBasisCustomerReportQuery bo, HttpServletResponse response) {
+        List<QlBasisCustomerVo> list = null;
+        if(Constants.EXPORT_ALL.equals(bo.getExportAll())) {
+            list = iQlBasisCustomerService.queryList(QlBasisCustomerConvert.INSTANCE.conver(bo));
+        } else {
+            PageQuery pageQuery = new PageQuery();
+            pageQuery.setPageNum(bo.getPageNum());
+            pageQuery.setPageSize(bo.getPageSize());
+            TableDataInfo<QlBasisCustomerVo> qlFinPaymentVoTableDataInfo = iQlBasisCustomerService.queryPageList(QlBasisCustomerConvert.INSTANCE.conver(bo), pageQuery);
+            list = qlFinPaymentVoTableDataInfo.getRows();
+        }
         ExcelUtil.exportExcel(list, "客户资料", QlBasisCustomerVo.class, response);
     }
 

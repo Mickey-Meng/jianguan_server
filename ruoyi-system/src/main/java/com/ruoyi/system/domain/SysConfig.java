@@ -53,7 +53,7 @@ public class SysConfig extends BaseEntity {
      */
     @ExcelProperty(value = "参数键值")
     @NotBlank(message = "参数键值不能为空")
-    @Size(min = 0, max = 500, message = "参数键值长度不能超过500个字符")
+    @Size(min = 0, max = 20000, message = "参数键值长度不能超过20000个字符")
     private String configValue;
 
     /**

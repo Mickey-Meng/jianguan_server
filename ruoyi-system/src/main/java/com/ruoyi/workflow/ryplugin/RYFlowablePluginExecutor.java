@@ -26,6 +26,19 @@ public class RYFlowablePluginExecutor {
     @Autowired
     private FlowApiService flowApiService;
 
+    public void executeApproved(String processInstanceId) {
+        ProcessInstance processInstance = flowApiService.getProcessInstance(processInstanceId);
+        log.info("RYFlowablePluginExecutor.executeApply.processInstance: {}", processInstance);
+        String processDefinitionKey = processInstance.getProcessDefinitionKey();
+
+        // 流程中审批完成
+        flowablePluginMap.forEach((key, plugin) -> {
+            if(key.equals(processDefinitionKey)) {
+                plugin.approved(processInstance);
+            }
+        });
+    }
+
     public void executeApply(String processInstanceId) {
         ProcessInstance processInstance = flowApiService.getProcessInstance(processInstanceId);
         log.info("RYFlowablePluginExecutor.executeApply.processInstance: {}", processInstance);

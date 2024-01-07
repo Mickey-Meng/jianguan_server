@@ -2,6 +2,7 @@ package com.ruoyi.ql.service.impl;
 
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.core.domain.PageQuery;
@@ -72,7 +73,8 @@ public class QlWarehousingDetailServiceImpl implements IQlWarehousingDetailServi
         lqw.eq(bo.getInventoryNumber() != null, QlWarehousingDetail::getInventoryNumber, bo.getInventoryNumber());
         lqw.eq(bo.getAmount() != null, QlWarehousingDetail::getAmount, bo.getAmount());
         lqw.eq(bo.getDeptId() != null, QlWarehousingDetail::getDeptId, bo.getDeptId());
-        lqw.in(QlWarehousingDetail:: getInventoryId, bo.getInventoryIds());
+        lqw.in(CollUtil.isNotEmpty(bo.getInventoryIds()), QlWarehousingDetail:: getInventoryId, bo.getInventoryIds());
+        lqw.in(CollUtil.isNotEmpty(bo.getGoodsIds()), QlWarehousingDetail:: getGoodsId, bo.getGoodsIds());
         return lqw;
     }
 

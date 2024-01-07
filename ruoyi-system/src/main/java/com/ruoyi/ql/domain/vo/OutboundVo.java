@@ -135,6 +135,17 @@ public class OutboundVo {
     private String outboundReleaseuser;
 
     /**
+     * 出库对接人Id
+     */
+    @NotBlank(message = "出库对接人Id不能为空", groups = { AddGroup.class, EditGroup.class })
+    private Long outboundUserId;
+
+    /**
+     * 出库审核人Id
+     */
+     private Long outboundReleaseuserId;
+
+    /**
      * 出库数量 todo
      */
 //    private BigDecimal outboundNumber;

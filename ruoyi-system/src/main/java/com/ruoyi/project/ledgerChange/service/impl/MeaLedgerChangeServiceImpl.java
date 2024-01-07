@@ -152,6 +152,7 @@ public class MeaLedgerChangeServiceImpl implements IMeaLedgerChangeService {
             List<MeaLedgerChangeDetail> detailBos = new ArrayList<>();
             for(MeaLedgerChangeDetailBo me:bo.getDetailBos()){
                 MeaLedgerChangeDetail meaLedgerChangeDetail = BeanUtil.toBean(me, MeaLedgerChangeDetail.class);
+                meaLedgerChangeDetail.setGcbw(bo.getGcbw());
                 meaLedgerChangeDetail.setBgbh(bgbh);
                 detailBos.add(meaLedgerChangeDetail);
             }

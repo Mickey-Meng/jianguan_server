@@ -27,11 +27,16 @@
     <result column="production_progress" jdbcType="DECIMAL"  property="productionProgress"/>
     <result column="attachment_progress" jdbcType="DECIMAL"  property="attachmentProgress" />
     <result column="videoUrl" jdbcType="VARCHAR" property="videoUrl" />
+    <result column="project_type" jdbcType="VARCHAR" property="projectType" />
+    <result column="project_type_abbr" jdbcType="VARCHAR" property="projectTypeAbbr" />
+    <result column="monitor_appkey" jdbcType="VARCHAR" property="monitorAppkey" />
+    <result column="monitor_secret" jdbcType="VARCHAR" property="monitorSecret" />
   </resultMap>
   <sql id="Base_Column_List">
     id, managedpt, builddpt, desgindpt, constructdpt, supervisordpt, projectscale, projectduration,
     inputscale, starttime, projectcode,firstQuarter,secondQuarter,thirdQuarter,fourthQuarter,graspTheProgress,engineeringLayoutImageUrl,
-        implementGuarantee,compactionResponsibility,investmentProjectOverview,projectName,auditUnit,production_progress,attachment_progress,videoUrl
+    implementGuarantee,compactionResponsibility,investmentProjectOverview,projectName,auditUnit,production_progress,attachment_progress,
+    videoUrl,project_type,project_type_abbr,monitor_appkey,monitor_secret
   </sql>
 
 

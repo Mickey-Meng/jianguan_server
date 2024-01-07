@@ -145,4 +145,13 @@ public class Sm4Util {
         System.out.println("解密后结果 ==>"+s);
         System.out.println("key is ==>"+Hex.toHexString(key));
     }
+
+    public static String encrypt(String encryptStr) throws Exception {
+        byte[] key = hexTobytes("51d95b1dc43a9faaad0570f81c755fcc");
+        // 加密
+        byte[] output = Sm4Util.encryptEcbPkcs5Padding(encryptStr.getBytes(StandardCharsets.UTF_8), key);
+        // 提供给前端的加密字符
+        String hex = Hex.toHexString(output);
+        return hex;
+    }
 }

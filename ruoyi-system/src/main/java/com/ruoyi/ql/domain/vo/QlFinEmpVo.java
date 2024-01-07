@@ -29,7 +29,11 @@ public class QlFinEmpVo {
      */
     @ExcelProperty(value = "ID ,主键")
     private Long id;
-
+    /**
+     * USERID ,引用的用户ID
+     */
+    @ExcelProperty(value = "引用的用户ID")
+    private Long userId;
     /**
      * 姓名
      */

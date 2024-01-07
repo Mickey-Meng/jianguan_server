@@ -29,9 +29,11 @@ import com.ruoyi.common.utils.JwtUtil;
 import com.ruoyi.common.utils.MessageUtils;
 import com.ruoyi.common.utils.ServletUtils;
 import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.jianguan.common.dao.ItemDAO;
 import com.ruoyi.jianguan.common.dao.SsFUserOnlineDAO;
 import com.ruoyi.jianguan.common.dao.SsFUserRoleDAO;
 import com.ruoyi.jianguan.common.domain.dto.*;
+import com.ruoyi.jianguan.common.domain.entity.Item;
 import com.ruoyi.jianguan.common.domain.entity.SsFUserOnline;
 
 import com.ruoyi.common.utils.jianguan.zjrw.HttpsUtils;
@@ -74,6 +76,9 @@ public class UserService {
 
     @Autowired
     private SsFUsersDAO ssFUsersDAO;
+
+    @Autowired
+    private ItemDAO itemDAO;
 
     @Autowired
     private SsFUserGroupDAO ssFUserGroupDAO;
@@ -225,16 +230,32 @@ public class UserService {
         return new ResponseBase(200, "查询成功", viewToken);
     }
 
-    public ResponseBase viewNewToken() throws Exception {
+    public ResponseBase viewNewToken(String projectId) throws Exception {
         String appKey = zhuJiOfferConfig.getAppKey();
         String secret = zhuJiOfferConfig.getSecret();
+        if (null != projectId) {
+            Item item = itemDAO.selectByPrimaryKey(Integer.parseInt(projectId));
+            if(item.getMonitorAppkey() != null ){
+                 appKey =item.getMonitorAppkey();
+            }
+            if(null != item.getMonitorSecret() ){
+                secret = item.getMonitorSecret();
+            }
+        }
+
         String url = zhuJiOfferConfig.getYcApiNewUrl();
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("appKey", appKey);
         paramMap.put("appSecret", secret);
         String viewToken = HttpUtil.post(url, paramMap);
         NewTokenData newTokenData = JSONObject.parseObject(viewToken, NewTokenData.class);
-        return new ResponseBase(200, "查询成功", newTokenData.getData().getAccessToken());
+        AccessTokenData accessTokenData =newTokenData.getData();
+        if(null == accessTokenData){
+            return new ResponseBase(200, "获取token失败", newTokenData.getData());
+        }else {
+            return new ResponseBase(200, "查询成功", newTokenData.getData().getAccessToken());
+        }
+
     }
 
     public ResponseBase userAddGroups(UserAddGroupsDTO addGroupsDTO) {
@@ -483,8 +504,8 @@ public class UserService {
          * 3. 获取  [业主] 角色下的所有用户数据
          */
         List<String> rokeKeysYz = new ArrayList();
-        rokeKeysYz.add("quanzijihe"); // 'quanzijihe', 'jiashedanweijihe', 'jianshejituanjihe'
-        rokeKeysYz.add("jiashedanweijihe");
+        rokeKeysYz.add("quanzijihe"); // 'quanzijihe', 'jianshedanweijihe', 'jianshejituanjihe'
+        rokeKeysYz.add("jianshedanweijihe");
         rokeKeysYz.add("jianshejituanjihe");
 
         List<Long> rokeIds_yz = new ArrayList();

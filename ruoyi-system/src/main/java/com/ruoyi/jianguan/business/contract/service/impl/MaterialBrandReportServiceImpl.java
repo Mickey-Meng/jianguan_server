@@ -42,6 +42,86 @@ public class MaterialBrandReportServiceImpl extends ServiceImpl<MaterialBrandRep
     private FlowStaticPageService flowStaticPageService;
 
 
+    private ResponseBase addOrUpdate(MaterialBrandReport materialBrandReport, boolean isStartFlow, String processDefinitionKey, Map<String, Object> auditUser, JSONObject copyData) {
+        boolean saveOrUpdate = this.saveOrUpdate(materialBrandReport);
+        if (saveOrUpdate && isStartFlow) {
+            String businessKey = materialBrandReport.getId().toString();
+            //设置流程的审批人
+            if (auditUser.isEmpty()) {
+                throw new RuntimeException("流程的审批人不能为空！");
+            }
+            //发起流程
+            try {
+                FlowTaskCommentDto flowTaskComment = new FlowTaskCommentDto();
+                flowTaskComment.setApprovalType("save");
+                flowTaskComment.setComment("合同付款单创建");
+                JSONObject taskVariableData = new JSONObject(auditUser);
+                flowStaticPageService.startAndTakeUserTask(processDefinitionKey, flowTaskComment, taskVariableData, null, null, copyData, businessKey);
+            } catch (Exception e) {
+                log.error("流程启动失败！e=" + e.getMessage());
+                throw new RuntimeException("流程启动失败！e=" + e.getMessage());
+            }
+        }
+        return ResponseBase.success("流程启动成功");
+    }
+
+    /**
+     * 材料品牌报审
+     * @return
+     */
+    public ResponseBase addOrUpdateMaterialBrandReport(MaterialBrandReportSaveDTO saveDto) {
+        MaterialBrandReport materialBrandReport = new MaterialBrandReport();
+        BeanUtils.copyProperties(saveDto, materialBrandReport);
+        materialBrandReport.setAttachment(JSON.toJSONString(saveDto.getAttachment()));
+        boolean isStartFlow = false;
+        if (Objects.isNull(saveDto.getId())) {
+            isStartFlow = true;
+            materialBrandReport.setId(IdUtil.nextLongId());
+            materialBrandReport.setStatus(0);
+            materialBrandReport.setStatus1(-1);
+            materialBrandReport.setStatus2(-1);
+        }
+        return addOrUpdate(materialBrandReport, isStartFlow,  BimFlowKey.materialBrandReport.getName(),saveDto.getAuditUser(), saveDto.getCopyData());
+    }
+
+    /**
+     * 材料样板确认
+     * @return
+     */
+    public ResponseBase addOrUpdateMaterialSampleConfirmation(MaterialBrandReportSaveDTO saveDto) {
+        MaterialBrandReport materialBrandReport = new MaterialBrandReport();
+        BeanUtils.copyProperties(saveDto, materialBrandReport);
+        materialBrandReport.setAttachment1(JSON.toJSONString(saveDto.getAttachment()));
+        materialBrandReport.setSamplePhoto(JSON.toJSONString(saveDto.getSamplePhoto()));
+        boolean isStartFlow = false;
+        if (-1==saveDto.getStatus1()) {
+            isStartFlow = true;
+            materialBrandReport.setStatus1(0);
+            materialBrandReport.setStatus2(-1);
+        }
+        return addOrUpdate(materialBrandReport, isStartFlow,  BimFlowKey.materialSampleConfirmation.getName(),saveDto.getAuditUser(), saveDto.getCopyData());
+    }
+
+    /**
+     * 材料样板验收
+     * @return
+     */
+    public ResponseBase addOrUpdateMaterialAcceptance(MaterialBrandReportSaveDTO saveDto) {
+        MaterialBrandReport materialBrandReport = new MaterialBrandReport();
+        BeanUtils.copyProperties(saveDto, materialBrandReport);
+        materialBrandReport.setAttachment2(JSON.toJSONString(saveDto.getAttachment()));
+        materialBrandReport.setMaterialApproachPhoto(JSON.toJSONString(saveDto.getMaterialApproachPhoto()));
+        boolean isStartFlow = false;
+        if (-1==saveDto.getStatus2()) {
+            isStartFlow = true;
+            materialBrandReport.setStatus2(0);
+            materialBrandReport.setMaterialApproachPhoto(JSON.toJSONString(saveDto.getMaterialApproachPhoto()));
+        }
+        return addOrUpdate(materialBrandReport, isStartFlow, BimFlowKey.aterialAcceptance.getName(),saveDto.getAuditUser(), saveDto.getCopyData());
+    }
+
+
+
     @Override
     public ResponseBase addOrUpdate(MaterialBrandReportSaveDTO saveDto,String type) {
         //属性copy
@@ -57,7 +137,6 @@ public class MaterialBrandReportServiceImpl extends ServiceImpl<MaterialBrandRep
             materialBrandReport.setAttachment(JSON.toJSONString(saveDto.getAttachment()));
             materialBrandReport.setSamplePhoto(null);
             materialBrandReport.setMaterialApproachPhoto(null);
-
         }
         if ("2".equals(type)&&-1==(saveDto.getStatus1())) {
             isStartFlow = true;

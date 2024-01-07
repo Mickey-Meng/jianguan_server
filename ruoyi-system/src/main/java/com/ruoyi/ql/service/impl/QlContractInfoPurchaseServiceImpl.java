@@ -21,6 +21,7 @@ import com.ruoyi.ql.mapper.QlBasisSupplierMapper;
 import com.ruoyi.ql.mapper.QlContractInfoPurchaseMapper;
 import com.ruoyi.ql.mapper.QlFinPaymentMapper;
 import com.ruoyi.ql.mapper.QlWarehousingMapper;
+import com.ruoyi.ql.mapstruct.QlContractInfoPurchaseMapstruct;
 import com.ruoyi.ql.service.IQlContractGoodsRelService;
 import com.ruoyi.ql.service.IQlContractInfoPurchaseService;
 import lombok.RequiredArgsConstructor;
@@ -235,5 +236,12 @@ public class QlContractInfoPurchaseServiceImpl implements IQlContractInfoPurchas
             contractGoodsRelService.deleteWithValidByIds(relIds, true);
         }
         return deleteResult;
+    }
+
+    @Override
+    public void batchInsertBo(List<QlContractInfoPurchaseBo> bos) {
+        for (QlContractInfoPurchaseBo bo : bos) {
+            insertByBo(bo);
+        }
     }
 }

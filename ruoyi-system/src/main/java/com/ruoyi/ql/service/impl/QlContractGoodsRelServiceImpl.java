@@ -11,6 +11,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.ruoyi.ql.domain.QlContractGoodsRel;
+import com.ruoyi.ql.domain.QlWarehousingDetail;
 import com.ruoyi.ql.domain.bo.QlContractGoodsRelBo;
 import com.ruoyi.ql.domain.bo.QlShopGoodsBo;
 import com.ruoyi.ql.domain.vo.QlContractGoodsRelVo;
@@ -93,6 +94,9 @@ public class QlContractGoodsRelServiceImpl implements IQlContractGoodsRelService
         lqw.eq(StringUtils.isNotBlank(bo.getContractType()), QlContractGoodsRel::getContractType, bo.getContractType());
         lqw.in(CollUtil.isNotEmpty(bo.getContractIds()), QlContractGoodsRel::getContractId, bo.getContractIds());
         lqw.eq(ObjectUtil.isNotNull(bo.getContractId()), QlContractGoodsRel::getContractId, bo.getContractId());
+
+        lqw.in(CollUtil.isNotEmpty(bo.getGoodsIds()), QlContractGoodsRel:: getGoodsId, bo.getGoodsIds());
+
         return lqw;
     }
 

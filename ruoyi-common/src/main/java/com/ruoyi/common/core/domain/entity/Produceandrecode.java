@@ -89,6 +89,7 @@ public class Produceandrecode implements Serializable,Comparable<Produceandrecod
      * 构件编码
      */
     private String conponentcode;
+    private String wbscode;
 
     /**
      * 工序状态:0-监理已提交,1-施工已确认工序并提交给监理审批,3-监理审批完成
@@ -264,6 +265,14 @@ public class Produceandrecode implements Serializable,Comparable<Produceandrecod
         this.conponentcode = conponentcode;
     }
 
+    public String getWbscode() {
+        return wbscode;
+    }
+
+    public void setWbscode(String wbscode) {
+        this.wbscode = wbscode;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -315,6 +324,7 @@ public class Produceandrecode implements Serializable,Comparable<Produceandrecod
                 ", updateusername='" + updateusername + '\'' +
                 ", checkusername='" + checkusername + '\'' +
                 ", conponentcode='" + conponentcode + '\'' +
+                ", wbscode='" + wbscode + '\'' +
                 ", status=" + status +
                 ", groupid=" + groupid +
                 ", projectId=" + projectId +

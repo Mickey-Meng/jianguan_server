@@ -125,4 +125,6 @@ public class QlBasisSupplierBo extends BaseEntity {
      */
     private BigDecimal uninvoiceAmount;
 
+    private String supplierEnglishName;
+
 }

@@ -36,7 +36,7 @@ public class MaterialAcceptanceController {
             saveDto.setMaterialCategoryCode(split[0]);
             saveDto.setMaterialCategory(split[1]);
         }
-        return materialBrandReportService.addOrUpdate(saveDto,"3");
+        return materialBrandReportService.addOrUpdateMaterialAcceptance(saveDto);
     }
 
     @GetMapping(value = "/id", produces = "application/json;charset=UTF-8")

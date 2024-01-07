@@ -11,6 +11,7 @@ import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.core.domain.object.ResponseBase;
 import com.ruoyi.common.utils.JwtUtil;
 import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.common.utils.sm4.Sm4Util;
 import com.ruoyi.system.domain.vo.RouterVo;
 import com.ruoyi.system.service.ISysMenuService;
 import com.ruoyi.system.service.SysLoginService;
@@ -48,7 +49,7 @@ public class UserLoginController {
     @AuthIgnore
     @Anonymous
     @ApiOperation(value = "登录，支持单个用户对应多个组织机构（2022-03-08）")
-    public ResponseBase doLogin(@Validated @RequestBody LoginBody loginBody){
+    public ResponseBase doLogin(@Validated @RequestBody LoginBody loginBody) throws Exception {
         LoginUser loginUser = loginService.loginForUser(loginBody);
         if (StringUtils.isEmpty(loginUser.getRoleIds())) {
             return new ResponseBase(HttpStatus.HTTP_UNAUTHORIZED, "该角色没有配置角色权限,请到运维系统进行配置!");
@@ -68,6 +69,7 @@ public class UserLoginController {
         List<SysMenu> menus = menuService.selectWebMenuTreeByUserId(loginUser.getUserId(), loginBody.getSourceType());
         List<RouterVo>  routerVos =  menuService.buildMenus(menus);
         ajaxDataMap.put("menus", routerVos);
+        ajaxDataMap.put("tokenStr", Sm4Util.encrypt(loginBody.getUsername()+"&"+loginBody.getPassword()));
 
         return new ResponseBase(HttpStatus.HTTP_OK, "登录成功", ajaxDataMap);
     }

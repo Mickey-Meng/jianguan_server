@@ -118,6 +118,15 @@ public class QlOutbound extends BaseEntity {
      * 出库审核人
      */
     private String outboundReleaseuser;
+
+    /**
+     * 出库对接人id
+     */
+    private Long outboundUserId;
+    /**
+     * 出库审核人id
+     */
+    private Long outboundReleaseuserId;
     /**
      * 出库数量
      */

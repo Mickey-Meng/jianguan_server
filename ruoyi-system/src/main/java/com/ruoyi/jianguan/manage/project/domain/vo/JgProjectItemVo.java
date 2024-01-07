@@ -238,5 +238,27 @@ public class JgProjectItemVo {
     @ExcelProperty(value = "宣传视频")
     @ApiModelProperty(value = "宣传视频")
     private String videoUrl;
+    /**
+     * 产值进度
+     */
+    @ExcelProperty(value = "工程类型")
+    @ApiModelProperty(value = "工程类型")
+    private String projectType;
+    /**
+     * 产值进度
+     */
+    @ExcelProperty(value = "工程类型描述")
+    @ApiModelProperty(value = "工程类型描述")
+    private String projectTypeAbbr;
 
+
+    @ExcelProperty(value = "监控appkey")
+    @ApiModelProperty(value = "监控appkey")
+    private String monitorAppkey;
+
+
+    @ExcelProperty(value = "监控Secret")
+    @ApiModelProperty(value = "监控Secret")
+    private String monitorSecret;
 }
+

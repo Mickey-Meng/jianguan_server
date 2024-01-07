@@ -1,0 +1,1 @@
+alter table ql_basis_supplier add supplier_english_name varchar(500) comment '供应商英文名称';

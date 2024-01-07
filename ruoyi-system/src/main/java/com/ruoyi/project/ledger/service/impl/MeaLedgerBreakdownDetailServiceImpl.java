@@ -31,6 +31,7 @@ import liquibase.pro.packaged.W;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -93,11 +94,11 @@ public class MeaLedgerBreakdownDetailServiceImpl implements IMeaLedgerBreakdownD
     }
     @Override
     public List<MeaLedgerBreakdownDetailVo> queryList4ledgerApproval(MeaLedgerBreakdownDetailBo bo) {
-        LambdaQueryWrapper<MeaLedgerBreakdownDetail> lqw =  Wrappers.lambdaQuery();
-        lqw.eq(MeaLedgerBreakdownDetail::getYjlsl,0).and(wq->wq.
-        gt(MeaLedgerBreakdownDetail::getFjsl, 0).or().gt(MeaLedgerBreakdownDetail::getBgfjsl, 0));
-
-        return baseMapper.selectVoList(lqw);
+//        LambdaQueryWrapper<MeaLedgerBreakdownDetail> lqw =  Wrappers.lambdaQuery();
+//        lqw.eq(MeaLedgerBreakdownDetail::getYjlsl,0).and(wq->wq.
+//        gt(MeaLedgerBreakdownDetail::getFjsl, 0).or().gt(MeaLedgerBreakdownDetail::getBgfjsl, 0));
+//        lqw.eq(StringUtils.isNotBlank(bo.getZmh()), MeaLedgerBreakdownDetail::getZmh, bo.getZmh());
+        return baseMapper.queryList4ledgerApproval(bo.getZmh(),bo.getZmmc());
     }
     @Override
     public List<MeaLedgerBreakdownDetailVo> getLeafList(String reviewCode) {
@@ -292,15 +293,17 @@ public class MeaLedgerBreakdownDetailServiceImpl implements IMeaLedgerBreakdownD
 
         List<MeaLedgerBreakdownDetailInfoVo> meaLedgerBreakdownDetailInfoVos=new ArrayList<>();
         LambdaQueryWrapper<MeaLedgerBreakdownDetail> lqw = buildQueryWrapper(bo,_QUERY_TYPE_DEFAULT);
-        lqw.isNotNull(MeaLedgerBreakdownDetail::getFjsl);
-        Page<MeaLedgerBreakdownDetailVo> result = baseMapper.selectVoPage(pageQuery.build(), lqw);
+        lqw.isNotNull(MeaLedgerBreakdownDetail::getFjsl).gt(MeaLedgerBreakdownDetail::getFjsl,new BigDecimal(0));
+
+//      Page<MeaLedgerBreakdownDetailVo> result = baseMapper.selectVoPage(pageQuery.build(), lqw);
+        List<MeaLedgerBreakdownDetailVo> result1 = baseMapper.selectMeaLedgerBreakdownDetails(bo.getTzfjbh());
         Map<String, List<MeaLedgerBreakdownDetailVo>> stringListMap=new LinkedHashMap<>();
-        if(CollUtil.isNotEmpty(result.getRecords())){
-            List<MeaLedgerBreakdownDetailVo> records = result.getRecords();
+        if(CollUtil.isNotEmpty(result1)){
+//            List<MeaLedgerBreakdownDetailVo> records = result1.getRecords();
             QueryWrapper<MeaContractBill> queryWrapper=new QueryWrapper<>();
             queryWrapper.eq("status","0");
             List<MeaContractBill> meaLedgerBreakdowns = meaContractBillMapper.selectList(queryWrapper);
-            for(MeaLedgerBreakdownDetailVo meaLedgerBreakdownDetailVo:records){
+            for(MeaLedgerBreakdownDetailVo meaLedgerBreakdownDetailVo:result1){
                /* QueryWrapper<MeaContractBill> queryWrapper1=new QueryWrapper<>();
                 queryWrapper1.eq("zmh",meaLedgerBreakdownDetailVo.getZmh());
                 queryWrapper1.eq("status","0");
@@ -323,6 +326,8 @@ public class MeaLedgerBreakdownDetailServiceImpl implements IMeaLedgerBreakdownD
                             MeaLedgerBreakdownDetailVo m = new MeaLedgerBreakdownDetailVo();
                             BeanCopyUtils.copy(meaLedgerBreakdownDetailVo1.get(),m);
                             m.setFjsl(meaLedgerBreakdownDetailVo1.get().getFjsl().add(meaLedgerBreakdownDetailVo.getFjsl()));
+                            m.setBgfjsl(meaLedgerBreakdownDetailVo1.get().getBgfjsl().add(meaLedgerBreakdownDetailVo.getBgfjsl()));
+                            m.setBgsl(meaLedgerBreakdownDetailVo1.get().getBgsl().add(meaLedgerBreakdownDetailVo.getBgsl()));
                             meaLedgerBreakdownDetailVos.remove(meaLedgerBreakdownDetailVo1.get());
                             meaLedgerBreakdownDetailVos.add(m);
                         }else{
@@ -350,9 +355,9 @@ public class MeaLedgerBreakdownDetailServiceImpl implements IMeaLedgerBreakdownD
             }
         }
         Page<MeaLedgerBreakdownDetailInfoVo> page=new Page<>();
-        page.setTotal(result.getTotal());
+        page.setTotal(result1.size());
         page.setRecords(meaLedgerBreakdownDetailInfoVos);
-        page.setPages(result.getPages());
+        page.setPages(0);
         return TableDataInfo.build(page);
     }
     //获取当前工程里清单对象对应的根目录

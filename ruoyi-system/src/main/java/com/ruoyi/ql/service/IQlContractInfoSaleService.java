@@ -46,4 +46,6 @@ public interface IQlContractInfoSaleService {
      * 校验并批量删除合同管理信息
      */
     Boolean deleteWithValidByIds(Collection<Long> ids, Boolean isValid);
+
+    void batchInsertBo(List<QlContractInfoSaleBo> qlContractInfoSaleBos);
 }

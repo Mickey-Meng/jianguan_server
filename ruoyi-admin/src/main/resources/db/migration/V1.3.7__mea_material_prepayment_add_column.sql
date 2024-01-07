@@ -1,0 +1,1 @@
+ALTER table mea_material_prepayment add sqsj datetime DEFAULT null COMMENT '申请时间';

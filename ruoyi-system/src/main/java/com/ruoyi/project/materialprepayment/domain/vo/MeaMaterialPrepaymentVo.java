@@ -5,7 +5,13 @@ import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.ruoyi.common.annotation.ExcelDictFormat;
 import com.ruoyi.common.convert.ExcelDictConvert;
+import com.ruoyi.common.core.validate.AddGroup;
+import com.ruoyi.common.core.validate.EditGroup;
 import lombok.Data;
+
+import javax.validation.constraints.NotBlank;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 
@@ -119,5 +125,11 @@ public class MeaMaterialPrepaymentVo {
     @ExcelDictFormat(dictType = "data_status")
     private String status;
 
+
+    /**
+     *  申请时间
+     */
+    @ExcelProperty(value = " 申请时间")
+    private LocalDateTime sqsj;
 
 }

@@ -21,4 +21,10 @@ public interface MaterialBrandReportService extends IService<MaterialBrandReport
     MaterialBrandReportDetailVo getInfoById(Long id);
 
     PageInfo<MaterialBrandReportPageVo> getPageInfo(MaterialBrandReportPageDTO pageDto);
+
+    ResponseBase addOrUpdateMaterialBrandReport(MaterialBrandReportSaveDTO saveDto);
+
+    ResponseBase addOrUpdateMaterialSampleConfirmation(MaterialBrandReportSaveDTO saveDto);
+
+    ResponseBase addOrUpdateMaterialAcceptance(MaterialBrandReportSaveDTO saveDto);
 }

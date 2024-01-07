@@ -6,6 +6,11 @@ import java.util.Date;
 
 public class ProduceData {
     private  int produceid;
+    private  int produceAndRecodeId;
+    /**
+     * 确认结果待确认0，驳回2，确认1
+     */
+    private Integer checkresult;
     private int sort;
     private String name;
     private int recordid;
@@ -60,5 +65,21 @@ public class ProduceData {
 
     public void setFinish(Date finish) {
         this.finish = finish;
+    }
+
+    public int getProduceAndRecodeId() {
+        return produceAndRecodeId;
+    }
+
+    public void setProduceAndRecodeId(int produceAndRecodeId) {
+        this.produceAndRecodeId = produceAndRecodeId;
+    }
+
+    public Integer getCheckresult() {
+        return checkresult;
+    }
+
+    public void setCheckresult(Integer checkresult) {
+        this.checkresult = checkresult;
     }
 }

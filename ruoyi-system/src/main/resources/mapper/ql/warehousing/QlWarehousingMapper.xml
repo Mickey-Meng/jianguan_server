@@ -7,6 +7,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <resultMap type="com.ruoyi.ql.domain.QlWarehousing" id="QlWarehousingResult">
         <result property="id" column="id"/>
         <result property="warehousingCode" column="warehousing_code"/>
+        <result property="warehousingUserId" column="warehousing_userid"/>
         <result property="warehousingUsername" column="warehousing_username"/>
         <result property="purchaseOrderId" column="purchase_order_id"/>
         <result property="proudctId" column="proudct_id"/>
@@ -34,6 +35,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="mobilePhone" column="mobile_phone"/>
         <result property="address" column="address"/>
         <result property="warehousingReleaseuser" column="warehousing_releaseuser"/>
+        <result property="warehousingReleaseuserId" column="warehousing_releaseuserid"/>
         <result property="basePrice" column="base_price"/>
         <result property="incomePrice" column="income_price"/>
         <result property="extraPrice" column="extra_price"/>
@@ -53,10 +55,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
                                                            and  del_flag=0;
     </select>
+
     <select id="getWarehousingExpireScheduled"  resultMap="QlWarehousingResult">
-        SELECT *  FROM ql_outbound
-        WHERE
-            datediff( CURRENT_DATE (), last_receivable_date ) = 5;
+
+        select * from ql_warehousing w WHERE
+            datediff(  w.last_payment_date,CURRENT_DATE () ) = 5;
+
     </select>
 
 </mapper>

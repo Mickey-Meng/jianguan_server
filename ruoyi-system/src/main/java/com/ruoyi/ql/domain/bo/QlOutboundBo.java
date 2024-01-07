@@ -154,6 +154,16 @@ public class QlOutboundBo extends BaseEntity {
     private String outboundReleaseuser;
 
     /**
+     * 出库对接人id
+     */
+    private Long outboundUserId;
+
+    /**
+     * 出库审核人
+     */
+     private Long outboundReleaseuserId;
+
+    /**
      * 出库数量
      */
     private BigDecimal outboundNumber;
