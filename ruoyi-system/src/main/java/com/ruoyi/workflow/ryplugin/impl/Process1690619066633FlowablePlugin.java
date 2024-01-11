@@ -37,7 +37,6 @@ public class Process1690619066633FlowablePlugin implements RYFlowablePlugin {
     private IMeaMeasurementDocumentsService iMeaMeasurementDocumentsService;
 
 
-
     @Override
     public void approved(ProcessInstance processInstance) {
         updateStatus(processInstance, ApprovalStatusEnum.APPROVED.name());
@@ -86,7 +85,7 @@ public class Process1690619066633FlowablePlugin implements RYFlowablePlugin {
         log.info("Process1690622335686FlowablePlugin.meaLedgerChangeVos: {}", JSON.toJSONString(meaMeasurementDocumentsVos));
         MeaMeasurementDocumentsVo meaMeasurementDocumentsVo = meaMeasurementDocumentsVos.get(0);
         if (Objects.nonNull(meaMeasurementDocumentsVo)) {
-            meaMeasurementDocumentsVo.setStatus(status);
+            meaMeasurementDocumentsVo.setReviewCode(status);
             MeaMeasurementDocumentsBo measurementDocumentsBo = new MeaMeasurementDocumentsBo();
             BeanUtil.copyProperties(meaMeasurementDocumentsVo, measurementDocumentsBo, false);
             iMeaMeasurementDocumentsService.updateByBo(measurementDocumentsBo);

@@ -11,6 +11,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.core.validate.AddGroup;
 import com.ruoyi.common.core.validate.EditGroup;
 import com.ruoyi.common.enums.BusinessType;
+import com.ruoyi.common.utils.file.FileUtils;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.jianguan.business.onlineForms.domain.bo.PubProduceDocumentBo;
 import com.ruoyi.jianguan.business.onlineForms.domain.vo.PubProduceDocumentVo;
@@ -19,6 +20,7 @@ import com.ruoyi.jianguan.business.onlineForms.service.IPubProduceDocumentServic
 import com.ruoyi.jianguan.common.domain.dto.RecodeUploadData;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.apache.poi.util.IOUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -26,9 +28,12 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 工序附件信息
@@ -73,6 +78,26 @@ public class OnlineFormsController extends BaseController {
         }
         // 查询所有的数据
         return onlineFormsService.getProduceReportInfoById(id, documentType);
+    }
+
+    @GetMapping("/getFillDataTemplate/{id}")
+    public void getFillDataTemplate(@NotNull(message = "主键不能为空") @PathVariable Long id, HttpServletResponse response) throws IOException {
+        Map<String, String> templateDataMap = onlineFormsService.getFillDataTemplate(id);
+        ExcelUtil.resetResponse(templateDataMap.get("templateName"), response);
+        InputStream fileInputStream = null;
+        try {
+            fileInputStream = new FileInputStream(templateDataMap.get("templatePath"));
+            IOUtils.copy(fileInputStream, response.getOutputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
+        } finally {
+            if (fileInputStream != null) {
+                fileInputStream.close();
+                // 删除生成的待填写模板文件
+                FileUtils.del(templateDataMap.get("templatePath"));
+            }
+        }
     }
 
 }

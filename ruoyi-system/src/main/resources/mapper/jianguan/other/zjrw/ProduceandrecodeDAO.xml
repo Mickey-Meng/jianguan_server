@@ -18,7 +18,7 @@
     <result column="updateusername" jdbcType="VARCHAR" property="updateusername" />
     <result column="checkusername" jdbcType="VARCHAR" property="checkusername" />
     <result column="conponentcode" jdbcType="VARCHAR" property="conponentcode" />
-    <result column="wbscode" jdbcType="VARCHAR" property="wbscode" />
+<!--    <result column="wbscode" jdbcType="VARCHAR" property="wbscode" />-->
     <result column="projectId" jdbcType="INTEGER" property="projectId" />
   </resultMap>
   <resultMap id="conModel" type="com.ruoyi.jianguan.common.domain.dto.ConModel">
@@ -42,7 +42,7 @@
   <sql id="Base_Column_List">
     id, conponentid, recodeid, produceid, projectcode, checkresult, checkuser, updateuser,
     stime, updatetime, producename, conponenttype, conponentname, updateusername, checkusername,
-    conponentcode, projectId,wbscode
+    conponentcode, projectId
   </sql>
 
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">

@@ -1,12 +1,19 @@
 package com.ruoyi.jianguan.business.onlineForms.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.http.HttpUtil;
+import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.ExcelWriter;
+import com.alibaba.excel.write.metadata.WriteSheet;
+import com.alibaba.excel.write.metadata.fill.FillConfig;
+import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.ruoyi.common.core.domain.PageQuery;
 import com.ruoyi.common.core.domain.entity.Conponent;
@@ -16,6 +23,7 @@ import com.ruoyi.common.core.domain.object.ResponseBase;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BimFlowKey;
 import com.ruoyi.common.helper.LoginHelper;
+import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.file.FileUtils;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.common.utils.poi.LuckySheetUtil;
@@ -40,6 +48,7 @@ import com.ruoyi.system.service.ISysOssService;
 import liquibase.pro.packaged.P;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -276,5 +285,52 @@ public class OnlineFormsServiceImpl implements IOnlineFormsService {
             }
         }
         return ResponseBase.success("流程启动成功");
+    }
+
+    @Override
+    public Map<String, String> getFillDataTemplate(Long id) {
+        PubProduceDocumentVo pubProduceDocument = pubProduceDocumentMapper.selectVoById(id);
+        if (Objects.isNull(pubProduceDocument)) {
+            return null;
+        }
+        Map<String, Object> fillDataMap = this.getFillDataMap(pubProduceDocument.getComponentId().intValue());
+        // 原始模板
+        String templateOriginalName = pubProduceDocument.getDocumentName();
+        String fillDataTemplateName = ExcelUtil.encodingFilename(templateOriginalName);
+        String fillDataTemplatePath = this.tempTemplateFilePath + System.getProperty("file.separator") + fillDataTemplateName;
+        try (ExcelWriter excelWriter = EasyExcel
+                .write(fillDataTemplatePath)
+                .withTemplate(HttpUtil.downloadFileFromUrl(pubProduceDocument.getDocumentUrl(), this.tempTemplateFilePath + System.getProperty("file.separator") + templateOriginalName + ".xlsx"))
+                .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy()).build()) {
+            WriteSheet writeSheet = EasyExcel.writerSheet().build();
+            // 这里注意 入参用了forceNewRow 代表在写入list的时候不管list下面有没有空行 都会创建一行，然后下面的数据往后移动。默认 是false，会直接使用下一行，如果没有则创建。
+            // forceNewRow 如果设置了true,有个缺点 就是他会把所有的数据都放到内存了，所以慎用
+            // 简单的说 如果你的模板有list,且list不是最后一行，下面还有数据需要填充 就必须设置 forceNewRow=true 但是这个就会把所有数据放到内存 会很耗内存
+            // 如果数据量大 list不是最后一行 参照下一个
+            FillConfig fillConfig = FillConfig.builder().forceNewRow(Boolean.FALSE).build();
+            excelWriter.fill(Lists.newArrayList(fillDataMap), fillConfig, writeSheet);
+
+            Map<String, String> templateDataMap = Maps.newHashMap();
+            templateDataMap.put("templateName", fillDataTemplateName);
+            templateDataMap.put("templatePath", fillDataTemplatePath);
+            return templateDataMap;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @NotNull
+    private Map<String, Object> getFillDataMap(Integer componentId) {
+        Conponent component = conponentDAO.selectByPrimaryKey(componentId);
+        Map<String, Object> fillDataMap = Maps.newHashMap();
+        // fillDataMap.put("supervisorCompany", "中国软件");
+        fillDataMap.put("unitProject", component.getW3()); // 单位工程
+        fillDataMap.put("sectionProject", component.getW4()); // 分部工程
+        fillDataMap.put("itemProject", component.getW6()); // 分项工程
+        fillDataMap.put("stationNum", component.getW7()); // 桩号、部位
+        fillDataMap.put("constructionData", DateUtils.getNowDate());
+        fillDataMap.put("recordDate", DateUtils.getNowDate());
+        return fillDataMap;
     }
 }

@@ -6,6 +6,7 @@ import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
+import com.google.common.collect.Maps;
 import com.ruoyi.common.annotation.DisableDataFilter;
 import com.ruoyi.common.annotation.MyRequestBody;
 import com.ruoyi.common.core.domain.model.LoginUser;
@@ -94,6 +95,8 @@ public class FlowOperationController {
     @Autowired
     private ActRuVariableService actRuVariableService;
 
+    @Autowired
+    private UserService userService;
     /**
      * 根据指定流程的主版本，发起一个流程实例。
      *
@@ -632,13 +635,29 @@ public class FlowOperationController {
         List<HistoricActivityInstance> unfinishedInstanceList =
                 flowApiService.getHistoricUnfinishedInstanceList(processInstanceId);
         Set<String> unfinishedTaskSet = new LinkedHashSet<>();
+        List<String> userNames = new ArrayList<>();
         for (HistoricActivityInstance unfinishedActivity : unfinishedInstanceList) {
             unfinishedTaskSet.add(unfinishedActivity.getActivityId());
+            userNames.add(unfinishedActivity.getAssignee());
         }
         JSONObject jsonData = new JSONObject();
         jsonData.put("finishedTaskSet", finishedTaskSet);
         jsonData.put("finishedSequenceFlowSet", finishedSequenceFlowSet);
         jsonData.put("unfinishedTaskSet", unfinishedTaskSet);
+
+        Map<String, String> names = Maps.newHashMap();
+        if (CollUtil.isNotEmpty(userNames)) {
+            names = userService.getNamesByUserName(userNames);
+        }
+        Map<String, String> finalNames = names;
+        Set<FlowTaskCommentVo> unfinishedTaskNodeSet = unfinishedInstanceList.stream().map(unfinishedInstance -> {
+            FlowTaskCommentVo flowTaskCommentVo = new FlowTaskCommentVo();
+            flowTaskCommentVo.setTaskName(unfinishedInstance.getActivityName());
+            flowTaskCommentVo.setCreateUsername(unfinishedInstance.getAssignee());
+            flowTaskCommentVo.setCreateName(finalNames.get(unfinishedInstance.getAssignee()));
+            return flowTaskCommentVo;
+        }).collect(Collectors.toSet());
+        jsonData.put("unfinishedTaskNodeSet", unfinishedTaskNodeSet);
         return ResponseResult.success(jsonData);
     }
 

@@ -1,0 +1,1 @@
+alter table mea_measurement_documents modify review_code varchar(50) comment '审批状态（ APPROVING：审批中 APPROVED：审批完成, REJECT: 驳回）';

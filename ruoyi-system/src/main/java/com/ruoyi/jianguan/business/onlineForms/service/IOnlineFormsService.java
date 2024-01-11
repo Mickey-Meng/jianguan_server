@@ -11,6 +11,7 @@ import com.ruoyi.jianguan.common.domain.dto.RecodeUploadData;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 工序附件信息Service接口
@@ -30,4 +31,6 @@ public interface IOnlineFormsService {
     ResponseBase getProduceReportInfoById(Integer id, Integer documentType);
 
     ResponseBase submitCheck(RecodeUploadData recodeData);
+
+    Map<String, String> getFillDataTemplate(Long id);
 }
