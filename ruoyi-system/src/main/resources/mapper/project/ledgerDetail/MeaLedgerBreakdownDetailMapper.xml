@@ -101,7 +101,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         d.fjlx,
         d.`status`,
         d.review_code,
-        d.is_change from mea_ledger_breakdown_detail d   where (bgfjsl>0 or fjsl>0)
+        d.is_change from mea_ledger_breakdown_detail d where review_code = 0 and (bgfjsl > 0 or fjsl > 0)
         <if test="zmh != null and zmh != ''">
          and d.zmh like CONCAT(#{zmh},'%') ;
         </if>

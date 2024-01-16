@@ -9,6 +9,8 @@ import javax.validation.constraints.*;
 import java.util.Date;
 
 import java.math.BigDecimal;
+import java.util.List;
+
 import com.ruoyi.common.core.domain.BaseEntity;
 
 /**
@@ -50,6 +52,12 @@ public class MeaLedgerBreakdownDetailBo extends BaseEntity {
      */
 //    @NotBlank(message = "子目号不能为空", groups = { AddGroup.class, EditGroup.class })
     private String zmh;
+
+    /**
+     * 子目号
+     */
+//    @NotBlank(message = "子目号不能为空", groups = { AddGroup.class, EditGroup.class })
+    private List<String> zmhList;
 
     /**
      * 子目名称

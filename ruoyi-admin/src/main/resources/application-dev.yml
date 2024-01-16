@@ -105,16 +105,15 @@ spring.datasource.druid:
       config:
         multi-statement-allow: true
 
---- # redis 单机配置(单机与集群只能开启一个另一个需要注释掉)
 spring:
   data:
-    # mongodb配置
-#    mongodb:
-#      uri: mongodb://112.30.143.210:27017
-#      database: zjroad
     mongodb:
-      uri: mongodb://150.158.139.18:27018
       database: admin
+      authentication-database: admin
+      username: root
+      password: jX1mJ2pO9zI3
+      host: 150.158.139.18
+      port: 27019
   redis:
     host: 150.158.139.18
     port: 31419

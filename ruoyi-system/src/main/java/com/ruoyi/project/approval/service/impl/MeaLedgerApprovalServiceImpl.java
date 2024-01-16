@@ -17,8 +17,6 @@ import com.ruoyi.project.approval.mapper.MeaLedgerApprovalNoMapper;
 import com.ruoyi.project.approval.service.IMeaLedgerApprovalService;
 import com.ruoyi.project.ledger.domain.vo.MeaLedgerBreakdownDetailVo;
 import com.ruoyi.project.ledger.mapper.MeaLedgerBreakdownDetailMapper;
-import com.ruoyi.project.ledger.mapper.MeaLedgerBreakdownMapper;
-import com.ruoyi.ql.domain.vo.QlFinReimbursementItemVo;
 import io.micrometer.core.instrument.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -39,7 +37,7 @@ import java.util.Map;
 @Service
 public class MeaLedgerApprovalServiceImpl implements IMeaLedgerApprovalService {
 
-    private final MeaLedgerApprovalMapper baseMapper;
+    private final MeaLedgerApprovalMapper meaLedgerApprovalMapper;
 
     private final MeaLedgerApprovalNoMapper meaLedgerApprovalNoMapper;
 
@@ -50,7 +48,7 @@ public class MeaLedgerApprovalServiceImpl implements IMeaLedgerApprovalService {
      */
     @Override
     public MeaLedgerApprovalVo queryById(Long id) {
-        return baseMapper.selectVoById(id);
+        return meaLedgerApprovalMapper.selectVoById(id);
     }
 
     /**
@@ -59,7 +57,7 @@ public class MeaLedgerApprovalServiceImpl implements IMeaLedgerApprovalService {
     @Override
     public TableDataInfo<MeaLedgerApprovalVo> queryPageList(MeaLedgerApprovalBo bo, PageQuery pageQuery) {
         LambdaQueryWrapper<MeaLedgerApproval> lqw = buildQueryWrapper(bo);
-        Page<MeaLedgerApprovalVo> result = baseMapper.selectVoPage(pageQuery.build(), lqw);
+        Page<MeaLedgerApprovalVo> result = meaLedgerApprovalMapper.selectVoPage(pageQuery.build(), lqw);
 
         return TableDataInfo.build(result);
     }
@@ -70,7 +68,7 @@ public class MeaLedgerApprovalServiceImpl implements IMeaLedgerApprovalService {
     @Override
     public List<MeaLedgerApprovalVo> queryList(MeaLedgerApprovalBo bo) {
         LambdaQueryWrapper<MeaLedgerApproval> lqw = buildQueryWrapper(bo);
-        return baseMapper.selectVoList(lqw);
+        return meaLedgerApprovalMapper.selectVoList(lqw);
     }
 
     @Override
@@ -78,8 +76,9 @@ public class MeaLedgerApprovalServiceImpl implements IMeaLedgerApprovalService {
 
         List<MeaLedgerApprovalBreakDownVo> meaLedgerApprovalBreakDownVoList = new ArrayList<>();
         LambdaQueryWrapper<MeaLedgerApproval> lqw = buildQueryWrapper(bo);
-        List<MeaLedgerApprovalVo> meaLedgerApprovalVos =  baseMapper.selectVoList(lqw);
+        List<MeaLedgerApprovalVo> meaLedgerApprovalVos =  meaLedgerApprovalMapper.selectVoList(lqw);
         for (MeaLedgerApprovalVo meaLedgerApprovalVo : meaLedgerApprovalVos) {
+            // 查询审批中或审批完成的台账分解明细
             MeaLedgerBreakdownDetailVo meaLedgerBreakdownDetailVo =  meaLedgerBreakdownDetailMapper.selectVoById(meaLedgerApprovalVo.getBreakdownId());
             MeaLedgerApprovalBreakDownVo meaLedgerApprovalBreakDownVo = new MeaLedgerApprovalBreakDownVo();
             BeanUtil.copyProperties(meaLedgerApprovalVo,meaLedgerApprovalBreakDownVo);
@@ -115,7 +114,7 @@ public class MeaLedgerApprovalServiceImpl implements IMeaLedgerApprovalService {
         MeaLedgerApproval add = BeanUtil.toBean(bo, MeaLedgerApproval.class);
         validEntityBeforeSave(add);
         add.setReviewCode("1");
-        boolean flag = baseMapper.insert(add) > 0;
+        boolean flag = meaLedgerApprovalMapper.insert(add) > 0;
         if (flag) {
             bo.setId(add.getId());
         }
@@ -136,7 +135,7 @@ public class MeaLedgerApprovalServiceImpl implements IMeaLedgerApprovalService {
     public Boolean updateByBo(MeaLedgerApprovalBo bo) {
         MeaLedgerApproval update = BeanUtil.toBean(bo, MeaLedgerApproval.class);
         validEntityBeforeSave(update);
-        return baseMapper.updateById(update) > 0;
+        return meaLedgerApprovalMapper.updateById(update) > 0;
     }
 
     /**
@@ -154,7 +153,7 @@ public class MeaLedgerApprovalServiceImpl implements IMeaLedgerApprovalService {
         if (isValid) {
             //TODO 做一些业务上的校验,判断是否需要校验
         }
-        return baseMapper.deleteBatchIds(ids) > 0;
+        return meaLedgerApprovalMapper.deleteBatchIds(ids) > 0;
     }
 
     @Override
@@ -165,7 +164,7 @@ public class MeaLedgerApprovalServiceImpl implements IMeaLedgerApprovalService {
         List<MeaLedgerApproval> meaLedgerApprovals = BeanUtil.copyToList(bo, MeaLedgerApproval.class);
 //        validEntityBeforeSave(meaLedgerApprovals);
 
-        boolean b = baseMapper.insertBatch(meaLedgerApprovals);
+        boolean b = meaLedgerApprovalMapper.insertBatch(meaLedgerApprovals);
 
         return b;
 

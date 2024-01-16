@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -262,7 +263,7 @@ public class InventoryServiceImpl implements IInventoryService {
             }
 
             for (int i = 0; i < inventoryDetailList.size(); i++) {
-                // 当前时间的库存明细第一条去上月末的剩余库存数量，与自己的库存数量相加，等于累计库存数量，如果第一条是出库，则相减
+                // 当前时间的库存明细第一条除上月末的剩余库存数量，与自己的库存数量相加，等于累计库存数量，如果第一条是出库，则相减
                 // 如果上月末没有库存，则第一条就是当前累计库存量，第一条库存不能为出库
 
                 // 采购成本单价=库存单价=（（上期结存数量×库存单价）+本期入库总金金额）/（库存数量+本期入库数量）
@@ -270,14 +271,14 @@ public class InventoryServiceImpl implements IInventoryService {
 
                 InventoryDetail inventoryDetail = inventoryDetailList.get(i);
                 if(i == 0) {
-                    BigDecimal price = accumulateQuantity.add(accumulatePrice).add(inventoryDetail.getWarehousingAmount()).divide(accumulateQuantity.add(inventoryDetail.getWarehousingQuantity()));
+                    BigDecimal price = accumulateQuantity.add(accumulatePrice).add(inventoryDetail.getWarehousingAmount()).divide(accumulateQuantity.add(inventoryDetail.getWarehousingQuantity()), 2, RoundingMode.HALF_UP);
                     inventoryDetail.setAccumulatePrice(price);
                     inventoryDetail.setAccumulateQuantity(inventoryDetail.getWarehousingQuantity().add(accumulateQuantity));
                     inventoryDetail.setAccumulateAmount(inventoryDetail.getAccumulatePrice().multiply(inventoryDetail.getAccumulateQuantity()).add(accumulateAmount));
                 } else {
                     InventoryDetail beforeInventoryDetail = inventoryDetails.get(i - 1);
                     if(inventoryDetail.getInventoryDirection().equals("warehousing")) {
-                        BigDecimal price = accumulateQuantity.add(accumulatePrice).add(inventoryDetail.getWarehousingAmount()).divide(accumulateQuantity.add(inventoryDetail.getWarehousingQuantity()));
+                        BigDecimal price = accumulateQuantity.add(accumulatePrice).add(inventoryDetail.getWarehousingAmount()).divide(accumulateQuantity.add(inventoryDetail.getWarehousingQuantity()), 2, RoundingMode.HALF_UP);
                         inventoryDetail.setAccumulateQuantity(inventoryDetail.getWarehousingQuantity().add(beforeInventoryDetail.getWarehousingQuantity()));
                         inventoryDetail.setAccumulatePrice(price);
                         inventoryDetail.setAccumulateAmount(inventoryDetail.getWarehousingAmount().add(beforeInventoryDetail.getAccumulateAmount()));

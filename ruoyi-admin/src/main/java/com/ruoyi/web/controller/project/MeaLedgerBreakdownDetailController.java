@@ -66,6 +66,7 @@ public class MeaLedgerBreakdownDetailController extends BaseController {
     @ApiOperation("台账分解明细列表树节点")
     @GetMapping("/list-info")
     public TableDataInfo<MeaLedgerBreakdownDetailInfoVo> listInfo(MeaLedgerBreakdownDetailBo bo, PageQuery pageQuery) {
+        // 查询全量台账分解明细
         return iMeaLedgerBreakdownDetailService.listInfo(bo, pageQuery);
     }
 
@@ -84,6 +85,7 @@ public class MeaLedgerBreakdownDetailController extends BaseController {
      */
     @GetMapping("/queryBreakdownDetails")
     public R<List<MeaLedgerBreakdownDetailVo>> queryMeaLedgerBreakdownDetails(MeaLedgerBreakdownDetailBo meaLedgerBreakdownDetailBo) {
+        // 查询未上报的台账分解明细
         List<MeaLedgerBreakdownDetailVo> meaLedgerBreakdownDetailVos = iMeaLedgerBreakdownDetailService.queryList4ledgerApproval(meaLedgerBreakdownDetailBo);
         return R.ok(meaLedgerBreakdownDetailVos);
     }
@@ -166,7 +168,7 @@ public class MeaLedgerBreakdownDetailController extends BaseController {
     @PutMapping()
     public R<Void> edit(@Validated(EditGroup.class) @RequestBody MeaLedgerBreakdownDetailBo bo) {
         bo.setReviewCode("0");
-        checkFjsl(bo);
+//        checkFjsl(bo);
         Boolean b = iMeaLedgerBreakdownDetailService.updateByBo(bo);
        /*
        20230731 yangaogao  台账分解功能，取消流程审批

@@ -320,17 +320,58 @@ public class OnlineFormsServiceImpl implements IOnlineFormsService {
         return null;
     }
 
+    @Override
+    public ResponseBase getOnlineReportTemplate(String componentCode, String projectId) {
+        Conponent component = conponentDAO.getConponentByCode(componentCode);
+        return ResponseBase.success(component);
+    }
+
     @NotNull
     private Map<String, Object> getFillDataMap(Integer componentId) {
         Conponent component = conponentDAO.selectByPrimaryKey(componentId);
         Map<String, Object> fillDataMap = Maps.newHashMap();
-        // fillDataMap.put("supervisorCompany", "中国软件");
-        fillDataMap.put("unitProject", component.getW3()); // 单位工程
-        fillDataMap.put("sectionProject", component.getW4()); // 分部工程
-        fillDataMap.put("itemProject", component.getW6()); // 分项工程
-        fillDataMap.put("stationNum", component.getW7()); // 桩号、部位
-        fillDataMap.put("constructionData", DateUtils.getNowDate());
-        fillDataMap.put("recordDate", DateUtils.getNowDate());
+
+        fillDataMap.put("ShiGongDanWei", null); // 施工单位
+        fillDataMap.put("JianLiDanWei", null); // 监理单位
+        fillDataMap.put("HeTongHao", null); // 合同号
+        fillDataMap.put("BianHao", null); // 编  号
+        fillDataMap.put("DanDeiGongCheng", component.getW3()); // 单位工程
+        fillDataMap.put("FenBuGongCheng", component.getW4()); // 分部工程
+        fillDataMap.put("FenXiangGongCheng", component.getW6()); // 分项工程
+        fillDataMap.put("GouJianMingCheng", component.getName()); // 构件名称
+        fillDataMap.put("ZhuangHaoBuWei", component.getW7()); // 桩号、部位
+        fillDataMap.put("ShiGongRiQi", DateUtils.getNowDate()); // 施工日期
+        fillDataMap.put("JianCeRiQi", DateUtils.getNowDate()); // 检测记录日期
+        fillDataMap.put("XianChangJianLi", null); // 现场监理
+        fillDataMap.put("XianChangJianLiRiQi", null);
+        fillDataMap.put("ShiGongFuZeRen", null); // 施工负责人
+        fillDataMap.put("ShiGongFuZeRenRiQi", DateUtils.getNowDate());
+        fillDataMap.put("ZhiJianYuan", null); // 质检员
+        fillDataMap.put("ZhiJianRiQi", DateUtils.getNowDate());
+        fillDataMap.put("BanZuZhang", null); // 班组长
+        fillDataMap.put("BanZuZhangRiQi", DateUtils.getNowDate());
         return fillDataMap;
+    }
+
+    public List<List<String>> getWorkbookContents(PubProduceDocument pubProduceDocument, int[] rowNumbers) throws IOException {
+        String fillDataTemplatePath = this.tempTemplateFilePath + System.getProperty("file.separator") + ExcelUtil.encodingFilename(pubProduceDocument.getDocumentName());
+        try {
+            // 1、保存填写后的模板数据至磁盘
+            HttpUtil.downloadFileFromUrl(pubProduceDocument.getDocumentUrl(), fillDataTemplatePath);
+            // 2、磁盘文件获取审批意见内容
+            Map<String, List<Map<Integer,List<String>>>> workbookContents = LuckySheetUtil.getWorkbookContents(fillDataTemplatePath);
+            List<Map<Integer,List<String>>> sheetList = workbookContents.get(defaultSheet);
+            List<List<String>> contentsDataList = Lists.newArrayList();
+            for (int rowNumber: rowNumbers) {
+                contentsDataList.addAll(sheetList.stream().filter(rowMap -> rowMap.containsKey(rowNumber)).map(rowMap -> rowMap.get(rowNumber)).collect(Collectors.toList()));
+            }
+            return contentsDataList;
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
+        } finally {
+            // 删除生成的磁盘文件
+            FileUtils.del(fillDataTemplatePath);
+        }
     }
 }

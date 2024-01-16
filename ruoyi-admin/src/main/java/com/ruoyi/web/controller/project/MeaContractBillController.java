@@ -2,6 +2,8 @@ package com.ruoyi.web.controller.project;
 
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.annotation.RepeatSubmit;
 import com.ruoyi.common.core.controller.BaseController;
@@ -21,14 +23,15 @@ import com.ruoyi.project.bill.service.IMeaContractBillService;
 import com.ruoyi.system.domain.bo.ContractInfoBo;
 import com.ruoyi.system.domain.vo.ContractInfoVo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 工程量清单
@@ -52,7 +55,26 @@ public class MeaContractBillController extends BaseController {
     @GetMapping("/list")
     public R<List<MeaContractBillVo>> list(MeaContractBillBo bo) {
         List<MeaContractBillVo> list = iMeaContractBillService.queryList(bo);
-        return R.ok(list);
+        // 合并 合同数量和变更数量
+        if(CollUtil.isEmpty(list)) {
+            return R.ok(list);
+        }
+        Map<String, List<MeaContractBillVo>> meaContractBillMap = list.stream().collect(Collectors.groupingBy(MeaContractBillVo::getZmh));
+        List<MeaContractBillVo> meaContractBills = new ArrayList<>();
+        meaContractBillMap.forEach((zmh, meaContractBillList) -> {
+            if(zmh.equals("103-1")) {
+                int i = 0;
+            }
+            MeaContractBillVo meaContractBillVo = BeanUtil.copyProperties(meaContractBillList.get(0), MeaContractBillVo.class);
+            // 是否存在变更记录
+            List<MeaContractBillVo> changMeaContractBillVo = meaContractBillList.stream().filter(meaContractBill -> "1".equals(meaContractBill.getIsChange())).collect(Collectors.toList());
+            if(changMeaContractBillVo.size() == 1) {
+                meaContractBillVo.setBgsl(changMeaContractBillVo.get(0).getBgsl());
+                meaContractBillVo.setBgje(changMeaContractBillVo.get(0).getBgje());
+            }
+            meaContractBills.add(meaContractBillVo);
+        });
+        return R.ok(meaContractBills);
     }
 
 

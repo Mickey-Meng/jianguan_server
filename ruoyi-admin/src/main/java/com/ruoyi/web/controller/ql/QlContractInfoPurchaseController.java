@@ -147,6 +147,7 @@ public class QlContractInfoPurchaseController extends BaseController {
         columnNames.put("price","price");
         columnNames.put("goodsNum","goodsNum");
         columnNames.put("totalAmountDollar","totalAmountDollar");
+        headers.add(columnNames);
 
         writer.write(headers, false);
         // 一次性写出内容

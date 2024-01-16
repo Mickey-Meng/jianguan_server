@@ -1,9 +1,14 @@
 package com.ruoyi.web.controller.listener;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.ruoyi.flowable.model.FlowCategory;
 import com.ruoyi.project.bill.domain.MeaContractBill;
+import com.ruoyi.project.bill.domain.bo.MeaContractBillBo;
 import com.ruoyi.project.bill.mapper.MeaContractBillMapper;
+import com.ruoyi.project.bill.service.IMeaContractBillService;
 import com.ruoyi.project.flowidatenfo.domain.MeaFlowDataInfo;
 import com.ruoyi.project.flowidatenfo.mapper.MeaFlowDataInfoMapper;
 import com.ruoyi.project.ledger.domain.MeaLedgerBreakdownDetail;
@@ -18,9 +23,12 @@ import org.flowable.task.service.delegate.DelegateTask;
 import org.flowable.task.service.delegate.TaskListener;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author jing-zhang
@@ -42,6 +50,7 @@ public class LedgerChangeEndEvent implements TaskListener {
     public void notify(DelegateTask delegateTask) {
         MeaFlowDataInfoMapper meaFlowDataInfoMapper = SpringContextHolder.getBean(MeaFlowDataInfoMapper.class);
         MeaContractBillMapper contractBillMapper = SpringContextHolder.getBean(MeaContractBillMapper.class);
+        IMeaContractBillService iMeaContractBillService = SpringContextHolder.getBean(IMeaContractBillService.class);
         MeaLedgerChangeMapper meaLedgerChangeMapper = SpringContextHolder.getBean(MeaLedgerChangeMapper.class);
         MeaLedgerChangeDetailMapper meaLedgerChangeDetailMapper = SpringContextHolder.getBean(MeaLedgerChangeDetailMapper.class);
         MeaLedgerBreakdownDetailMapper meaLedgerBreakdownDetailMapper = SpringContextHolder.getBean(MeaLedgerBreakdownDetailMapper.class);
@@ -72,16 +81,19 @@ public class LedgerChangeEndEvent implements TaskListener {
 //                        MeaContractBill meaContractBill = contractBillMapper.selectOne(contractBillQueryWrapper);
                         List<MeaContractBill> meaContractBills = contractBillMapper.selectList(contractBillQueryWrapper);
                         // #510   yangaogao  20230731  1.之前是否有变更记录 ，如果有则再原数据记录上累加 数量和金额，否则插入一条新数据,标识为 变更清单数据
-                        Optional<MeaContractBill> meaContractBillChange =  meaContractBills.stream().filter(item -> item.getIsChange().equals(1)).findFirst();
-                        if(meaContractBillChange != null && meaContractBillChange.isPresent() ){
-                            MeaContractBill meaContractBill = meaContractBillChange.get();
+                        List<MeaContractBill> meaContractBillList = meaContractBills.stream().filter(item -> "1".equals(item.getIsChange())).collect(Collectors.toList());
+                        if(CollUtil.isNotEmpty(meaContractBillList)){
+                            MeaContractBill meaContractBill = meaContractBillList.get(0);
                             meaContractBill.setBgje(meaLedgerChangeDetail.getBgje().add(meaContractBill.getBgje()));// 变更金额
                             meaContractBill.setBgsl(meaLedgerChangeDetail.getBgsl().add(meaContractBill.getBgsl()));
-                            contractBillMapper.insert(meaContractBill);
+                            MeaContractBillBo meaContractBillBo = BeanUtil.copyProperties(meaContractBill, MeaContractBillBo.class);
+                            iMeaContractBillService.updateByBo(meaContractBillBo);
                         }else{
                             Optional<MeaContractBill> meaContractBillNoChange =  meaContractBills.stream().filter(item -> item.getIsChange().equals("0")).findFirst();
                             MeaContractBill meaContractBill1 = meaContractBillNoChange.get();
                             meaContractBill1.setId(null);
+                            meaContractBill1.setHtsl(new BigDecimal("0"));
+                            meaContractBill1.setHtje(new BigDecimal("0"));
                             meaContractBill1.setBgje(meaLedgerChangeDetail.getBgje());// 变更金额
                             meaContractBill1.setBgsl(meaLedgerChangeDetail.getBgsl());
                             meaContractBill1.setIsChange("1");//标识为变更清单

@@ -2,6 +2,8 @@ package com.ruoyi.project.bill.service.impl;
 
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -56,7 +58,7 @@ public class MeaContractBillServiceImpl implements IMeaContractBillService {
     @Override
     public List<MeaContractBillVo> getLeafList( MeaContractBillBo bo) {
         LambdaQueryWrapper<MeaContractBill> lqw = Wrappers.lambdaQuery();
-        lqw.gt(MeaContractBill::getHtje, 0);
+//        lqw.gt(MeaContractBill::getHtje, 0).or().gt(MeaContractBill::getBgje, 0);
         lqw.eq( MeaContractBill::getStatus, 0);
         lqw.like(StringUtils.isNotBlank(bo.getBdbh()), MeaContractBill::getBdbh, bo.getBdbh());
         lqw.like(StringUtils.isNotBlank(bo.getZmh()), MeaContractBill::getZmh, bo.getZmh());
@@ -71,6 +73,8 @@ public class MeaContractBillServiceImpl implements IMeaContractBillService {
         lqw.eq(bo.getBgje() != null, MeaContractBill::getBgje, bo.getBgje());
         lqw.eq(bo.getZsl() != null, MeaContractBill::getZsl, bo.getZsl());
         lqw.eq(bo.getZje() != null, MeaContractBill::getZje, bo.getZje());
+        lqw.in(CollUtil.isNotEmpty(bo.getZmhList()), MeaContractBill::getZmh, bo.getZmhList());
+        lqw.eq(StrUtil.isNotBlank(bo.getIsChange()), MeaContractBill::getIsChange, bo.getIsChange());
         lqw.orderByAsc(MeaContractBill::getZmh);
         return baseMapper.selectVoList(lqw);
     }

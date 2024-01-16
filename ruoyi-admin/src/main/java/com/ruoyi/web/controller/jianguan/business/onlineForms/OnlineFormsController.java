@@ -100,4 +100,15 @@ public class OnlineFormsController extends BaseController {
         }
     }
 
+    @GetMapping("/getOnlineReportTemplate")
+    @ApiOperation("根据构件id查询每到工序的记录")
+    public ResponseBase getOnlineReportTemplate(@RequestParam(value ="componentCode",required = false) String componentCode,
+                                                 @RequestParam(value ="projectId",required = false) String projectId){
+        if(ObjectUtils.isEmpty(componentCode)){
+            return new ResponseBase(500,"componentCode为null");
+        }
+        // 查询所有的数据
+        return onlineFormsService.getOnlineReportTemplate(componentCode, projectId);
+    }
+
 }

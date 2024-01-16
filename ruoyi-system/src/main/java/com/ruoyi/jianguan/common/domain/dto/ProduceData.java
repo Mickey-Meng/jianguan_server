@@ -16,7 +16,7 @@ public class ProduceData {
     private int recordid;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date finish;
-    private int status;
+    private Integer status;
 
 
     public int getProduceid() {
@@ -27,11 +27,11 @@ public class ProduceData {
         this.produceid = produceid;
     }
 
-    public int getStatus() {
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(Integer status) {
         this.status = status;
     }
 

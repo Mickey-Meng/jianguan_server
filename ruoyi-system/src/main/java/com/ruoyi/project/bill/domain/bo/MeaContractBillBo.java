@@ -9,6 +9,8 @@ import javax.validation.constraints.*;
 import java.util.Date;
 
 import java.math.BigDecimal;
+import java.util.List;
+
 import com.ruoyi.common.core.domain.TreeEntity;
 
 /**
@@ -39,6 +41,11 @@ public class MeaContractBillBo extends TreeEntity<MeaContractBillBo> {
      */
     @NotBlank(message = "子目号不能为空", groups = { AddGroup.class, EditGroup.class })
     private String zmh;
+
+    /**
+     * 子目号集合
+     */
+    private List<String> zmhList;
 
     /**
      * 子目名称

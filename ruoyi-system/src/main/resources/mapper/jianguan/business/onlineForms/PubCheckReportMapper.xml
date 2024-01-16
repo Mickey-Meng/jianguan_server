@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.jianguan.business.onlineForms.mapper.PubCheckReportMapper">
+
+    <resultMap type="com.ruoyi.jianguan.business.onlineForms.domain.PubCheckReport" id="PubCheckReportResult">
+        <result property="id" column="id"/>
+        <result property="checkComponentId" column="check_component_id"/>
+        <result property="checkProduceId" column="check_produce_id"/>
+        <result property="reportComponentId" column="report_component_id"/>
+        <result property="reportProduceId" column="report_produce_id"/>
+        <result property="scxmStatus" column="scxm_status"/>
+        <result property="wgzlStatus" column="wgzl_status"/>
+        <result property="zlwzxStatus" column="zlwzx_status"/>
+        <result property="checkResult" column="check_result"/>
+        <result property="status" column="status"/>
+        <result property="reportTime" column="report_time"/>
+        <result property="remark" column="remark"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <select id="selectCountByPrimaryKey" resultType="java.lang.Integer">
+        SELECT COUNT(1)
+        FROM pub_check_report
+        WHERE id = #{id}
+    </select>
+
+</mapper>
