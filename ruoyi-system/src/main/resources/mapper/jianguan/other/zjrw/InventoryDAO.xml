@@ -19,23 +19,28 @@
 		<result column="goods_code" property="goodsCode" />
 		<result column="inventory_direction" property="inventoryDirection" />
 		<result column="contract_code" property="contractCode" />
+		<result column="goods_code" property="goodsCode" />
     </resultMap>
 
 	<select id="queryWarehousing" parameterType="com.ruoyi.ql.domain.report.query.QlInventoryQuery" resultMap="inventoryDetail">
 		SELECT t.goods_id,
-			   t.goods_name,
+			   t2.goods_name,
 			   t.inventory_code,
 			   t.goods_searchstandard,
 			   t.goods_unit,
 			   t.inventory_number                    as warehousing_quantity,
 			   t.income_price                        as warehousing_price,
-			   t.amount								 as warehousing_amount
+			   t.amount								 as warehousing_amount,
+		       t2.goods_code
 		FROM ql_warehousing_detail t,
-			 ql_warehousing t1
+			 ql_warehousing t1,
+		     ql_shop_goods t2
 		WHERE t.del_flag = 0
 		  AND t.inventory_direction = 'warehousing'
 		  and t1.del_flag = 0
 		  and t1.id = t.inventory_id
+		  and t2.del_flag = 0
+		  and t.goods_id = t2.id
 		  <if test="goodsIds != null and goodsIds.size > 0">
 			  and t.goods_id in
 			  <foreach collection="goodsIds" item="goodsId"   open="(" separator="," close=")">
@@ -52,19 +57,23 @@
 
 	<select id="queryOutbound" parameterType="com.ruoyi.ql.domain.report.query.QlInventoryQuery" resultMap="inventoryDetail">
 		SELECT t.goods_id,
-			   t.goods_name,
+			   t2.goods_name,
 			   t.inventory_code,
 			   t.goods_searchstandard,
 			   t.goods_unit,
 			   t.inventory_number                    as outbound_quantity,
 			   t.income_price                        as outbound_price,
-			   t.amount								 as outbound_amount
+			   t.amount								 as outbound_amount,
+		       t2.goods_code
 		FROM ql_warehousing_detail t,
-			 ql_outbound t1
+			 ql_outbound t1,
+		     ql_shop_goods t2
 		WHERE t.del_flag = 0
 		  AND t.inventory_direction = 'outbound'
 		  and t1.del_flag = 0
 		  and t1.id = t.inventory_id
+		  and t2.del_flag = 0
+		  and t.goods_id = t2.id
 		  <if test="goodsIds != null and goodsIds.size > 0">
 		  	and t.goods_id in
 			<foreach collection="goodsIds" item="goodsId"   open="(" separator="," close=")">

@@ -33,9 +33,10 @@ public interface IOnlineFormsService {
 
     ResponseBase submitCheck(RecodeUploadData recodeData);
 
-    Map<String, String> getFillDataTemplate(Long id);
+    Map<String, String> getFillDataTemplate(Long id) throws IOException;
 
     ResponseBase getOnlineReportTemplate(String componentCode, String projectId);
 
-    public List<List<String>> getWorkbookContents(PubProduceDocument pubProduceDocument, int[] rowNumbers) throws IOException;
+    public Map<String,List<String>> getSingleExcelContentsByRows(PubProduceDocument pubProduceDocument, List<Integer> rowNumbers, String indexOfWord) throws IOException;
+    public Map<String,List<String>> getMultipleExcelContentsByRows(List<PubProduceDocument> pubProduceDocumentList, List<Integer> rowNumbers, String indexOfWord) throws IOException;
 }

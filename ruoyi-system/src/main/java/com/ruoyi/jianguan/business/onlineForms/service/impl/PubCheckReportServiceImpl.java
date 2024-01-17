@@ -167,12 +167,9 @@ public class PubCheckReportServiceImpl implements IPubCheckReportService {
             switch (component.getConponenttype()) {
                 case "HTMPD_GJ":
                     // 钢筋评定
-                    int[] rowNumbers = new int[]{12, 13};
-                    List<List<String>> contentsDataList = Lists.newArrayList();
-                    for (PubProduceDocument pubProduceDocument : pubProduceDocumentList) {
-                        contentsDataList.addAll(onlineFormsService.getWorkbookContents(pubProduceDocument, rowNumbers));
-                    }
-                    System.err.println("=========================" + contentsDataList.size() + "=========================");
+                    List<Integer> rowNumbers = Arrays.asList(13, 17);
+                    String indexOfWord = "偏差值,";
+                    Map<String,List<String>> rowsContentsMapData = onlineFormsService.getMultipleExcelContentsByRows(pubProduceDocumentList, rowNumbers, indexOfWord);
                    break;
                 case "HTMPD_FXGC":
                     // 分项工程评定

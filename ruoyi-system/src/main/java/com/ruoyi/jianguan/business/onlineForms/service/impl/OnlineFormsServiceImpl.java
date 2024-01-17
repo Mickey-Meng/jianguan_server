@@ -29,9 +29,11 @@ import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.common.utils.poi.LuckySheetUtil;
 import com.ruoyi.flowable.domain.dto.FlowTaskCommentDto;
 import com.ruoyi.flowable.service.FlowStaticPageService;
+import com.ruoyi.jianguan.business.onlineForms.domain.PubCheckReport;
 import com.ruoyi.jianguan.business.onlineForms.domain.PubProduceDocument;
 import com.ruoyi.jianguan.business.onlineForms.domain.bo.PubProduceDocumentBo;
 import com.ruoyi.jianguan.business.onlineForms.domain.vo.PubProduceDocumentVo;
+import com.ruoyi.jianguan.business.onlineForms.mapper.PubCheckReportMapper;
 import com.ruoyi.jianguan.business.onlineForms.mapper.PubProduceDocumentMapper;
 import com.ruoyi.jianguan.business.onlineForms.service.IOnlineFormsService;
 import com.ruoyi.jianguan.business.onlineForms.service.IPubProduceDocumentService;
@@ -94,6 +96,8 @@ public class OnlineFormsServiceImpl implements IOnlineFormsService {
 
     @Autowired
     private FlowStaticPageService flowStaticPageService;
+
+    private final PubCheckReportMapper pubCheckReportMapper;
 
     @Override
     public Object saveFillDataTemplate(Long id, String luckySheetJson) throws IOException {
@@ -288,12 +292,12 @@ public class OnlineFormsServiceImpl implements IOnlineFormsService {
     }
 
     @Override
-    public Map<String, String> getFillDataTemplate(Long id) {
+    public Map<String, String> getFillDataTemplate(Long id) throws IOException {
         PubProduceDocumentVo pubProduceDocument = pubProduceDocumentMapper.selectVoById(id);
         if (Objects.isNull(pubProduceDocument)) {
             return null;
         }
-        Map<String, Object> fillDataMap = this.getFillDataMap(pubProduceDocument.getComponentId().intValue());
+        Map<String, Object> fillDataMap = this.getFillDataMap(pubProduceDocument);
         // 原始模板
         String templateOriginalName = pubProduceDocument.getDocumentName();
         String fillDataTemplateName = ExcelUtil.encodingFilename(templateOriginalName);
@@ -327,10 +331,11 @@ public class OnlineFormsServiceImpl implements IOnlineFormsService {
     }
 
     @NotNull
-    private Map<String, Object> getFillDataMap(Integer componentId) {
+    private Map<String, Object> getFillDataMap(PubProduceDocumentVo produceDocument) throws IOException {
+        int componentId = produceDocument.getComponentId().intValue();
         Conponent component = conponentDAO.selectByPrimaryKey(componentId);
         Map<String, Object> fillDataMap = Maps.newHashMap();
-
+        // 通用填充数据
         fillDataMap.put("ShiGongDanWei", null); // 施工单位
         fillDataMap.put("JianLiDanWei", null); // 监理单位
         fillDataMap.put("HeTongHao", null); // 合同号
@@ -350,22 +355,61 @@ public class OnlineFormsServiceImpl implements IOnlineFormsService {
         fillDataMap.put("ZhiJianRiQi", DateUtils.getNowDate());
         fillDataMap.put("BanZuZhang", null); // 班组长
         fillDataMap.put("BanZuZhangRiQi", DateUtils.getNowDate());
+        // 根据构件类型封装自定义填充数据
+        switch (component.getConponenttype()) {
+            case "HTMPD_GJ":
+                if (Objects.equals("浙路(ZP)106-1钢筋安装分项工程质量检验评定表附表.xlsx",produceDocument.getDocumentName())) {
+                    String fillSourceTemplateName = "浙路(JS)107钢筋安装现场检测记录表.xlsx";
+                    // 查询评定、报验关联数据
+                    PubCheckReport pubCheckReport = pubCheckReportMapper.selectVoOne(new LambdaQueryWrapper<PubCheckReport>()
+                            .eq(!Objects.isNull(componentId), PubCheckReport::getCheckComponentId, componentId), PubCheckReport.class);
+                    // 查询关联工序的文档信息
+                    Map documentQueryMap = Maps.newHashMap();
+                    documentQueryMap.put("produce_id",pubCheckReport.getReportProduceId());
+                    List<PubProduceDocument> pubProduceDocumentList = pubProduceDocumentMapper.selectByMap(documentQueryMap);
+                    pubProduceDocumentList = pubProduceDocumentList.stream().filter(pubProduceDocument -> Objects.equals(fillSourceTemplateName,pubProduceDocument.getDocumentName())).sorted(Comparator.comparingLong(PubProduceDocument::getId)).collect(Collectors.toList());
+                    // 钢筋评定:13-11,17-15
+                    List<Integer> rowNumbers = Arrays.asList(13, 17);
+                    String indexOfWord = "偏差值,";
+                    Map<String,List<String>> rowsContentsMapData = this.getMultipleExcelContentsByRows(pubProduceDocumentList, rowNumbers, indexOfWord);
+                    rowsContentsMapData.forEach((key, value) -> {
+                        System.err.println("key :" + key + " | value : " + Arrays.toString(value.toArray()));
+                    });
+                    System.err.println("==============================================================");
+                    for (int i = 0; i < 15 ; i++) {
+                        System.err.println("key : row11_" + (i + 1) + " | value : " + rowsContentsMapData.get("row13Data").get(i));
+                        System.err.println("key : row15_" + (i + 1) + " | value : " + rowsContentsMapData.get("row17Data").get(i));
+                        fillDataMap.put("row11_" + (i + 1), rowsContentsMapData.get("row13Data").get(i));
+                        fillDataMap.put("row15_" + (i + 1), rowsContentsMapData.get("row17Data").get(i));
+                    }
+                }
+                break;
+            case "HTMPD_FXGC":
+                // 分项工程评定
+                break;
+            default:
+                System.out.println("评定构件类型不匹配");
+        }
+
         return fillDataMap;
     }
 
-    public List<List<String>> getWorkbookContents(PubProduceDocument pubProduceDocument, int[] rowNumbers) throws IOException {
+    public Map<String,List<String>> getSingleExcelContentsByRows(PubProduceDocument pubProduceDocument, List<Integer> rowNumbers, String indexOfWord) throws IOException {
         String fillDataTemplatePath = this.tempTemplateFilePath + System.getProperty("file.separator") + ExcelUtil.encodingFilename(pubProduceDocument.getDocumentName());
+        Map<String,List<String>> rowsContentsMapData = Maps.newHashMap();
         try {
             // 1、保存填写后的模板数据至磁盘
             HttpUtil.downloadFileFromUrl(pubProduceDocument.getDocumentUrl(), fillDataTemplatePath);
             // 2、磁盘文件获取审批意见内容
             Map<String, List<Map<Integer,List<String>>>> workbookContents = LuckySheetUtil.getWorkbookContents(fillDataTemplatePath);
-            List<Map<Integer,List<String>>> sheetList = workbookContents.get(defaultSheet);
-            List<List<String>> contentsDataList = Lists.newArrayList();
-            for (int rowNumber: rowNumbers) {
-                contentsDataList.addAll(sheetList.stream().filter(rowMap -> rowMap.containsKey(rowNumber)).map(rowMap -> rowMap.get(rowNumber)).collect(Collectors.toList()));
-            }
-            return contentsDataList;
+            // 操作的sheet页
+            List<Map<Integer,List<String>>> sheetContentsList = workbookContents.get(defaultSheet);
+            rowNumbers.forEach(rowNumber -> {
+                String rowData = sheetContentsList.stream().filter(rowMap -> rowMap.containsKey(rowNumber)).map(rowMap -> rowMap.get(rowNumber).stream().collect(Collectors.joining(",")).replaceAll("\\r|\\n", "")).collect(Collectors.joining());
+                String rowDataMapKey = "row" + rowNumber + "Data";
+                rowsContentsMapData.put(rowDataMapKey, Arrays.asList(rowData.substring(rowData.lastIndexOf(indexOfWord) + indexOfWord.length())));
+            });
+            return rowsContentsMapData;
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException(e.getMessage());
@@ -373,5 +417,42 @@ public class OnlineFormsServiceImpl implements IOnlineFormsService {
             // 删除生成的磁盘文件
             FileUtils.del(fillDataTemplatePath);
         }
+    }
+
+    @Override
+    public Map<String, List<String>> getMultipleExcelContentsByRows(List<PubProduceDocument> pubProduceDocumentList, List<Integer> rowNumbers, String indexOfWord) throws IOException {
+        Map<String,List<String>> rowsContentsMapData = Maps.newHashMap();
+        pubProduceDocumentList.forEach(pubProduceDocument -> {
+            String fillDataTemplatePath = this.tempTemplateFilePath + System.getProperty("file.separator") + ExcelUtil.encodingFilename(pubProduceDocument.getDocumentName());
+            // 1、保存填写后的模板数据至磁盘
+            HttpUtil.downloadFileFromUrl(pubProduceDocument.getDocumentUrl(), fillDataTemplatePath);
+            // 2、磁盘文件获取审批意见内容
+            Map<String, List<Map<Integer,List<String>>>> workbookContents = null;
+            try {
+                workbookContents = LuckySheetUtil.getWorkbookContents(fillDataTemplatePath);
+                // 操作的sheet页
+                List<Map<Integer,List<String>>> sheetContentsList = workbookContents.get(defaultSheet);
+                rowNumbers.forEach(rowNumber -> {
+                    String rowData = sheetContentsList.stream().filter(rowMap -> rowMap.containsKey(rowNumber)).map(rowMap -> rowMap.get(rowNumber).stream().collect(Collectors.joining(",")).replaceAll("\\r|\\n", "")).collect(Collectors.joining());
+                    String rowDataMapKey = "row" + rowNumber + "Data";
+                    List<String> currentRowData = Arrays.asList(rowData.substring(rowData.lastIndexOf(indexOfWord) + indexOfWord.length()).split(","));
+                    if (rowsContentsMapData.containsKey(rowDataMapKey)) {
+                        List<String> rowDataList = rowsContentsMapData.get(rowDataMapKey);
+                        List<String> newRowDataList = Lists.newArrayList();
+                        newRowDataList.addAll(rowDataList);
+                        newRowDataList.addAll(currentRowData);
+                        rowsContentsMapData.put(rowDataMapKey, newRowDataList);
+                    } else {
+                        rowsContentsMapData.put(rowDataMapKey, currentRowData);
+                    }
+                });
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }finally {
+                // 删除生成的磁盘文件
+                FileUtils.del(fillDataTemplatePath);
+            }
+        });
+        return rowsContentsMapData;
     }
 }
