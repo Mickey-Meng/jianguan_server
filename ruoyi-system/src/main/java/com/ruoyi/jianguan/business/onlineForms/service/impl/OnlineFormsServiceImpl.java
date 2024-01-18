@@ -59,6 +59,7 @@ import org.springframework.stereotype.Service;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -122,12 +123,30 @@ public class OnlineFormsServiceImpl implements IOnlineFormsService {
             }
             // 3、磁盘文件上传至文件服务器
             sysOss = sysOssService.upload(FileUtils.getMultipartFile(FileUtils.file(fillDataTemplatePath)));
-            PubProduceDocumentVo pubProduceDocumentVo = pubProduceDocumentMapper.selectVoById(id);
-            PubProduceDocument pubProduceDocument = BeanUtil.toBean(pubProduceDocumentVo, PubProduceDocument.class);
+            PubProduceDocument pubProduceDocument = pubProduceDocumentMapper.selectById(id);
             pubProduceDocument.setDocumentStatus(1L);
             pubProduceDocument.setRemark(pubProduceDocument.getDocumentUrl());
             pubProduceDocument.setDocumentUrl(sysOss.getUrl());
             pubProduceDocumentMapper.updateById(pubProduceDocument);
+            if (Objects.equals("浙路(ZP)106(802)钢筋安装分项工程质量检验评定表.xlsx",pubProduceDocument.getDocumentName())) {
+                Map<String,List<String>> rowsContentsMapData = this.getSingleExcelContentsByRows(pubProduceDocument, Arrays.asList(10, 12, 17, 18), "");
+                System.err.println("=========================== 浙路(ZP)106(802)钢筋安装分项工程质量检验评定表 ==============================");
+                rowsContentsMapData.forEach((key, value) -> {
+                    System.err.println("key :" + key + " | value : " + Arrays.toString(value.toArray()));
+                });
+                /**
+                 暂时在打卡填报表格时更新，此处预留
+                // 1、查询评定、报验关联数据
+                PubCheckReport pubCheckReport = pubCheckReportMapper.selectVoOne(new LambdaQueryWrapper<PubCheckReport>()
+                        .eq(!Objects.isNull(pubProduceDocument.getComponentId()), PubCheckReport::getCheckComponentId, pubProduceDocument.getComponentId()), PubCheckReport.class);
+                // 更新查询评定、报验关联数据
+                pubCheckReport.setScxmStatus((Objects.equals("合格", fillDataMap.get("row10IsPass")) && Objects.equals("合格", fillDataMap.get("row12IsPass"))) ? 1L : 0L);
+                pubCheckReport.setZlwzxStatus(Objects.equals("合格", fillDataMap.get("infoIsCompleted")) ? 1L : 0L);
+                pubCheckReport.setWgzlStatus(Objects.equals("合格", fillDataMap.get("qualityCheck")) ? 1L : 0L);
+                pubCheckReport.setCheckResult(checkResult ? 1L : 0L);
+                pubCheckReportMapper.updateById(pubCheckReport);
+                 */
+            }
             return pubProduceDocument;
         } catch (IOException e) {
             e.printStackTrace();
@@ -358,30 +377,71 @@ public class OnlineFormsServiceImpl implements IOnlineFormsService {
         // 根据构件类型封装自定义填充数据
         switch (component.getConponenttype()) {
             case "HTMPD_GJ":
+                // 1、查询评定、报验关联数据
+                PubCheckReport pubCheckReport = pubCheckReportMapper.selectVoOne(new LambdaQueryWrapper<PubCheckReport>()
+                        .eq(!Objects.isNull(componentId), PubCheckReport::getCheckComponentId, componentId), PubCheckReport.class);
+                // 2、查询关联工序的文档信息(多组)
+                Map documentQueryMap = Maps.newHashMap();
+                documentQueryMap.put("produce_id",pubCheckReport.getReportProduceId());
+                List<PubProduceDocument> pubProduceDocumentList = pubProduceDocumentMapper.selectByMap(documentQueryMap);
+                // 3、获取工序数据源的模板集合
+                String fillSourceTemplateName = "浙路(JS)107钢筋安装现场检测记录表.xlsx";
+                List<PubProduceDocument> filledSourceTemplateList = pubProduceDocumentList.stream()
+                                                                                          .filter(pubProduceDocument -> Objects.equals(fillSourceTemplateName, pubProduceDocument.getDocumentName()))
+                                                                                          .sorted(Comparator.comparingLong(PubProduceDocument::getId))
+                                                                                          .collect(Collectors.toList());
                 if (Objects.equals("浙路(ZP)106-1钢筋安装分项工程质量检验评定表附表.xlsx",produceDocument.getDocumentName())) {
-                    String fillSourceTemplateName = "浙路(JS)107钢筋安装现场检测记录表.xlsx";
-                    // 查询评定、报验关联数据
-                    PubCheckReport pubCheckReport = pubCheckReportMapper.selectVoOne(new LambdaQueryWrapper<PubCheckReport>()
-                            .eq(!Objects.isNull(componentId), PubCheckReport::getCheckComponentId, componentId), PubCheckReport.class);
-                    // 查询关联工序的文档信息
-                    Map documentQueryMap = Maps.newHashMap();
-                    documentQueryMap.put("produce_id",pubCheckReport.getReportProduceId());
-                    List<PubProduceDocument> pubProduceDocumentList = pubProduceDocumentMapper.selectByMap(documentQueryMap);
-                    pubProduceDocumentList = pubProduceDocumentList.stream().filter(pubProduceDocument -> Objects.equals(fillSourceTemplateName,pubProduceDocument.getDocumentName())).sorted(Comparator.comparingLong(PubProduceDocument::getId)).collect(Collectors.toList());
                     // 钢筋评定:13-11,17-15
-                    List<Integer> rowNumbers = Arrays.asList(13, 17);
-                    String indexOfWord = "偏差值,";
-                    Map<String,List<String>> rowsContentsMapData = this.getMultipleExcelContentsByRows(pubProduceDocumentList, rowNumbers, indexOfWord);
-                    rowsContentsMapData.forEach((key, value) -> {
-                        System.err.println("key :" + key + " | value : " + Arrays.toString(value.toArray()));
-                    });
+                    Map<String,List<String>> rowsContentsMapData = this.getMultipleExcelContentsByRows(filledSourceTemplateList, Arrays.asList(13, 17), "偏差值,");
+                    System.err.println("==============================================================");
+                    rowsContentsMapData.forEach((key, value) ->  System.err.println("key :" + key + " | value : " + Arrays.toString(value.toArray())) );
                     System.err.println("==============================================================");
                     for (int i = 0; i < 15 ; i++) {
-                        System.err.println("key : row11_" + (i + 1) + " | value : " + rowsContentsMapData.get("row13Data").get(i));
-                        System.err.println("key : row15_" + (i + 1) + " | value : " + rowsContentsMapData.get("row17Data").get(i));
-                        fillDataMap.put("row11_" + (i + 1), rowsContentsMapData.get("row13Data").get(i));
-                        fillDataMap.put("row15_" + (i + 1), rowsContentsMapData.get("row17Data").get(i));
+                        // System.err.println("key : row11_" + (i + 1) + " | value : " + rowsContentsMapData.get("row13Data").get(i));
+                        // System.err.println("key : row15_" + (i + 1) + " | value : " + rowsContentsMapData.get("row17Data").get(i));
+                        fillDataMap.put("row11_" + (i + 1), Math.ceil(new Double(rowsContentsMapData.get("row13Data").get(i))));
+                        fillDataMap.put("row15_" + (i + 1), Math.ceil(new Double(rowsContentsMapData.get("row17Data").get(i))));
                     }
+                } else if (Objects.equals("浙路(ZP)106(802)钢筋安装分项工程质量检验评定表.xlsx",produceDocument.getDocumentName())) {
+                    Map<String,List<String>> rowsContentsMapData = this.getMultipleExcelContentsByRows(filledSourceTemplateList, Arrays.asList(12, 16), ",");
+                    Map<String, BigDecimal> averagePassRateMap = Maps.newHashMap();
+                    rowsContentsMapData.forEach((key, value) -> {
+                        // 多个合格率平均值
+                        double averagePassRate = value.stream().map(num -> {
+                            return num.contains("%") ? new BigDecimal(num.replace("%", "")).divide(new BigDecimal(100)) : new BigDecimal(num);
+                        }).mapToDouble(BigDecimal::doubleValue).average().getAsDouble();
+                        BigDecimal percentAveragePassRateMap = new BigDecimal(averagePassRate).multiply(new BigDecimal(100)).setScale(2, BigDecimal.ROUND_HALF_UP);
+                        averagePassRateMap.put(key, percentAveragePassRateMap);
+                        System.err.println("key :" + key + " | value : " + Arrays.toString(value.toArray()) + " | averagePassRate : " + percentAveragePassRateMap);
+                    });
+                    // 封装填充的合格率
+                    fillDataMap.put("row10PassRate", averagePassRateMap.get("row12Data") + "%");
+                    fillDataMap.put("row10IsPass", averagePassRateMap.get("row12Data").compareTo(new BigDecimal(80)) < 0 ? "不合格" : "合格");
+                    fillDataMap.put("row12PassRate", averagePassRateMap.get("row16Data") + "%");
+                    fillDataMap.put("row12IsPass", averagePassRateMap.get("row16Data").compareTo(new BigDecimal(80)) < 0 ? "不合格" : "合格");
+                    // 完整性
+                    long notFillCount = pubProduceDocumentList.stream().map(PubProduceDocument::getDocumentStatus)
+                                                                       .filter(documentStatus -> Objects.equals("0", documentStatus)).count();
+                    fillDataMap.put("infoIsCompleted", notFillCount > 0 ? "资料缺失" : "资料齐全");
+                    // 外观质量
+                    List<PubProduceDocument> qualitySourceTemplateList = pubProduceDocumentList.stream().filter(pubProduceDocument -> Objects.equals("浙路(JS)802钢筋加工及安装工程现场质量检验报告单(一)(钢筋安装).xlsx", produceDocument.getDocumentName())).collect(Collectors.toList());
+                    Map<String,List<String>> qualityCheckMapData = this.getMultipleExcelContentsByRows(qualitySourceTemplateList, Arrays.asList(26, 27), ",");
+                    long notPassQualityCheckCount = qualityCheckMapData.values().stream().filter(qualityCheckData -> !Objects.equals("符合要求", qualityCheckData)).count();
+                    fillDataMap.put("qualityCheck", notPassQualityCheckCount > 0 ? "不合格" : "合格");
+
+                    // 评定结果
+                    boolean checkResult = Objects.equals("合格", fillDataMap.get("row10IsPass")) && Objects.equals("合格", fillDataMap.get("row12IsPass")) &&
+                                            Objects.equals("合格", fillDataMap.get("qualityCheck")) && Objects.equals("资料齐全", fillDataMap.get("infoIsCompleted"));
+
+                    fillDataMap.put("checkResult", checkResult ? "合格" : "不合格");
+
+                    /**************************************************************************************************/
+                    // 更新查询评定、报验关联数据
+                    pubCheckReport.setScxmStatus((Objects.equals("合格", fillDataMap.get("row10IsPass")) && Objects.equals("合格", fillDataMap.get("row12IsPass"))) ? 1L : 0L);
+                    pubCheckReport.setZlwzxStatus(Objects.equals("合格", fillDataMap.get("infoIsCompleted")) ? 1L : 0L);
+                    pubCheckReport.setWgzlStatus(Objects.equals("合格", fillDataMap.get("qualityCheck")) ? 1L : 0L);
+                    pubCheckReport.setCheckResult(checkResult ? 1L : 0L);
+                    pubCheckReportMapper.updateById(pubCheckReport);
                 }
                 break;
             case "HTMPD_FXGC":

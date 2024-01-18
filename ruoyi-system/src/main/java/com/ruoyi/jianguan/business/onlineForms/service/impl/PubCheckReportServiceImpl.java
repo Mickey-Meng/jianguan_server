@@ -150,36 +150,7 @@ public class PubCheckReportServiceImpl implements IPubCheckReportService {
         // 查询评定、报验关联数据
         PubCheckReport pubCheckReport = baseMapper.selectVoOne(new LambdaQueryWrapper<PubCheckReport>()
                 .eq(!Objects.isNull(componentId), PubCheckReport::getCheckComponentId, componentId), PubCheckReport.class);
-
-        if (Objects.isNull(pubCheckReport)) {
-            // 没查到，则新增相关信息
-            pubCheckReport = new PubCheckReport();
-
-            baseMapper.insertOrUpdate(pubCheckReport);
-        } else {
-            // 查到了，则继续相关数据更新
-            Map documentQueryMap = Maps.newHashMap();
-            documentQueryMap.put("produce_id",pubCheckReport.getReportProduceId());
-            List<PubProduceDocument> pubProduceDocumentList = pubProduceDocumentMapper.selectByMap(documentQueryMap);
-            pubProduceDocumentList = pubProduceDocumentList.stream().sorted(Comparator.comparingLong(PubProduceDocument::getId)).collect(Collectors.toList());
-
-            Conponent component = conponentDAO.selectByPrimaryKey(componentId);
-            switch (component.getConponenttype()) {
-                case "HTMPD_GJ":
-                    // 钢筋评定
-                    List<Integer> rowNumbers = Arrays.asList(13, 17);
-                    String indexOfWord = "偏差值,";
-                    Map<String,List<String>> rowsContentsMapData = onlineFormsService.getMultipleExcelContentsByRows(pubProduceDocumentList, rowNumbers, indexOfWord);
-                   break;
-                case "HTMPD_FXGC":
-                    // 分项工程评定
-                    break;
-                default:
-                    System.out.println("评定构件类型不匹配");
-            }
-        }
         return BeanUtil.toBean(pubCheckReport, PubCheckReportVo.class);
     }
-
 
 }
