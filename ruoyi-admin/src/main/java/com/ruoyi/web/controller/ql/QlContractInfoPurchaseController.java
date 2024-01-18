@@ -279,6 +279,9 @@ public class QlContractInfoPurchaseController extends BaseController {
             for (QlContractInfoPurchaseImport contractInfoPurchaseImport : qlContractInfoPurchaseImportList) {
                 // 查询产品
                 QlShopGoodsVo qlShopGoodsVo = qlShopGoodsVoMap.get(qlContractInfoPurchaseImport.getGoodsName());
+                if (null==qlShopGoodsVo){
+                    continue;
+                }
                 QlContractGoodsRelBo qlContractGoodsRelBo = new QlContractGoodsRelBo();
                 qlContractGoodsRelBo.setGoodsId(qlShopGoodsVo.getId());
                 qlContractGoodsRelBo.setGoodsName(qlShopGoodsVo.getGoodsName());

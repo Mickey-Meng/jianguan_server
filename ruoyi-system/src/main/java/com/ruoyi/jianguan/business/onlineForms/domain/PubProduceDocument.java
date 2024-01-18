@@ -39,6 +39,8 @@ public class PubProduceDocument extends BaseEntity {
      * 工序ID
      */
     private Long produceId;
+
+    private String documentCode;
     /**
      * 文档名称
      */

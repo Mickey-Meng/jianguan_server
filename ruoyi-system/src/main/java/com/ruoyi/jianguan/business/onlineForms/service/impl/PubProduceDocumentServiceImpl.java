@@ -64,6 +64,7 @@ public class PubProduceDocumentServiceImpl implements IPubProduceDocumentService
         lqw.eq(bo.getComponentId() != null, PubProduceDocument::getComponentId, bo.getComponentId());
         lqw.eq(bo.getProduceId() != null, PubProduceDocument::getProduceId, bo.getProduceId());
         lqw.like(StringUtils.isNotBlank(bo.getDocumentName()), PubProduceDocument::getDocumentName, bo.getDocumentName());
+        lqw.like(StringUtils.isNotBlank(bo.getDocumentCode()), PubProduceDocument::getDocumentCode, bo.getDocumentCode());
         lqw.like(StringUtils.isNotBlank(bo.getDocumentUrl()), PubProduceDocument::getDocumentUrl, bo.getDocumentUrl());
         lqw.eq(bo.getDocumentStatus() != null, PubProduceDocument::getDocumentStatus, bo.getDocumentStatus());
         lqw.eq(bo.getDocumentType() != null, PubProduceDocument::getDocumentType, bo.getDocumentType());

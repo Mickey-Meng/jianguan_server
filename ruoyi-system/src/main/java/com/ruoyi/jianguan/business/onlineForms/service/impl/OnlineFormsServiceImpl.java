@@ -31,6 +31,7 @@ import com.ruoyi.flowable.domain.dto.FlowTaskCommentDto;
 import com.ruoyi.flowable.service.FlowStaticPageService;
 import com.ruoyi.jianguan.business.onlineForms.domain.PubCheckReport;
 import com.ruoyi.jianguan.business.onlineForms.domain.PubProduceDocument;
+import com.ruoyi.jianguan.business.onlineForms.domain.TemplateCode;
 import com.ruoyi.jianguan.business.onlineForms.domain.bo.PubProduceDocumentBo;
 import com.ruoyi.jianguan.business.onlineForms.domain.vo.PubProduceDocumentVo;
 import com.ruoyi.jianguan.business.onlineForms.mapper.PubCheckReportMapper;
@@ -385,12 +386,13 @@ public class OnlineFormsServiceImpl implements IOnlineFormsService {
                 documentQueryMap.put("produce_id",pubCheckReport.getReportProduceId());
                 List<PubProduceDocument> pubProduceDocumentList = pubProduceDocumentMapper.selectByMap(documentQueryMap);
                 // 3、获取工序数据源的模板集合
-                String fillSourceTemplateName = "浙路(JS)107钢筋安装现场检测记录表.xlsx";
+                //String fillSourceTemplateName = "浙路(JS)107钢筋安装现场检测记录表.xlsx";
                 List<PubProduceDocument> filledSourceTemplateList = pubProduceDocumentList.stream()
-                                                                                          .filter(pubProduceDocument -> Objects.equals(fillSourceTemplateName, pubProduceDocument.getDocumentName()))
+                                                                                          .filter(pubProduceDocument -> Objects.equals(TemplateCode.工序_JS_钢筋安装现场检测记录表.getCode(), pubProduceDocument.getDocumentCode()))
                                                                                           .sorted(Comparator.comparingLong(PubProduceDocument::getId))
                                                                                           .collect(Collectors.toList());
-                if (Objects.equals("浙路(ZP)106-1钢筋安装分项工程质量检验评定表附表.xlsx",produceDocument.getDocumentName())) {
+
+                if (Objects.equals(TemplateCode.评定_ZP_106_1钢筋安装分项工程质量检验评定表附表.getCode(),produceDocument.getDocumentCode())) {
                     // 钢筋评定:13-11,17-15
                     Map<String,List<String>> rowsContentsMapData = this.getMultipleExcelContentsByRows(filledSourceTemplateList, Arrays.asList(13, 17), "偏差值,");
                     System.err.println("==============================================================");
@@ -402,7 +404,7 @@ public class OnlineFormsServiceImpl implements IOnlineFormsService {
                         fillDataMap.put("row11_" + (i + 1), Math.ceil(new Double(rowsContentsMapData.get("row13Data").get(i))));
                         fillDataMap.put("row15_" + (i + 1), Math.ceil(new Double(rowsContentsMapData.get("row17Data").get(i))));
                     }
-                } else if (Objects.equals("浙路(ZP)106(802)钢筋安装分项工程质量检验评定表.xlsx",produceDocument.getDocumentName())) {
+                } else if (Objects.equals(TemplateCode.评定_ZP_106_802钢筋安装分项工程质量检验评定表.getCode(),produceDocument.getDocumentCode())) {
                     Map<String,List<String>> rowsContentsMapData = this.getMultipleExcelContentsByRows(filledSourceTemplateList, Arrays.asList(12, 16), ",");
                     Map<String, BigDecimal> averagePassRateMap = Maps.newHashMap();
                     rowsContentsMapData.forEach((key, value) -> {
@@ -421,10 +423,10 @@ public class OnlineFormsServiceImpl implements IOnlineFormsService {
                     fillDataMap.put("row12IsPass", averagePassRateMap.get("row16Data").compareTo(new BigDecimal(80)) < 0 ? "不合格" : "合格");
                     // 完整性
                     long notFillCount = pubProduceDocumentList.stream().map(PubProduceDocument::getDocumentStatus)
-                                                                       .filter(documentStatus -> Objects.equals("0", documentStatus)).count();
+                                                                       .filter(documentStatus -> Objects.equals("0", String.valueOf(documentStatus))).count();
                     fillDataMap.put("infoIsCompleted", notFillCount > 0 ? "资料缺失" : "资料齐全");
                     // 外观质量
-                    List<PubProduceDocument> qualitySourceTemplateList = pubProduceDocumentList.stream().filter(pubProduceDocument -> Objects.equals("浙路(JS)802钢筋加工及安装工程现场质量检验报告单(一)(钢筋安装).xlsx", produceDocument.getDocumentName())).collect(Collectors.toList());
+                    List<PubProduceDocument> qualitySourceTemplateList = pubProduceDocumentList.stream().filter(qualitySourceTemplate -> Objects.equals(TemplateCode.工序_JS_802钢筋加工及安装工程现场质量检验报告单.getCode(), qualitySourceTemplate.getDocumentCode())).collect(Collectors.toList());
                     Map<String,List<String>> qualityCheckMapData = this.getMultipleExcelContentsByRows(qualitySourceTemplateList, Arrays.asList(26, 27), ",");
                     long notPassQualityCheckCount = qualityCheckMapData.values().stream().filter(qualityCheckData -> !Objects.equals("符合要求", qualityCheckData)).count();
                     fillDataMap.put("qualityCheck", notPassQualityCheckCount > 0 ? "不合格" : "合格");
@@ -438,8 +440,8 @@ public class OnlineFormsServiceImpl implements IOnlineFormsService {
                     /**************************************************************************************************/
                     // 更新查询评定、报验关联数据
                     pubCheckReport.setScxmStatus((Objects.equals("合格", fillDataMap.get("row10IsPass")) && Objects.equals("合格", fillDataMap.get("row12IsPass"))) ? 1L : 0L);
-                    pubCheckReport.setZlwzxStatus(Objects.equals("合格", fillDataMap.get("infoIsCompleted")) ? 1L : 0L);
                     pubCheckReport.setWgzlStatus(Objects.equals("合格", fillDataMap.get("qualityCheck")) ? 1L : 0L);
+                    pubCheckReport.setZlwzxStatus(Objects.equals("资料齐全", fillDataMap.get("infoIsCompleted")) ? 1L : 0L);
                     pubCheckReport.setCheckResult(checkResult ? 1L : 0L);
                     pubCheckReportMapper.updateById(pubCheckReport);
                 }

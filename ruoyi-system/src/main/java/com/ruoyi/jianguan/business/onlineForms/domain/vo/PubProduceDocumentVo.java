@@ -47,6 +47,13 @@ public class PubProduceDocumentVo {
     private Long produceId;
 
     /**
+     * 文档编码
+     */
+    @ExcelProperty(value = "文档编码")
+    @ApiModelProperty(value = "文档编码", required = true)
+    private String documentCode;
+
+    /**
      * 文档名称
      */
     @ExcelProperty(value = "文档名称")

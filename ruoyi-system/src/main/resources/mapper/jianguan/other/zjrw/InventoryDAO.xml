@@ -91,7 +91,7 @@
     <select id="query" parameterType="com.ruoyi.ql.domain.report.query.QlInventoryQuery" resultMap="inventoryDetail">
 		SELECT t.goods_id,
 		       t.inventory_code,
-			   t.goods_name,
+			   t2.goods_name,
 			   t.goods_searchstandard,
 			   t.goods_unit,
 			   t.inventory_number                  as warehousing_quantity,
@@ -112,12 +112,15 @@
 		  and t1.id = t.inventory_id
 		  and t1.arrival_date >= concat(#{startMonth}, '-01')
 		  and t1.arrival_date <![CDATA[ <= ]]> last_day(concat(#{endMonth}, '-01'))
+		  <if test="goodsId != null">
+		      and t.goods_id = #{goodsId}
+		  </if>
 		  and t2.del_flag = 0
 		  and t.goods_id = t2.id
 		union
 		SELECT t.goods_id,
 		       t.inventory_code,
-			   t.goods_name,
+			   t2.goods_name,
 			   t.goods_searchstandard,
 			   t.goods_unit,
 			   '0'                   as warehousing_quantity,
@@ -138,6 +141,9 @@
 		  and t1.id = t.inventory_id
 		  and t1.outbound_date >= concat(#{startMonth}, '-01')
 		  and t1.outbound_date <![CDATA[ <= ]]> last_day(concat(#{endMonth}, '-01'))
+		  <if test="goodsId != null">
+			  and t.goods_id = #{goodsId}
+		  </if>
 		  and t2.del_flag = 0
 		  and t.goods_id = t2.id;
     </select>

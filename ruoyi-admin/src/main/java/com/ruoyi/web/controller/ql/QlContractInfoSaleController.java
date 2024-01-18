@@ -144,6 +144,7 @@ public class QlContractInfoSaleController extends BaseController {
         columnNames.put("goodsName","goodsName");
         columnNames.put("price","price");
         columnNames.put("goodsNum","goodsNum");
+        headers.add(columnNames);
 
 
 
@@ -283,6 +284,9 @@ public class QlContractInfoSaleController extends BaseController {
             for (QlContractInfoSaleImport contractInfoSaleImport : qlContractInfoSaleImportList) {
                 // 查询产品
                 QlShopGoodsVo qlShopGoodsVo = qlShopGoodsVoMap.get(qlContractInfoSaleImport.getGoodsName());
+                if (null==qlShopGoodsVo){
+                    continue;
+                }
                 QlContractGoodsRelBo qlContractGoodsRelBo = new QlContractGoodsRelBo();
                 qlContractGoodsRelBo.setGoodsId(qlShopGoodsVo.getId());
                 qlContractGoodsRelBo.setGoodsName(qlShopGoodsVo.getGoodsName());

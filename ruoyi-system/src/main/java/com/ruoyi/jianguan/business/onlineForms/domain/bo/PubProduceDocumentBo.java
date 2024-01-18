@@ -1,7 +1,9 @@
 package com.ruoyi.jianguan.business.onlineForms.domain.bo;
 
+import com.alibaba.excel.annotation.ExcelProperty;
 import com.ruoyi.common.core.validate.AddGroup;
 import com.ruoyi.common.core.validate.EditGroup;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import javax.validation.constraints.*;
@@ -38,6 +40,11 @@ public class PubProduceDocumentBo extends BaseEntity {
      */
     @NotNull(message = "工序ID不能为空", groups = { AddGroup.class, EditGroup.class })
     private Long produceId;
+
+    /**
+     * 文档编码
+     */
+    private String documentCode;
 
     /**
      * 文档名称

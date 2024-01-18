@@ -8,6 +8,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="id" column="id"/>
         <result property="componentId" column="component_id"/>
         <result property="produceId" column="produce_id"/>
+        <result property="documentCode" column="document_code"/>
         <result property="documentName" column="document_name"/>
         <result property="documentUrl" column="document_url"/>
         <result property="documentStatus" column="document_status"/>

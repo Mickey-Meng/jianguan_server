@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjUtil;
 import cn.hutool.core.util.StrUtil;
+import com.ruoyi.common.utils.BigDecimalUtil;
 import com.ruoyi.ql.dao.InventoryDAO;
 import com.ruoyi.ql.domain.report.query.QlInventoryQuery;
 import com.ruoyi.ql.domain.report.vo.InventoryDetail;
@@ -91,7 +92,7 @@ public class InventoryServiceImpl implements IInventoryService {
                 InventoryDetail detail = null;
                 if (warehousingInventoryDetailGroup.containsKey(goodsId)) {
                     detail = warehousingInventoryDetailGroup.get(goodsId).get(0);
-                } else{
+                } else {
                     detail = outboundInventoryDetailGroup.get(goodsId).get(0);
                 }
 
@@ -136,7 +137,7 @@ public class InventoryServiceImpl implements IInventoryService {
             }
 
             // 累计库存-减去出库数量 累计金额-减去出库金额
-            if(outboundGroup.containsKey(goodsId)) {
+            if (outboundGroup.containsKey(goodsId)) {
                 List<InventoryDetail> inventoryDetails = outboundGroup.get(goodsId);
                 for (InventoryDetail detail : inventoryDetails) {
                     inventoryDetail.setAccumulateQuantity(inventoryDetail.getAccumulateQuantity().subtract(detail.getOutboundQuantity()));
@@ -145,6 +146,14 @@ public class InventoryServiceImpl implements IInventoryService {
             }
         }
 
+        inventoryDetailMap.forEach((goodsId, inventoryDetail) -> {
+            inventoryDetail.setAccumulateQuantity(BigDecimalUtil.precision(inventoryDetail.getAccumulateQuantity(), 2, BigDecimal.ROUND_HALF_UP));
+            inventoryDetail.setAccumulateAmount(BigDecimalUtil.precision(inventoryDetail.getAccumulateAmount(), 2, BigDecimal.ROUND_HALF_UP));
+            inventoryDetail.setWarehousingQuantity(BigDecimalUtil.precision(inventoryDetail.getWarehousingQuantity(), 2, BigDecimal.ROUND_HALF_UP));
+            inventoryDetail.setWarehousingAmount(BigDecimalUtil.precision(inventoryDetail.getWarehousingAmount(), 2, BigDecimal.ROUND_HALF_UP));
+            inventoryDetail.setOutboundQuantity(BigDecimalUtil.precision(inventoryDetail.getOutboundQuantity(), 2, BigDecimal.ROUND_HALF_UP));
+            inventoryDetail.setOutboundAmount(BigDecimalUtil.precision(inventoryDetail.getOutboundAmount(), 2, BigDecimal.ROUND_HALF_UP));
+        });
         return new ArrayList<>(inventoryDetailMap.values());
     }
 
@@ -235,14 +244,14 @@ public class InventoryServiceImpl implements IInventoryService {
 
     private Map<String, InventoryDetail> queryCumulativeInventory(QlInventoryQuery inventoryQuery) {
         List<InventoryDetail> cumulativeInventoryList = inventoryDao.queryCumulativeInventory(inventoryQuery);
-        if(CollUtil.isEmpty(cumulativeInventoryList)) {
+        if (CollUtil.isEmpty(cumulativeInventoryList)) {
             return new HashMap<>();
         }
         return cumulativeInventoryList.stream().collect(Collectors.toMap(InventoryDetail::getGoodsId, inventoryDetail -> inventoryDetail));
     }
 
     private void calCumulativeInventory(List<InventoryDetail> inventoryDetails, Map<String, InventoryDetail> cumulativeInventoryMap) {
-        if(CollUtil.isEmpty(inventoryDetails)) {
+        if (CollUtil.isEmpty(inventoryDetails)) {
             return;
         }
 
@@ -256,7 +265,7 @@ public class InventoryServiceImpl implements IInventoryService {
             BigDecimal accumulateQuantity = new BigDecimal("0.0");
             BigDecimal accumulateAmount = new BigDecimal("0.0");
             BigDecimal accumulatePrice = new BigDecimal("0.0");
-            if(ObjUtil.isNotNull(cumulativeInventory)) {
+            if (ObjUtil.isNotNull(cumulativeInventory)) {
                 accumulateQuantity = cumulativeInventory.getAccumulateQuantity();
                 accumulateAmount = cumulativeInventory.getAccumulateAmount();
                 accumulatePrice = cumulativeInventory.getAccumulatePrice();
@@ -270,19 +279,19 @@ public class InventoryServiceImpl implements IInventoryService {
 
 
                 InventoryDetail inventoryDetail = inventoryDetailList.get(i);
-                if(i == 0) {
+                if (i == 0) {
                     BigDecimal price = accumulateQuantity.add(accumulatePrice).add(inventoryDetail.getWarehousingAmount()).divide(accumulateQuantity.add(inventoryDetail.getWarehousingQuantity()), 2, RoundingMode.HALF_UP);
                     inventoryDetail.setAccumulatePrice(price);
                     inventoryDetail.setAccumulateQuantity(inventoryDetail.getWarehousingQuantity().add(accumulateQuantity));
                     inventoryDetail.setAccumulateAmount(inventoryDetail.getAccumulatePrice().multiply(inventoryDetail.getAccumulateQuantity()).add(accumulateAmount));
                 } else {
                     InventoryDetail beforeInventoryDetail = inventoryDetails.get(i - 1);
-                    if(inventoryDetail.getInventoryDirection().equals("warehousing")) {
+                    if (inventoryDetail.getInventoryDirection().equals("warehousing")) {
                         BigDecimal price = accumulateQuantity.add(accumulatePrice).add(inventoryDetail.getWarehousingAmount()).divide(accumulateQuantity.add(inventoryDetail.getWarehousingQuantity()), 2, RoundingMode.HALF_UP);
                         inventoryDetail.setAccumulateQuantity(inventoryDetail.getWarehousingQuantity().add(beforeInventoryDetail.getWarehousingQuantity()));
                         inventoryDetail.setAccumulatePrice(price);
                         inventoryDetail.setAccumulateAmount(inventoryDetail.getWarehousingAmount().add(beforeInventoryDetail.getAccumulateAmount()));
-                    }else {
+                    } else {
                         inventoryDetail.setAccumulateQuantity(inventoryDetail.getWarehousingQuantity().add(beforeInventoryDetail.getWarehousingQuantity()));
                         inventoryDetail.setAccumulatePrice(beforeInventoryDetail.getAccumulatePrice());
 
