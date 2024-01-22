@@ -15,6 +15,7 @@
 		<result column="warehousing_amount" property="warehousingAmount" />
 		<result column="outbound_quantity" property="outboundQuantity" />
 		<result column="outbound_price" property="outboundPrice" />
+		<result column="outbound_amount" property="outboundAmount" />
 		<result column="inventory_date" property="inventoryDate" />
 		<result column="goods_code" property="goodsCode" />
 		<result column="inventory_direction" property="inventoryDirection" />
@@ -55,6 +56,76 @@
 		  </if>
 	</select>
 
+	<select id="query" parameterType="com.ruoyi.ql.domain.report.query.QlInventoryQuery" resultMap="inventoryDetail">
+		SELECT t.goods_id,
+		t.inventory_code,
+		t2.goods_name,
+		t.goods_searchstandard,
+		t.goods_unit,
+		t.inventory_number                  as warehousing_quantity,
+		t.income_price                      as warehousing_price,
+		t.inventory_number * t.income_price as warehousing_amount,
+		'0'                                 as outbound_quantity,
+		'0'                                 as outbound_price,
+		'0'                                 as outbound_amount,
+		t1.arrival_date                     as inventory_date,
+		t2.goods_code,
+		t.inventory_direction,
+		t1.contract_code
+		FROM ql_warehousing_detail t,
+		ql_warehousing t1,
+		ql_shop_goods t2
+		WHERE t.del_flag = 0
+		AND t.inventory_direction = 'warehousing'
+		and t1.del_flag = 0
+		and t1.id = t.inventory_id
+		<if test="startMonth != null">
+			and t1.arrival_date >= concat(#{startMonth}, '-01')
+		</if>
+		<if test="endMonth != null">
+			and t1.arrival_date <![CDATA[ <= ]]> last_day(concat(#{endMonth}, '-01'))
+		</if>
+		<if test="goodsId != null">
+			and t.goods_id = #{goodsId}
+		</if>
+		and t2.del_flag = 0
+		and t.goods_id = t2.id
+		union
+		SELECT t.goods_id,
+		t.inventory_code,
+		t2.goods_name,
+		t.goods_searchstandard,
+		t.goods_unit,
+		'0'                   as warehousing_quantity,
+		'0'                   as warehousing_price,
+		'0'                   as warehousingAmount,
+		t.inventory_number    as outbound_quantity,
+		t.sale_price          as outbound_price,
+		t.inventory_number * t.sale_price as outbound_amount,
+		t1.outbound_date      as inventory_date,
+		t2.goods_code,
+		t.inventory_direction,
+		t1.sale_contract_code as contractCode
+		FROM ql_warehousing_detail t,
+		ql_outbound t1,
+		ql_shop_goods t2
+		WHERE t.del_flag = 0
+		AND t.inventory_direction = 'outbound'
+		and t1.del_flag = 0
+		and t1.id = t.inventory_id
+		<if test="startMonth != null">
+			and t1.outbound_date >= concat(#{startMonth}, '-01')
+		</if>
+		<if test="endMonth != null">
+			and t1.outbound_date <![CDATA[ <= ]]> last_day(concat(#{endMonth}, '-01'))
+		</if>
+		<if test="goodsId != null">
+			and t.goods_id = #{goodsId}
+		</if>
+		and t2.del_flag = 0
+		and t.goods_id = t2.id;
+	</select>
+
 	<select id="queryOutbound" parameterType="com.ruoyi.ql.domain.report.query.QlInventoryQuery" resultMap="inventoryDetail">
 		SELECT t.goods_id,
 			   t2.goods_name,
@@ -87,66 +158,6 @@
 		  and t1.outbound_date <![CDATA[ <= ]]> #{endDate}
 		  </if>
 	</select>
-
-    <select id="query" parameterType="com.ruoyi.ql.domain.report.query.QlInventoryQuery" resultMap="inventoryDetail">
-		SELECT t.goods_id,
-		       t.inventory_code,
-			   t2.goods_name,
-			   t.goods_searchstandard,
-			   t.goods_unit,
-			   t.inventory_number                  as warehousing_quantity,
-			   t.income_price                      as warehousing_price,
-			   t.inventory_number * t.income_price as warehousing_amount,
-			   '0'                                 as outbound_quantity,
-			   '0'                                 as outbound_price,
-			   t1.arrival_date                     as inventory_date,
-			   t2.goods_code,
-			   t.inventory_direction,
-			   t1.contract_code
-		FROM ql_warehousing_detail t,
-			 ql_warehousing t1,
-			 ql_shop_goods t2
-		WHERE t.del_flag = 0
-		  AND t.inventory_direction = 'warehousing'
-		  and t1.del_flag = 0
-		  and t1.id = t.inventory_id
-		  and t1.arrival_date >= concat(#{startMonth}, '-01')
-		  and t1.arrival_date <![CDATA[ <= ]]> last_day(concat(#{endMonth}, '-01'))
-		  <if test="goodsId != null">
-		      and t.goods_id = #{goodsId}
-		  </if>
-		  and t2.del_flag = 0
-		  and t.goods_id = t2.id
-		union
-		SELECT t.goods_id,
-		       t.inventory_code,
-			   t2.goods_name,
-			   t.goods_searchstandard,
-			   t.goods_unit,
-			   '0'                   as warehousing_quantity,
-			   '0'                   as warehousing_price,
-			   '0'                   as warehousingAmount,
-			   t.inventory_number    as outbound_quantity,
-			   t.sale_price          as outbound_price,
-			   t1.outbound_date      as inventory_date,
-			   t2.goods_code,
-			   t.inventory_direction,
-			   t1.sale_contract_code as contractCode
-		FROM ql_warehousing_detail t,
-			 ql_outbound t1,
-			 ql_shop_goods t2
-		WHERE t.del_flag = 0
-		  AND t.inventory_direction = 'outbound'
-		  and t1.del_flag = 0
-		  and t1.id = t.inventory_id
-		  and t1.outbound_date >= concat(#{startMonth}, '-01')
-		  and t1.outbound_date <![CDATA[ <= ]]> last_day(concat(#{endMonth}, '-01'))
-		  <if test="goodsId != null">
-			  and t.goods_id = #{goodsId}
-		  </if>
-		  and t2.del_flag = 0
-		  and t.goods_id = t2.id;
-    </select>
 
 	<select id="queryCumulativeInventory" parameterType="com.ruoyi.ql.domain.report.query.QlInventoryQuery" resultMap="inventoryDetail">
 		select tt1.goods_id,

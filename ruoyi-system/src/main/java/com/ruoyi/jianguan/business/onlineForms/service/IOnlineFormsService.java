@@ -39,4 +39,6 @@ public interface IOnlineFormsService {
 
     public Map<String,List<String>> getSingleExcelContentsByRows(PubProduceDocument pubProduceDocument, List<Integer> rowNumbers, String indexOfWord) throws IOException;
     public Map<String,List<String>> getMultipleExcelContentsByRows(List<PubProduceDocument> pubProduceDocumentList, List<Integer> rowNumbers, String indexOfWord) throws IOException;
+
+    ResponseBase getReportRecord(Integer componentId);
 }

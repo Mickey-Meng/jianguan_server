@@ -111,4 +111,9 @@ public class OnlineFormsController extends BaseController {
         return onlineFormsService.getOnlineReportTemplate(componentCode, projectId);
     }
 
+    @GetMapping("/getReportRecord")
+    public ResponseBase getReportRecord(@RequestParam(value ="componentId",required = false) Integer componentId){
+        return onlineFormsService.getReportRecord(componentId);
+    }
+
 }

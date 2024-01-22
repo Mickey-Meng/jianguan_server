@@ -1,7 +1,9 @@
 package com.ruoyi.jianguan.business.onlineForms.domain.bo;
 
+import com.alibaba.excel.annotation.ExcelProperty;
 import com.ruoyi.common.core.validate.AddGroup;
 import com.ruoyi.common.core.validate.EditGroup;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import javax.validation.constraints.*;
@@ -88,6 +90,16 @@ public class PubCheckReportBo extends BaseEntity {
      */
     @NotNull(message = "填报时间不能为空", groups = { AddGroup.class, EditGroup.class })
     private Date reportTime;
+
+    /**
+     * 申请人
+     */
+    private String reportUser;
+
+    /**
+     * 审核人
+     */
+    private String checkUser;
 
     /**
      * 备注

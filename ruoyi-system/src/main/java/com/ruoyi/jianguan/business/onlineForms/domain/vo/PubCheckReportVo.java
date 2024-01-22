@@ -105,6 +105,20 @@ public class PubCheckReportVo {
     private Date reportTime;
 
     /**
+     * 申请人
+     */
+    @ExcelProperty(value = "申请人")
+    @ApiModelProperty(value = "申请人", required = true)
+    private String reportUser;
+
+    /**
+     * 审核人
+     */
+    @ExcelProperty(value = "审核人")
+    @ApiModelProperty(value = "审核人", required = true)
+    private String checkUser;
+
+    /**
      * 备注
      */
     @ExcelProperty(value = "备注")

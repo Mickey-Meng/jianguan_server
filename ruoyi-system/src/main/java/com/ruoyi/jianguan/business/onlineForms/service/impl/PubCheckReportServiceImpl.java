@@ -91,6 +91,8 @@ public class PubCheckReportServiceImpl implements IPubCheckReportService {
         lqw.eq(bo.getCheckResult() != null, PubCheckReport::getCheckResult, bo.getCheckResult());
         lqw.eq(bo.getStatus() != null, PubCheckReport::getStatus, bo.getStatus());
         lqw.eq(bo.getReportTime() != null, PubCheckReport::getReportTime, bo.getReportTime());
+        lqw.like(PubCheckReport::getReportUser, bo.getReportUser());
+        lqw.like(PubCheckReport::getCheckUser, bo.getCheckUser());
         return lqw;
     }
 

@@ -8,6 +8,7 @@ import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.ruoyi.common.annotation.Log;
+import com.ruoyi.common.constant.CacheConstants;
 import com.ruoyi.common.constant.UserConstants;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.PageQuery;
@@ -23,6 +24,7 @@ import com.ruoyi.common.utils.CheckStrength;
 import com.ruoyi.common.utils.StreamUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.poi.ExcelUtil;
+import com.ruoyi.common.utils.redis.RedisUtils;
 import com.ruoyi.system.domain.vo.SysUserExportVo;
 import com.ruoyi.system.domain.vo.SysUserImportVo;
 import com.ruoyi.system.listener.SysUserImportListener;
@@ -264,9 +266,24 @@ public class SysUserController extends BaseController {
      * 获取部门树列表
      */
     @SaCheckPermission("system:user:list")
+    @Log(title = "获取部门树列表")
     @GetMapping("/deptTree")
     public R<List<Tree<Long>>> deptTree(SysDept dept) {
         return R.ok(deptService.selectDeptTreeList(dept));
     }
 
+    /**
+     * 解除账号锁定
+     */
+    @SaCheckPermission("system:user:unlock")
+    @Log(title = "解除账号锁定", businessType = BusinessType.UPDATE)
+    @PutMapping("/unlock")
+    public R<Void> unlock(@RequestBody SysUser user) {
+        String errorKey = CacheConstants.PWD_ERR_CNT_KEY + user.getUserName();
+        if (RedisUtils.hasKey(errorKey)) {
+            // 清空错误次数
+            RedisUtils.deleteObject(errorKey);
+        }
+        return R.ok();
+    }
 }

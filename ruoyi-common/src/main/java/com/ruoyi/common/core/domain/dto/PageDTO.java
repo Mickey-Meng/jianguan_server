@@ -22,7 +22,7 @@ public class PageDTO {
      * 每页数据大小
      */
     @ApiModelProperty(value = "每页数据大小")
-    private Integer pageSize;
+    private Integer pageSize=10;
     /**
      * 项目id
      */

@@ -14,17 +14,17 @@ import com.ruoyi.ql.domain.bo.QlOutboundBo;
 import com.ruoyi.ql.domain.bo.QlWarehousingDetailBo;
 import com.ruoyi.ql.domain.vo.QlOutboundVo;
 import com.ruoyi.ql.domain.vo.QlWarehousingDetailVo;
+import com.ruoyi.ql.domain.vo.QlWarehousingVo;
+import com.ruoyi.ql.mapper.QlContractInfoPurchaseMapper;
 import com.ruoyi.ql.mapper.QlOutboundMapper;
+import com.ruoyi.ql.mapper.QlWarehousingMapper;
 import com.ruoyi.ql.mapstruct.QlOutboundAndWarehousingMapstruct;
 import com.ruoyi.ql.service.IQlOutboundService;
 import com.ruoyi.ql.service.IQlWarehousingDetailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -38,6 +38,9 @@ import java.util.stream.Collectors;
 public class QlOutboundServiceImpl implements IQlOutboundService {
 
     private final QlOutboundMapper baseMapper;
+    private final QlWarehousingMapper qlWarehousingMapper;
+
+    private final QlContractInfoPurchaseMapper qlContractInfoPurchaseMapper;
 
     private final IQlWarehousingDetailService warehousingDetailService;
 
@@ -220,6 +223,21 @@ public class QlOutboundServiceImpl implements IQlOutboundService {
      * 保存前的数据校验
      */
     private void validEntityBeforeSave(QlOutbound entity){
+        String purchaseContractCode = entity.getPurchaseContractCode();
+        Date outboundDate = entity.getOutboundDate();
+        HashMap<String, Object> objectObjectHashMap = new HashMap<>();
+        objectObjectHashMap.put("contract_code",purchaseContractCode);
+        objectObjectHashMap.put("del_flag", "0");
+        List<QlWarehousingVo> qlWarehousingVos = qlWarehousingMapper.selectVoByMap(objectObjectHashMap);
+
+        if (qlWarehousingVos.isEmpty()){
+            throw new RuntimeException("根据采购合同"+purchaseContractCode+"查询入库记录不存在");
+        }
+        QlWarehousingVo qlWarehousingVo = qlWarehousingVos.get(0);
+        Date arrivalDate = qlWarehousingVo.getArrivalDate();
+        if(outboundDate.before(arrivalDate)){
+            throw new RuntimeException("出库时期不能早于入库日期");
+        }
         //TODO 做一些数据校验,如唯一约束
     }
 

@@ -69,6 +69,16 @@ public class PubCheckReport extends BaseEntity {
      * 填报时间
      */
     private Date reportTime;
+
+    /**
+     * 申请人
+     */
+    private String reportUser;
+
+    /**
+     * 审核人
+     */
+    private String checkUser;
     /**
      * 备注
      */

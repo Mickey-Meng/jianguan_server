@@ -37,6 +37,7 @@ import com.ruoyi.jianguan.business.onlineForms.domain.vo.PubProduceDocumentVo;
 import com.ruoyi.jianguan.business.onlineForms.mapper.PubCheckReportMapper;
 import com.ruoyi.jianguan.business.onlineForms.mapper.PubProduceDocumentMapper;
 import com.ruoyi.jianguan.business.onlineForms.service.IOnlineFormsService;
+import com.ruoyi.jianguan.business.onlineForms.service.IPubCheckReportService;
 import com.ruoyi.jianguan.business.onlineForms.service.IPubProduceDocumentService;
 import com.ruoyi.jianguan.common.dao.ConponentDAO;
 import com.ruoyi.jianguan.common.dao.ProduceandrecodeDAO;
@@ -239,6 +240,13 @@ public class OnlineFormsServiceImpl implements IOnlineFormsService {
                 flowTaskComment.setComment("在线表单-工序报验表单创建");
                 JSONObject taskVariableData = new JSONObject(auditUser);
                 flowStaticPageService.startAndTakeUserTask(processDefinitionKey, flowTaskComment, taskVariableData, null, null, recodeData.getCopyData(), businessKey);
+
+                // 更新报验信息
+                PubCheckReport pubCheckReport = pubCheckReportMapper.selectVoOne(new LambdaQueryWrapper<PubCheckReport>()
+                        .eq(!Objects.isNull(produceandrecode.getProduceid()), PubCheckReport::getReportProduceId, produceandrecode.getProduceid()), PubCheckReport.class);
+                pubCheckReport.setReportUser(LoginHelper.getNickName());
+                pubCheckReport.setReportTime(new Date());
+                pubCheckReportMapper.updateById(pubCheckReport);
             } catch (Exception e) {
                 throw new RuntimeException("流程启动失败！e=" + e.getMessage());
             }
@@ -255,6 +263,14 @@ public class OnlineFormsServiceImpl implements IOnlineFormsService {
         produceandrecode.setCheckuser(LoginHelper.getUserId().intValue());
         produceandrecode.setStime(new Date());
         produceandrecodeDAO.updateByPrimaryKey(produceandrecode);
+
+        if (type.equals("report") && status == 1) {
+            // 更新报验信息
+            PubCheckReport pubCheckReport = pubCheckReportMapper.selectVoOne(new LambdaQueryWrapper<PubCheckReport>()
+                    .eq(!Objects.isNull(produceandrecode.getProduceid()), PubCheckReport::getReportProduceId, produceandrecode.getProduceid()), PubCheckReport.class);
+            pubCheckReport.setCheckUser(LoginHelper.getNickName());
+            pubCheckReportMapper.updateById(pubCheckReport);
+        }
         return produceandrecode;
     }
 
@@ -398,11 +414,23 @@ public class OnlineFormsServiceImpl implements IOnlineFormsService {
                     System.err.println("==============================================================");
                     rowsContentsMapData.forEach((key, value) ->  System.err.println("key :" + key + " | value : " + Arrays.toString(value.toArray())) );
                     System.err.println("==============================================================");
-                    for (int i = 0; i < 15 ; i++) {
+                    for (int index = 0; index < 30 ; index++) {
                         // System.err.println("key : row11_" + (i + 1) + " | value : " + rowsContentsMapData.get("row13Data").get(i));
                         // System.err.println("key : row15_" + (i + 1) + " | value : " + rowsContentsMapData.get("row17Data").get(i));
-                        fillDataMap.put("row11_" + (i + 1), Math.ceil(new Double(rowsContentsMapData.get("row13Data").get(i))));
-                        fillDataMap.put("row15_" + (i + 1), Math.ceil(new Double(rowsContentsMapData.get("row17Data").get(i))));
+                        if (index < rowsContentsMapData.get("row13Data").size()) {
+                            if (index < 15) {
+                                fillDataMap.put("row11_" + (index + 1), Math.ceil(new Double(rowsContentsMapData.get("row13Data").get(index))));
+                            } else {
+                                fillDataMap.put("row12_" + (index - 14), Math.ceil(new Double(rowsContentsMapData.get("row13Data").get(index))));
+                            }
+                        }
+                        if (index < rowsContentsMapData.get("row17Data").size()) {
+                            if (index < 15) {
+                                fillDataMap.put("row15_" + (index + 1), Math.ceil(new Double(rowsContentsMapData.get("row17Data").get(index))));
+                            } else {
+                                fillDataMap.put("row16_" + (index - 14), Math.ceil(new Double(rowsContentsMapData.get("row17Data").get(index))));
+                            }
+                        }
                     }
                 } else if (Objects.equals(TemplateCode.评定_ZP_106_802钢筋安装分项工程质量检验评定表.getCode(),produceDocument.getDocumentCode())) {
                     Map<String,List<String>> rowsContentsMapData = this.getMultipleExcelContentsByRows(filledSourceTemplateList, Arrays.asList(12, 16), ",");
@@ -427,8 +455,8 @@ public class OnlineFormsServiceImpl implements IOnlineFormsService {
                     fillDataMap.put("infoIsCompleted", notFillCount > 0 ? "资料缺失" : "资料齐全");
                     // 外观质量
                     List<PubProduceDocument> qualitySourceTemplateList = pubProduceDocumentList.stream().filter(qualitySourceTemplate -> Objects.equals(TemplateCode.工序_JS_802钢筋加工及安装工程现场质量检验报告单.getCode(), qualitySourceTemplate.getDocumentCode())).collect(Collectors.toList());
-                    Map<String,List<String>> qualityCheckMapData = this.getMultipleExcelContentsByRows(qualitySourceTemplateList, Arrays.asList(26, 27), ",");
-                    long notPassQualityCheckCount = qualityCheckMapData.values().stream().filter(qualityCheckData -> !Objects.equals("符合要求", qualityCheckData)).count();
+                    Map<String,List<String>> qualityCheckMapDataMap = this.getMultipleExcelContentsByRows(qualitySourceTemplateList, Arrays.asList(26, 27), ",");
+                    long notPassQualityCheckCount = qualityCheckMapDataMap.values().stream().filter(qualityCheckListData -> !qualityCheckListData.contains("符合要求")).count();
                     fillDataMap.put("qualityCheck", notPassQualityCheckCount > 0 ? "不合格" : "合格");
 
                     // 评定结果
@@ -516,5 +544,11 @@ public class OnlineFormsServiceImpl implements IOnlineFormsService {
             }
         });
         return rowsContentsMapData;
+    }
+
+    @Override
+    public ResponseBase getReportRecord(Integer componentId) {
+        List<Produceandrecode> produceAndRecode = produceandrecodeDAO.getAllByConponentId(componentId);
+        return ResponseBase.success(produceAndRecode);
     }
 }

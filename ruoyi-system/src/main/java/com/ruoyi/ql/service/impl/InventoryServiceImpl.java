@@ -1,9 +1,12 @@
 package com.ruoyi.ql.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.BigDecimalUtil;
 import com.ruoyi.ql.dao.InventoryDAO;
 import com.ruoyi.ql.domain.report.query.QlInventoryQuery;
@@ -220,26 +223,92 @@ public class InventoryServiceImpl implements IInventoryService {
     @Override
     public List<InventoryDetail> detail(QlInventoryQuery inventoryQuery) {
         log.info("InventoryServiceImpl.query.inventoryQuery: {}", inventoryQuery);
+
+        // 查询条件内是否存在出入库记录
         List<InventoryDetail> inventoryDetails = inventoryDao.query(inventoryQuery);
         if (CollUtil.isEmpty(inventoryDetails)) {
             return inventoryDetails;
         }
-        for (InventoryDetail inventoryDetail : inventoryDetails) {
+
+
+        QlInventoryQuery params = new QlInventoryQuery();
+        params.setGoodsId(inventoryQuery.getGoodsId());
+        List<InventoryDetail> inventoryDetailList = inventoryDao.query(params);
+
+        inventoryDetailList.sort(Comparator.comparing(InventoryDetail::getInventoryDate));
+
+        for (int i = 0; i < inventoryDetailList.size(); i++) {
+
+            // 采购成本单价=库存单价=（（上期结存数量×库存单价）+本期入库总金金额）/（库存数量+本期入库数量）
+            InventoryDetail inventoryDetail = inventoryDetailList.get(i);
+
             LocalDate inventoryDate = inventoryDetail.getInventoryDate();
             inventoryDetail.setMonth(inventoryDate.getMonth().getValue());
             inventoryDetail.setDay(inventoryDate.getDayOfMonth());
+
+            if(i == 0) {
+                // 第一条库存 如果是出库，则抛出异常
+                if (inventoryDetail.getInventoryDirection().equals("outbound")) {
+                    throw new ServiceException("库存记录异常，产品："+inventoryDetail.getGoodsName()+",物料编码："+inventoryDetail.getGoodsCode()+"的第一条库存记录为出库记录");
+                }
+                inventoryDetail.setAccumulatePrice(inventoryDetail.getWarehousingPrice());
+                inventoryDetail.setAccumulateQuantity(inventoryDetail.getWarehousingQuantity());
+                inventoryDetail.setAccumulateAmount(inventoryDetail.getWarehousingAmount());
+            } else {
+                // 前一个库存记录
+                InventoryDetail beforeInventoryDetail = inventoryDetailList.get(i - 1);
+                if(inventoryDetail.getInventoryDirection().equals("outbound")) {
+                    // 出库单价等于上一库存的累计单价
+                    inventoryDetail.setOutboundPrice(beforeInventoryDetail.getAccumulatePrice());
+                    inventoryDetail.setAccumulatePrice(beforeInventoryDetail.getAccumulatePrice());
+                    inventoryDetail.setAccumulateQuantity(beforeInventoryDetail.getAccumulateQuantity().subtract(inventoryDetail.getOutboundQuantity()));
+                    inventoryDetail.setAccumulateAmount(beforeInventoryDetail.getAccumulateAmount().subtract(inventoryDetail.getOutboundAmount()));
+                } else {
+                    // 总金额 = 上期库存总金额+本期库存总金额
+                    BigDecimal totalAmount = inventoryDetail.getWarehousingAmount().add(beforeInventoryDetail.getAccumulateAmount());
+                    // 总数量 = 上期库存累计数量+本期库存数量
+                    BigDecimal totalQuantity = inventoryDetail.getWarehousingQuantity().add(beforeInventoryDetail.getAccumulateQuantity());
+                    BigDecimal currentAccumulatePricePrice = BigDecimalUtil.div(totalAmount, totalQuantity, 2);
+                    inventoryDetail.setAccumulatePrice(currentAccumulatePricePrice);
+                    inventoryDetail.setAccumulateQuantity(inventoryDetail.getWarehousingQuantity().add(beforeInventoryDetail.getAccumulateQuantity()));
+                    inventoryDetail.setAccumulateAmount(inventoryDetail.getWarehousingAmount().add(beforeInventoryDetail.getAccumulateAmount()));
+                }
+            }
+
         }
 
-        // 查询累计库存
-        Map<String, InventoryDetail> cumulativeInventoryMap = queryCumulativeInventory(inventoryQuery);
+        LocalDate startDate = DateUtil.parse(inventoryQuery.getStartMonth() + "-01", "yyyy-MM-dd").toLocalDateTime().toLocalDate();
+        LocalDate endDate = DateUtil.endOfMonth(DateUtil.parse(inventoryQuery.getStartMonth() + "-01", "yyyy-MM-dd")).toLocalDateTime().toLocalDate();
 
-        // 计算累计库存
-        calCumulativeInventory(inventoryDetails, cumulativeInventoryMap);
+        List<InventoryDetail> details = inventoryDetailList.stream().filter(inventoryDetail -> filterInventory(startDate, endDate, inventoryDetail)).collect(Collectors.toList());
 
-        inventoryDetails.sort(Comparator.comparing(InventoryDetail::getInventoryDate));
+//        // 查询累计库存
+//        Map<String, InventoryDetail> cumulativeInventoryMap = queryCumulativeInventory(inventoryQuery);
+//
+//        // 计算累计库存
+//        calCumulativeInventory(inventoryDetails, cumulativeInventoryMap);
+//
+//        inventoryDetails.sort(Comparator.comparing(InventoryDetail::getInventoryDate));
 
-        log.info("InventoryServiceImpl.query.inventoryDetails: {}", inventoryDetails);
-        return inventoryDetails;
+        log.info("InventoryServiceImpl.query.details: {}", details);
+        return details;
+    }
+
+    /**
+     * 过滤时间范围内的库存记录
+     * @return
+     */
+    private boolean filterInventory(LocalDate startDate, LocalDate endDate, InventoryDetail inventoryDetail) {
+        if (ObjectUtil.isNull(inventoryDetail.getInventoryCode())) {
+            throw new ServiceException("库存记录异常，产品："+inventoryDetail.getGoodsName()+",物料编码："+inventoryDetail.getGoodsCode()+"的出库或日库日期为空");
+        }
+        if (inventoryDetail.getInventoryDate().isBefore(startDate)) {
+            return false;
+        }
+        if (inventoryDetail.getInventoryDate().isAfter(endDate)) {
+            return false;
+        }
+        return true;
     }
 
     private Map<String, InventoryDetail> queryCumulativeInventory(QlInventoryQuery inventoryQuery) {
@@ -304,8 +373,5 @@ public class InventoryServiceImpl implements IInventoryService {
             }
 
         });
-
-
     }
-
 }
