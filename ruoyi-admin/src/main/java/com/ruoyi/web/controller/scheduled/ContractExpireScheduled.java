@@ -50,6 +50,8 @@ public class ContractExpireScheduled {
             sysNotice.setNoticeContent("客户:["+qlContractInfoSaleVo.getCustomerName()+"]签署的合同["+qlContractInfoSaleVo.getContractName()+"]质保金于["+format+"]到期，请尽快处理。");
             sysNotice.setNoticeTitle("质保金到期提醒");
             sysNotice.setNoticeType("2");
+            sysNotice.setBusinessId(qlContractInfoSaleVo.getId());
+            sysNotice.setBusinessType("contractInfoSale");
             sysNotices.add(sysNotice);
         }
 

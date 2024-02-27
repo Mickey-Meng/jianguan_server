@@ -57,10 +57,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <select id="getWarehousingExpireScheduled"  resultMap="QlWarehousingResult">
-
-        select * from ql_warehousing w WHERE
-            datediff(  w.last_payment_date,CURRENT_DATE () ) = 5;
-
+        select tt.*
+        from (select distinct w.*, t.warehousing_code as warehousingCode
+              from ql_warehousing w
+                       left join ql_payment_warehousing_rel t on t.del_flag = 0 and w.warehousing_code = t.warehousing_code
+              WHERE datediff(w.last_payment_date, CURRENT_DATE()) = 5
+                and w.del_flag = 0) tt
+        where tt.warehousingCode is null
     </select>
 
 </mapper>

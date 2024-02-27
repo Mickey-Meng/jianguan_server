@@ -69,13 +69,15 @@
 
 
     <select id="getOnlineUsersByRoleIds" resultType="string">
-        SELECT a.NAME
-        FROM ss_f_user_online a,sys_user su
-        WHERE  a.userid = su.user_id and su.`status`=0 and su.del_flag=0 and a.role in
-        <foreach collection="roleIds" index="index" item="item" open="(" separator="," close=")">
-            #{item}
-        </foreach>
-
+        SELECT distinct a.NAME
+        FROM ss_f_user_online a,sys_user su, ss_f_user_project t, ss_f_projects t1
+        WHERE  a.userid = su.user_id and su.`status`=0 and su.del_flag=0 and su.user_id = t.USERID and t.GROUPID = t1.id
+        <if test="roleIds != null and roleIds.size > 0">
+            and a.role in
+            <foreach collection="roleIds" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
         AND a.role IS NOT NULL
         and a.updatetime &gt;= #{startTime}
         and a.updatetime &lt;= #{endTime}
@@ -84,11 +86,13 @@
     <select id="getAllUsersByRoleIds" resultType="string">
         SELECT a.NAME
         FROM ss_f_user_online a,sys_user su
-        WHERE  a.userid = su.user_id and su.`status`=0 and su.del_flag=0 and a.role in
+        WHERE  a.userid = su.user_id and su.`status`=0 and su.del_flag=0
+        <if test="roleIds != null and roleIds.size > 0">
+        and a.role in
         <foreach collection="roleIds" index="index" item="item" open="(" separator="," close=")">
             #{item}
         </foreach>
-
+        </if>
         AND a.role IS NOT NULL
     </select>
 

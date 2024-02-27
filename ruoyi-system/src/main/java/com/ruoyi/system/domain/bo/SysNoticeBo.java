@@ -1,4 +1,4 @@
-package com.ruoyi.system.domain;
+package com.ruoyi.system.domain.bo;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -20,8 +20,7 @@ import java.util.List;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@TableName("sys_notice")
-public class SysNotice extends BaseEntity {
+public class SysNoticeBo extends BaseEntity {
 
     /**
      * 公告ID
@@ -81,6 +80,11 @@ public class SysNotice extends BaseEntity {
      * 业务Id
      */
     private Long businessId;
+
+    /**
+     *
+     */
+    private List<Long> businessIds;
 
     /**
      * 业务类型

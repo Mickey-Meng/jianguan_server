@@ -1,6 +1,7 @@
 package com.ruoyi.project.measurementDocumentsDetail.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -109,6 +110,7 @@ public class MeaMeasurementDocumentsDetailServiceImpl implements IMeaMeasurement
         lqw.eq(bo.getBqjlsl() != null, MeaMeasurementDocumentsDetail::getBqjlsl, bo.getBqjlsl());
         lqw.eq(StringUtils.isNotBlank(bo.getJllx()), MeaMeasurementDocumentsDetail::getJllx, bo.getJllx());
         lqw.eq(StringUtils.isNotBlank(bo.getStatus()), MeaMeasurementDocumentsDetail::getStatus, bo.getStatus());
+        lqw.in(CollUtil.isNotEmpty(bo.getZmhList()), MeaMeasurementDocumentsDetail::getZmh, bo.getZmhList());
         return lqw;
     }
 

@@ -3,7 +3,10 @@ package com.ruoyi.web.controller.jianguan.manage.project;
 import java.util.List;
 import java.util.Map;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.google.common.collect.Maps;
+import com.ruoyi.common.core.domain.object.ResponseBase;
+import com.ruoyi.jianguan.common.service.UserService;
 import com.ruoyi.jianguan.manage.project.domain.bo.PubMonitorBo;
 import com.ruoyi.jianguan.manage.project.domain.vo.PubMonitorVo;
 import com.ruoyi.jianguan.manage.project.service.IPubMonitorService;
@@ -12,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 import javax.validation.constraints.*;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.annotation.Validated;
 import com.ruoyi.common.annotation.RepeatSubmit;
@@ -36,6 +41,10 @@ import com.ruoyi.common.core.page.TableDataInfo;
 public class PubMonitorController extends BaseController {
 
     private final IPubMonitorService iPubMonitorService;
+
+    @Autowired
+    @Qualifier("loginUserService")
+    private UserService userService;
 
     /**
      * 分页查询设备监控列表
@@ -73,5 +82,25 @@ public class PubMonitorController extends BaseController {
                                 @PathVariable String projectId,
                                 @RequestBody List<PubMonitorBo> boList) {
         return toAjax(iPubMonitorService.saveMonitors(projectId, boList));
+    }
+
+
+    @GetMapping("/getMonitorsAllProject")
+    public R<Map<String, List<PubMonitorVo>>> getMonitorsAllProject(){
+        Map<String, List<PubMonitorVo>> dataMap = Maps.newHashMap();
+        List<PubMonitorVo> pubMonitorVos = iPubMonitorService.queryList4AllProjects();
+        for (PubMonitorVo pubMonitorVo : pubMonitorVos) {
+            try {
+                ResponseBase responseBase = userService.viewNewToken(pubMonitorVo.getProjectId());
+                if(ObjectUtil.isNotNull(responseBase) && ObjectUtil.isNotNull(responseBase.getData())) {
+                    String accessToken = (String)responseBase.getData();
+                    pubMonitorVo.setAccessToken(accessToken);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        dataMap.put("monitorDevices", pubMonitorVos);
+        return R.ok(dataMap);
     }
 }

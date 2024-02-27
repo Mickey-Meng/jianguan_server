@@ -10,6 +10,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.helper.LoginHelper;
 import com.ruoyi.system.domain.SysNotice;
+import com.ruoyi.system.domain.bo.SysNoticeBo;
 import com.ruoyi.system.service.ISysNoticeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
@@ -35,7 +36,7 @@ public class SysNoticeController extends BaseController {
      */
     @SaCheckPermission("system:notice:list")
     @GetMapping("/list")
-    public TableDataInfo<SysNotice> list(SysNotice notice, PageQuery pageQuery) {
+    public TableDataInfo<SysNotice> list(SysNoticeBo notice, PageQuery pageQuery) {
         Long userId = LoginHelper.getLoginUser().getUserId();
         notice.setReceiveId(userId);
         Set<String> roleKey = LoginHelper.getLoginUser().getRolePermission();

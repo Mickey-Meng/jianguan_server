@@ -21,6 +21,8 @@
 		<result column="inventory_direction" property="inventoryDirection" />
 		<result column="contract_code" property="contractCode" />
 		<result column="goods_code" property="goodsCode" />
+		<result column="customer_name" property="customerName" />
+		<result column="supplier_name" property="supplierName" />
     </resultMap>
 
 	<select id="queryWarehousing" parameterType="com.ruoyi.ql.domain.report.query.QlInventoryQuery" resultMap="inventoryDetail">
@@ -71,7 +73,9 @@
 		t1.arrival_date                     as inventory_date,
 		t2.goods_code,
 		t.inventory_direction,
-		t1.contract_code
+		t1.contract_code,
+		'' as customer_name,
+		t1.supplier_name
 		FROM ql_warehousing_detail t,
 		ql_warehousing t1,
 		ql_shop_goods t2
@@ -105,10 +109,13 @@
 		t1.outbound_date      as inventory_date,
 		t2.goods_code,
 		t.inventory_direction,
-		t1.sale_contract_code as contractCode
+		t1.sale_contract_code as contractCode,
+		t1.customer_name,
+		t3.supplier_name
 		FROM ql_warehousing_detail t,
 		ql_outbound t1,
-		ql_shop_goods t2
+		ql_shop_goods t2,
+		ql_contract_info_purchase t3
 		WHERE t.del_flag = 0
 		AND t.inventory_direction = 'outbound'
 		and t1.del_flag = 0
@@ -123,7 +130,9 @@
 			and t.goods_id = #{goodsId}
 		</if>
 		and t2.del_flag = 0
-		and t.goods_id = t2.id;
+		and t.goods_id = t2.id
+		and t3.del_flag = 0
+		and t1.purchase_contract_code = t3.contract_code
 	</select>
 
 	<select id="queryOutbound" parameterType="com.ruoyi.ql.domain.report.query.QlInventoryQuery" resultMap="inventoryDetail">

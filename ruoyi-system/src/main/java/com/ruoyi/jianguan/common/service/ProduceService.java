@@ -1017,7 +1017,7 @@ public class ProduceService {
                 });
 
                 //最后对maxTime进行倒叙排列
-                listss.sort(Comparator.comparing(ProduceRecord::getMaxTime, Comparator.reverseOrder()));
+                listss.stream().filter(item -> Objects.nonNull(item.getMaxTime())).sorted(Comparator.comparing(ProduceRecord::getMaxTime, Comparator.reverseOrder()));
 //
                 List<Head> tohead = tohead(type);
                 Collections.sort(tohead);

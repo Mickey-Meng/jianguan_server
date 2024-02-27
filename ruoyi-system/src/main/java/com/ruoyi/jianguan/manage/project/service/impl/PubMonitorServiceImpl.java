@@ -59,6 +59,12 @@ public class PubMonitorServiceImpl implements IPubMonitorService {
     }
 
     @Override
+    public List<PubMonitorVo> queryList4AllProjects() {
+        LambdaQueryWrapper<PubMonitor> lqw = buildQueryWrapper4AllProject();
+        return baseMapper.selectVoList(lqw);
+    }
+
+    @Override
     public Boolean saveMonitors(String projectId, List<PubMonitorBo> boList) {
         // 1、删除旧设备数据
         Map<String, Object> columnMap = Maps.newHashMap();
@@ -80,6 +86,13 @@ public class PubMonitorServiceImpl implements IPubMonitorService {
         lqw.eq(StringUtils.isNotBlank(bo.getChannelNo()), PubMonitor::getChannelNo, bo.getChannelNo());
         lqw.eq(StringUtils.isNotBlank(bo.getUrl()), PubMonitor::getUrl, bo.getUrl());
         lqw.eq(StringUtils.isNotBlank(bo.getGeom()), PubMonitor::getGeom, bo.getGeom());
+        return lqw;
+    }
+
+    private LambdaQueryWrapper<PubMonitor> buildQueryWrapper4AllProject() {
+        LambdaQueryWrapper<PubMonitor> lqw = Wrappers.lambdaQuery();
+        lqw.isNotNull(  PubMonitor::getOrderNum );
+        lqw.orderByAsc(PubMonitor::getOrderNum);
         return lqw;
     }
 

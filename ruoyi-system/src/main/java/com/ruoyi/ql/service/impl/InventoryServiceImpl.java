@@ -277,10 +277,7 @@ public class InventoryServiceImpl implements IInventoryService {
 
         }
 
-        LocalDate startDate = DateUtil.parse(inventoryQuery.getStartMonth() + "-01", "yyyy-MM-dd").toLocalDateTime().toLocalDate();
-        LocalDate endDate = DateUtil.endOfMonth(DateUtil.parse(inventoryQuery.getStartMonth() + "-01", "yyyy-MM-dd")).toLocalDateTime().toLocalDate();
-
-        List<InventoryDetail> details = inventoryDetailList.stream().filter(inventoryDetail -> filterInventory(startDate, endDate, inventoryDetail)).collect(Collectors.toList());
+        List<InventoryDetail> details = filterInventoryDetail(inventoryDetailList, inventoryQuery);
 
 //        // 查询累计库存
 //        Map<String, InventoryDetail> cumulativeInventoryMap = queryCumulativeInventory(inventoryQuery);
@@ -291,6 +288,27 @@ public class InventoryServiceImpl implements IInventoryService {
 //        inventoryDetails.sort(Comparator.comparing(InventoryDetail::getInventoryDate));
 
         log.info("InventoryServiceImpl.query.details: {}", details);
+        return details;
+    }
+
+    public List<InventoryDetail> filterInventoryDetail(List<InventoryDetail> inventoryDetailList, QlInventoryQuery inventoryQuery) {
+
+        LocalDate startDate = DateUtil.parse(inventoryQuery.getStartMonth() + "-01", "yyyy-MM-dd").toLocalDateTime().toLocalDate();
+        LocalDate endDate = DateUtil.endOfMonth(DateUtil.parse(inventoryQuery.getStartMonth() + "-01", "yyyy-MM-dd")).toLocalDateTime().toLocalDate();
+
+        List<InventoryDetail> details = inventoryDetailList
+                .stream()
+                .filter(inventoryDetail -> filterInventory(startDate, endDate, inventoryDetail))
+                .collect(Collectors.toList());
+
+        if(StrUtil.isNotBlank(inventoryQuery.getSupplierName())) {
+            details = details.stream().filter(inventoryDetail -> inventoryDetail.getSupplierName().contains(inventoryQuery.getSupplierName())).collect(Collectors.toList());
+        }
+
+        if(StrUtil.isNotBlank(inventoryQuery.getCustomerName())) {
+            details = details.stream().filter(inventoryDetail -> StrUtil.isNotBlank(inventoryDetail.getCustomerName())).filter(inventoryDetail -> inventoryDetail.getCustomerName().contains(inventoryQuery.getCustomerName())).collect(Collectors.toList());
+        }
+
         return details;
     }
 

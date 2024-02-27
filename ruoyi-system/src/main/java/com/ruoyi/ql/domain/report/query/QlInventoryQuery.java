@@ -35,7 +35,19 @@ public class QlInventoryQuery  {
      */
     private String goodsId;
 
-
+    /**
+     * 货物id集合
+     */
     private List<String> goodsIds;
+
+    /**
+     * 供应商名称
+     */
+    private String supplierName;
+
+    /**
+     * 客户名称
+     */
+    private String customerName;
 
 }

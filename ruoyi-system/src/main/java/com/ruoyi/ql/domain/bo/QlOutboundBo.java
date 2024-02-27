@@ -37,6 +37,8 @@ public class QlOutboundBo extends BaseEntity {
     @NotBlank(message = "出库单号不能为空", groups = { AddGroup.class, EditGroup.class })
     private String outboundCode;
 
+    private List<String> outboundCodes;
+
     /**
      * 出库日期
      */
@@ -54,6 +56,11 @@ public class QlOutboundBo extends BaseEntity {
      */
     @NotBlank(message = "销售合同编号不能为空", groups = { AddGroup.class, EditGroup.class })
     private String saleContractCode;
+
+    /**
+     * 销售合同集合
+     */
+    private List<String> saleContractCodes;
 
     /**
      * 采购合同编号

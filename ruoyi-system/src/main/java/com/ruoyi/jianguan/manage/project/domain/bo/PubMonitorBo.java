@@ -69,5 +69,6 @@ public class PubMonitorBo extends BaseEntity {
     @NotBlank(message = "坐标不能为空", groups = { AddGroup.class, EditGroup.class })
     private String geom;
 
+    private Integer orderNum;
 
 }

@@ -72,6 +72,12 @@ public class ProjectsController {
         return projectsService.getAll();
     }
 
+    @PostMapping(value = "/getBuildProjects")
+    @ApiOperation(value = "查询所有项目")
+    public ResponseBase getBuildProjects(){
+        return projectsService.getBuildProjects();
+    }
+
     @PostMapping(value = "/getAllProjects")
     @ApiOperation(value = "查询所有项目")
     public ResponseBase getAllProjects(){

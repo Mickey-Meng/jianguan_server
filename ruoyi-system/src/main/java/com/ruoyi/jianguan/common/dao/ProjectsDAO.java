@@ -84,8 +84,11 @@ public interface ProjectsDAO {
     @Select("select * from ss_f_projects where id = #{id}")
     SsFProjects getProjectById(@Param("id")Integer id);
 
-    @Select("select * from ss_f_projects where ststate = 1 and GROUPLEVEL = 3")
+    @Select("select * from ss_f_projects where GROUPLEVEL = 3")
     List<SsFProjects> getAllProjects();
+
+    @Select("select * from ss_f_projects where ststate = 1 and GROUPLEVEL = 3")
+    List<SsFProjects> getBuildProjects();
 
     @Select("select * from ss_f_projects where ststate = 1 and GROUPLEVEL = 5")
     List<SsFProjects> getAllSingleProjects();

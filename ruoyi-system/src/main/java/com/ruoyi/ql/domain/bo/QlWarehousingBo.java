@@ -136,6 +136,10 @@ public class QlWarehousingBo extends BaseEntity {
     @NotBlank(message = "采购合同编码不能为空", groups = { AddGroup.class, EditGroup.class })
     private String contractCode;
 
+    private List<String> contractCodes;
+
+    private List<String> warehousingCodes;
+
     /**
      * 供应商Id
      */

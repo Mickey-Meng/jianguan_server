@@ -21,12 +21,7 @@ import com.ruoyi.jianguan.common.domain.entity.Item;
 import com.ruoyi.jianguan.common.domain.entity.SsFCompany;
 import com.ruoyi.jianguan.common.domain.entity.SsFProjectCompany;
 import com.ruoyi.jianguan.common.domain.entity.SsFRoles;
-
-import com.ruoyi.common.utils.JwtUtil;
-import com.ruoyi.jianguan.manage.project.domain.vo.JgProjectItemVo;
 import com.ruoyi.jianguan.manage.project.mapper.JgProjectItemMapper;
-import com.ruoyi.jianguan.manage.project.service.IJgProjectItemService;
-import com.ruoyi.jianguan.manage.project.service.impl.JgProjectItemServiceImpl;
 import com.ruoyi.system.domain.vo.SysOssVo;
 import com.ruoyi.system.mapper.SysOssMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -245,6 +240,14 @@ public class ProjectsService {
 
     public ResponseBase getAll(){
         List<SsFProjects> ssFGroups = projectsDAO.getAll();
+        return new ResponseBase(200, "查询成功!", ssFGroups);
+    }
+
+    public ResponseBase getBuildProjects(){
+        List<SsFProjects> ssFGroups = projectsDAO.getBuildProjects();
+        if (ssFGroups.size() == 0){
+            return new ResponseBase(500, "暂未无数据!");
+        }
         return new ResponseBase(200, "查询成功!", ssFGroups);
     }
 

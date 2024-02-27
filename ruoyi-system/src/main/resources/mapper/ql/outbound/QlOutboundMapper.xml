@@ -47,10 +47,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                                                                 and  del_flag=0;
     </select>
 
-
     <select id="getQlOutboundExpireScheduled"  resultMap="QlOutboundResult">
-        SELECT *  FROM ql_outbound
-        WHERE
-            datediff(last_receivable_date  , CURRENT_DATE ()) = 5
+        select distinct tt.*
+        from (SELECT t.*, t1.outbound_code as outboundCode
+              FROM ql_outbound t
+                       left join ql_receivable_outbound_rel t1 on t1.del_flag = 0 and t.outbound_code = t1.outbound_code
+              WHERE datediff(last_receivable_date, CURRENT_DATE()) = 5
+                and t.del_flag = 0) tt
+        where tt.outboundCode is null
     </select>
 </mapper>

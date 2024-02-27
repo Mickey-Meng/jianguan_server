@@ -81,5 +81,7 @@ public class PubMonitorVo {
     @ApiModelProperty(value = "坐标", required = true)
     private String geom;
 
+    private Integer orderNum;
 
+    private String accessToken;
 }

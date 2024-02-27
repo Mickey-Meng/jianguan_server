@@ -103,8 +103,8 @@ public class LoginController {
     @PostMapping("/getOnline")
     @ApiOperation(value = "获取在线人数（如果登录用户没有配置角色权限【4，5，6，7，16，17，18】-【监理领导，" +
             "施工领导，监理管理人员，施工管理人员，全咨领导，基础公司领导，建设集团领导】，则不会显示）")
-    public ResponseBase getOnline(){
-        return userService.getOnline();
+    public ResponseBase getOnline(@RequestParam(value = "projectId", required = false)String projectId){
+        return userService.getOnline(projectId);
     }
 
     @ResponseBody

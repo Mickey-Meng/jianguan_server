@@ -29,6 +29,12 @@ import com.ruoyi.project.ledger.domain.vo.MeaLedgerBreakdownDetailVo;
 import com.ruoyi.project.ledger.mapper.MeaLedgerBreakdownDetailMapper;
 import com.ruoyi.project.ledger.mapper.MeaLedgerBreakdownMapper;
 import com.ruoyi.project.ledger.service.IMeaLedgerBreakdownDetailService;
+import com.ruoyi.project.ledgerChangeDetail.domain.bo.MeaLedgerChangeDetailBo;
+import com.ruoyi.project.ledgerChangeDetail.domain.vo.MeaLedgerChangeDetailVo;
+import com.ruoyi.project.ledgerChangeDetail.service.IMeaLedgerChangeDetailService;
+import com.ruoyi.project.measurementDocumentsDetail.domain.bo.MeaMeasurementDocumentsDetailBo;
+import com.ruoyi.project.measurementDocumentsDetail.domain.vo.MeaMeasurementDocumentsDetailVo;
+import com.ruoyi.project.measurementDocumentsDetail.service.IMeaMeasurementDocumentsDetailService;
 import io.micrometer.core.instrument.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -48,6 +54,10 @@ import java.util.stream.Collectors;
 public class MeaLedgerBreakdownDetailServiceImpl implements IMeaLedgerBreakdownDetailService {
 
     private final MeaLedgerBreakdownDetailMapper meaLedgerBreakdownDetailMapper;
+
+    private final IMeaLedgerChangeDetailService iMeaLedgerChangeDetailService;
+
+    private final IMeaMeasurementDocumentsDetailService iMeaMeasurementDocumentsDetailService;
 
     private final MeaLedgerBreakdownMapper meaLedgerBreakdownMapper;
 
@@ -433,14 +443,31 @@ public class MeaLedgerBreakdownDetailServiceImpl implements IMeaLedgerBreakdownD
         lqw.isNotNull(MeaLedgerBreakdownDetail::getFjsl).gt(MeaLedgerBreakdownDetail::getFjsl,new BigDecimal(0));
 
 //      Page<MeaLedgerBreakdownDetailVo> result = baseMapper.selectVoPage(pageQuery.build(), lqw);
-        List<MeaLedgerBreakdownDetailVo> result1 = meaLedgerBreakdownDetailMapper.selectMeaLedgerBreakdownDetails(bo.getTzfjbh());
+        List<MeaLedgerBreakdownDetailVo> meaLedgerBreakdownDetailVoList = meaLedgerBreakdownDetailMapper.selectMeaLedgerBreakdownDetails(bo.getTzfjbh());
         Map<String, List<MeaLedgerBreakdownDetailVo>> stringListMap=new LinkedHashMap<>();
-        if(CollUtil.isNotEmpty(result1)){
-//            List<MeaLedgerBreakdownDetailVo> records = result1.getRecords();
+        Map<String, List<MeaLedgerChangeDetailVo>> meaLedgerChangeDetailMap = new HashMap<>();
+        Map<String, List<MeaMeasurementDocumentsDetailVo>> meaMeasurementDocumentsDetailVoMap = new HashMap<>();
+        if(CollUtil.isNotEmpty(meaLedgerBreakdownDetailVoList)) {
+            List<String> zmhList = meaLedgerBreakdownDetailVoList.stream().map(MeaLedgerBreakdownDetailVo::getZmh).distinct().collect(Collectors.toList());
+            // 子目录号查询变更数量
+            MeaLedgerChangeDetailBo meaLedgerChangeDetailBo = new MeaLedgerChangeDetailBo();
+            meaLedgerChangeDetailBo.setZmhList(zmhList);
+            List<MeaLedgerChangeDetailVo> meaLedgerChangeDetailVos = iMeaLedgerChangeDetailService.query(meaLedgerChangeDetailBo);
+            meaLedgerChangeDetailMap = meaLedgerChangeDetailVos.stream().collect(Collectors.groupingBy(MeaLedgerChangeDetailVo::getZmh));
+            // 子目号查询计量数量
+            MeaMeasurementDocumentsDetailBo meaMeasurementDocumentsDetailBo = new MeaMeasurementDocumentsDetailBo();
+            meaMeasurementDocumentsDetailBo.setZmhList(zmhList);
+            List<MeaMeasurementDocumentsDetailVo> meaMeasurementDocumentsDetailVos = iMeaMeasurementDocumentsDetailService.queryList(meaMeasurementDocumentsDetailBo);
+            meaMeasurementDocumentsDetailVoMap = meaMeasurementDocumentsDetailVos.stream().collect(Collectors.groupingBy(MeaMeasurementDocumentsDetailVo::getZmh));
+        }
+
+
+        if(CollUtil.isNotEmpty(meaLedgerBreakdownDetailVoList)){
+//            List<MeaLedgerBreakdownDetailVo> records = meaLedgerBreakdownDetailVoList.getRecords();
             QueryWrapper<MeaContractBill> queryWrapper=new QueryWrapper<>();
             queryWrapper.eq("status","0");
             List<MeaContractBill> meaLedgerBreakdowns = meaContractBillMapper.selectList(queryWrapper);
-            for(MeaLedgerBreakdownDetailVo meaLedgerBreakdownDetailVo:result1){
+            for(MeaLedgerBreakdownDetailVo meaLedgerBreakdownDetailVo:meaLedgerBreakdownDetailVoList){
                /* QueryWrapper<MeaContractBill> queryWrapper1=new QueryWrapper<>();
                 queryWrapper1.eq("zmh",meaLedgerBreakdownDetailVo.getZmh());
                 queryWrapper1.eq("status","0");
@@ -459,12 +486,29 @@ public class MeaLedgerBreakdownDetailServiceImpl implements IMeaLedgerBreakdownD
                         List<MeaLedgerBreakdownDetailVo> meaLedgerBreakdownDetailVos = stringListMap.get(key);
                         //判断当前台账分解清单中，子目号是否已经存入到清单根节点对应的list中，如果已经存在，则累加当前子目号对应的分解数量即可。
                         Optional<MeaLedgerBreakdownDetailVo> meaLedgerBreakdownDetailVo1 = meaLedgerBreakdownDetailVos.stream().filter(item -> item.getZmh().equals(meaLedgerBreakdownDetailVo.getZmh())).findFirst();
+                        BigDecimal bgsl = new BigDecimal("0.0");
+                        BigDecimal yjlsl = new BigDecimal("0.0");
+                        if(meaLedgerChangeDetailMap.containsKey(meaLedgerBreakdownDetailVo.getZmh())) {
+                            List<MeaLedgerChangeDetailVo> meaLedgerChangeDetails = meaLedgerChangeDetailMap.get(meaLedgerBreakdownDetailVo.getZmh());
+                            // 汇总子目号的变更数据
+                            for (MeaLedgerChangeDetailVo meaLedgerChangeDetail : meaLedgerChangeDetails) {
+                                bgsl = bgsl.add(meaLedgerChangeDetail.getBgsl());
+                            }
+                        }
+                        if(meaMeasurementDocumentsDetailVoMap.containsKey(meaLedgerBreakdownDetailVo.getZmh())) {
+                            List<MeaMeasurementDocumentsDetailVo> meaMeasurementDocumentsDetailVos = meaMeasurementDocumentsDetailVoMap.get(meaLedgerBreakdownDetailVo.getZmh());
+                            for (MeaMeasurementDocumentsDetailVo meaMeasurementDocumentsDetailVo : meaMeasurementDocumentsDetailVos) {
+                                yjlsl = yjlsl.add(meaMeasurementDocumentsDetailVo.getBqjlsl());
+                            }
+                        }
+
                         if (null != meaLedgerBreakdownDetailVo1  && meaLedgerBreakdownDetailVo1.isPresent()){
                             MeaLedgerBreakdownDetailVo m = new MeaLedgerBreakdownDetailVo();
                             BeanCopyUtils.copy(meaLedgerBreakdownDetailVo1.get(),m);
                             m.setFjsl(meaLedgerBreakdownDetailVo1.get().getFjsl().add(meaLedgerBreakdownDetailVo.getFjsl()));
                             m.setBgfjsl(meaLedgerBreakdownDetailVo1.get().getBgfjsl().add(meaLedgerBreakdownDetailVo.getBgfjsl()));
-                            m.setBgsl(meaLedgerBreakdownDetailVo1.get().getBgsl().add(meaLedgerBreakdownDetailVo.getBgsl()));
+                            m.setBgsl(bgsl);
+                            m.setYjlsl(yjlsl);
                             meaLedgerBreakdownDetailVos.remove(meaLedgerBreakdownDetailVo1.get());
                             meaLedgerBreakdownDetailVos.add(m);
                         }else{
@@ -492,7 +536,7 @@ public class MeaLedgerBreakdownDetailServiceImpl implements IMeaLedgerBreakdownD
             }
         }
         Page<MeaLedgerBreakdownDetailInfoVo> page=new Page<>();
-        page.setTotal(result1.size());
+        page.setTotal(meaLedgerBreakdownDetailVoList.size());
         page.setRecords(meaLedgerBreakdownDetailInfoVos);
         page.setPages(0);
         return TableDataInfo.build(page);

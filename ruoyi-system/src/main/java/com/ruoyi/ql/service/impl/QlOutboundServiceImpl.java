@@ -108,6 +108,7 @@ public class QlOutboundServiceImpl implements IQlOutboundService {
         lqw.in(CollUtil.isNotEmpty(bo.getIds()), QlOutbound::getId, bo.getIds());
         lqw.eq(ObjectUtil.isNotNull(bo.getId()), QlOutbound::getId, bo.getIds());
         lqw.eq(StringUtils.isNotBlank(bo.getLockStatus()), QlOutbound::getLockStatus, bo.getLockStatus());
+        lqw.in(CollUtil.isNotEmpty(bo.getOutboundCodes()), QlOutbound::getOutboundCode, bo.getOutboundCodes());
         return lqw;
     }
 

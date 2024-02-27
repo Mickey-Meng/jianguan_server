@@ -257,6 +257,13 @@ public class PersonController {
         return personService.clockIn(clockIn);
     }
 
+
+    @PostMapping("/deleteClockIn")
+    @ApiOperation(value = "删除考勤打卡")
+    public ResponseBase deleteClockIn(@RequestParam(value = "id") String id) {
+        return personService.deleteClockIn(id);
+    }
+
     @PostMapping("/getClockIn")
     @ApiOperation(value = "获取考勤打卡")
     @ApiImplicitParams({

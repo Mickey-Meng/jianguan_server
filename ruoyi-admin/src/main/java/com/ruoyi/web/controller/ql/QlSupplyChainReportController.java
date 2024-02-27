@@ -32,13 +32,17 @@ public class QlSupplyChainReportController extends BaseController {
     @GetMapping("/inventory")
     public ReportResponse<List<InventoryDetail>> inventory(@RequestParam(value = "startMonth", required = false) String startMonth,
                                                            @RequestParam(value = "endMonth", required = false) String endMonth,
-                                                           @RequestParam(value = "goodsId", required = false) String goodsId) {
+                                                           @RequestParam(value = "goodsId", required = false) String goodsId,
+                                                           @RequestParam(value = "supplierName", required = false) String supplierName,
+                                                           @RequestParam(value = "customerName", required = false) String customerName) {
         log.info("QlSupplyChainReportController.inventory.startMonth: {}, endMonth:{}, goodsId:{}", startMonth, endMonth, goodsId);
 
         QlInventoryQuery inventoryQuery = new QlInventoryQuery();
         inventoryQuery.setStartMonth(startMonth);
         inventoryQuery.setEndMonth(endMonth);
         inventoryQuery.setGoodsId(goodsId);
+        inventoryQuery.setSupplierName(supplierName);
+        inventoryQuery.setCustomerName(customerName);
         List<InventoryDetail> inventoryDetails = inventoryService.detail(inventoryQuery);
 
         return ReportResponse.ok(inventoryDetails);

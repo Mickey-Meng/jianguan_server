@@ -1,11 +1,14 @@
 package com.ruoyi.system.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ruoyi.common.core.domain.PageQuery;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.domain.SysNotice;
+import com.ruoyi.system.domain.bo.SysNoticeBo;
 import com.ruoyi.system.mapper.SysNoticeMapper;
 import com.ruoyi.system.service.ISysNoticeService;
 import lombok.RequiredArgsConstructor;
@@ -27,15 +30,18 @@ public class SysNoticeServiceImpl implements ISysNoticeService {
     private final SysNoticeMapper baseMapper;
 
     @Override
-    public TableDataInfo<SysNotice> selectPageNoticeList(SysNotice notice, PageQuery pageQuery,Boolean b) {
+    public TableDataInfo<SysNotice> selectPageNoticeList(SysNoticeBo notice, PageQuery pageQuery, Boolean b) {
 
         LambdaQueryWrapper<SysNotice> lqw = new LambdaQueryWrapper<SysNotice>()
             .like(StringUtils.isNotBlank(notice.getNoticeTitle()), SysNotice::getNoticeTitle, notice.getNoticeTitle())
             .eq(StringUtils.isNotBlank(notice.getNoticeType()), SysNotice::getNoticeType, notice.getNoticeType())
-                .in( true!= b  ,SysNotice::getReceiveId, 0,notice.getReceiveId())//receiveId=0,默认为全部用户
+                //receiveId=0,默认为全部用户
+                .in( true!= b  ,SysNotice::getReceiveId, 0,notice.getReceiveId())
                 .eq(StringUtils.isNotBlank(notice.getReadStatus()), SysNotice::getReadStatus, notice.getReadStatus())
                 .lt(null !=notice.getExpirationDate(), SysNotice::getExpirationDate, new Date())
-                .like(StringUtils.isNotBlank(notice.getCreateBy()), SysNotice::getCreateBy, notice.getCreateBy());
+                .like(StringUtils.isNotBlank(notice.getCreateBy()), SysNotice::getCreateBy, notice.getCreateBy())
+                .eq(StrUtil.isNotBlank(notice.getBusinessType()), SysNotice::getBusinessType, notice.getBusinessType())
+                .in(CollUtil.isNotEmpty(notice.getBusinessIds()), SysNotice::getBusinessId, notice.getBusinessIds());
         Page<SysNotice> page = baseMapper.selectPage(pageQuery.build(), lqw);
         return TableDataInfo.build(page);
     }
@@ -58,7 +64,7 @@ public class SysNoticeServiceImpl implements ISysNoticeService {
      * @return 公告集合
      */
     @Override
-    public List<SysNotice> selectNoticeList(SysNotice notice) {
+    public List<SysNotice> selectNoticeList(SysNoticeBo notice) {
         return baseMapper.selectList(new LambdaQueryWrapper<SysNotice>()
             .like(StringUtils.isNotBlank(notice.getNoticeTitle()), SysNotice::getNoticeTitle, notice.getNoticeTitle())
             .eq(StringUtils.isNotBlank(notice.getNoticeType()), SysNotice::getNoticeType, notice.getNoticeType())
@@ -66,7 +72,10 @@ public class SysNoticeServiceImpl implements ISysNoticeService {
 
          .like(StringUtils.isNotBlank(notice.getReceiveName()), SysNotice::getReceiveName, notice.getReceiveName())
          .eq(StringUtils.isNotBlank(notice.getReadStatus()), SysNotice::getReadStatus, notice.getReadStatus())
-         .eq(notice.getReadTime() != null, SysNotice::getReadTime, notice.getReadTime()));
+         .eq(notice.getReadTime() != null, SysNotice::getReadTime, notice.getReadTime())
+                .eq(StrUtil.isNotBlank(notice.getBusinessType()), SysNotice::getBusinessType, notice.getBusinessType())
+                .in(CollUtil.isNotEmpty(notice.getBusinessIds()), SysNotice::getBusinessId, notice.getBusinessIds())
+        );
     }
 
     /**

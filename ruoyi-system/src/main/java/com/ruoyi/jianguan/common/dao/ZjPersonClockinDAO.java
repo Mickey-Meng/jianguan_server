@@ -1,6 +1,7 @@
 package com.ruoyi.jianguan.common.dao;
 
 import com.ruoyi.jianguan.common.domain.entity.ZjPersonClockin;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -32,7 +33,7 @@ public interface ZjPersonClockinDAO {
                              @Param("endTime")Date endTime);
 
     //todo group by clockTime desc
-    @Select(" SELECT " +
+    @Select(" SELECT zpc.id," +
             " su.nick_name AS attendancePersonName," +
             " zpc.clockPic," +
             " zpc.projectName," +
@@ -157,4 +158,7 @@ public interface ZjPersonClockinDAO {
      */
     @Select("select * from zj_person_clockin where clockTime >= #{startDateTime} and clockTime <= #{endDateTime} ")
     List<ZjPersonClockin> getPersonClockinListByDate(String startDateTime, String endDateTime);
+
+    @Delete("delete from zj_person_clockin where id = #{id} ")
+    void delete(String id);
 }

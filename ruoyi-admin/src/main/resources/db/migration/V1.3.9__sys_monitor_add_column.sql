@@ -1,0 +1,1 @@
+ALTER table pub_monitor add order_num  int  DEFAULT NULL COMMENT '监控--多项目总览显示顺序';

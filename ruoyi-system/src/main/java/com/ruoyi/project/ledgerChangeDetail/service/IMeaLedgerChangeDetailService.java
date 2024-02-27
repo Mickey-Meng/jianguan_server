@@ -22,6 +22,8 @@ public interface IMeaLedgerChangeDetailService {
      */
     MeaLedgerChangeDetailVo queryById(String zmh);
 
+    List<MeaLedgerChangeDetailVo> query(MeaLedgerChangeDetailBo bo);
+
     /**
      * 查询台账变更/工程变更 明细列表
      */

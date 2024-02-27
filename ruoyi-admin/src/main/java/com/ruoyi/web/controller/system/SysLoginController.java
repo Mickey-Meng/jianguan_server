@@ -1,5 +1,6 @@
 package com.ruoyi.web.controller.system;
 
+import cn.hutool.core.util.StrUtil;
 import com.ruoyi.common.annotation.Anonymous;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.core.domain.R;
@@ -67,6 +68,11 @@ public class SysLoginController {
 
         String ssoToken = RsaEncrypt.encrypt("Alice", defaultKey);
         ajax.put("ssoToken",ssoToken);
+        try {
+            ajax.put("tokenStr", Sm4Util.encrypt(loginBody.getUsername()+"&"+loginBody.getPassword()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return R.ok(ajax);
     }
 
@@ -75,6 +81,7 @@ public class SysLoginController {
     @GetMapping("/validateSsoToken/{tokenStr}")
     @ApiOperation(value = "校验token")
     public R<Map<String, Object>> checkToken(@PathVariable("tokenStr") String tokenStr) throws Exception {
+        Thread.sleep(5000);
         byte[] key = Sm4Util.hexTobytes("51d95b1dc43a9faaad0570f81c755fcc");
         byte[] input = Hex.decode(tokenStr);
         byte[] output = Sm4Util.decryptEcbPkcs5Padding(input, key);
@@ -83,13 +90,20 @@ public class SysLoginController {
         String[] split = s.split("&");
 
         String token = loginService.login(split[0], split[1], null);
-
+        if(StrUtil.isBlank(token)) {
+            return R.fail("登录失败，用户不存在");
+        }
         Map<String, Object> ajax = new HashMap<>();
 
         ajax.put(Constants.TOKEN, token);
 
         String ssoToken = RsaEncrypt.encrypt("Alice", defaultKey);
         ajax.put("ssoToken",ssoToken);
+        try {
+            ajax.put("tokenStr", Sm4Util.encrypt(split[0]+"&"+split[1]));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return R.ok(ajax);
     }
 

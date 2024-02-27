@@ -11,19 +11,21 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.ruoyi.ql.domain.QlPaymentWarehousingRel;
 import com.ruoyi.ql.domain.QlReceivableOutboundRel;
+import com.ruoyi.ql.domain.bo.QlOutboundBo;
 import com.ruoyi.ql.domain.bo.QlPaymentWarehousingRelBo;
 import com.ruoyi.ql.domain.bo.QlReceivableOutboundRelBo;
-import com.ruoyi.ql.domain.vo.QlFinPaymentVo;
-import com.ruoyi.ql.domain.vo.QlPaymentWarehousingRelVo;
-import com.ruoyi.ql.domain.vo.QlReceivableOutboundRelVo;
+import com.ruoyi.ql.domain.vo.*;
 import com.ruoyi.ql.mapper.QlPaymentWarehousingRelMapper;
 import com.ruoyi.ql.mapper.QlReceivableOutboundRelMapper;
+import com.ruoyi.ql.service.IQlOutboundService;
 import com.ruoyi.ql.service.IQlPaymentWarehousingRelService;
 import com.ruoyi.ql.service.IQlReceivableOutboundRelService;
+import com.ruoyi.system.domain.SysNotice;
+import com.ruoyi.system.domain.bo.SysNoticeBo;
+import com.ruoyi.system.service.ISysNoticeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import com.ruoyi.ql.domain.bo.QlFinReceivableBo;
-import com.ruoyi.ql.domain.vo.QlFinReceivableVo;
 import com.ruoyi.ql.domain.QlFinReceivable;
 import com.ruoyi.ql.mapper.QlFinReceivableMapper;
 import com.ruoyi.ql.service.IQlFinReceivableService;
@@ -49,6 +51,10 @@ public class QlFinReceivableServiceImpl implements IQlFinReceivableService {
     private final IQlReceivableOutboundRelService receivableOutboundRelService;
 
     private final QlReceivableOutboundRelMapper receivableOutboundRelMapper;
+
+    private final IQlOutboundService iQlOutboundService;
+
+    private final ISysNoticeService iSysNoticeService;
 
     /**
      * 查询收款记录
@@ -137,10 +143,27 @@ public class QlFinReceivableServiceImpl implements IQlFinReceivableService {
         if (flag) {
             bo.setId(add.getId());
         }
-        for (QlReceivableOutboundRelBo receivableOutboundRelBo : bo.getReceivableOutboundRels()) {
+        List<QlReceivableOutboundRelBo> receivableOutboundRels = bo.getReceivableOutboundRels();
+        for (QlReceivableOutboundRelBo receivableOutboundRelBo : receivableOutboundRels) {
             receivableOutboundRelBo.setReceivableId(add.getId());
             receivableOutboundRelService.insertByBo(receivableOutboundRelBo);
         }
+        List<String> outboundCodes = receivableOutboundRels.stream().map(QlReceivableOutboundRelBo::getOutboundCode).collect(Collectors.toList());
+        QlOutboundBo qlOutboundBo = new QlOutboundBo();
+        qlOutboundBo.setOutboundCodes(outboundCodes);
+        List<QlOutboundVo> qlOutboundVos = iQlOutboundService.queryList(qlOutboundBo);
+        if (CollUtil.isEmpty(qlOutboundVos)) {
+            return null;
+        }
+        List<Long> businessIds = qlOutboundVos.stream().map(QlOutboundVo::getId).collect(Collectors.toList());
+        SysNoticeBo notice = new SysNoticeBo();
+        notice.setBusinessIds(businessIds);
+        notice.setBusinessType("outbound");
+        List<SysNotice> sysNotices = iSysNoticeService.selectNoticeList(notice);
+        if (CollUtil.isEmpty(sysNotices)) {
+            return true;
+        }
+        iSysNoticeService.deleteNoticeByIds(sysNotices.stream().map(SysNotice::getNoticeId).toArray(Long[]::new));
         return flag;
     }
 

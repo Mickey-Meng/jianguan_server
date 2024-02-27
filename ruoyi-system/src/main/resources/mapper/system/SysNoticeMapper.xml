@@ -20,6 +20,8 @@
         <result property="readStatus" column="read_status"/>
         <result property="readTime" column="read_time"/>
         <result property="expirationDate" column="expiration_date"/>
+        <result property="businessId" column="business_id"/>
+        <result property="businessType" column="business_type"/>
     </resultMap>
     <update id="updateNoticeReadStatus" useGeneratedKeys="true" keyProperty="id">
         UPDATE

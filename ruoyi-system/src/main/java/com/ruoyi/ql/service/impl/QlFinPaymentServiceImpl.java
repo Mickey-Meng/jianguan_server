@@ -14,17 +14,23 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.ruoyi.ql.domain.QlBasisSupplier;
 import com.ruoyi.ql.domain.QlPaymentWarehousingRel;
 import com.ruoyi.ql.domain.QlWarehousing;
+import com.ruoyi.ql.domain.bo.QlOutboundBo;
 import com.ruoyi.ql.domain.bo.QlPaymentWarehousingRelBo;
-import com.ruoyi.ql.domain.vo.QlBasisSupplierVo;
-import com.ruoyi.ql.domain.vo.QlPaymentWarehousingRelVo;
+import com.ruoyi.ql.domain.bo.QlWarehousingBo;
+import com.ruoyi.ql.domain.vo.*;
 import com.ruoyi.ql.mapper.QlBasisSupplierMapper;
+import com.ruoyi.ql.mapper.QlOutboundMapper;
 import com.ruoyi.ql.mapper.QlPaymentWarehousingRelMapper;
+import com.ruoyi.ql.service.IQlOutboundService;
 import com.ruoyi.ql.service.IQlPaymentWarehousingRelService;
+import com.ruoyi.ql.service.IQlWarehousingService;
+import com.ruoyi.system.domain.SysNotice;
+import com.ruoyi.system.domain.bo.SysNoticeBo;
+import com.ruoyi.system.service.ISysNoticeService;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.weaver.ast.Var;
 import org.springframework.stereotype.Service;
 import com.ruoyi.ql.domain.bo.QlFinPaymentBo;
-import com.ruoyi.ql.domain.vo.QlFinPaymentVo;
 import com.ruoyi.ql.domain.QlFinPayment;
 import com.ruoyi.ql.mapper.QlFinPaymentMapper;
 import com.ruoyi.ql.service.IQlFinPaymentService;
@@ -54,6 +60,12 @@ public class QlFinPaymentServiceImpl implements IQlFinPaymentService {
     private final IQlPaymentWarehousingRelService paymentWarehousingRelService;
 
     private final QlPaymentWarehousingRelMapper paymentWarehousingRelMapper;
+
+    private final IQlWarehousingService iQlWarehousingService;
+
+    private final ISysNoticeService iSysNoticeService;
+
+
 
 
     /**
@@ -164,6 +176,28 @@ public class QlFinPaymentServiceImpl implements IQlFinPaymentService {
     @Transactional
     public Boolean insertPaymentByBo(QlFinPaymentBo bo) {
         insertByBo(bo);
+        List<QlPaymentWarehousingRelBo> paymentWarehousingRels = bo.getPaymentWarehousingRels();
+        List<String> warehousingCodes = paymentWarehousingRels.stream().map(QlPaymentWarehousingRelBo::getWarehousingCode).collect(Collectors.toList());
+        if(CollUtil.isEmpty(warehousingCodes)) {
+            return true;
+        }
+        // 更新通知
+        QlWarehousingBo qlWarehousingBo = new QlWarehousingBo();
+        qlWarehousingBo.setWarehousingCodes(warehousingCodes);
+        List<QlWarehousingVo> qlWarehousingVos = iQlWarehousingService.queryList(qlWarehousingBo);
+        if(CollUtil.isEmpty(qlWarehousingVos)) {
+            return true;
+        }
+        List<Long> warehousingIds = qlWarehousingVos.stream().map(QlWarehousingVo::getId).collect(Collectors.toList());
+        SysNoticeBo notice = new SysNoticeBo();
+        notice.setBusinessIds(warehousingIds);
+        notice.setBusinessType("warehousing");
+        List<SysNotice> sysNotices = iSysNoticeService.selectNoticeList(notice);
+        if (CollUtil.isEmpty(sysNotices)) {
+            return true;
+        }
+        iSysNoticeService.deleteNoticeByIds(sysNotices.stream().map(SysNotice::getNoticeId).toArray(Long[]::new));
+
     /*    QlBasisSupplierVo qlBasisSupplierVo = qlBasisSupplierMapper.selectOne(new LambdaQueryWrapper<SysDictData>()
                 .select(SysDictData::getDictLabel)
                 .eq(SysDictData::getDictType, bo.getSupplierName())

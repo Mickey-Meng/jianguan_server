@@ -1516,6 +1516,11 @@ public class PersonService {
         }
     }
 
+    public ResponseBase deleteClockIn(String id) {
+        clockinDAO.delete(id);
+        return new ResponseBase(200, "删除打卡记录成功!");
+    }
+
     public ResponseBase clockIn(ZjPersonClockin clockIn) {
         if (clockIn.getProjectId() <= 0) {
             return new ResponseBase(200, "请输入有效的项目id!");

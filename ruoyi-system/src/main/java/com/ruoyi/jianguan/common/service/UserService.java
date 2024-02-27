@@ -454,7 +454,7 @@ public class UserService {
     }
 
 
-    public ResponseBase getOnline() {
+    public ResponseBase getOnline(String projectId) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date();
         String today = sdf.format(date);

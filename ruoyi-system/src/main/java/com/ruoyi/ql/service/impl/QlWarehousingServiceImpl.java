@@ -98,6 +98,7 @@ public class QlWarehousingServiceImpl implements IQlWarehousingService {
         lqw.eq(StringUtils.isNotBlank(bo.getLockStatus()), QlWarehousing::getLockStatus, bo.getLockStatus());
         lqw.eq(ObjectUtil.isNotNull(bo.getId()), QlWarehousing::getId, bo.getId());
         lqw.in(CollUtil.isNotEmpty(bo.getIds()), QlWarehousing::getId, bo.getIds());
+        lqw.in(CollUtil.isNotEmpty(bo.getWarehousingCodes()), QlWarehousing::getWarehousingCode, bo.getWarehousingCodes());
         return lqw;
     }
 

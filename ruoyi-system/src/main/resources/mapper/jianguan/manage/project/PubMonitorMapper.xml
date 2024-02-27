@@ -13,6 +13,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="channelNo" column="channelNo"/>
         <result property="url" column="url"/>
         <result property="geom" column="geom"/>
+        <result property="orderNum" column="order_num"/>
     </resultMap>
 
 

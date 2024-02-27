@@ -2,6 +2,7 @@ package com.ruoyi.project.ledgerChangeDetail.service.impl;
 
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -38,6 +39,13 @@ public class MeaLedgerChangeDetailServiceImpl implements IMeaLedgerChangeDetailS
     @Override
     public MeaLedgerChangeDetailVo queryById(String zmh){
         return baseMapper.selectVoById(zmh);
+    }
+
+
+    @Override
+    public List<MeaLedgerChangeDetailVo> query(MeaLedgerChangeDetailBo bo) {
+        LambdaQueryWrapper<MeaLedgerChangeDetail> lqw = buildQueryWrapper(bo);
+        return baseMapper.selectVoList(lqw);
     }
 
     /**
@@ -77,6 +85,7 @@ public class MeaLedgerChangeDetailServiceImpl implements IMeaLedgerChangeDetailS
         lqw.eq(bo.getBgje() != null, MeaLedgerChangeDetail::getBgje, bo.getBgje());
         lqw.eq(bo.getYjlsl() != null, MeaLedgerChangeDetail::getYjlsl, bo.getYjlsl());
         lqw.eq(StringUtils.isNotBlank(bo.getStatus()), MeaLedgerChangeDetail::getStatus, bo.getStatus());
+        lqw.in(CollUtil.isNotEmpty(bo.getZmhList()), MeaLedgerChangeDetail::getZmh, bo.getZmhList());
         return lqw;
     }
 

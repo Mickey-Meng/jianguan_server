@@ -56,4 +56,6 @@ public class PubMonitor extends BaseEntity {
      */
     private String geom;
 
+    private Integer orderNum;
+
 }

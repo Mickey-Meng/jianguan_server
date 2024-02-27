@@ -116,8 +116,24 @@ public class InventoryDetail {
      */
     private LocalDate inventoryDate;
 
+    /**
+     * 起始月
+     */
     private String startMonth;
 
+    /**
+     * 结束月
+     */
     private String endMonth;
+
+    /**
+     * 供应商名称
+     */
+    private String supplierName;
+
+    /**
+     * 客户名称
+     */
+    private String customerName;
 
 }
